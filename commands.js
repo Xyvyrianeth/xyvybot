@@ -4,6 +4,7 @@ const Jimp = require("jimp");
 
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
+console.log(config);
    
 var version = "v2.20.1.1";
 var pingtime = {};
