@@ -22,6 +22,3 @@ client.on('message', message => {
     if (message.content.startsWith("x!")) return commands.command(message);
     else return commands.other(message, false);
 });
-
-console.log(typeof config.TOKEN + " " + config.TOKEN);
-console.log(typeof config.DATABASE_URL + " " + config.DATABASE_URL);
