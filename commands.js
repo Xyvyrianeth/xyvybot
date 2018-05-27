@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "v2.20.1.10";
+var version = "v2.20.2.0";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -114,7 +114,12 @@ const nekos = require("nekos.life");
 const Nekos = new nekos();
 
 const paladinsAPI = require("paladins-api");
-const Paladins = new paladinsAPI(config.HIREZ_API[0], config.HIREZ_API[1]);
+const paladins = new paladinsAPI(config.HIREZ_API[0], config.HIREZ_API[1]);
+var palID;
+paladins.connect("PC", (err, ress) => {
+    if (err) return console.log(err);
+    palID = res;
+});
 
 function command(message) {
   
