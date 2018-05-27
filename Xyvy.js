@@ -12,20 +12,20 @@ client.on("ready", () => {
 
 var commands = require("./commands.js");
 
-exports.client = client;
-config = {
-    DATABASE_URL: process.env.DATABASE_URL,
-    HIREZ_API: process.env.HIREZ_API.split(' '),
-    MAL_API: process.env.MAL_API.split(' ')
-};
-exports.config = config;
-console.log(config);
 
-/* client.on('message', message => {
+client.on('message', message => {
     if (message.author.bot) {
         if (message.author.id == client.user.id) return commands.bot(message);
         else return;
     }
     if (message.content.startsWith("x!")) return commands.command(message);
     else return commands.other(message, false);
-}); */
+});
+
+exports.client = client;
+var config = {
+    DATABASE_URL: process.env.DATABASE_URL,
+    HIREZ_API: process.env.HIREZ_API.split(' '),
+    MAL_API: process.env.MAL_API.split(' ')
+};
+exports.config = config;
