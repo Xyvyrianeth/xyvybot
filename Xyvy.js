@@ -12,15 +12,6 @@ client.on("ready", () => {
 
 var commands = require("./commands.js");
 
-client.on('message', message => {
-    if (message.author.bot) {
-        if (message.author.id == client.user.id) return commands.bot(message);
-        else return;
-    }
-    if (message.content.startsWith("x!")) return commands.command(message);
-    else return commands.other(message, false);
-});
-
 exports.client = client;
 config = {
     DATABASE_URL: process.env.DATABASE_URL,
@@ -28,3 +19,13 @@ config = {
     MAL_API: process.env.MAL_API.split(' ')
 };
 exports.config = config;
+console.log(config);
+
+/* client.on('message', message => {
+    if (message.author.bot) {
+        if (message.author.id == client.user.id) return commands.bot(message);
+        else return;
+    }
+    if (message.content.startsWith("x!")) return commands.command(message);
+    else return commands.other(message, false);
+}); */
