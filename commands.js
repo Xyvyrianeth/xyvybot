@@ -5,7 +5,7 @@ const GIFEncoder = require('gifencoder');
 const pngFileStream = require('png-file-stream');
 
 const client = require("./Xyvy.js").client;
-const databaseURL = require("./Xyvy.js").database;
+const config = require("./Xyvy.js").config;
    
 var version = "v2.19.2.19";
 var pingtime = {};
@@ -103,7 +103,7 @@ var RE = {
 };
    
 const pg = require("pg");
-var db = new pg.Client(databaseURL);
+var db = new pg.Client(config.databaseURL);
 db.connect().then(() => console.log("Connected to Database!")).catch(() => console.error("Could not connect to Database."));
    
 const Mal = require("node-mal");

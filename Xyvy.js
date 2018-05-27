@@ -11,7 +11,7 @@ client.on("ready", () => {
     commands.getOwner(client.guilds.find("id", "399327996076621825").members.find("id", "357700219825160194"));
 });
 exports.client = client;
-exports.database = config.DATABASE_URL;
+exports.config = config;
 
 var commands = require("./commands.js");
 
@@ -23,3 +23,6 @@ client.on('message', message => {
     if (message.content.startsWith("x!")) return commands.command(message);
     else return commands.other(message, false);
 });
+
+console.log(typeof config.TOKEN + " " + config.TOKEN);
+console.log(typeof config.DATABASE_URL + " " + config.DATABASE_URL);
