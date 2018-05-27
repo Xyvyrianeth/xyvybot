@@ -3,8 +3,8 @@ const Canvas = require("canvas");
 const Jimp = require("jimp");
 
 const client = require("./Xyvy.js").client;
-const creds = require("./Xyvy.js").creds;
-console.log(creds);
+const config = require("./Xyvy.js").config;
+console.log(config);
    
 var version = "v2.20.1.1";
 var pingtime = {};
@@ -102,13 +102,13 @@ var RE = {
 };
    
 const pg = require("pg");
-var db = new pg.Client(creds.DATABASE_URL);
+var db = new pg.Client(config.DATABASE_URL);
 db.connect().then(() => console.log("Connected to Database!")).catch(() => console.error("Could not connect to Database."));
    
 const Mal = require("node-mal");
 var mal = new Mal({
-    username: creds.MAL_API[0],
-    password: creds.MAL_API[1]
+    username: config.MAL_API[0],
+    password: config.MAL_API[1]
 }).verifyCredentials().then((user) => console.log("Successfully logged into MAL~")).catch((err) => console.log(err));
    
 const jishoApi = require("unofficial-jisho-api");
@@ -118,7 +118,7 @@ const nekos = require("nekos.life");
 const Nekos = new nekos();
 
 const paladinsAPI = require("paladins-api");
-const Paladins = new paladinsAPI(creds.HIREZ_API[0], creds.HIREZ_API[1]);
+const Paladins = new paladinsAPI(config.HIREZ_API[0], config.HIREZ_API[1]);
 
 function command(message) {
   
