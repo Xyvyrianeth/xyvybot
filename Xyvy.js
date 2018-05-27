@@ -3,7 +3,7 @@ console.log("\n".repeat(10));
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
-var config = require("config.json");
+var config = require("./config.json");
 client.login(TOKEN || config.TOKEN);
 
 client.on("ready", () => {
