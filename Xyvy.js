@@ -3,15 +3,14 @@ console.log("\n".repeat(10));
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
-var config = require("./config.json");
-client.login(config.TOKEN);
+client.login(process.env.TOKEN);
 
 client.on("ready", () => {
     console.log("Xyvyjsa Successfully launched~! Launching version " + commands.version);
     commands.getOwner(client.guilds.find("id", "399327996076621825").members.find("id", "357700219825160194"));
 });
 exports.client = client;
-exports.config = config;
+exports.databaseURL = process.env.DATABASE_URL;
 
 var commands = require("./commands.js");
 
