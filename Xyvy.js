@@ -3,7 +3,8 @@ console.log("\n".repeat(10));
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
-client.login("Mzk4NjA2Mjc0NzIxNDgwNzI1.DTA-mA.fUZCuA5aHCYh0onR6BN-2rBQNSA");
+var config = require("config.json");
+client.login(config.TOKEN);
 
 client.on("ready", () => {
     console.log("Xyvyjsa Successfully launched~! Launching version " + commands.version);
