@@ -116,7 +116,7 @@ const Nekos = new nekos();
 const paladinsAPI = require("paladins-api");
 const paladins = new paladinsAPI(config.HIREZ_API[0], config.HIREZ_API[1]);
 var palID;
-paladins.connect("PC", (err, ress) => {
+paladins.connect("PC", (err, res) => {
     if (err) return console.log(err);
     palID = res;
 });
