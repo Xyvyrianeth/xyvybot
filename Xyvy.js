@@ -7,19 +7,7 @@ client.login(process.env.TOKEN);
 
 client.on("ready", () => {
     console.log("Xyvyjsa Successfully launched~! Launching version " + commands.version);
-    commands.getOwner(client.guilds.find("id", "399327996076621825").members.find("id", "357700219825160194"));
-});
-
-var commands = require("./commands.js");
-
-
-client.on('message', message => {
-    if (message.author.bot) {
-        if (message.author.id == client.user.id) return commands.bot(message);
-        else return;
-    }
-    if (message.content.startsWith("x!")) return commands.command(message);
-    else return commands.other(message, false);
+    exports.OwnerObject = client.guilds.find("id", "399327996076621825").members.find("id", "357700219825160194");
 });
 
 exports.client = client;
@@ -29,3 +17,14 @@ var config = {
     MAL_API: process.env.MAL_API.split(' ')
 };
 exports.config = config;
+
+var commands = require("./commands.js");
+
+client.on('message', message => {
+    if (message.author.bot) {
+        if (message.author.id == client.user.id) return commands.bot(message);
+        else return;
+    }
+    if (message.content.startsWith("x!")) return commands.command(message);
+    else return commands.other(message, false);
+});

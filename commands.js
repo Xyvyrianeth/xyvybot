@@ -3,9 +3,9 @@ const Canvas = require("canvas");
 const Jimp = require("jimp");
 
 const client = require("./Xyvy.js").client;
-var config = require("./Xyvy.js").config;
+const config = require("./Xyvy.js").config;
    
-var version = "v2.20.1.9";
+var version = "v2.20.1.10";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -14,10 +14,7 @@ var buyBadgeChannels = {};
 var defaultImages = require("./stuffs/images.json");
 var admins = "357700219825160194".split(' ');
 
-var OwnerObject;
-exports.getOwner = function(thing) {
-    OwnerObject = thing;
-}
+const OwnerObject = require("./Xyvy.js").OwnerObject;
 
 var bugTimers = {};
 var bugTimer = setInterval(function() {
