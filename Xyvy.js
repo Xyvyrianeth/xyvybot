@@ -23,7 +23,7 @@ client.on('message', message => {
 
 exports.client = client;
 exports.config = {
-    DATABASE_URL = process.env.DATABASE_URL,
-    HIREZ_API = process.env.HIREZ_API.split(' '),
-    MAL_API = process.env.MAL_API.split(' ')
+    DATABASE_URL: process.env.DATABASE_URL,
+    HIREZ_API: process.env.HIREZ_API.split(' '),
+    MAL_API: process.env.MAL_API.split(' ')
 };

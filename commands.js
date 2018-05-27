@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "v2.20.1.0";
+var version = "v2.20.1.1";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
