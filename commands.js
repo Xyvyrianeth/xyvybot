@@ -5,6 +5,7 @@ const GIFEncoder = require('gifencoder');
 const pngFileStream = require('png-file-stream');
 
 const client = require("./Xyvy.js").client;
+const databaseURL = require("./Xyvy.js").database;
    
 var version = "v2.19.2.19";
 var pingtime = {};
@@ -102,13 +103,7 @@ var RE = {
 };
    
 const pg = require("pg");
-var db = new pg.Client({
-    host: "ec2-54-83-19-244.compute-1.amazonaws.com",
-    port: 5432,
-    database: "d23gh4k8qlabfk",
-    user: "mxcczyysazjyes",
-    password: "8b15fd0abbaf7b7e11e6623351a6c6be32aca3b74c512a660b6f45254000a941",
-});
+var db = new pg.Client(databaseURL);
 db.connect().then(() => console.log("Connected to Database!")).catch(() => console.error("Could not connect to Database."));
    
 const Mal = require("node-mal");
