@@ -1,12 +1,11 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const Jimp = require("jimp");
-const GIFEncoder = require('gifencoder');
-const pngFileStream = require('png-file-stream');
 
 const client = require("./Xyvy.js").client;
+const config = require("./Xyvy.js").config;
    
-var version = "v2.19.2.19";
+var version = "v2.20.1.0";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -102,13 +101,13 @@ var RE = {
 };
    
 const pg = require("pg");
-var db = new pg.Client(require("./Xyvy.js").databaseURL);
+var db = new pg.Client(config.DATABASE_URL);
 db.connect().then(() => console.log("Connected to Database!")).catch(() => console.error("Could not connect to Database."));
    
 const Mal = require("node-mal");
 var mal = new Mal({
-    username: "Xyvyrianeth",
-    password: "IaaBsGD20x20"
+    username: config.MAL_API[0],
+    password: config.MAL_API[1]
 }).verifyCredentials().then((user) => console.log("Successfully logged into MAL~")).catch((err) => console.log(err));
    
 const jishoApi = require("unofficial-jisho-api");
@@ -116,7 +115,10 @@ const jisho = new jishoApi();
    
 const nekos = require("nekos.life");
 const Nekos = new nekos();
-   
+
+const paladinsAPI = require("paladins-api");
+const Paladins = new paladinsAPI(config.HIREZ_API[0], config.HIREZ_API[1]);
+
 function command(message) {
   
     a = message.channel.type == "dm";

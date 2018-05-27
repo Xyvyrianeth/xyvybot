@@ -9,8 +9,6 @@ client.on("ready", () => {
     console.log("Xyvyjsa Successfully launched~! Launching version " + commands.version);
     commands.getOwner(client.guilds.find("id", "399327996076621825").members.find("id", "357700219825160194"));
 });
-exports.client = client;
-exports.databaseURL = process.env.DATABASE_URL;
 
 var commands = require("./commands.js");
 
@@ -22,3 +20,10 @@ client.on('message', message => {
     if (message.content.startsWith("x!")) return commands.command(message);
     else return commands.other(message, false);
 });
+
+exports.client = client;
+exports.config = {
+    DATABASE_URL = process.env.DATABASE_URL,
+    HIREZ_API = process.env.HIREZ_API.split(' '),
+    MAL_API = process.env.MAL_API.split(' ')
+};

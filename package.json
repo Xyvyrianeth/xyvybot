@@ -17,7 +17,6 @@
 		"node-mal": "abs-zero/node-mal",
 		"unofficial-jisho-api": "*",
 		"nekos.life": "Nekos-life/nekos-dot-life",
-		"gifencoder": "eugeneware/gifencoder",
-		"png-file-stream": ""
+		"paladins-api": "*"
 	}
 }
