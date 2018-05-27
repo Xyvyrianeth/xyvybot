@@ -119,7 +119,7 @@ var palID;
 paladins.connect("PC", (err, res) => {
     if (err) return console.log(err);
     palID = res;
-});
+}); // This will have to wait, for now.
 
 function command(message) {
   
@@ -1104,7 +1104,7 @@ var commands = {
             embed.addField("Utility", `${helps[2].join("\`  ")}\``, true);
             embed.addField("Miscellaneous", `${helps[3].join("\`  ")}\``);
             if (message.channel.type == "dm" || message.channel.nsfw) {
-                embed.addField("NSFW", `All NSFW commands are thanks to https://nekos.life\n${helps[4].join("\`  ")}\``);
+                embed.addField("NSFW", `${helps[4].join("\`  ")}\``);
             }
   
             embed.setColor(randomColor());
@@ -1338,11 +1338,11 @@ var commands = {
     },
    
     "nekos": function(cmd, args, input, message, sendChat, user) {
-        Nekos.getSFWNeko().then(neko => sendChat(new Discord.MessageEmbed().setImage(neko.url).setDescription("Have a neko~!")));
+        Nekos.getSFWNeko().then(neko => sendChat(new Discord.MessageEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life")));
     },
    
     "cats": function(cmd, args, input, message, sendChat, user) {
-        Nekos.getSFWCat().then(cat => sendChat(new Discord.MessageEmbed().setImage(cat.url).setDescription("Have a neko~!")));
+        Nekos.getSFWCat().then(cat => sendChat(new Discord.MessageEmbed().setImage(cat.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life")));
     },
 
     "calc": function(cmd, args, input, message, sendChat, user) {
@@ -1512,17 +1512,17 @@ var commands = {
     // NSFW
     "boobs": function(cmd, args, input, message, sendChat, user) {
         if (message.channel.type == "dm" || message.channel.nsfw)
-            Nekos.getNSFWBoobs().then(boobs => sendChat(new Discord.MessageEmbed().setImage(boobs.url).setDescription(`Have some ${cmd}~`)));
+            Nekos.getNSFWBoobs().then(boobs => sendChat(new Discord.MessageEmbed().setImage(boobs.url).setDescription(`Have some ${cmd}~`).setFooter("Powered by Nekos.Life")));
     },
    
     "yuri": function(cmd, args, input, message, sendChat, user) {
         if (message.channel.type == "dm" || message.channel.nsfw)
-            Nekos.getNSFWLesbian().then(yuri => sendChat(new Discord.MessageEmbed().setImage(yuri.url).setDescription(`Have some ${cmd}~`)));
+            Nekos.getNSFWLesbian().then(yuri => sendChat(new Discord.MessageEmbed().setImage(yuri.url).setDescription(`Have some ${cmd}~`).setFooter("Powered by Nekos.Life")));
     },
    
     "lewdneko": function(cmd, args, input, message, sendChat, user) {
         if (message.channel.type == "dm" || message.channel.nsfw)
-            Nekos.getNSFWNeko().then(lewdneko => sendChat(new Discord.MessageEmbed().setImage(lewdneko.url).setDescription("Have a lewded neko~")));
+            Nekos.getNSFWNeko().then(lewdneko => sendChat(new Discord.MessageEmbed().setImage(lewdneko.url).setDescription("Have a lewded neko~").setFooter("Powered by Nekos.Life")));
     },
    
     // Admin-only
