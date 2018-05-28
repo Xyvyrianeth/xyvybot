@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "v2.20.2.1";
+var version = "v2.20.2.2";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -119,7 +119,7 @@ var palID;
 paladins.connect("PC", (err, res) => {
     if (err) return console.log(err);
     palID = res;
-}).then((user) => console.log("Successfully connected to HiRez's API~")).catch((err) => console.log(err)); // This will have to wait, for now.
+}); // This will have to wait, for now.
 
 function command(message) {
   
