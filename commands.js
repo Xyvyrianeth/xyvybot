@@ -101,12 +101,6 @@ const pg = require("pg");
 var db = new pg.Client(config.DATABASE_URL);
 db.connect().then(() => console.log("Connected to Database!")).catch(() => console.error("Could not connect to Database."));
    
-const Mal = require("node-mal");
-var mal = new Mal({
-    username: config.MAL_API[0],
-    password: config.MAL_API[1]
-}).verifyCredentials().then((user) => console.log("Successfully logged into MAL~")).catch((err) => console.log(err));
-   
 const jishoApi = require("unofficial-jisho-api");
 const jisho = new jishoApi();
    
