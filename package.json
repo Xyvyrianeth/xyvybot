@@ -10,13 +10,13 @@
 		"npm": "5.5.1"
 	},
 	"dependencies": {
-		"discord.js": "11.3.2",
-		"pg": "7.4.3",
-		"jimp": "0.2.28",
-		"canvas": "1.6.11",
-		"node-mal": "1.0.0",
-		"unofficial-jisho-api": "1.1.0",
-		"nekos.life": "1.0.5",
-		"paladins-api": "1.5.1"
+		"discord.js": "latest",
+		"pg": "latest",
+		"jimp": "latest",
+		"canvas": "latest",
+		"node-mal": "latest",
+		"unofficial-jisho-api": "latest",
+		"nekos.life": "latest",
+		"paladins-api": "latest"
 	}
 }
