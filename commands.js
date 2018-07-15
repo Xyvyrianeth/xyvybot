@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.21.0.7";
+var version = "2.21.0.8";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -136,7 +136,7 @@ function command(message) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let a = [];
                 for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n\n```\nMessage sent:``````" + message.content + "```\n```\n" + a.join("\n") + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
             }
     } else for (let i in guildAliases) {
         if (guildAliases[i].includes(cmd))
@@ -146,7 +146,7 @@ function command(message) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let a = [];
                 for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n\n```\nMessage sent:``````" + message.content + "```\n```\n" + a.join("\n") + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
             }
     }
    
@@ -170,7 +170,7 @@ function other(message) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
                 let a = [];
                 for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + a.join("\n") + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
             }
         }
         if (squares.channels[message.channel.id] && squares.channels[message.channel.id].started && message.author.id == squares.channels[message.channel.id].players[Math.floor(squares.channels[message.channel.id].turn)]) {
@@ -187,7 +187,7 @@ function other(message) {
                     sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
                     let a = [];
                     for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                    client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + a.join("\n") + "```");
+                    client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
                 }
             }
         }
@@ -200,7 +200,7 @@ function other(message) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
                 let a = [];
                 for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + a.join("\n") + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
             }
         }
     }
@@ -331,6 +331,17 @@ function bot(message) {
                 message.delete();
             }, 10000);
     }
+}
+
+function newError(message, cmd, a) {
+    return `\`\`\`\nError with command x!${cmd}\`\`\`\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n`
+         + `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n`
+         + `\`\`\`User errored on:\`\`\`<@${message.author.id}>\n\n`
+         + `\`\`\`\n`
+         + `Message sent:\`\`\`\`\`\`\n`
+         + `${message.content.replace(/`/g, "\\\`")}\`\`\`\n`
+         + `\`\`\`\n`
+         + `${a.join("\n")}\`\`\``
 }
    
 function newUser(id, channel) {
