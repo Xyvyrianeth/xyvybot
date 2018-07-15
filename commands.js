@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.21.0.0";
+var version = "2.21.0.1";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -13,8 +13,6 @@ var badgeChannels = {};
 var buyBadgeChannels = {};
 var defaultImages = require("./stuffs/images.json");
 var admins = "357700219825160194".split(' ');
-
-const OwnerObject = require("./Xyvy.js").OwnerObject;
 
 var bugTimers = {};
 var bugTimer = setInterval(function() {
@@ -138,7 +136,7 @@ function command(message) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let a = [];
                 for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                OwnerObject.send("```\nError in private messages of user " + message.author.id + "```\n```\nUser errored on:```<@" + message.author.id + ">```\nMessage sent:``````" + message.content.replace(/`/g, "\\`") + "\n```\n```\n" + a.join('\n') + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in private messages of user " + message.author.id + "```\n```\nUser errored on:```<@" + message.author.id + ">```\nMessage sent:``````" + message.content.replace(/`/g, "\\`") + "\n```\n```\n" + a.join('\n') + "```");
             }
     } else for (let i in guildAliases) {
         if (guildAliases[i].includes(cmd))
@@ -148,7 +146,7 @@ function command(message) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let a = [];
                 for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                OwnerObject.send("```\nError in server " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">```\nMessage sent:``````" + message.content.replace(/`/g, "\\`") + "\n```\n```\n" + a.join('\n') + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">```\nMessage sent:``````" + message.content.replace(/`/g, "\\`") + "\n```\n```\n" + a.join('\n') + "```");
             }
     }
    
@@ -170,7 +168,7 @@ function other(message) {
             } catch (err) {
                 delete connect4.channels[message.channel.id];
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-                OwnerObject.send("```\nError in server ID " + message.channel.guild.id + "``````\nUser errored on: " + message.author.id + "``````\nMessage sent: " + message.content + "``````\n" + err + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "``````\nUser errored on: " + message.author.id + "``````\nMessage sent: " + message.content + "``````\n" + err + "```");
             }
         }
         if (squares.channels[message.channel.id] && squares.channels[message.channel.id].started && message.author.id == squares.channels[message.channel.id].players[Math.floor(squares.channels[message.channel.id].turn)]) {
@@ -185,7 +183,7 @@ function other(message) {
                 } catch (err) {
                     delete squares.channels[message.channel.id];
                     sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-                    OwnerObject.send("```\nError in server ID " + message.channel.guild.id + "``````\nUser errored on: " + message.author.id + "``````\nMessage sent: " + message.content + "``````\n" + err + "```");
+                    client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "``````\nUser errored on: " + message.author.id + "``````\nMessage sent: " + message.content + "``````\n" + err + "```");
                 }
             }
         }
@@ -196,7 +194,7 @@ function other(message) {
             } catch (err) {
                 delete othello.channels[message.channel.id];
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-                OwnerObject.send("```\nError in server ID " + message.channel.guild.id + "``````\nUser errored on: " + message.author.id + "``````\nMessage sent: " + message.content + "``````\n" + err + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "``````\nUser errored on: " + message.author.id + "``````\nMessage sent: " + message.content + "``````\n" + err + "```");
             }
         }
     }
@@ -1207,7 +1205,7 @@ var commands = {
         embed.setTitle("Bug Report");
         embed.setAuthor(message.author.username + "#" + message.author.discriminator + " (" + message.author.id + ")");
         embed.setDescription("**Command**: " + com + "\n\n" + desc);
-        OwnerObject.send({embed});
+        client.guilds.get("399327996076621825").channels.get("467853697528102912").send({embed});
         bugTimers[message.author.id] = 100 * 60 * 60 * 2;
         return sendChat("Bug report sent! Thanks for helping out!");
     },

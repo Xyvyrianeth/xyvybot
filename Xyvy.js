@@ -7,7 +7,6 @@ client.login(process.env.TOKEN);
 
 client.on("ready", () => {
     console.log("Xyvyjsa Successfully launched~! Launching version " + commands.version);
-    exports.OwnerObject = client.guilds.find("id", "399327996076621825").members.find("id", "357700219825160194");
 });
 
 exports.client = client;
