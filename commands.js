@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.21.0.3";
+var version = "2.21.0.4";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -136,7 +136,7 @@ function command(message) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let a = [];
                 for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + error + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + error + "```");
             }
     } else for (let i in guildAliases) {
         if (guildAliases[i].includes(cmd))
@@ -146,7 +146,7 @@ function command(message) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let a = [];
                 for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + error + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + error + "```");
             }
     }
    
