@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.21.0.11";
+var version = "2.21.0.12";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -1542,7 +1542,7 @@ var commands = {
         if (message.channel.type != "dm" && !message.channel.nsfw) return;
         if (["help"].includes(input)) {
             let embed = new Discord.RichEmbed();
-            embed.setDescription("");
+            embed.setDescription("If you don't really care what kind of lewd you want, just do `x!nsfw`\nIf you *do* care, do `x!nsfw [category]`\nThese are all my available NSFW categories:\n`Gif  Pussy  NekoGif  Neko  Lesbian  Kuni  Cumsluts  Classic  Boobs  Bj  Anal`\n\nHappy fapping~");
             embed.setTitle("NSFW Command help");
             embed.setFooter("Powered by Nekos.Life");
             return Nekos.getNSFWNeko().then(help => sendChat(embed.setImage(help.url)));
