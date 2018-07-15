@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.21.0.13";
+var version = "2.21.0.14";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -1549,7 +1549,20 @@ var commands = {
         }
         if (!input) {
             let type = ["RandomHentaiGif", "Pussy", "NekoGif", "Neko", "Lesbian", "Kuni", "Cumsluts", "Classic", "Boobs", "Bj", "Anal"].random();
-            return Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~\nDo \`x!nsfw ${type.replace("RandomHentai", "").toLowerCase()}\` if you want to see more stuff like this!\nDo \`x!nsfw help\` to see all the kinds of lewds I can do~`).setFooter("Powered by Nekos.Life")));
+            let desc = {
+                "gif": "if you want any random gif of someone getting fucked in hentai!",
+                "pussy": "if you want gifs of pussies getting fucked~",
+                "nekogif": "if you want gifs of lewd neko girls~",
+                "neko": "if you want pictures of lewd neko girls~",
+                "lesbian": "if you want to watch two girls fuck each other!",
+                "kuni": "if you like watching pussies get licked!",
+                "cumsluts": "if you enjoy seeing girls covered in semen!",
+                "classic": "if you like some good ol' fashion fucking!",
+                "boobs": "if you want to see some bouncy breasts~",
+                "bj": "if you like watching girls give blowjobs~",
+                "anal": "if you enjoy watching girls getting fucked in the ass!"
+            }[type.replace("RandomHentai", "").toLowerCase()];
+            return Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~\nDo \`x!nsfw ${type.replace("RandomHentai", "").toLowerCase()}\` ${desc}\nDo \`x!nsfw help\` to see all the kinds of lewds I can do~`).setFooter("Powered by Nekos.Life")));
         }
         if (!["gif", "pussy", "neko", "lesbian", "yuri", "kuni", "cumslut", "cumsluts", "classic", "boobs", "tits", "boobies", "titties", "bj", "blowjob", "anal"].includes(input))
             return sendChat("Sorry, I don't have that");
