@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.21.0.12";
+var version = "2.21.0.13";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -1549,7 +1549,7 @@ var commands = {
         }
         if (!input) {
             let type = ["RandomHentaiGif", "Pussy", "NekoGif", "Neko", "Lesbian", "Kuni", "Cumsluts", "Classic", "Boobs", "Bj", "Anal"].random();
-            return Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~\nDo \`x!nsfw ${type.replace("RandomHentai", "").toLowerCase()}\` if you want to see more stuff like this!`).setFooter("Powered by Nekos.Life")));
+            return Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~\nDo \`x!nsfw ${type.replace("RandomHentai", "").toLowerCase()}\` if you want to see more stuff like this!\nDo \`x!nsfw help\` to see all the kinds of lewds I can do~`).setFooter("Powered by Nekos.Life")));
         }
         if (!["gif", "pussy", "neko", "lesbian", "yuri", "kuni", "cumslut", "cumsluts", "classic", "boobs", "tits", "boobies", "titties", "bj", "blowjob", "anal"].includes(input))
             return sendChat("Sorry, I don't have that");
