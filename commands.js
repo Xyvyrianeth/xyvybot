@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.21.0.4";
+var version = "2.21.0.5";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -136,7 +136,7 @@ function command(message) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let a = [];
                 for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + error + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n\n```\nMessage sent:``````" + message.content + "```\n```\n" + error + "\n" + a + "```");
             }
     } else for (let i in guildAliases) {
         if (guildAliases[i].includes(cmd))
@@ -146,7 +146,7 @@ function command(message) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let a = [];
                 for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + error + "```");
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n\n```\nMessage sent:``````" + message.content + "```\n```\n" + error + "\n" + a + "```");
             }
     }
    
@@ -165,10 +165,12 @@ function other(message) {
             message.delete();
             try {
                 return sendChat(connect4.takeTurn(message.channel, message.content));
-            } catch (err) {
+            } catch (error) {
                 delete connect4.channels[message.channel.id];
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + err + "```");
+                let a = [];
+                for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + error + "\n" + a + "```");
             }
         }
         if (squares.channels[message.channel.id] && squares.channels[message.channel.id].started && message.author.id == squares.channels[message.channel.id].players[Math.floor(squares.channels[message.channel.id].turn)]) {
@@ -180,10 +182,12 @@ function other(message) {
                 message.delete();
                 try {
                     return sendChat(squares.takeTurn(message.channel, [message.content.match(new RegExp(`(${b})`))[0] - 1, "abcdefghijklmno".split('').indexOf(message.content.toLowerCase().match(new RegExp(`[a-${a}]`))[0])]));
-                } catch (err) {
+                } catch (error) {
                     delete squares.channels[message.channel.id];
                     sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-                    client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + err + "```");
+                    let a = [];
+                    for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
+                    client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + error + "\n" + a + "```");
                 }
             }
         }
@@ -191,10 +195,12 @@ function other(message) {
             message.delete();
             try {
                 return sendChat(othello.takeTurn(message.channel, [message.content.match(/[1-8]/)[0] - 1, "abcdefgh".split('').indexOf(message.content.toLowerCase().match(/[a-h]/)[0])]));
-            } catch (err) {
+            } catch (error) {
                 delete othello.channels[message.channel.id];
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + err + "```");
+                let a = [];
+                for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send("```\nError in server ID " + message.channel.guild.id + "```\n```\nUser errored on:```<@" + message.author.id + ">\n\n```\nMessage sent:``````" + message.content + "```\n\n```\n" + error + "\n" + a + "```");
             }
         }
     }
