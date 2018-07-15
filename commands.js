@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "v2.20.2.2";
+var version = "2.21.0.0";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -762,9 +762,7 @@ var guildAliases = {
     "graph": ["graph"],
    
     // NSFW
-    "boobs": ["boobs", "boob", "tits", "titties", "tit", "oppai"],
-    "yuri": ["yuri", "lesbians", "lesbian", "lesbo"],
-    "lewdneko": ["lewdneko", "nekolewd", "nsfwneko", "nekonsfw", "nudeneko", "nekonude", "nsfwnya", "lewdnya", "nyansfw", "nyalewd", "nudenya", "nyanude"],
+    "nsfw": ["nsfw", "hentai", "lewd", "porn"],
    
     // Admin-only
     "js": ["js"],
@@ -793,17 +791,13 @@ var userAliases = {
     "graph": ["graph"],
    
     // NSFW
-    "boobs": ["boobs", "boob", "tits", "titties", "tit", "oppai"],
-    "yuri": ["yuri", "lesbians", "lesbian", "lesbo"],
-    "lewdneko": ["lewdneko", "nekolewd", "nsfwneko", "nekonsfw", "nudeneko", "nekonude"],
+    "nsfw": ["nsfw", "hentai", "lewd", "porn"],
    
     // Admin-only
     "js": ["js"],
     "pg": ["pg"],
 };
 var commands = {
-   
-    // "new command": function(cmd, args, input, message, sendChat, user) {},
    
     // Games
     "connect4": function(cmd, args, input, message, sendChat, user) {
@@ -1090,67 +1084,92 @@ var commands = {
                 ["\\*`connect4", "\\*`squares", "\\*`othello", "\\* \\*\\*`3dtictactoe", "\\* \\*\\*`gomoku", "\\*\\*`profile"],
                 ["\\*\\*`hangman", "\\*\\*`quickmaffs", "\\*\\*`iq", "\\*\\*`sequence", "\\*\\*`shuffle"],
                 ["\\*\\*`help", "`avatar", "\\* \\*\\*`quickrole", "\\* \\*\\*`kick", "\\* \\*\\*`ban", "\\*\\*`aliases", "\\* \\*\\*`server", "\\*\\*`user"],
-                ["\\*\\*`anime", "\\*\\*`manga", "`jisho", "\\*\\*`jshelp", "`nekos", "`calculate", "`graph"],
-                ["`boobs", "`yuri", "`lewdneko"]
+                ["\\*\\*`anime", "\\*\\*`manga", "`jisho", "\\*\\*`jshelp", "`nekos", "`calculate", "`graph"]
             ];
             embed.addField("Games", `${helps[0].join("\`  ")}\``, true);
             embed.addField("Smaller Games", `${helps[1].join("\`  ")}\``, true);
             embed.addField("Utility", `${helps[2].join("\`  ")}\``, true);
             embed.addField("Miscellaneous", `${helps[3].join("\`  ")}\``);
             if (message.channel.type == "dm" || message.channel.nsfw) {
-                embed.addField("NSFW", `${helps[4].join("\`  ")}\``);
+                embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \`x!nsfw help\` for a list of all the lewds I'm capable of.`);
             }
-  
             embed.setColor(randomColor());
-  
             return sendChat({embed});
-        } else if (["games", "utility", "profile", "miscellaneous"].includes(input)) {
+        } else if (["games", "utility", "profile", "miscellaneous", "misc"].includes(input)) {
             let embed = new Discord.MessageEmbed();
             embed.setTitle(input.toUpperCase());
             embed.setDescription({
-                "games": "Just a few board games. I'm not gonna add chess. Not happening.",
-                "utility": "Random stuffs that relate to the bot.",
+                "games": "Just a few board games. I'm not gonna add chess. No.",
+                "utility": "Random stuffs that relate to the bot or users or servers.",
                 "profile": "Not sure what I'm gonna do for this, yet.",
-                "miscellaneous": "Other stuffs",
-                "nsfw": "Lewd stuffs "
+                "miscellaneous": "Other stuffs. Things that don't fit well in other categories.",
+                "misc": "Other stuffs. Things that don't fit well in other categories.",
+                "nsfw": "Lewd stuffs. Not available in server channels that aren't marked NSFW. It's stupid that some bots have created their own permission system to enable NSFW stuff in specific channels, like, just check if the channel is marked NSFW and you're good to go. It's 354% easier for the server owners than your stupid \"Sorry, NSFW commands are disabled here. Do `/bot commands enable nsfw` to enable them here!\" shit. Learn what's easy."
             }[input]);
-            embed.addField('Commands', {
-                "management": "Just a few things that'll help you and your server just a little bit.",
-                "math": "\"Two plus two is four minus one is three quick maffs\" ~Albert Einstein",
-                "games": "Just a few board games. I'm not gonna add chess. Not happening.",
-                "utility": "Random stuffs that relate to the bot.",
-                "profile": "Not sure what I'm gonna do for this, yet.",
-                "miscellaneous": "Other stuffs"
-            });
         } else {
-            for (let i in guildAliases) {
-                if (guildAliases[i].includes(input))
-                    return sendChat({
-                        "calc": "Make a basic calculation. I repeat, ***BASIC*** calculation, implying \"simple\" or \"kindergarten-level\".",
-                        "graph": "Turn a basic equation into a visual image. I repeat, ***BASIC*** calculation, implying \"simple\" or \"kindergarten-level\".",
-                        "connect4": "Play a game of the original vertical checkers game with someone else!",
-                        "squares": "Play a game of making the most cool shapes with someone else! A game created by Xyvy himself!",
-                        "othello": "Play a game of competitive Reversi with someone else!",
-                        "help": "Get a list of all available commands.",
-                        "guild": "Get information about this guild.",
-                        "user": "Get information about your user in relation to this guild.",
-                        "profile": "Get your profile card, complete with game scores and all.",
-                        "anime": "Get information about any anime from MyAnimeList.",
-                        "manga": "Get information about any manga from MyAnimeList.",
-                        "jisho": "Get translations to and from Japanese.",
-                        "jshelp": "Get help with JavaScript",
-                        "nekos": "Get a picture of a catgirl.",
-                        "cats": "Get a picture of a cat.",
-                        "js": "Usable by Xyvyrianeth only.",
-                        "pg": "Usable by Xyvyrianeth only.",
-                        "aliases": "Get all existing aliases for any given command.",
-                        "boobs": "Get a picture or gif of a pair of titties~",
-                        "yuri": "Get a picture or gif of two anime girls making love to each other~",
-                        "lewdneko": "Get a picture of a lewded neko girl~",
-                    }[i]);
+            if (message.channel.type != "dm") {
+                for (let i in guildAliases) {
+                    if (guildAliases[i].includes(input)) {
+                        embed = new Discord.MessageEmbed()
+                        embed.setTitle("Command Info");
+                        embed.setDescription({
+                            "calc": "Make a basic calculation. I repeat, ***BASIC*** calculation, implying \"simple\" or \"kindergarten-level\". I am not a TI calculator.",
+                            "graph": "Turn a basic equation into a visual image. I repeat, ***BASIC*** equation, implying \"simple\" or \"kindergarten-level\". I am not Desmos.",
+                            "help": "Get a list of all available commands. And the unavailable ones, too. They exist, but probably don't work.",
+                            "guild": "Get information about this guild. This one, right here: " + message.channel.guild.name,
+                            "user": "Get information about your user in relation to this guild. Or someone else, too.",
+                            "connect4": "Play a game of the original vertical checkers game with someone else (that's actually what it used to be called).",
+                            "squares": "Play a game of making a bunch of the 2nd coolest shape with someone else! A game created by Xyvy himself.",
+                            "othello": "Play a game of Reversi with someone else (Othello = competative Reversi).",
+                            "profile": "Get your profile card, complete with game stats and all, which is just your wins and losses.",
+                            "anime": "Get information about any anime from MyAnimeList. Weeb shit.",
+                            "manga": "Get information about any manga from MyAnimeList. Mega-weeb shit.",
+                            "jisho": "Get translations to and from Japanese. Ultra-weeb shit.",
+                            "jshelp": "Get help with JavaScript, the easiest programming language besides Malbolge.",
+                            "nekos": "Get a picture of a catgirl, the thing everyone wants to exist but science can't provide.",
+                            "cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
+                            "js": "Usable by Xyvyrianeth only. You probably don't even know how to use it.",
+                            "pg": "Usable by Xyvyrianeth only. How did you even know this existed?",
+                            "aliases": "Get all existing aliases for any given command. All of them.",
+                            "nsfw": "Get a NSFW image or gif. It will most likely be hentai-esque." + (message.channel.nsfw ? " You can use that here. Go ahead." : " You cannot use that here. Don't even try."),
+                        }[i]);
+                        embed.addField("Aliases", '`' + guildAliases[i].join("`\n`") + '`');
+                        embed.setFooter("Xyvybot version " + version);
+                        embed.setColor(randomColor());
+                        return sendChat({embed});
+                    }
+                }
+                return sendChat("Unknown request.");
+            } else {
+                for (let i in userAliases) {
+                    if (userAliases[i].includes(input)) {
+                        embed = new Discord.MessageEmbed()
+                        embed.setTitle("Command Info");
+                        embed.setDescription({
+                            "calc": "Make a basic calculation. I repeat, ***BASIC*** calculation, implying \"simple\" or \"kindergarten-level\". I am not a TI calculator.",
+                            "graph": "Turn a basic equation into a visual image. I repeat, ***BASIC*** equation, implying \"simple\" or \"kindergarten-level\". I am not Desmos.",
+                            "help": "Get a list of all available commands. And the unavailable ones, too. They exist, but probably don't work.",
+                            "bug": "Use this to report any bugs you find while using my stuff. You can only report once every 2 hours because assholes will likely spam it. If assholes attempt to spam it, they will be prevented from ever doing it again.",
+                            "profile": "Get your profile card, complete with game stats and all, which is just your wins and losses.",
+                            "anime": "Get information about any anime from MyAnimeList. Weeb shit.",
+                            "manga": "Get information about any manga from MyAnimeList. Mega-weeb shit.",
+                            "jisho": "Get translations to and from Japanese. Ultra-weeb shit.",
+                            "jshelp": "Get help with JavaScript, the easiest programming language besides Malbolge.",
+                            "nekos": "Get a picture of a catgirl, the thing everyone wants to exist but science can't provide.",
+                            "cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
+                            "js": "Usable by Xyvyrianeth only. You probably don't even know how to use it.",
+                            "pg": "Usable by Xyvyrianeth only. How did you even know this existed?",
+                            "aliases": "Get all existing aliases for any given command. All of them.",
+                            "nsfw": "Get a NSFW image or gif. It will most likely be hentai-esque. You can use that here. Go ahead. I'll FILL your DMs with hentai if you really want me to.",
+                        }[i]);
+                        embed.addField("Aliases", '`' + userAliases[i].join("`\n`") + '`');
+                        embed.setFooter("Xyvybot version " + version);
+                        embed.setColor(randomColor());
+                        return sendChat({embed});
+                    }
+                }
+                return sendChat("Unknown request.");
             }
-  
-            return sendChat("Unknown request.");
         }
     },
   
@@ -1162,6 +1181,7 @@ var commands = {
                 let embed = new Discord.MessageEmbed();
                 embed.setTitle("Aliases for " + i);
                 embed.setDescription("`" + guildAliases.join("`  `") + "`");
+                embed.setColor(randomColor());
                 return sendChat({embed});
             }
         }
@@ -1503,19 +1523,41 @@ var commands = {
     },
    
     // NSFW
-    "boobs": function(cmd, args, input, message, sendChat, user) {
-        if (message.channel.type == "dm" || message.channel.nsfw)
-            Nekos.getNSFWBoobs().then(boobs => sendChat(new Discord.MessageEmbed().setImage(boobs.url).setDescription(`Have some ${cmd}~`).setFooter("Powered by Nekos.Life")));
-    },
-   
-    "yuri": function(cmd, args, input, message, sendChat, user) {
-        if (message.channel.type == "dm" || message.channel.nsfw)
-            Nekos.getNSFWLesbian().then(yuri => sendChat(new Discord.MessageEmbed().setImage(yuri.url).setDescription(`Have some ${cmd}~`).setFooter("Powered by Nekos.Life")));
-    },
-   
-    "lewdneko": function(cmd, args, input, message, sendChat, user) {
-        if (message.channel.type == "dm" || message.channel.nsfw)
-            Nekos.getNSFWNeko().then(lewdneko => sendChat(new Discord.MessageEmbed().setImage(lewdneko.url).setDescription("Have a lewded neko~").setFooter("Powered by Nekos.Life")));
+    "nsfw": function(cmd, args, input, message, sendChat, user) {
+        if (message.channel.type != "dm" && !message.channel.nsfw) return;
+        if (["help"].includes(input)) {
+            let embed = new Discord.MessageEmbed();
+            embed.setDescription("");
+            embed.setTitle("NSFW Command help");
+            embed.setFooter("Powered by Nekos.Life");
+            return Nekos.getNSFWNeko().then(help => sendChat(embed.setImage(help.url)));
+        }
+        if (!input) {
+            let type = ["RandomHentaiGif", "Pussy", "NekoGif", "Neko", "Lesbian", "Kuni", "Cumsluts", "Classic", "Boobs", "Bj", "Anal"].random();
+            Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.MessageEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~`).setFooter("Powered by Nekos.Life")));
+        }
+        if (!["gif", "pussy", "neko", "lesbian", "yuri", "kuni", "cumslut", "cumsluts", "classic", "boobs", "tits", "boobies", "titties", "bj", "blowjob", "anal"].includes(input))
+            return sendChat("Sorry, I don't have that");
+        let type = {
+            "gif": ["RandomHentaiGif", "Have a hentai gif~"],
+            "pussy": ["Pussy", "Have some anime pussy~"],
+            "neko": [["NekoGif", "Neko"].random(), "Have a lewd neko~"],
+            "nekogif": ["NekoGif", "Have a lewd neko gif~"],
+            "lesbian": ["Lesbian", "Have some yuri~"],
+            "yuri": ["Lesbian", "Have some yuri~"],
+            "kuni": ["Kuni", "Have some anime pussy-licking~"],
+            "cumslut": ["Cumsluts", "Have an anime cumslut~"],
+            "cumsluts": ["Cumsluts", "Have an anime cumslut~"],
+            "classic": ["Classic", "Have some classic anime sex~"],
+            "boobs": ["Boobs", "Have some anime boobs~"],
+            "tits": ["Boobs", "Have some anime tits~"],
+            "boobies": ["Boobs", "Have some anime boobies~"],
+            "titties": ["Boobs", "Have some anime titties~"],
+            "bj": ["Bj", "Have an anime blowjob~"],
+            "blowjob": ["Bj", "Have an anime blowjob~"],
+            "anal": ["Anal", "Have some anime anal sex~"],
+        }[input];
+        return Nekos["getNSFW" + type[0]]().then(nsfw => sendChat(new Discord.MessageEmbed().setImage(nsfw.url).setDescription(type[1]).setFooter("Powered by Nekos.Life")));
     },
    
     // Admin-only
