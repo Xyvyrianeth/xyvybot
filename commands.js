@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.21.0.8";
+var version = "2.21.0.9";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -1082,7 +1082,7 @@ var commands = {
             if (member == null) return sendChat("User not found.");
             else member = member.user;
 
-            let embed = new Discord.MessageEmbed();
+            let embed = new Discord.RichEmbed();
             embed.setTitle("User Avatar");
             embed.setDescription(`Avatar for <@${member.id}>`);
             embed.setImage(`https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png?size=2048`);
@@ -1092,7 +1092,7 @@ var commands = {
 
     "help": function(cmd, args, input, message, sendChat, user) {
         if (!input) {
-            let embed = new Discord.MessageEmbed();
+            let embed = new Discord.RichEmbed();
             embed.setTitle("Help");
             embed.setDescription("A list of all commands supported by Bakeneko~\n\*command not supported through DMs\n\*\*command either dysfunctional or not yet available\nFor more help about any specific command, do \"`x![command]` `help`\"");
             let helps = [
@@ -1111,7 +1111,7 @@ var commands = {
             embed.setColor(randomColor());
             return sendChat({embed});
         } else if (["games", "utility", "profile", "miscellaneous", "misc"].includes(input)) {
-            let embed = new Discord.MessageEmbed();
+            let embed = new Discord.RichEmbed();
             embed.setTitle(input.toUpperCase());
             embed.setDescription({
                 "games": "Just a few board games. I'm not gonna add chess. No.",
@@ -1125,7 +1125,7 @@ var commands = {
             if (message.channel.type != "dm") {
                 for (let i in guildAliases) {
                     if (guildAliases[i].includes(input)) {
-                        let embed = new Discord.MessageEmbed();
+                        let embed = new Discord.RichEmbed();
                         embed.setTitle("Command Info");
                         embed.setDescription({
                             "calc": "Make a basic calculation. I repeat, ***BASIC*** calculation, implying \"simple\" or \"kindergarten-level\". I am not a TI calculator.",
@@ -1158,7 +1158,7 @@ var commands = {
             } else {
                 for (let i in userAliases) {
                     if (userAliases[i].includes(input)) {
-                        let embed = new Discord.MessageEmbed()
+                        let embed = new Discord.RichEmbed()
                         embed.setTitle("Command Info");
                         embed.setDescription({
                             "calc": "Make a basic calculation. I repeat, ***BASIC*** calculation, implying \"simple\" or \"kindergarten-level\". I am not a TI calculator.",
@@ -1193,7 +1193,7 @@ var commands = {
         else if (input.startsWith('[')) return sendChat("With***out*** the brackets.");
         for (let i in guildAliases) {
             if (guildAliases[i].includes(input)) {
-                let embed = new Discord.MessageEmbed();
+                let embed = new Discord.RichEmbed();
                 embed.setTitle("Aliases for " + i);
                 embed.setDescription("`" + guildAliases.join("`  `") + "`");
                 embed.setColor(randomColor());
@@ -1218,7 +1218,7 @@ var commands = {
         if (!a) return sendChat("That command does not exist!");
         let desc = input.substring(com.length).trim();
         if (desc.length > 1000) return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
-        let embed = new Discord.MessageEmbed();
+        let embed = new Discord.RichEmbed();
         embed.setTitle("Bug Report");
         embed.setAuthor(message.author.username + "#" + message.author.discriminator + " (" + message.author.id + ")");
         embed.setDescription("**Command**: " + com + "\n\n" + desc);
@@ -1236,7 +1236,7 @@ var commands = {
                 db.query(`SELECT * FROM users WHERE id = '${member.user.id}'`, function(err, res) {
                     if (err) return sendChat("```" + err + "```");
                     user = res.rows.length == 0 ? newUser(member.user.id, member.user.username, member.user.discriminator) : user = res.rows[0];
-                    let embed = new Discord.MessageEmbed();
+                    let embed = new Discord.RichEmbed();
                     embed.setTitle(member.user.username + "'s Server Info");
                     embed.setColor();
                 });
@@ -1247,7 +1247,7 @@ var commands = {
     "guild": function(cmd, args, input, sendChat, message, user, a) {
         if (!input) {
             guild = message.channel.guild;
-            embed = new Discord.MessageEmbed();
+            embed = new Discord.RichEmbed();
             embed.setTitle(guild.name);
             embed.setAuthor("Guild ID: " + guild.id);
             embed.setColor(a.color);
@@ -1277,7 +1277,7 @@ var commands = {
         if (!input) return sendChat("Jisho, the Japanese Dictionary!\nSearch for Kanji definitions, radicals, examples, and more!\nFor more help, use the command `x!jisho help`!");
            
         else if (["help", "syntax"].includes(input)) {
-            let embed = new Discord.MessageEmbed();
+            let embed = new Discord.RichEmbed();
             embed.setTitle("Jisho Syntax");
             embed.addField("Kanji", "Returns all there is to know about a Kanji!\nExample: `x!jisho kanji 語`");
             embed.addField("Examples", "Returns example sentences for a Kanji!\nExample: `x!jisho example 日`");
@@ -1290,7 +1290,7 @@ var commands = {
             input = input.substring(args[0].length + 1);
             jisho.searchForKanji(input).then(result => {
                 if (!result.found) return sendChat(`"${input}" not found.`);
-                let embed = new Discord.MessageEmbed();
+                let embed = new Discord.RichEmbed();
                 embed.setTitle("Kanji: " + input);
                 embed.setDescription(`${result.meaning}\nJLPT Level: ${result.jlptLevel}`);
                 let onyomi = `${result.onyomiExamples[0].example} (${result.onyomiExamples[0].reading})\n \u00a0 ${(result.onyomiExamples[0].meaning + ' ').match(/.{0,40} /g).join('\n \u00a0 ').trim()}`;
@@ -1313,7 +1313,7 @@ var commands = {
             input = input.substring(args[0].length + 1);
             jisho.searchForExamples(input).then(result => {
                 if (!result.found) return sendChat(`"${input}" not found.`);
-                let embed = new Discord.MessageEmbed();
+                let embed = new Discord.RichEmbed();
                 embed.setTitle(`Examples sentences containing "${input}"`);
                 examples = result.results.random(5);
                 for (let i = 0; i < examples.length; i++) {
@@ -1328,7 +1328,7 @@ var commands = {
             input = input.substring(args[0].length + 1);
             jisho.searchForPhrase(input).then(result => {
                 if (result.data.length == 0) return sendChat("Nothing found.");
-                let embed = new Discord.MessageEmbed();
+                let embed = new Discord.RichEmbed();
                 embed.setTitle("Phrase: " + input);
                 let definition = result.data[0];
                 embed.addField("Definition", definition.senses[0].english_definitions);
@@ -1339,7 +1339,7 @@ var commands = {
    
         else if (["kana"].includes(args[0])) {
             if (!args[1]) {
-                let embed = new Discord.MessageEmbed();
+                let embed = new Discord.RichEmbed();
                 embed.setTitle("How to read Kana");
                 embed.setDescription("Kana can be thought of as the Japanese alphabet. Each Kana represents a single syllable spoken in the Japanese language. Kana usually include one of 9 consonant sounds followed by one of 5 vowel sounds (with a few exceptions)");
                 let chart1 = "V O W E L S\n_A　_I　_U　_E　_O\n------------------\nあ  い  う  え  お|__ C\nか  き  く  け  こ|K_ O\nさ  し  す  せ  そ|S_ N\nた  ち  つ  て  と|T_ S\nな  に  ぬ  ね  の|N_ O\nは  ひ  ふ  へ  ほ|H_ N\nま  み  む  め  も|M_ A\nや  　  ゆ  　  よ|Y_ N\nら  り  る  れ  ろ|R_ T\nわ  　  　  　  を|W_ S\nん  　  　  　  　|NN ";
@@ -1360,17 +1360,17 @@ var commands = {
    
                 return sendChat({embed});
             } else if (["charts", "chart"].includes(args[1])) {
-                let embed = new Discord.MessageEmbed();
+                let embed = new Discord.RichEmbed();
             }
         }
     },
    
     "nekos": function(cmd, args, input, message, sendChat, user) {
-        Nekos.getSFWNeko().then(neko => sendChat(new Discord.MessageEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life")));
+        Nekos.getSFWNeko().then(neko => sendChat(new Discord.RichEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life")));
     },
    
     "cats": function(cmd, args, input, message, sendChat, user) {
-        Nekos.getSFWCat().then(cat => sendChat(new Discord.MessageEmbed().setImage(cat.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life")));
+        Nekos.getSFWCat().then(cat => sendChat(new Discord.RichEmbed().setImage(cat.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life")));
     },
 
     "calc": function(cmd, args, input, message, sendChat, user) {
@@ -1541,7 +1541,7 @@ var commands = {
     "nsfw": function(cmd, args, input, message, sendChat, user) {
         if (message.channel.type != "dm" && !message.channel.nsfw) return;
         if (["help"].includes(input)) {
-            let embed = new Discord.MessageEmbed();
+            let embed = new Discord.RichEmbed();
             embed.setDescription("");
             embed.setTitle("NSFW Command help");
             embed.setFooter("Powered by Nekos.Life");
@@ -1549,7 +1549,7 @@ var commands = {
         }
         if (!input) {
             let type = ["RandomHentaiGif", "Pussy", "NekoGif", "Neko", "Lesbian", "Kuni", "Cumsluts", "Classic", "Boobs", "Bj", "Anal"].random();
-            Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.MessageEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~`).setFooter("Powered by Nekos.Life")));
+            Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~`).setFooter("Powered by Nekos.Life")));
         }
         if (!["gif", "pussy", "neko", "lesbian", "yuri", "kuni", "cumslut", "cumsluts", "classic", "boobs", "tits", "boobies", "titties", "bj", "blowjob", "anal"].includes(input))
             return sendChat("Sorry, I don't have that");
@@ -1572,7 +1572,7 @@ var commands = {
             "blowjob": ["Bj", "Have an anime blowjob~"],
             "anal": ["Anal", "Have some anime anal sex~"],
         }[input];
-        return Nekos["getNSFW" + type[0]]().then(nsfw => sendChat(new Discord.MessageEmbed().setImage(nsfw.url).setDescription(type[1]).setFooter("Powered by Nekos.Life")));
+        return Nekos["getNSFW" + type[0]]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(type[1]).setFooter("Powered by Nekos.Life")));
     },
    
     // Admin-only
