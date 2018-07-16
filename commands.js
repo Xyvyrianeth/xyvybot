@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.21.0.14";
+var version = "2.22.0.0";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -19,6 +19,14 @@ var bugTimer = setInterval(function() {
     for (let i in bugTimers) {
         bugTimers[i] -= 1;
         if (bugTimers[i] == 0) delete bugTimers[i];
+    }
+}, 10);
+
+var requestTimers = {};
+var requestTimer = setInterval(function() {
+    for (let i in requestTimers) {
+        requestTimers[i] -= 1;
+        if (requestTimers[i] == 0) delete requestTimers[i];
     }
 }, 10);
    
@@ -764,7 +772,8 @@ var guildAliases = {
     "avatar": ["avatar", "pfp"],
     "aliases": ["aliases"],
     "guild": ["guild", "server"],
-    "user": ["user", "member", "ui"],
+    "kick": ["kick"],
+    "ban": ["ban"],
    
     // Miscellaneous
     "anime": ["anime"],
@@ -794,6 +803,7 @@ var userAliases = {
     "avatar": ["avatar", "pfp"],
     "aliases": ["aliases"],
     "bug": ["reportbug", "bugreport", "bug", "report"],
+    "request": ["request", "suggest", "suggestion", "requestion"],
    
     // Miscellaneous
     "anime": ["anime"],
@@ -832,7 +842,7 @@ var commands = {
         } else if (["board", "showboard"].includes(input)) {
             if (!connect4.channels[message.channel.id]) return sendChat("There is no active Connect Four game in this channel, $user$!");
             if (!connect4.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            return sendChat(new Discord.MessageAttachment(connect4.drawBoard(connect4.channels[message.channel.id], 0)))
+            return sendChat(new Discord.Attachment(connect4.drawBoard(connect4.channels[message.channel.id], 0)))
         } else if (["quit", "forfeit", "leave"].includes(input)) {
             if (!connect4.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
             if (message.author.id != connect4.channels[message.channel.id].players[0] && message.author.id != connect4.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
@@ -867,7 +877,7 @@ var commands = {
         } else if (["board", "showboard"].includes(input)) {
             if (!squares.channels[message.channel.id]) return sendChat("There is no active Squares game in this channel, $user$!");
             if (!squares.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            return sendChat(new Discord.MessageAttachment(squares.drawBoard(squares.channels[message.channel.id], 0)))
+            return sendChat(new Discord.Attachment(squares.drawBoard(squares.channels[message.channel.id], 0)))
         } else if (["quit", "forfeit", "leave"].includes(input)) {
             if (!squares.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
             if (message.author.id != squares.channels[message.channel.id].players[0] && message.author.id != squares.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
@@ -897,7 +907,7 @@ var commands = {
         } else if (["board", "showboard"].includes(input)) {
             if (!othello.channels[message.channel.id]) return sendChat("There is no active Othello game in this channel, $user$!");
             if (!othello.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            return sendChat(new Discord.MessageAttachment(othello.drawBoard(othello.channels[message.channel.id], 0)));
+            return sendChat(new Discord.Attachment(othello.drawBoard(othello.channels[message.channel.id], 0)));
         } else if (["quit", "forfeit", "leave"].includes(input)) {
             if (!othello.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
             if (message.author.id != othello.channels[message.channel.id].players[0] && message.author.id != othello.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
@@ -937,7 +947,7 @@ var commands = {
                                 let { Image } = require("canvas");
                                 avatar = new Image;
                                 avatar.src = src;
-                                return sendChat(`Profile for **${member.username}**:`, new Discord.MessageAttachment(newProfileCard(member.username, profile, background, avatar)));
+                                return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(newProfileCard(member.username, profile, background, avatar)));
                             });
                         }).catch(err => sendChat("```" + err + "```"));
                         else Jimp.read("https://cdn.discordapp.com/attachments/434783815047577610/434783848413396994/discord-logo-bss.png").then(function(image2) {
@@ -945,7 +955,7 @@ var commands = {
                                 let { Image } = require("canvas");
                                 avatar = new Image;
                                 avatar.src = src;
-                                return sendChat(`Profile for **${member.username}**:`, new Discord.MessageAttachment(newProfileCard(member.username, profile, background, avatar)));
+                                return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(newProfileCard(member.username, profile, background, avatar)));
                             });
                         }).catch(err => sendChat("```" + err + "```"));
                     });
@@ -958,8 +968,8 @@ var commands = {
                 return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
                     if (err) return sendChat("```" + err + "```");
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you do not yet have a background. If you want to change that fact, do `x!profile` right now!");
-                    if (res.rows[0].backgrounds.length == 1) return sendChat("This is current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 20 Xuvys.", new Discord.MessageAttachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == "j" ? ".jpg" : ".png")));
-                    return sendChat("This is current background, $user$! New backgrounds are still 20 Xuvys.", new Discord.MessageAttachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == "j" ? ".jpg" : ".png")));
+                    if (res.rows[0].backgrounds.length == 1) return sendChat("This is current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 20 Xuvys.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == "j" ? ".jpg" : ".png")));
+                    return sendChat("This is current background, $user$! New backgrounds are still 20 Xuvys.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == "j" ? ".jpg" : ".png")));
                 });
             } else if (["buy", "purchase"].includes(args[1])) {
                 db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
@@ -977,7 +987,7 @@ var commands = {
                                 SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "'")}, money = '${res.rows[0].money - 20}'
                                 WHERE id = '${message.author.id}'`, function(err) {
                         if (err) sendChat("```" + err + "```");
-                        else return sendChat("Successfully purchased a new background! To equip it, do `x!profile background [background ID]`. New background ID: `" + newbg + '`', new Discord.MessageAttachment("./img/backgrounds/" + newbg.substring(0, 7) + (newbg.substring(7) == "j" ? ".jpg" : ".png")));
+                        else return sendChat("Successfully purchased a new background! To equip it, do `x!profile background [background ID]`. New background ID: `" + newbg + '`', new Discord.Attachment("./img/backgrounds/" + newbg.substring(0, 7) + (newbg.substring(7) == "j" ? ".jpg" : ".png")));
                     });
                 });
             } else if (/^[a-zA-Z0-9]{7}[jp]$/.test(args[1])) {
@@ -1094,13 +1104,21 @@ var commands = {
         if (!input) {
             let embed = new Discord.RichEmbed();
             embed.setTitle("Help");
-            embed.setDescription("A list of all commands supported by Bakeneko~\n\*command not supported through DMs\n\*\*command either dysfunctional or not yet available\nFor more help about any specific command, do \"`x![command]` `help`\"");
-            let helps = [
-                ["\\*`connect4", "\\*`squares", "\\*`othello", "\\* \\*\\*`3dtictactoe", "\\* \\*\\*`gomoku", "\\*\\*`profile"],
-                ["\\*\\*`hangman", "\\*\\*`quickmaffs", "\\*\\*`iq", "\\*\\*`sequence", "\\*\\*`shuffle"],
-                ["\\*\\*`help", "`avatar", "\\* \\*\\*`quickrole", "\\* \\*\\*`kick", "\\* \\*\\*`ban", "\\*\\*`aliases", "\\* \\*\\*`server", "\\*\\*`user"],
-                ["\\*\\*`anime", "\\*\\*`manga", "`jisho", "\\*\\*`jshelp", "`nekos", "`calculate", "`graph"]
-            ];
+            embed.setDescription("A list of all commands supported by Bakeneko~\n`\*command either dysfunctional or not yet available`\n`" + (message.channel.type == "dm" ? "Some of these commands do not work in servers, and some of them only work in DMs" : "Some of these commands do not work in DMs, and some of them only work in servers") + "`\nFor more help about any specific command, do \"`x![command]` `help`\"");
+            let helps;
+            if (message.channel.type == "dm") helps = [
+                    ["`I apologize, but none of my larger games can work in DMs. When I get bigger and more people are playing my games regularly, I'll make it where you can play against strangers through DMs.`"],
+                    ["\\*`hangman", "\\*`quickmaffs", "\\*`iq", "\\*`sequence", "\\*`shuffle"],
+                    ["`help", "`avatar",, "`aliases", "`bugreport", "`request"],
+                    ["\\*`anime", "\\*`manga", "`jisho", "\\*`jshelp", "`nekos", "`calculate", "`graph"]
+                ];
+            else helps = [
+                    ["`connect4", "`squares", "`othello", "\\*`3dtictactoe", "\\*`gomoku", "`profile"],
+                    ["\\*`hangman", "\\*`quickmaffs", "\\*`iq", "\\*`sequence", "\\*`shuffle"],
+                    ["`help", "`avatar", "`aliases", "`server", "`kick", "`ban"],
+                    ["\\*`anime", "\\*`manga", "`jisho", "\\*`jshelp", "`nekos", "`calculate", "`graph"]
+                ];
+            if (message.channel.type == "dm") helps[2] = helps[2].concat(["`bugreport", "`request"]);
             embed.addField("Games", `${helps[0].join("\`  ")}\``, true);
             embed.addField("Smaller Games", `${helps[1].join("\`  ")}\``, true);
             embed.addField("Utility", `${helps[2].join("\`  ")}\``, true);
@@ -1110,7 +1128,7 @@ var commands = {
             }
             embed.setColor(randomColor());
             return sendChat({embed});
-        } else if (["games", "utility", "profile", "miscellaneous", "misc"].includes(input)) {
+        } else if (["games", "utility", "profile", "miscellaneous", "misc", "nsfw"].includes(input)) {
             let embed = new Discord.RichEmbed();
             embed.setTitle(input.toUpperCase());
             embed.setDescription({
@@ -1203,65 +1221,108 @@ var commands = {
     },
 
     "bug": function(cmd, args, input, message, sendChat, user) {
-        if (bugTimers[message.author.id]) return sendChat("You can submit 1 bug every 2 hours. Xyvy doesn't like being spammed, you know.");
-        if (!input) return sendChat("Here is how to format a bug report:\n\n```\nx!reportbug [command that's bugged]\n[description of bug (less than 1000 characters, please)]```\nPlease take note that if you submit a fake bug report, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
-        let com = input.split("\n")[0];
-        console.log('"' + com + '"');
-        if (com.startsWith("[")) return sendChat("With***out*** the brackets, you twit.");
-        let aliases = message.channel.type == "dm" ? userAliases : guildAliases;
-        let a = false;
-        for (let i in aliases) 
-            if (aliases[i].includes(com)) {
-                a = true;
-                break;
-            }
-        if (!a) return sendChat("That command does not exist!");
-        let desc = input.substring(com.length).trim();
-        if (desc.length > 1000) return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
-        let embed = new Discord.RichEmbed();
-        embed.setTitle("Bug Report");
-        embed.setAuthor(message.author.username + "#" + message.author.discriminator + " (" + message.author.id + ")");
-        embed.setDescription("**Command**: " + com + "\n\n" + desc);
-        client.guilds.get("399327996076621825").channels.get("467853697528102912").send({embed});
-        bugTimers[message.author.id] = 100 * 60 * 60 * 2;
-        return sendChat("Bug report sent! Thanks for helping out!");
+        db.query(`SELECT bug FROM bans`, function(err, res) {
+            if (err) return sendChat("```" + err + "```");
+            if (!rows.includes(message.author.id)) {
+                if (bugTimers[message.author.id]) return sendChat("You can submit 1 bug every 2 hours. Xyvy doesn't like being spammed, you know.");
+                if (!input) return sendChat("Here is how to format a bug report:\n\n```\nx!reportbug [command that's bugged]\n[description of bug (less than 1000 characters, please)]```\nPlease take note that if you submit a fake bug report, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
+                let com = input.split("\n")[0];
+                console.log('"' + com + '"');
+                if (com.startsWith("[")) return sendChat("With***out*** the brackets, you twit.");
+                let aliases = message.channel.type == "dm" ? userAliases : guildAliases;
+                let a = false;
+                for (let i in aliases) 
+                    if (aliases[i].includes(com)) {
+                        a = true;
+                        break;
+                    }
+                if (!a) return sendChat("That command does not exist!");
+                let desc = input.substring(com.length).trim();
+                if (desc.length > 1000) return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
+                let embed = new Discord.RichEmbed();
+                embed.setTitle("Bug Report");
+                embed.setAuthor(message.author.username + "#" + message.author.discriminator + " (" + message.author.id + ")");
+                embed.setDescription("**Command**: " + com + "\n\n" + desc);
+                client.guilds.get("399327996076621825").channels.get("467853697528102912").send({embed});
+                bugTimers[message.author.id] = 100 * 60 * 60 * 2;
+                return sendChat("Bug report sent! Thanks for helping out!");
+            } else sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
+        })
+    },
+
+    "request": function(cmd, args, input, message, sendChat, user) {
+        db.query(`SELECT request FROM bans`, function(err, res) {
+            if (err) return sendChat("```" + err + "```");
+            if (!rows.includes(message.author.id)) {
+                if (requestTimers[message.author.id]) return sendChat("You can submit 1 request every 2 hours. Xyvy doesn't like being spammed, you know.");
+                if (!input) return sendChat("Here is how to format a request:\n\n```\nx!request [description of suggestion (less than 1000 characters, please)]```\nPlease take note that if you submit a fake request, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
+                if (input.length > 1000) return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
+                let embed = new Discord.RichEmbed();
+                embed.setTitle("User Request");
+                embed.setAuthor(message.author.username + "#" + message.author.discriminator + " (" + message.author.id + ")");
+                embed.setDescription("**Suggestion**:\n" + input);
+                client.guilds.get("399327996076621825").channels.get("468245442388295691").send({embed});
+                requestTimers[message.author.id] = 100 * 60 * 60 * 2;
+                return sendChat("Request sent! Thanks for the suggestion!");
+            } else sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
+        });
     },
    
-    "user": function(cmd, args, input, message, sendChat, user) {
-        if (input == undefined || RE.ping.test(input) || RE.id2.test(input)) {
-            let member = message.channel.guild.members.get(input.match(RE.id1)[0] || message.author.id);
-   
-            if (member == undefined) return sendChat("User not found, $user$.");
-            else {
-                db.query(`SELECT * FROM users WHERE id = '${member.user.id}'`, function(err, res) {
-                    if (err) return sendChat("```" + err + "```");
-                    user = res.rows.length == 0 ? newUser(member.user.id, member.user.username, member.user.discriminator) : user = res.rows[0];
-                    let embed = new Discord.RichEmbed();
-                    embed.setTitle(member.user.username + "'s Server Info");
-                    embed.setColor();
-                });
-            }
-        } else return sendChat(`Invalid syntax. **Syntax**:  ${a.prefix + cmd}  \`{\` \`USER MENTION\` \`USER ID\` \`LEAVE BLANK FOR YOUR OWN\` \`}\``);
-    },
-   
-    "guild": function(cmd, args, input, sendChat, message, user, a) {
+    "guild": function(cmd, args, input, message, sendChat, user, a) {
         if (!input) {
-            guild = message.channel.guild;
+            let guild = message.channel.guild;
             embed = new Discord.RichEmbed();
-            embed.setTitle(guild.name);
-            embed.setAuthor("Guild ID: " + guild.id);
-            embed.setColor(a.color);
+            embed.setTitle("Guild ID: " + guild.id);
+            embed.setAuthor(guild.name);
+            embed.setColor(randomColor());
+            if (guild.icon != null) embed.setThumbnail(guild.icon);
    
             owner = guild.members.get(guild.ownerID).user;
-            embed.addField("Owner", `${owner.username}#${owner.discriminator}\n<@${owner.id}>`, true);
+            embed.addField("Owner", `${owner.username}#${owner.discriminator}\n<@${owner.id}>`);
             embed.addField("Region", guild.region, true);
-            embed.addField("Created On");
-   
-   
+            embed.addField("Verification Level", ["None", "Low", "Medium", "(╯°□°）╯︵ ┻━┻", "┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻"][guild.verificationLevel], true);
+            embed.addBlankField();
+            let channels = guild.channels.array();
+            let text = 0;
+            let voice = 0;
+            for (let i = 0; i < channels.length; i++) {
+                if (channels[i].type == "text") text += 1;
+                if (channels[i].type == "voice") voice += 1;
+            }
+            embed.addField("Channels", guild.channels.array().length + " total", true);
+            embed.addField("Text", text, true);
+            embed.addField("Voice", voice, true);
+            let members = guild.members.array();
+            let humans = guild.memberCount;
+            let bots = 0;
+            for (let i = 0; i < members.length; i++) if (members[i].user.bot) bots += 1;
+            embed.addField("Members", humans + " total", true);
+            embed.addField("Humans", humans - bots, true);
+            embed.addField("Bots", bots, true);
    
             return sendChat(embed);
    
         }
+    },
+
+    "kick": function(cmd, args, input, message, sendChat, user, a) {
+        if (!user.hasPermission("KICK_MEMBERS")) return;
+        if (!input) return sendChat("**Proper Usage**: `x!kick <@user>`");
+        if (!RE.ping.test(args[0]) || !RE.id2.test(args[0])) return sendChat("Invalid user mention, try again.");
+        else {
+            message.channel.guild.members.get(args[0].match(RE.id1)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => sendChat("kicked user <@" + args[0].match(RE.id1)[0] + ">")).catch((err) => sendChat("Failed to kick user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"))
+        }
+
+    },
+
+    "ban": function(cmd, args, input, message, sendChat, user, a) {
+        if (user.hasPermission("BAN_MEMBERS")) return;
+        if (!input) return sendChat("**Proper Usage**: `x!ban <@user>`");
+        if (!RE.ping.test(args[0]) || !RE.id2.test(args[0])) return sendChat("Invalid user mention, try again.");
+        else {
+            message.channel.guild.members.get(args[0].match(RE.id1)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => sendChat("baned user <@" + args[0].match(RE.id1)[0] + ">")).catch((err) => sendChat("Failed to ban user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"))
+        }
+
     },
    
     // Miscellaneous
@@ -1533,7 +1594,7 @@ var commands = {
         ctx.fillText("= 10 units\u00b2", 24, 19);
    
         for (let i = input.length; i--;) input[i] = '  ' + input[i].replace(/ /g, '') + ' - ' + ["Red", "Blue", "Green", "Purple", "Orange", "Yellow", "Teal", "Light Green", "Brown", "Pink"][i];
-        sendChat("```Equation" + (input.length > 1 ? 's' : '') + ":\n" + input.join('\n') + "```", new Discord.MessageAttachment(canvas.toBuffer()));
+        sendChat("```Equation" + (input.length > 1 ? 's' : '') + ":\n" + input.join('\n') + "```", new Discord.Attachment(canvas.toBuffer()));
    
     },
    
@@ -1596,18 +1657,17 @@ var commands = {
             try {
                 sendChat("```js\n" + JSON.stringify(eval(execute)) + "```");
             } catch (err) {
-                console.log(err.stack);
-                let a = err.stack.split('\n')[1].match(/<anonymous>:[0-9]{1,}:[0-9]{1,}/)[0].match(/[0-9]{1,}/g);
-                let Err = [];
-                for (let i = 0; i < execute.split('\n').length; i++) {
-                    if (i == a[0] - 1) {
-                        Err.push("/".repeat(30));
-                        Err.push(execute.split('\n')[i]);
-                        Err.push(" ".repeat(a[1] - 1) + "^");
-                        Err.push("/".repeat(30));
-                    } else {
-                        Err.push(execute.split('\n')[i]);
+                let stack = err.stack.split('\n');
+                let a = stack.length;
+                for (let i = 0; i < stack.length; i++) {
+                    if (stack[i].includes("at emitOne")) {
+                        a = i;
+                        break;
                     }
+                }
+                let Err = [];
+                for (let i = 0; i < a; i++) {
+                    Err.push(stack[i]);
                 }
                 sendChat("```" + err + "``````js\n" + Err.join("\n") + "```");
             }
