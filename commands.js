@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.22.0.0";
+var version = "2.22.0.1";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -1104,7 +1104,7 @@ var commands = {
         if (!input) {
             let embed = new Discord.RichEmbed();
             embed.setTitle("Help");
-            embed.setDescription("A list of all commands supported by Bakeneko~\n`\*command either dysfunctional or not yet available`\n`" + (message.channel.type == "dm" ? "Some of these commands do not work in servers, and some of them only work in DMs" : "Some of these commands do not work in DMs, and some of them only work in servers") + "`\nFor more help about any specific command, do \"`x![command]` `help`\"");
+            embed.setDescription("A list of all commands supported by Bakeneko~\n`\*command either dysfunctional or not yet available`\n`" + (message.channel.type == "dm" ? "Some of these commands do not work in servers" : "Some of these commands do not work in DMs") + "`\nFor more help about any specific command, do \"`x![command]` `help`\"");
             let helps;
             if (message.channel.type == "dm") helps = [
                     ["`I apologize, but none of my larger games can work in DMs. When I get bigger and more people are playing my games regularly, I'll make it where you can play against strangers through DMs.`"],
@@ -1127,6 +1127,7 @@ var commands = {
                 embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \`x!nsfw help\` for a list of all the lewds I'm capable of.`);
             }
             embed.setColor(randomColor());
+            embed.setFooter("Xyvybot version " + version);
             return sendChat({embed});
         } else if (["games", "utility", "profile", "miscellaneous", "misc", "nsfw"].includes(input)) {
             let embed = new Discord.RichEmbed();
