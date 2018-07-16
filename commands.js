@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.22.0.2";
+var version = "2.22.1.0";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -414,7 +414,7 @@ function newProfileCard(username, profile, background, avatar) {
     color = new Color(profile.color);
     colors = {
         bg: `rgba(${Math.floor(color.r * 1.25)}, ${Math.floor(color.g * 1.25)}, ${Math.floor(color.b * 1.25)}, 0.5)`,   // Background
-        ed: `rgba(${color.r}, ${color.g}, ${color.b}, 0.5)`,                                                            // Edge Lines
+        ed: `rgba(${color.r}, ${color.g}, ${color.b}, 0.75)`,                                                           // Edge Lines
         tx: `rgba(${Math.floor(color.r * 0.5)}, ${Math.floor(color.g * 0.5)}, ${Math.floor(color.b * 0.5)}, 1)`,        // Text
         ii: `rgba(255, 255, 255, 0)`                                                                                    // Invisible Ink
     };
@@ -467,11 +467,10 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
   
-        ctx.textAlign = "end";
         ctx.textBaseline = "hanging";
         ctx.font = "20px calibri";
         ctx.fillStyle = colors.tx;
-        ctx.fillText(username, res[0] - 78, 2, text.un);
+        ctx.fillText(username, res[0] - 78 - text.un, 2, text.un);
   
         // Title
         ctx.beginPath();
@@ -491,11 +490,10 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
   
-        ctx.textAlign = "end";
         ctx.textBaseline = "hanging";
         ctx.font = "15px calibri";
         ctx.fillStyle = colors.tx;
-        ctx.fillText(titles[profile.title], res[0] - 78, 26, text.tt);
+        ctx.fillText(titles[profile.title], res[0] - 78 - text.tt, 26, text.tt);
   
         // Money
         ctx.beginPath();
@@ -515,9 +513,6 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
   
-        ctx.textAlign = "start";
-        ctx.textBaseline = "hanging";
-        ctx.font = "15px calibri";
         ctx.fillStyle = colors.tx;
         ctx.fillText("Money:", res[0] - 174, 44, 40);
         ctx.textAlign = "end";
@@ -527,7 +522,6 @@ function newProfileCard(username, profile, background, avatar) {
         mon4 = mon1.length < 4 ? '' : mon2 > 0 ? '.' + mon1.substring(mon3.length, 4) : '';
         mon5 = " K M B Tr Qu Pn".split(' ')[Math.floor((mon1.length - 1) / 3)];
         mon = mon3 + mon4 + mon5;
-        ctx.font = "15px calibri";
         ctx.fillText(mon, res[0] - 78, 44, 50);
   
         // "Game Stats:" box
@@ -550,8 +544,6 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
   
-        ctx.textAlign = "start";
-        ctx.textBaseline = "hanging";
         ctx.font = "15px calibri";
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game Stats:", res[0] - 147, 61, 70);
@@ -577,9 +569,6 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.lineTo(res[0] - 1, 95);
         ctx.stroke();
   
-        ctx.textAlign = "start";
-        ctx.textBaseline = "hanging";
-        ctx.font = "15px calibri";
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game Name", res[0] - 148, 80, 75);
         ctx.fillText("Wins", res[0] - 68, 80);
@@ -631,7 +620,6 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
   
-        ctx.textAlign = "start";
         ctx.textBaseline = "hanging";
         ctx.font = "20px calibri";
         ctx.fillStyle = colors.tx;
@@ -655,8 +643,6 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
   
-        ctx.textAlign = "start";
-        ctx.textBaseline = "hanging";
         ctx.font = "15px calibri";
         ctx.fillStyle = colors.tx;
         ctx.fillText(titles[profile.title], 77, 26, text.tt);
@@ -679,9 +665,6 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
   
-        ctx.textAlign = "start";
-        ctx.textBaseline = "hanging";
-        ctx.font = "15px calibri";
         ctx.fillStyle = colors.tx;
         ctx.fillText("Money:", 77, 44, 40);
         ctx.textAlign = "end";
@@ -691,7 +674,6 @@ function newProfileCard(username, profile, background, avatar) {
         mon4 = mon1.length < 4 ? '' : mon2 > 0 ? '.' + mon1.substring(mon3.length, 4) : '';
         mon5 = " K M B Tr Qu Pn".split(' ')[Math.floor((mon1.length - 1) / 3)];
         mon = mon3 + mon4 + mon5;
-        ctx.font = "15px calibri";
         ctx.fillText(mon, 173, 44, 50);
   
         // "Game Stats:" box
@@ -715,8 +697,6 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.stroke();
   
         ctx.textAlign = "start";
-        ctx.textBaseline = "hanging";
-        ctx.font = "15px calibri";
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game Stats:", 77, 61, 70);
   
@@ -741,9 +721,6 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.lineTo(1, 95);
         ctx.stroke();
   
-        ctx.textAlign = "start";
-        ctx.textBaseline = "hanging";
-        ctx.font = "15px calibri";
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game Name", 2, 80, 75);
         ctx.fillText("Wins", 82, 80);
@@ -963,13 +940,26 @@ var commands = {
             });
         } else if (input.startsWith('[')) {
             return sendChat("With***out*** the brackets, you twit.");
-        } else if (["background", "backgrounds", "bg"].includes(args[0])) {
-            if (!args[1]) {
+        } else if (["background", "backgrounds", "bg", "bgs"].includes(args[0])) {
+            if (!args[1] && !["backgrounds", "bgs"].includes(args[0])) {
                 return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
                     if (err) return sendChat("```" + err + "```");
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you do not yet have a background. If you want to change that fact, do `x!profile` right now!");
-                    if (res.rows[0].backgrounds.length == 1) return sendChat("This is current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 20 Xuvys.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == "j" ? ".jpg" : ".png")));
-                    return sendChat("This is current background, $user$! New backgrounds are still 20 Xuvys.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == "j" ? ".jpg" : ".png")));
+                    if (res.rows[0].backgrounds.length == 1) return sendChat("This is your current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 20 Xuvys.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == "j" ? ".jpg" : ".png")));
+                    return sendChat("This is your current background, $user$! New backgrounds are still 20 Xuvys.\nDo `x!profile backgrounds` to view the other backgrounds you own.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == "j" ? ".jpg" : ".png")));
+                });
+            } else if (["owned"].includes(args[1]) || (!args[1] && ["backgrounds", "bgs"].includes(args[0]))) {
+                db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
+                    if (err) sendChat("```" + err + "```");
+                    if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot view the backgrounds you own. If you want to change that fact, do `x!profile` right now!");
+                    if (res.rows[0].backgrounds.length == 1) return sendChat("You only have 1 background, and it's the one you have equipped.");
+                    let b1 = res.rows[0].backgrounds;
+                    let b2 = [];
+                    for (let i = 0; i < res.rows[0].backgrounds.length; i++) {
+                        if (b1[i] !== res.rows[0].background) b2.push('[' + defaultImages.titles[b1[i]] + "](" + b1[i] + ')');
+                        else b2.push('[' + defaultImages.titles[b1[i]] + "](" + b1[i] + ') (Equipped)');
+                    }
+                    return sendChat(`\`\`\`md\n# All Backgrounds owned by user ${res.rows[0].id}:\n\n  [Background Title](background ID)\n\n  ${b2.join("\n  ")}\n\nIf you wish to equip any of these, do \`x!profiles background [title ID]\` (capitals are important!)\`\`\``);
                 });
             } else if (["buy", "purchase"].includes(args[1])) {
                 db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
@@ -1002,19 +992,6 @@ var commands = {
                         if (err) sendChat("```" + err + "```");
                         else return sendChat("Successfully equipped the background `" + args[1] + "`!");
                     });
-                });
-            } else if (["owned"].includes(args[1])) {
-                db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) sendChat("```" + err + "```");
-                    if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot view the backgrounds you own. If you want to change that fact, do `x!profile` right now!");
-                    if (res.rows[0].backgrounds.length == 1) return sendChat("You only have 1 background, and it's the one you have equipped.");
-                    let b1 = res.rows[0].backgrounds;
-                    let b2 = [];
-                    for (let i = 0; i < res.rows[0].backgrounds.length; i++) {
-                        if (b1[i] !== res.rows[0].background) b2.push('[' + defaultImages.titles[b1[i]] + "](" + b1[i] + ')');
-                        else b2.push('[' + defaultImages.titles[b1[i]] + "](" + b1[i] + ') (Equipped)');
-                    }
-                    return sendChat(`\`\`\`md\n# All Backgrounds owned by user ${res.rows[0].id}:\n\n  [Background Title](background ID)\n\n  ${b2.join("\n  ")}\n\nIf you wish to equip any of these, do \`x!profiles background [title ID]\` (capitals are important!)\`\`\``);
                 });
             } else if (args[1].startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
             else return sendChat("Unknown request.");
