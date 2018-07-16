@@ -495,7 +495,7 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.textBaseline = "hanging";
         ctx.font = "15px calibri";
         ctx.fillStyle = colors.tx;
-        ctx.fillText(titles[profile.title], res[0] - 78, 26, text.tt - 50);
+        ctx.fillText(titles[profile.title], res[0] - 78, 26, text.tt);
   
         // Money
         ctx.beginPath();
