@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.22.0.1";
+var version = "2.22.0.2";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -1667,10 +1667,10 @@ var commands = {
                     }
                 }
                 let Err = [];
-                for (let i = 0; i < a; i++) {
+                for (let i = 1; i < a; i++) {
                     Err.push(stack[i]);
                 }
-                sendChat("```" + err + "``````js\n" + Err.join("\n") + "```");
+                sendChat("```" + err + "``````\n" + Err.join("\n") + "```");
             }
         }
     },
