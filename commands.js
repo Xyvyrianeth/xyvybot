@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.22.1.1";
+var version = "2.22.1.2";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -545,7 +545,7 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.stroke();
   
         ctx.font = "15px calibri";
-        ctx.textAling = "start";
+        ctx.textAlign = "start";
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game Stats:", res[0] - 147, 61, 70);
   
