@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.22.0.2";
+var version = "2.22.0.3";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -495,7 +495,7 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.textBaseline = "hanging";
         ctx.font = "15px calibri";
         ctx.fillStyle = colors.tx;
-        ctx.fillText(titles[profile.title], res[0] - 78, 26, text.tt);
+        ctx.fillText(titles[profile.title], res[0] - 78, 26, text.tt - 50);
   
         // Money
         ctx.beginPath();
