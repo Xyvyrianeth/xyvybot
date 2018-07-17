@@ -16,6 +16,7 @@
 		"canvas": "latest",
 		"unofficial-jisho-api": "latest",
 		"nekos.life": "latest",
-		"paladins-api": "latest"
+		"paladins-api": "latest",
+		"gifencoder": "latest"
 	}
 }

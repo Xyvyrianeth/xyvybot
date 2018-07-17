@@ -1,11 +1,12 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const Jimp = require("jimp");
+const GIFEnconder = require("gifencoder");
 
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.22.2.0";
+var version = "2.22.2.1";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -929,21 +930,23 @@ var commands = {
                         let { Image } = require("canvas");
                         background = new Image;
                         background.src = src;
-                        if (member.avatar) Jimp.read(`https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png`).then(function(image2) {
-                            image2.getBuffer("image/png", function(err, src) {
-                                let { Image } = require("canvas");
-                                avatar = new Image;
-                                avatar.src = src;
-                                return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(newProfileCard(member.username, profile, background, avatar)));
-                            });
+                        if (member.avatar)
+                            Jimp.read(`https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png`).then(function(image2) {
+                                image2.getBuffer("image/png", function(err, src) {
+                                    let { Image } = require("canvas");
+                                    avatar = new Image;
+                                    avatar.src = src;
+                                    return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(newProfileCard(member.username, profile, background, avatar), "profile.png"));
+                                });
                         }).catch(err => sendChat("```" + err + "```"));
-                        else Jimp.read("https://cdn.discordapp.com/attachments/434783815047577610/434783848413396994/discord-logo-bss.png").then(function(image2) {
-                            image2.getBuffer("image/png", function(err, src) {
-                                let { Image } = require("canvas");
-                                avatar = new Image;
-                                avatar.src = src;
-                                return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(newProfileCard(member.username, profile, background, avatar)));
-                            });
+                        else
+                            Jimp.read("./img/defaultAvatar.png").then(function(image2) {
+                                image2.getBuffer("image/png", function(err, src) {
+                                    let { Image } = require("canvas");
+                                    avatar = new Image;
+                                    avatar.src = src;
+                                    return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(newProfileCard(member.username, profile, background, avatar), "profile.png"));
+                                });
                         }).catch(err => sendChat("```" + err + "```"));
                     });
                 }).catch(err => sendChat("```" + err + "```"));
