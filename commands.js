@@ -1658,10 +1658,16 @@ var commands = {
                     }
                 }
                 let Err = [];
+                let b = false;
                 for (let i = 1; i < a; i++) {
                     Err.push(stack[i]);
+                    if (/<anonymous>:[0-9]{1,}:[0-9]{1,}/.test(stack[i])) {
+                        let c = stack[i].match(/<anonymous>:[0-9]{1,}:[0-9]{1,}/)[0].split(":");
+                        b = [execute.split('\n')[Number(c[1])], Number(c[2]) - 1];
+                    }
                 }
-                sendChat("```" + err + "``````\n" + Err.join("\n") + "```");
+                if (!b) sendChat("```" + err + "``````\n" + Err.join("\n") + "```");
+                else sendChat("```" + err + "``````" + b[0] + '\n' + ' '.repeat(b[1]) + "^``````\n" + Err.join("\n") + "```");
             }
         }
     },
