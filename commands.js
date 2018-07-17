@@ -1,12 +1,13 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const Jimp = require("jimp");
-const GIFEnconder = require("gifencoder");
+const GIFEncoder = require("gifencoder");
+const GifEncoder = require("gif-encoder");
 
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.22.2.1";
+var version = "2.22.2.2";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
