@@ -5,7 +5,7 @@ const Jimp = require("jimp");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.22.1.2";
+var version = "2.22.2.0";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -413,18 +413,24 @@ function newProfileCard(username, profile, background, avatar) {
     // Set important colors
     color = new Color(profile.color);
     colors = {
-        bg: `rgba(${Math.floor(color.r * 1.25)}, ${Math.floor(color.g * 1.25)}, ${Math.floor(color.b * 1.25)}, 0.5)`,   // Background
-        ed: `rgba(${color.r}, ${color.g}, ${color.b}, 0.75)`,                                                           // Edge Lines
-        tx: `rgba(${Math.floor(color.r * 0.5)}, ${Math.floor(color.g * 0.5)}, ${Math.floor(color.b * 0.5)}, 1)`,        // Text
-        ii: `rgba(255, 255, 255, 0)`                                                                                    // Invisible Ink
+        bg: `rgba(${Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r)}, ${Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g)}, ${Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b)}, 0.5)`,
+    //  Background
+        ed: `rgba(${Math.floor(color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r) - 20}, ${Math.floor(color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g) - 20}, ${Math.floor(color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b) - 20}, 0.5)`,
+    //  Edge Lines
+        tx: `rgba(${Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)}, ${Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)}, ${Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)}, 0.5)`,
+    //  Text
+        ii: `rgba(255, 255, 255, 0)`
+    //  Invisible Ink
     };
   
     // Get important text sizes
     text = {};
     ctx.font = "20px calibri";
-    text.un = Math.floor(ctx.measureText(username).width > 193 ? 193 : ctx.measureText(username).width < 96 ? 96 : ctx.measureText(username).width);                        // Username
+    text.un = Math.floor(ctx.measureText(username).width > 193 ? 193 : ctx.measureText(username).width < 96 ? 96 : ctx.measureText(username).width);
+    // Username
     ctx.font = "15px calibri";
-    text.tt = Math.floor(ctx.measureText(titles[profile.title]).width > text.un ? text.un : ctx.measureText(titles[profile.title]).width < 96 ? 96 : ctx.measureText(titles[profile.title]).width); // Title
+    text.tt = Math.floor(ctx.measureText(titles[profile.title]).width > text.un ? text.un : ctx.measureText(titles[profile.title]).width < 96 ? 96 : ctx.measureText(titles[profile.title]).width);
+    // Title
       
     if (profile.lorr == "right") {
         // Draws avatar box
@@ -468,9 +474,9 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.stroke();
   
         ctx.textBaseline = "hanging";
-        ctx.font = "20px calibri";
+        ctx.font = "20px meiryo";
         ctx.fillStyle = colors.tx;
-        ctx.fillText(username, res[0] - 78 - text.un, 2, text.un);
+        ctx.fillText(profile.username, res[0] - 78 - text.un, 2, text.un);
   
         // Title
         ctx.beginPath();
@@ -491,7 +497,7 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.stroke();
   
         ctx.textBaseline = "hanging";
-        ctx.font = "15px calibri";
+        ctx.font = "15px meiryo";
         ctx.fillStyle = colors.tx;
         ctx.fillText(titles[profile.title], res[0] - 78 - text.tt, 26, text.tt);
   
@@ -544,20 +550,24 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
   
-        ctx.font = "15px calibri";
+        ctx.font = "15px meiryo";
         ctx.textAlign = "start";
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game Stats:", res[0] - 147, 61, 70);
   
         // Wins and Loses
-        ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
-        ctx.moveTo(res[0] - 149, 76);
-        ctx.lineTo(res[0] - 149, 198);
-        ctx.lineTo(res[0] + 2, 198);
-        ctx.lineTo(res[0] + 2, 76);
-        ctx.fill();
+        ctx.fillRect(252, 77, 77, 17);
+        ctx.fillRect(331, 77, 33, 17);
+        ctx.fillRect(366, 77, 33, 17);
+        ctx.fillRect(252, 96, 77, 101);
+        ctx.fillRect(331, 96, 33, 101);
+        ctx.fillRect(366, 96, 33, 101);
+        ctx.beginPath();
+        ctx.strokeStyle = colors.bg;
+        ctx.lineWidth = 1;
+        ctx.rect(251.5, 76.5, 148, 121);
         ctx.stroke();
   
         ctx.beginPath();
@@ -572,7 +582,7 @@ function newProfileCard(username, profile, background, avatar) {
   
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game Name", res[0] - 148, 80, 75);
-        ctx.fillText("Wins", res[0] - 68, 80);
+        ctx.fillText("Wins", res[0] - 68, 80, 31);
         ctx.fillText("Loses", res[0] - 33, 80, 31);
         for (let i = 0; i < 5; i++) {
             let game = ["Connect Four", "Squares", "Othello", "3D Tic Tac Toe", "Gomoku"][i];
@@ -622,7 +632,7 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.stroke();
   
         ctx.textBaseline = "hanging";
-        ctx.font = "20px calibri";
+        ctx.font = "20px meiryo";
         ctx.fillStyle = colors.tx;
         ctx.fillText(username, 77, 2, text.un);
   
@@ -644,7 +654,7 @@ function newProfileCard(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
   
-        ctx.font = "15px calibri";
+        ctx.font = "15px meiryo";
         ctx.fillStyle = colors.tx;
         ctx.fillText(titles[profile.title], 77, 26, text.tt);
   
@@ -732,9 +742,8 @@ function newProfileCard(username, profile, background, avatar) {
             ctx.fillText(profile["wins" + (i + 1)], 82, 97 + (15 * i));
             ctx.fillText(profile["lose" + (i + 1)], 117, 97 + (15 * i), 31);
         }
-  
     }
-       
+
     return canvas.toBuffer();
 }
    
