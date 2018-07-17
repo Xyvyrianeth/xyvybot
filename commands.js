@@ -7,7 +7,7 @@ const GifEncoder = require("gif-encoder");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.22.2.2";
+var version = "2.22.2.4";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -1663,7 +1663,7 @@ var commands = {
                     Err.push(stack[i]);
                     if (/<anonymous>:[0-9]{1,}:[0-9]{1,}/.test(stack[i])) {
                         let c = stack[i].match(/<anonymous>:[0-9]{1,}:[0-9]{1,}/)[0].split(":");
-                        b = [execute.split('\n')[Number(c[1])], Number(c[2]) - 1];
+                        b = [execute.split('\n')[Number(c[1]) - 1], Number(c[2]) - 1];
                     }
                 }
                 if (!b) sendChat("```" + err + "``````\n" + Err.join("\n") + "```");
