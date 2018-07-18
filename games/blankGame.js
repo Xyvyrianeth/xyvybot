@@ -4,6 +4,15 @@ var gamename = "";
 var shortname = "";
  
 exports.channels = {}; // Leave blank
+exports.timer = setInterval(function() {
+    for (let i in exports.channels) {
+        exports.channels[i].timer.time -= 1;
+        if (exports.channels[i].timer.time == 0) {
+            exports.channels[i].channel.send(exports.channels[i].timer.message);
+            delete exports.channels[i];
+        }
+    }
+}, 10);
  
 exports.newGame = function(channel, player1, cmd) {
     exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:''};

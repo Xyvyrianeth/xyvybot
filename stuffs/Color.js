@@ -20,6 +20,12 @@ function Color() {
 	this.b = ~~b || 0;
 };
 
+Color.prototype.random = function(color) {
+	let rgb = '#';
+	for (let i = 6; i--;) rgb += (Math.random() * 16 | 0).toString(16);
+	return rgb;
+}
+
 Color.prototype.distance = function(color) {
 	var d = 0;
 	d += Math.pow(this.r - color.r, 2);
@@ -50,22 +56,21 @@ Color.prototype.toHexa = function() {
 
 Color.prototype.getName = function() {
 	var hexa = this.toHexa();
-	var low = 256;
 	var name;
-	for(var n in Color.map) {
-		if(!Color.map.hasOwnProperty(n))
+	for (var n in Color.map) {
+		if (!Color.map.hasOwnProperty(n))
 			continue;
 		var color = Color.map[n];
-		if(color.r === this.r && color.g === this.g && color.b === this.b) {
+		if (color.r === this.r && color.g === this.g && color.b === this.b) {
 			return n;
 		}
 		var dist = this.distance(color);
-		if(dist < low) {
+		if (dist < 256) {
 			low = dist;
 			name = n;
 		}
 	}
-	if(!name)
+	if (!name)
 		name = this.toHexa();
 	else
 		name = "A shade of " + name;
@@ -1038,3 +1043,5 @@ Color.addToMap("#FFF000", "Yellow rose");
 Color.addToMap("#0014A8", "Zaffre");
 Color.addToMap("#2C1608", "Zinnwaldite brown");
 Color.addToMap("#39A78E", "Zomp");
+
+exports.color = Color;

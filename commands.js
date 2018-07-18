@@ -6,98 +6,18 @@ const streamBuffers = require('stream-buffers');
 
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
-   
-var version = "2.22.2.6";
-var pingtime = {};
-var pingtimer = {};
-var titleChannels = {};
-var badgeChannels = {};
-var buyBadgeChannels = {};
-var defaultImages = require("./stuffs/images.json");
+var Profile = require('./stuffs/profile.js');
+var Color = require('./stuffs/color.js');
+var version = "2.23.0.0";
+var backgrounds = require("./stuffs/images.json");
 var admins = "357700219825160194".split(' ');
-
-var bugTimers = {};
-var bugTimer = setInterval(function() {
-    for (let i in bugTimers) {
-        bugTimers[i] -= 1;
-        if (bugTimers[i] == 0) delete bugTimers[i];
-    }
-}, 10);
-
-var requestTimers = {};
-var requestTimer = setInterval(function() {
-    for (let i in requestTimers) {
-        requestTimers[i] -= 1;
-        if (requestTimers[i] == 0) delete requestTimers[i];
-    }
-}, 10);
-   
-// var TTT = require("./games/TTT.js");
-// var TTTlogs = {};
-var connect4 = require("./games/connect4.js");
-var connect4timer = setInterval(function() {
-    for (let i in connect4.channels) {
-        connect4.channels[i].timer.time -= 1;
-        if (connect4.channels[i].timer.time == 0) {
-            connect4.channels[i].channel.send(connect4.channels[i].timer.message);
-            delete connect4.channels[i];
-        }
-    }
-}, 10);
-   
-var squares = require("./games/squares.js");
-var squarestimer = setInterval(function() {
-    for (let i in squares.channels) {
-        squares.channels[i].timer.time -= 1;
-        if (squares.channels[i].timer.time == 0) {
-            squares.channels[i].channel.send(squares.channels[i].timer.message);
-            delete squares.channels[i];
-        }
-    }
-}, 10);
-   
-var othello = require("./games/othello.js");
-var othellotimer = setInterval(function() {
-    for (let i in othello.channels) {
-        othello.channels[i].timer.time -= 1;
-        if (othello.channels[i].timer.time == 0) {
-            othello.channels[i].channel.send(othello.channels[i].timer.message);
-            delete othello.channels[i];
-        }
-    }
-}, 10);
-   
-var gomoku = require("./games/gomoku.js");
-var gomokutimer = setInterval(function() {
-    for (let i in gomoku.channels) {
-        gomoku.channels[i].timer.time -= 1;
-        if (gomoku.channels[i].timer.time == 0) {
-            gomoku.channels[i].channel.send(gomoku.channels[i].timer.message);
-            delete gomoku.channels[i];
-        }
-    }
-}, 10);
-   
-// var Go = require("./games/go.js");
-// var TTT3D = require("./games/3DTTT.js");
-// var hangman = require("./games/hangman.js");
-// var trivia = require("./games/trivia.js");
-// var math = require("./games/math.js");
-// var IQ = require("./games/iq.js");
-// var Seq = require("./games/sequence.js");
-// var BShip = require("./games/battleship.js");
-// var shuffle = require("./games/shuffle.js");
-  
 var titles = require("./stuffs/titles.json");
-   
-var timers = {
-    profile: {},
-    image: {},
-    desc: {},
-    titleequip: {},
-    badgeequip: {}
-}
-   
+
+var connect4 = require("./games/connect4.js");
+var squares = require("./games/squares.js");
+var othello = require("./games/othello.js");
+var gomoku = require("./games/gomoku.js");
+
 var RE = {
     ping: /^<@[0-9]{1,}>$/,
     id1: /[0-9]{1,}/,
@@ -121,7 +41,24 @@ var palID;
 paladins.connect("PC", (err, res) => {
     if (err) return console.log(err);
     palID = res;
-}); // This will have to wait, for now.
+});
+
+var bugTimers = {};
+var bugTimer = setInterval(function() {
+    for (let i in bugTimers) {
+        bugTimers[i] -= 1;
+        if (bugTimers[i] == 0) delete bugTimers[i];
+    }
+}, 10);
+
+var requestTimers = {};
+var requestTimer = setInterval(function() {
+    for (let i in requestTimers) {
+        requestTimers[i] -= 1;
+        if (requestTimers[i] == 0) delete requestTimers[i];
+    }
+}, 10);
+   
 
 function command(message) {
   
@@ -355,7 +292,7 @@ function newError(message, cmd, a) {
 }
    
 function newUser(id, channel) {
-    let image = defaultImages.images.random();
+    let image = backgrounds.ids.random();
     db.query(`INSERT INTO profiles (
         id,       color,   title,      titles,             background,  backgrounds,         lorr,     money,  wins1,  lose1,  wins2,  lose2,  wins3,  lose3,  wins4,  lose4,  wins5,  lose5
     ) VALUES (
@@ -371,382 +308,6 @@ function newResolution(width, height) {
     if (height / width == 0.75)        return [400, 300];
     if (height / width <  0.75)        return [400, Math.round(height / width * 400)];
     if (height / width >  0.75)        return [Math.round(width / height * 300), 300];
-}
-   
-function Color() {
-    var r, g, b;
-    if (arguments.length === 1) {
-        var hexa = arguments[0].toLowerCase();
-        if (hexa.match(/^#[0-9a-f]{6}$/i)) {
-            hexa = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hexa);
-            if (hexa && hexa.length === 4) {
-                r = parseInt(hexa[1], 16);
-                g = parseInt(hexa[2], 16);
-                b = parseInt(hexa[3], 16);
-            }
-        } else if (hexa.match(/^#[0-9a-f]{3}$/i)) {
-            hexa = /^#?([0-9a-f]{1})([0-9a-f]{1})([0-9a-f]{1})$/i.exec(hexa);
-            if (hexa && hexa.length === 4) {
-                r = parseInt(hexa[1] + hexa[1], 16);
-                g = parseInt(hexa[2] + hexa[2], 16);
-                b = parseInt(hexa[3] + hexa[3], 16);
-            }
-        }
-    } else if (arguments.length === 3) {
-        r = arguments[0];
-        g = arguments[1];
-        b = arguments[2];
-    }
-    this.r = ~~r || 0;
-    this.g = ~~g || 0;
-    this.b = ~~b || 0;
-};
-function randomColor() {
-    return '#' + (Math.random() * 16 | 0).toString(16) + (Math.random() * 16 | 0).toString(16) + (Math.random() * 16 | 0).toString(16) + (Math.random() * 16 | 0).toString(16) + (Math.random() * 16 | 0).toString(16) + (Math.random() * 16 | 0).toString(16);
-}
-  
-function newProfileCard(username, profile, background, avatar) {
-    // Set the picture
-    res = newResolution(background.width, background.height);
-    canvas = new Canvas(res[0], res[1]);
-    ctx = canvas.getContext('2d');
-    ctx.drawImage(background, 0, 0, res[0], res[1]);
-  
-    // Set important colors
-    color = new Color(profile.color);
-    colors = {
-        bg: `rgba(${Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r)}, ${Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g)}, ${Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b)}, 0.5)`,
-    //  Background
-        ed: `rgba(${Math.floor(color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r) - 20}, ${Math.floor(color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g) - 20}, ${Math.floor(color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b) - 20}, 0.5)`,
-    //  Edge Lines
-        tx: `rgba(${Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)}, ${Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)}, ${Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)}, 0.5)`,
-    //  Text
-        ii: `rgba(255, 255, 255, 0)`
-    //  Invisible Ink
-    };
-  
-    // Get important text sizes
-    text = {};
-    ctx.font = "20px calibri";
-    text.un = Math.floor(ctx.measureText(username).width > 193 ? 193 : ctx.measureText(username).width < 96 ? 96 : ctx.measureText(username).width);
-    // Username
-    ctx.font = "15px calibri";
-    text.tt = Math.floor(ctx.measureText(titles[profile.title]).width > text.un ? text.un : ctx.measureText(titles[profile.title]).width < 96 ? 96 : ctx.measureText(titles[profile.title]).width);
-    // Title
-      
-    if (profile.lorr == "right") {
-        // Draws avatar box
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.lineWidth = 2;
-        ctx.moveTo(res[0] - 75, 0);
-        ctx.lineTo(res[0] - 75, 75);
-        ctx.lineTo(res[0] + 2, 75);
-        ctx.lineTo(res[0] + 2, 0);
-        ctx.stroke();
-          
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.lineWidth = 2;
-        ctx.moveTo(res[0] - 74, 0);
-        ctx.lineTo(res[0] - 74, 74);
-        ctx.lineTo(res[0] + 2, 74);
-        ctx.lineTo(res[0] + 2, 0);
-        ctx.fill();
-        ctx.stroke();
-        ctx.drawImage(avatar, res[0] - 72, 2, 70, 70);
-  
-        // Username
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(res[0] - 76, 25);
-        ctx.lineTo(res[0] - 81 - text.un, 25);
-        ctx.lineTo(res[0] - 107 - text.un, -1);
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(res[0] - 76, 24);
-        ctx.lineTo(res[0] - 80.62 - text.un, 24);
-        ctx.lineTo(res[0] - 105.62 - text.un, -1);
-        ctx.lineTo(res[0] - 76, -1);
-        ctx.fill();
-        ctx.stroke();
-  
-        ctx.textBaseline = "hanging";
-        ctx.font = "20px meiryo";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText(profile.username, res[0] - 78 - text.un, 2, text.un);
-  
-        // Title
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(res[0] - 76, 42);
-        ctx.lineTo(res[0] - 80 - text.tt, 42);
-        ctx.lineTo(res[0] - 80 - text.tt, 26);
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(res[0] - 76, 41);
-        ctx.lineTo(res[0] - 79 - text.tt, 41);
-        ctx.lineTo(res[0] - 79 - text.tt, 26);
-        ctx.lineTo(res[0] - 76, 26);
-        ctx.fill();
-        ctx.stroke();
-  
-        ctx.textBaseline = "hanging";
-        ctx.font = "15px meiryo";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText(titles[profile.title], res[0] - 78 - text.tt, 26, text.tt);
-  
-        // Money
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(res[0] - 76, 59);
-        ctx.lineTo(res[0] - 176, 59);
-        ctx.lineTo(res[0] - 176, 43);
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(res[0] - 76, 58);
-        ctx.lineTo(res[0] - 175, 58);
-        ctx.lineTo(res[0] - 175, 43);
-        ctx.lineTo(res[0] - 76, 43);
-        ctx.fill();
-        ctx.stroke();
-  
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Money:", res[0] - 174, 44, 40);
-        ctx.textAlign = "end";
-        mon1 = String(profile.money);
-        mon2 = mon1.length % 3;
-        mon3 = mon1.length < 4 ? mon1 : mon1.substring(0, mon2 > 0 ? mon2 : 3);
-        mon4 = mon1.length < 4 ? '' : mon2 > 0 ? '.' + mon1.substring(mon3.length, 4) : '';
-        mon5 = " K M B Tr Qu Pn".split(' ')[Math.floor((mon1.length - 1) / 3)];
-        mon = mon3 + mon4 + mon5;
-        ctx.fillText(mon, res[0] - 78, 44, 50);
-  
-        // "Game Stats:" box
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(res[0] - 150, 60);
-        ctx.lineTo(res[0] - 150, 199);
-        ctx.lineTo(res[0] + 2, 199);
-        ctx.moveTo(res[0] - 150, 75);
-        ctx.lineTo(res[0] - 76, 75);
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(res[0] - 76, 74);
-        ctx.lineTo(res[0] - 149, 74);
-        ctx.lineTo(res[0] - 149, 60);
-        ctx.lineTo(res[0] - 76, 60);
-        ctx.fill();
-        ctx.stroke();
-  
-        ctx.font = "15px meiryo";
-        ctx.textAlign = "start";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Stats:", res[0] - 147, 61, 70);
-  
-        // Wins and Loses
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.fillRect(252, 77, 77, 17);
-        ctx.fillRect(331, 77, 33, 17);
-        ctx.fillRect(366, 77, 33, 17);
-        ctx.fillRect(252, 96, 77, 101);
-        ctx.fillRect(331, 96, 33, 101);
-        ctx.fillRect(366, 96, 33, 101);
-        ctx.beginPath();
-        ctx.strokeStyle = colors.bg;
-        ctx.lineWidth = 1;
-        ctx.rect(251.5, 76.5, 148, 121);
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(res[0] - 70, 77);
-        ctx.lineTo(res[0] - 70, 197);
-        ctx.moveTo(res[0] - 35, 77);
-        ctx.lineTo(res[0] - 35, 197);
-        ctx.moveTo(res[0] - 148, 95);
-        ctx.lineTo(res[0] - 1, 95);
-        ctx.stroke();
-  
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Name", res[0] - 148, 80, 75);
-        ctx.fillText("Wins", res[0] - 68, 80, 31);
-        ctx.fillText("Loses", res[0] - 33, 80, 31);
-        for (let i = 0; i < 5; i++) {
-            let game = ["Connect Four", "Squares", "Othello", "3D Tic Tac Toe", "Gomoku"][i];
-            ctx.fillText(game, res[0] - 148, 97 + (15 * i), 75);
-            ctx.fillText(profile["wins" + (i + 1)], res[0] - 68, 97 + (15 * i));
-            ctx.fillText(profile["lose" + (i + 1)], res[0] - 33, 97 + (15 * i), 31);
-        }
-  
-    } else if (profile.lorr == "left") {
-        // Draws avatar box
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.lineWidth = 2;
-        ctx.moveTo(75, 0);
-        ctx.lineTo(75, 75);
-        ctx.lineTo(-2, 75);
-        ctx.lineTo(-2, 0);
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(74, 0);
-        ctx.lineTo(74, 74);
-        ctx.lineTo(-2, 74);
-        ctx.lineTo(-2, 0);
-        ctx.fill();
-        ctx.stroke();
-        ctx.drawImage(avatar, 2, 2, 70, 70);
-  
-        // Username
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(76, 25);
-        ctx.lineTo(81 + text.un, 25);
-        ctx.lineTo(107 + text.un, -1);
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(76, 24);
-        ctx.lineTo(80.62 + text.un, 24);
-        ctx.lineTo(105.62 + text.un, -1);
-        ctx.lineTo(76, -1);
-        ctx.fill();
-        ctx.stroke();
-  
-        ctx.textBaseline = "hanging";
-        ctx.font = "20px meiryo";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText(username, 77, 2, text.un);
-  
-        // Title
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(76, 42);
-        ctx.lineTo(80 + text.tt, 42);
-        ctx.lineTo(80 + text.tt, 26);
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(76, 41);
-        ctx.lineTo(79 + text.tt, 41);
-        ctx.lineTo(79 + text.tt, 26);
-        ctx.lineTo(76, 26);
-        ctx.fill();
-        ctx.stroke();
-  
-        ctx.font = "15px meiryo";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText(titles[profile.title], 77, 26, text.tt);
-  
-        // Money
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(76, 59);
-        ctx.lineTo(176, 59);
-        ctx.lineTo(176, 43);
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(76, 58);
-        ctx.lineTo(175, 58);
-        ctx.lineTo(175, 43);
-        ctx.lineTo(76, 43);
-        ctx.fill();
-        ctx.stroke();
-  
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Money:", 77, 44, 40);
-        ctx.textAlign = "end";
-        mon1 = String(profile.money);
-        mon2 = mon1.length % 3;
-        mon3 = mon1.length < 4 ? mon1 : mon1.substring(0, mon2 > 0 ? mon2 : 3);
-        mon4 = mon1.length < 4 ? '' : mon2 > 0 ? '.' + mon1.substring(mon3.length, 4) : '';
-        mon5 = " K M B Tr Qu Pn".split(' ')[Math.floor((mon1.length - 1) / 3)];
-        mon = mon3 + mon4 + mon5;
-        ctx.fillText(mon, 173, 44, 50);
-  
-        // "Game Stats:" box
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(150, 60);
-        ctx.lineTo(150, 199);
-        ctx.lineTo(-2, 199);
-        ctx.moveTo(150, 75);
-        ctx.lineTo(76, 75);
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(76, 74);
-        ctx.lineTo(149, 74);
-        ctx.lineTo(149, 60);
-        ctx.lineTo(76, 60);
-        ctx.fill();
-        ctx.stroke();
-  
-        ctx.textAlign = "start";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Stats:", 77, 61, 70);
-  
-        // Wins and Loses
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(149, 76);
-        ctx.lineTo(149, 198);
-        ctx.lineTo(-2, 198);
-        ctx.lineTo(-2, 76);
-        ctx.fill();
-        ctx.stroke();
-  
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(80, 77);
-        ctx.lineTo(80, 197);
-        ctx.moveTo(115, 77);
-        ctx.lineTo(115, 197);
-        ctx.moveTo(148, 95);
-        ctx.lineTo(1, 95);
-        ctx.stroke();
-  
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Name", 2, 80, 75);
-        ctx.fillText("Wins", 82, 80);
-        ctx.fillText("Loses", 117, 80, 31);
-        for (let i = 0; i < 5; i++) {
-            let game = ["Connect Four", "Squares", "Othello", "3D Tic Tac Toe", "Gomoku"][i];
-            ctx.fillText(game, 2, 97 + (15 * i), 75);
-            ctx.fillText(profile["wins" + (i + 1)], 82, 97 + (15 * i));
-            ctx.fillText(profile["lose" + (i + 1)], 117, 97 + (15 * i), 31);
-        }
-    }
-
-    return canvas.toBuffer();
 }
    
 var guildAliases = {
@@ -937,7 +498,7 @@ var commands = {
                                     let { Image } = require("canvas");
                                     avatar = new Image;
                                     avatar.src = src;
-                                    return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(newProfileCard(member.username, profile, background, avatar), "profile.png"));
+                                    return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile.card(member.username, profile, background, avatar), "profile.png"));
                                 });
                         }).catch(err => sendChat("```" + err + "```"));
                         else
@@ -946,7 +507,7 @@ var commands = {
                                     let { Image } = require("canvas");
                                     avatar = new Image;
                                     avatar.src = src;
-                                    return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(newProfileCard(member.username, profile, background, avatar), "profile.png"));
+                                    return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile.card(member.username, profile, background, avatar), "profile.png"));
                                 });
                         }).catch(err => sendChat("```" + err + "```"));
                     });
@@ -970,8 +531,8 @@ var commands = {
                     let b1 = res.rows[0].backgrounds;
                     let b2 = [];
                     for (let i = 0; i < res.rows[0].backgrounds.length; i++) {
-                        if (b1[i] !== res.rows[0].background) b2.push('[' + defaultImages.titles[b1[i]] + "](" + b1[i] + ')');
-                        else b2.push('[' + defaultImages.titles[b1[i]] + "](" + b1[i] + ') (Equipped)');
+                        if (b1[i] !== res.rows[0].background) b2.push('[' + backgrounds.titles[b1[i]] + "](" + b1[i] + ')');
+                        else b2.push('[' + backgrounds.titles[b1[i]] + "](" + b1[i] + ') (Equipped)');
                     }
                     return sendChat(`\`\`\`md\n# All Backgrounds owned by user ${res.rows[0].id}:\n\n  [Background Title](background ID)\n\n  ${b2.join("\n  ")}\n\nIf you wish to equip any of these, do \`x!profiles background [title ID]\` (capitals are important!)\`\`\``);
                 });
@@ -979,12 +540,12 @@ var commands = {
                 db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
                     if (err) return sendChat("```" + err + "```");
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot yet purchase a new background. If you want to change that fact, do `x!profile` right now!");
-                    if (res.rows[0].backgrounds.length == defaultImages.images.length) return sendChat("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, okay~?");
+                    if (res.rows[0].backgrounds.length == backgrounds.ids.length) return sendChat("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, okay~?");
                     if (res.rows[0].money < 20) return sendChat("You do not have enough money to buy another background! Get more money by playing games (and winning)!");
   
-                    newbg = defaultImages.images.random();
+                    newbg = backgrounds.ids.random();
                     do {
-                        newbg = defaultImages.images.random();
+                        newbg = backgrounds.ids.random();
                     } while (res.rows[0].backgrounds.includes(newbg));
                     res.rows[0].backgrounds.push(newbg);
                     db.query(`UPDATE profiles
@@ -995,7 +556,7 @@ var commands = {
                     });
                 });
             } else if (/^[a-zA-Z0-9]{7}[jp]$/.test(args[1])) {
-                if (!defaultImages.images.includes(args[1])) return sendChat("That image ID does not exist. Did you make sure you capitalized the correct letters? That's important, you know.");
+                if (!backgrounds.ids.includes(args[1])) return sendChat("That image ID does not exist. Did you make sure you capitalized the correct letters? That's important, you know.");
                 db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
                     if (err) return sendChat("```" + err + "```");
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot yet equip a new background. If you want to change that fact, do `x!profile` right now!");
@@ -1009,7 +570,7 @@ var commands = {
                 });
             } else if (args[1].startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
             else return sendChat("Unknown request.");
-        } else if (["lorr", "sidedisplay", "displaylorr", "leftorright", "rightorleft"].includes(args[0])) {
+        } else if (["lorr", "sidedisplay", "displayside", "displaylorr", "leftorright", "rightorleft"].includes(args[0])) {
             if (!args[1]) return sendChat("Left or right? Which side is all your information displayed on in that profile thing I create for you?");
             else if (!['left', 'l', 'right', 'r'].includes(args[1])) return sendChat("I don't know what that means. Nothing you put after \"" + args[0] + "\" means either left or right to me.");
             else {
@@ -1054,7 +615,7 @@ var commands = {
                 });
             });
         } else if (["color", "colors"].includes(args[0])) {
-            if (!args[1]) return sendChat("Please include the color you wish to set your profile color to, and please make it a color hexidecimal (the '#' followed by 3 or 6 digits and letters).");
+            if (!args[1]) return sendChat("Please include the color you wish to set your profile color to, and please make it a hexidecimal value ('#' followed by 3 or 6 digits and/or letters).");
             else if (!RE.color.test(args[1])) return sendChat("That is not a color hexidecimal. Try again.");
             db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
                 if (err) return sendChat("```" + err + "```");
@@ -1063,7 +624,11 @@ var commands = {
                             SET color = '${(args[1].startsWith('#') ? '' : '#') + args[1]}'
                             WHERE id = '${message.author.id}'`, function(err) {
                     if (err) return sendChat("```" + err + "```");
-                    return sendChat("Successfully updated your color to `" + (args[1].startsWith('#') ? '' : '#') + args[1] + "`!");
+                    let canvas = new Canvas(100, 40);
+                    let ctx = canvas.getContext('2d');
+                    ctx.fillStyle = (args[1].startsWith('#') ? '' : '#') + args[1];
+                    ctx.fillRect(0, 0, 100, 40);
+                    return sendChat("Successfully updated your color to `" + (args[1].startsWith('#') ? '' : '#') + args[1] + "`!", new Discord.Attachment(canvas.toBuffer()));
                 });
             });
         } else if (["help"].includes(input)) return sendChat("**Available sub-commands for `x!profile`** (do `x!profile [subcommand]`):\n\n**backgrounds** - opens the background menu for changing your profile's background\n**displaylorr** - allows you to change which side all the text n stuff is displayed on in your profile\n**title** - can display your currently equipped title, your currently owned titles, or allows you to change your currently equipped title (if you know the ID for it)\n**color** - allows you to change the color your profile uses to display text");
@@ -1087,6 +652,7 @@ var commands = {
             embed.setTitle("User Avatar");
             embed.setDescription(`Avatar for <@${member.id}>`);
             embed.setImage(`https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png?size=2048`);
+            embed.setColor(Color.random());
             return sendChat({embed});
         } else return sendChat("Unknown request.");
     },
@@ -1117,7 +683,7 @@ var commands = {
             if (message.channel.type == "dm" || message.channel.nsfw) {
                 embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \`x!nsfw help\` for a list of all the lewds I'm capable of.`);
             }
-            embed.setColor(randomColor());
+            embed.setColor(Color.random()());
             embed.setFooter("Xyvybot version " + version);
             return sendChat({embed});
         } else if (["games", "utility", "profile", "miscellaneous", "misc", "nsfw"].includes(input)) {
@@ -1160,7 +726,7 @@ var commands = {
                         }[i]);
                         embed.addField("Aliases", '`' + guildAliases[i].join("`\n`") + '`');
                         embed.setFooter("Xyvybot version " + version);
-                        embed.setColor(randomColor());
+                        embed.setColor(Color.random()());
                         return sendChat({embed});
                     }
                 }
@@ -1189,7 +755,7 @@ var commands = {
                         }[i]);
                         embed.addField("Aliases", '`' + userAliases[i].join("`\n`") + '`');
                         embed.setFooter("Xyvybot version " + version);
-                        embed.setColor(randomColor());
+                        embed.setColor(Color.random()());
                         return sendChat({embed});
                     }
                 }
@@ -1206,7 +772,7 @@ var commands = {
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Aliases for " + i);
                 embed.setDescription("`" + guildAliases.join("`  `") + "`");
-                embed.setColor(randomColor());
+                embed.setColor(Color.random()());
                 return sendChat({embed});
             }
         }
@@ -1266,7 +832,7 @@ var commands = {
             embed = new Discord.RichEmbed();
             embed.setTitle("Guild ID: " + guild.id);
             embed.setAuthor(guild.name);
-            embed.setColor(randomColor());
+            embed.setColor(Color.random()());
             if (guild.icon != null) embed.setThumbnail(guild.icon);
    
             owner = guild.members.get(guild.ownerID).user;
@@ -1683,7 +1249,12 @@ var commands = {
     },
    
 };
-   
+
+Object.defineProperty(Array.prototype, 'clone', {
+    value: function() {
+        return JSON.parse(JSON.stringify(this));
+    }
+});
 Object.defineProperty(Array.prototype, 'random', {
     value: function(a) {
         if (!a) return this[Math.random() * this.length | 0];
@@ -1699,6 +1270,18 @@ Object.defineProperty(Array.prototype, 'random', {
             for (let i = a; i--;) b.push(this[c[i]]);
             return b;
         }
+    }
+});
+Object.defineProperty(Array.prototype, 'shuffle', {
+    value: function() {
+        let a = JSON.parse(JSON.stringify(this));
+        let b = [];
+        for (let i = 0; i < this.length; i++) {
+            let c = a[Math.random() * a.length | 0];
+            b.push(c);
+            a.splice(a.indexOf(c), 1);
+        }
+        return b;
     }
 });
    
