@@ -7,7 +7,7 @@ const GifEncoder = require("gif-encoder");
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
    
-var version = "2.22.2.4";
+var version = "2.22.2.5";
 var pingtime = {};
 var pingtimer = {};
 var titleChannels = {};
@@ -1667,7 +1667,7 @@ var commands = {
                     }
                 }
                 if (!b) sendChat("```" + err + "``````\n" + Err.join("\n") + "```");
-                else sendChat("```" + err + "``````" + b[0] + '\n' + ' '.repeat(b[1]) + "^``````\n" + Err.join("\n") + "```");
+                else sendChat("```" + err + "``````" + b[0] + '\n' + ' '.repeat(b[1]) + "^```");
             }
         }
     },
