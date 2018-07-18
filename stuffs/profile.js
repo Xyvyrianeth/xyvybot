@@ -1,6 +1,6 @@
 const canvas = require('canvas');
-var color = require('./color.js');
-var titles = require('./titles.json');
+var color = require('./stuffs/color.js');
+var titles = require('./stuffs/titles.json');
 
 exports.card = function(username, profile, background, avatar) {
     // Set the picture
