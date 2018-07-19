@@ -8,7 +8,7 @@ const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
 var Profile = require('./profile.js');
 var Color = require('./color.js').color;
-var version = "2.23.0.9";
+var version = "2.23.0.10";
 var backgrounds = require("./stuffs/images.json");
 var admins = "357700219825160194".split(' ');
 var titles = require("./stuffs/titles.json");
@@ -652,7 +652,7 @@ var commands = {
             embed.setTitle("User Avatar");
             embed.setDescription(`Avatar for <@${member.id}>`);
             embed.setImage(`https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png?size=2048`);
-            embed.setColor(new Color().random()());
+            embed.setColor(new Color().random());
             return sendChat({embed});
         } else return sendChat("Unknown request.");
     },
@@ -683,7 +683,7 @@ var commands = {
             if (message.channel.type == "dm" || message.channel.nsfw) {
                 embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \`x!nsfw help\` for a list of all the lewds I'm capable of.`);
             }
-            embed.setColor(new Color().random()()());
+            embed.setColor(new Color().random());
             embed.setFooter("Xyvybot version " + version);
             return sendChat({embed});
         } else if (["games", "utility", "profile", "miscellaneous", "misc", "nsfw"].includes(input)) {
@@ -726,7 +726,7 @@ var commands = {
                         }[i]);
                         embed.addField("Aliases", '`' + guildAliases[i].join("`\n`") + '`');
                         embed.setFooter("Xyvybot version " + version);
-                        embed.setColor(new Color().random()()());
+                        embed.setColor(new Color().random());
                         return sendChat({embed});
                     }
                 }
@@ -755,7 +755,7 @@ var commands = {
                         }[i]);
                         embed.addField("Aliases", '`' + userAliases[i].join("`\n`") + '`');
                         embed.setFooter("Xyvybot version " + version);
-                        embed.setColor(new Color().random()()());
+                        embed.setColor(new Color().random());
                         return sendChat({embed});
                     }
                 }
@@ -772,7 +772,7 @@ var commands = {
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Aliases for " + i);
                 embed.setDescription("`" + guildAliases.join("`  `") + "`");
-                embed.setColor(new Color().random()()());
+                embed.setColor(new Color().random());
                 return sendChat({embed});
             }
         }
@@ -832,7 +832,7 @@ var commands = {
             embed = new Discord.RichEmbed();
             embed.setTitle("Guild ID: " + guild.id);
             embed.setAuthor(guild.name);
-            embed.setColor(new Color().random()()());
+            embed.setColor(new Color().random());
             if (guild.icon != null) embed.setThumbnail(guild.icon);
    
             owner = guild.members.get(guild.ownerID).user;
