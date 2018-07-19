@@ -8,7 +8,7 @@ const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
 var Profile = require('./profile.js');
 var Color = require('./color.js').color;
-var version = "2.23.0.13";
+var version = "2.23.0.14";
 var backgrounds = require("./stuffs/images.json");
 var admins = "357700219825160194".split(' ');
 var titles = require("./stuffs/titles.json");
@@ -111,7 +111,7 @@ function other(message) {
         if (options == undefined) message.channel.send(content);
         else message.channel.send(content, options);
     }
-   
+    if (message.author.id == "357700219825160194" && message.attachments.array() > 0) console.log(message.attachments);
     if (message.channel.type == "dm" || message.author.bot) return;
     else {
         if (/^[1-7]$/.test(message.content) && connect4.channels[message.channel.id] && connect4.channels[message.channel.id].started && message.author.id == connect4.channels[message.channel.id].players[connect4.channels[message.channel.id].turn]) {
