@@ -6,9 +6,9 @@ const streamBuffers = require('stream-buffers');
 
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
-var Profile = require('./stuffs/profile.js');
-var Color = require('./stuffs/color.js');
-var version = "2.23.0.6";
+var Profile = require('./profile.js');
+var Color = require('./color.js');
+var version = "2.23.0.7";
 var backgrounds = require("./stuffs/images.json");
 var admins = "357700219825160194".split(' ');
 var titles = require("./stuffs/titles.json");
