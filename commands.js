@@ -8,7 +8,7 @@ const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
 var Profile = require('./profile.js');
 var Color = require('./color.js').color;
-var version = "2.23.0.10";
+var version = "2.23.0.11";
 var backgrounds = require("./stuffs/images.json");
 var admins = "357700219825160194".split(' ');
 var titles = require("./stuffs/titles.json");
@@ -82,7 +82,10 @@ function command(message) {
             } catch (error) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let a = [];
-                for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
+                for (let i = 0; i < error.stack.split('\n').length; i++) {
+                    if (error.stack.split('\n')[i].includes("at emitOne")) break
+                    else a.push(error.stack.split('\n')[i]);
+                }
                 client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
             }
     } else for (let i in guildAliases) {
@@ -92,7 +95,10 @@ function command(message) {
             } catch (error) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let a = [];
-                for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
+                for (let i = 0; i < error.stack.split('\n').length; i++) {
+                    if (error.stack.split('\n')[i].includes("at emitOne")) break
+                    else a.push(error.stack.split('\n')[i]);
+                }
                 client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
             }
     }
@@ -116,7 +122,10 @@ function other(message) {
                 delete connect4.channels[message.channel.id];
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
                 let a = [];
-                for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
+                for (let i = 0; i < error.stack.split('\n').length; i++) {
+                    if (error.stack.split('\n')[i].includes("at emitOne")) break
+                    else a.push(error.stack.split('\n')[i]);
+                }
                 client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
             }
         }
@@ -133,7 +142,10 @@ function other(message) {
                     delete squares.channels[message.channel.id];
                     sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
                     let a = [];
-                    for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
+                    for (let i = 0; i < error.stack.split('\n').length; i++) {
+                        if (error.stack.split('\n')[i].includes("at emitOne")) break
+                        else a.push(error.stack.split('\n')[i]);
+                    }
                     client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
                 }
             }
@@ -146,7 +158,10 @@ function other(message) {
                 delete othello.channels[message.channel.id];
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
                 let a = [];
-                for (let i = 0; i < 5; i++) a.push(error.stack.split('\n')[i]);
+                for (let i = 0; i < error.stack.split('\n').length; i++) {
+                    if (error.stack.split('\n')[i].includes("at emitOne")) break
+                    else a.push(error.stack.split('\n')[i]);
+                }
                 client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
             }
         }
