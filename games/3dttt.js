@@ -65,7 +65,7 @@ exports.startGame = function(channel, player2) {
  
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
  
-    return ["The game has started!", new Discord.MessageAttachment(exports.drawBoard(game), `${shortname}_0.png`)];
+    return ["The game has started!", new Discord.Attachment(exports.drawBoard(game), `${shortname}_0.png`)];
 }
  
 exports.drawBoard = function(game, end) {
@@ -76,7 +76,7 @@ exports.drawBoard = function(game, end) {
  
     //
      
-    return new Discord.MessageAttachment(canvas.toBuffer());
+    return new Discord.Attachment(canvas.toBuffer());
 }
  
 exports.takeTurn = function(channel, move) {
@@ -97,7 +97,7 @@ exports.takeTurn = function(channel, move) {
 exports.nextTurn = function(channel, end) {
     let game = exports.channels[channel.id];
     if (end == 0) game.turn = game.turn == 0 ? 1 : 0;
-    board = new Discord.MessageAttachment(exports.drawBoard(game, end, highlight), `${shortname}_${end}.png`);
+    board = new Discord.Attachment(exports.drawBoard(game, end, highlight), `${shortname}_${end}.png`);
     if (exports.channels[channel.id].lastDisplay) exports.channels[channel.id].lastDisplay.delete();
     if (end != 0) {
         delete exports.channels[channel.id];

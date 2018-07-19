@@ -51,7 +51,7 @@ exports.startGame = function(channel, player2) {
   
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
   
-    return ["The game has started! <@" + game.players[0] + "> will be black, and <@" + game.players[1] + "> will be white!\n\nThe small green circles are the places you can put a stone.\nTo place a stone, say the letter of the row and the number of the column, like \"F4\".", new Discord.MessageAttachment(exports.drawBoard(game, 0), `${shortname}_${game.players[0]}vs${game.players[1]}.png`)];
+    return ["The game has started! <@" + game.players[0] + "> will be black, and <@" + game.players[1] + "> will be white!\n\nThe small green circles are the places you can put a stone.\nTo place a stone, say the letter of the row and the number of the column, like \"F4\".", new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_${game.players[0]}vs${game.players[1]}.png`)];
 }
   
 exports.drawBoard = function(game, end) {
@@ -298,13 +298,13 @@ exports.nextTurn = function(channel, save) {
     let game = exports.channels[channel.id];
     game.turn = game.turn == 0 ? 1 : 0;
     board = exports.drawBoard(game, false);
-    board = new Discord.MessageAttachment(board, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+    board = new Discord.Attachment(board, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     if (game.possible.length == 0) {
         game.turn = game.turn == 0 ? 1 : 0;
-        board = new Discord.MessageAttachment(exports.drawBoard(game, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+        board = new Discord.Attachment(exports.drawBoard(game, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
         if (game.possible.length == 0) {
             board = exports.drawBoard(game, true);
-            board = new Discord.MessageAttachment(board, game.score[0] !== game.score[1] ? `${shortname}_1_${game.players[game.winner]}.png` : `${shortname}_2_${game.players[0]}vs${game.players[1]}.png`);
+            board = new Discord.Attachment(board, game.score[0] !== game.score[1] ? `${shortname}_1_${game.players[game.winner]}.png` : `${shortname}_2_${game.players[0]}vs${game.players[1]}.png`);
         }
     }
     if (exports.channels[channel.id].lastDisplay) exports.channels[channel.id].lastDisplay.delete();
