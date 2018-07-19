@@ -8,7 +8,7 @@ const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
 var Profile = require('./profile.js');
 var Color = require('./color.js').color;
-var version = "2.23.0.12";
+var version = "2.23.0.13";
 var backgrounds = require("./stuffs/images.json");
 var admins = "357700219825160194".split(' ');
 var titles = require("./stuffs/titles.json");
@@ -1000,11 +1000,11 @@ var commands = {
     },
    
     "nekos": function(cmd, args, input, message, sendChat, user) {
-        Nekos.getSFWNeko().then(neko => sendChat(new Discord.RichEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life")));
+        Nekos.getSFWNeko().then(neko => sendChat(new Discord.RichEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
     },
    
     "cats": function(cmd, args, input, message, sendChat, user) {
-        Nekos.getSFWCat().then(cat => sendChat(new Discord.RichEmbed().setImage(cat.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life")));
+        Nekos.getSFWCat().then(cat => sendChat(new Discord.RichEmbed().setImage(cat.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
     },
 
     "calc": function(cmd, args, input, message, sendChat, user) {
@@ -1179,6 +1179,7 @@ var commands = {
             embed.setDescription("If you don't really care what kind of lewd you want, just do `x!nsfw`\nIf you *do* care, do `x!nsfw [category]`\nThese are all my available NSFW categories:\n`Gif  Pussy  NekoGif  Neko  Lesbian  Kuni  Cumsluts  Classic  Boobs  Bj  Anal`\n\nHappy fapping~");
             embed.setTitle("NSFW Command help");
             embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random())
             return Nekos.getNSFWNeko().then(help => sendChat(embed.setImage(help.url)));
         }
         if (!input) {
@@ -1196,7 +1197,7 @@ var commands = {
                 "bj": "if you like watching girls give blowjobs~",
                 "anal": "if you enjoy watching girls getting fucked in the ass!"
             }[type.replace("RandomHentai", "").toLowerCase()];
-            return Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~\nDo \`x!nsfw ${type.replace("RandomHentai", "").toLowerCase()}\` ${desc}\nDo \`x!nsfw help\` to see all the kinds of lewds I can do~`).setFooter("Powered by Nekos.Life")));
+            return Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~\nDo \`x!nsfw ${type.replace("RandomHentai", "").toLowerCase()}\` ${desc}\nDo \`x!nsfw help\` to see all the kinds of lewds I can do~`).setFooter("Powered by Nekos.Life").setColor(new Color().random())));
         }
         if (!["gif", "pussy", "neko", "lesbian", "yuri", "kuni", "cumslut", "cumsluts", "classic", "boobs", "tits", "boobies", "titties", "bj", "blowjob", "anal"].includes(input))
             return sendChat("Sorry, I don't have that");
@@ -1219,7 +1220,7 @@ var commands = {
             "blowjob": ["Bj", "Have an anime blowjob~"],
             "anal": ["Anal", "Have some anime anal sex~"],
         }[input];
-        return Nekos["getNSFW" + type[0]]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(type[1]).setFooter("Powered by Nekos.Life")));
+        return Nekos["getNSFW" + type[0]]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(type[1]).setFooter("Powered by Nekos.Life").setColor(new Color().random())));
     },
    
     // Admin-only
