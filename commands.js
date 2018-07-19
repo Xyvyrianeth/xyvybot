@@ -179,28 +179,28 @@ function bot(message) {
             if (err) return message.channel.send("```" + err + "```");
             let result = false;
             if (connect4.channels[message.channel.id]) {
-                if (/connect4_0_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].file.name)) return connect4.channels[message.channel.id].lastDisplay = message;
-                if (/connect4_1_[0-9]{1,}\.png/.test(message.attachments.array()[0].file.name)) {
+                if (/connect4_0_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return connect4.channels[message.channel.id].lastDisplay = message;
+                if (/connect4_1_[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) {
                     game = connect4.channels[message.channel.id];
                     result.winner = game.players[game.winner];
                     result.loser = game.players[game.winner == 0 ? 1 : 0];
                     result.game = "1";
                     delete connect4.channels[message.channel.id];
                 }
-                if (/connect4_2_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].file.name)) return delete connect4.channels[message.channel.id];
+                if (/connect4_2_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete connect4.channels[message.channel.id];
             } else if (squares.channels[message.channel.id]) {
-                if (/squares_0_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].file.name)) return squares.channels[message.channel.id].lastDisplay = message;
-                if (/squares_1_1?[0-9]_[0-9]{1,}\.png/.test(message.attachments.array()[0].file.name)) {
+                if (/squares_0_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return squares.channels[message.channel.id].lastDisplay = message;
+                if (/squares_1_1?[0-9]_[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) {
                     game = squares.channels[message.channel.id];
                     result.winner = game.players[game.winner];
                     result.loser = game.players[game.winner == 0 ? 1 : 0];
                     result.game = "2";
                     delete squares.channels[message.channel.id];
                 }
-                if (/squares_2_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].file.name)) return delete squares.channels[message.channel.id];
+                if (/squares_2_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete squares.channels[message.channel.id];
             } else if (othello.channels[message.channel.id]) {
-                if (/othello_0_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].file.name)) return othello.channels[message.channel.id].lastDisplay = message;
-                if (/othello_1_[0-9]{1,}\.png/.test(message.attachments.array()[0].file.name)) {
+                if (/othello_0_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return othello.channels[message.channel.id].lastDisplay = message;
+                if (/othello_1_[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) {
                     game = othello.channels[message.channel.id];
                     result.winner = game.players[game.winner];
                     result.loser = game.players[game.winner == 0 ? 1 : 0];
@@ -208,7 +208,7 @@ function bot(message) {
                     result.score = game.score;
                     delete othello.channels[message.channel.id];
                 }
-                if (/othello_2_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].file.name)) return delete othello.channels[message.channel.id];
+                if (/othello_2_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete othello.channels[message.channel.id];
             }
             if (result) {
                 let wins = false;
