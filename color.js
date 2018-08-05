@@ -83,6 +83,12 @@ Color.addToMap = function(hexa, name) {
 	Color.map[name] = new Color(hexa);
 };
 
+exports.rgb = Color;
+
+/*
+Color Names
+*/
+
 Color.addToMap("#7CB9E8", "Aero");
 Color.addToMap("#C9FFE5", "Aero blue");
 Color.addToMap("#B284BE", "African purple");
@@ -1043,5 +1049,3 @@ Color.addToMap("#FFF000", "Yellow rose");
 Color.addToMap("#0014A8", "Zaffre");
 Color.addToMap("#2C1608", "Zinnwaldite brown");
 Color.addToMap("#39A78E", "Zomp");
-
-exports.color = Color;
