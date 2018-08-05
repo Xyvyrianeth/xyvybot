@@ -2,6 +2,13 @@ const canvas = require('canvas');
 var Color = require('./color.js');
 var titles = require('./stuffs/titles.json');
 
+function newResolution(width, height) {
+    if (height <= 300 && width <= 400) return [width, height];
+    if (height / width == 0.75)        return [400, 300];
+    if (height / width <  0.75)        return [400, Math.round(height / width * 400)];
+    if (height / width >  0.75)        return [Math.round(width / height * 300), 300];
+}
+
 exports.card = function(username, profile, background, avatar) {
     // Set the picture
     res = newResolution(background.width, background.height);

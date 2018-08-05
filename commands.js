@@ -1,3 +1,5 @@
+var version = "2.23.0.17";
+
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const Jimp = require("jimp");
@@ -6,18 +8,18 @@ const streamBuffers = require('stream-buffers');
 
 const client = require("./Xyvy.js").client;
 const config = require("./Xyvy.js").config;
+
 var Profile = require('./profile.js');
 var Color = require('./color.js').color;
-var version = "2.23.0.16";
-var backgrounds = require("./stuffs/images.json");
-var admins = "357700219825160194".split(' ');
 var titles = require("./stuffs/titles.json");
+var backgrounds = require("./stuffs/images.json");
 
 var connect4 = require("./games/connect4.js");
 var squares = require("./games/squares.js");
 var othello = require("./games/othello.js");
 var gomoku = require("./games/gomoku.js");
 
+var admins = "357700219825160194".split(' ');
 var RE = {
     ping: /^<@[0-9]{1,}>$/,
     id1: /[0-9]{1,}/,
@@ -315,13 +317,6 @@ function newUser(id, channel) {
         if (err) return channel.send("```" + err + "```");
     });
     return { id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lorr: "right", money: 0, wins1: 0,  lose1: 0,  wins2: 0,  lose2: 0,  wins3: 0,  lose3: 0,  wins4: 0,  lose4: 0,  wins5: 0,  lose5: 0 };
-}
-   
-function newResolution(width, height) {
-    if (height <= 300 && width <= 400) return [width, height];
-    if (height / width == 0.75)        return [400, 300];
-    if (height / width <  0.75)        return [400, Math.round(height / width * 400)];
-    if (height / width >  0.75)        return [Math.round(width / height * 300), 300];
 }
    
 var guildAliases = {
