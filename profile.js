@@ -1,4 +1,4 @@
-const canvas = require('canvas');
+const Canvas = require('canvas');
 var Color = require('./color.js');
 var titles = require('./stuffs/titles.json');
 
