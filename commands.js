@@ -1,4 +1,4 @@
-var version = "2.23.1.0";
+var version = "2.23.1.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -99,7 +99,7 @@ function other(message) {
     if (message.channel.type == "dm" || message.author.bot) return;
 
     for (let i in games) {
-        if (games[i].channels[message.channel.id].RE.test(message.content) && games[i].channels[message.channel.id] && games[i].channels[message.channel.id].started && message.author.id == games[i].channels[message.channel.id].player) {
+        if (games[i].channels[message.channel.id] && games[i].channels[message.channel.id].started && message.author.id == games[i].channels[message.channel.id].player && games[i].channels[message.channel.id].RE.test(message.content)) {
             message.delete();
             try {
                 return sendChat(games[i].takeTurn(message.channel, message.content));
