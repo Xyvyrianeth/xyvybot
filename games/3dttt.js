@@ -15,7 +15,7 @@ exports.timer = setInterval(function() {
 }, 10);
  
 exports.newGame = function(channel, player1, cmd) {
-    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:''};
+    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:'',player:false,RE:/stuff/};
     game = exports.channels[channel.id];
     game.board = {
         '1': {
@@ -64,6 +64,7 @@ exports.startGame = function(channel, player2) {
     }
  
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
+    game.player = game.players[0];
  
     return ["The game has started!", new Discord.Attachment(exports.drawBoard(game), `${shortname}_0.png`)];
 }
@@ -96,7 +97,10 @@ exports.takeTurn = function(channel, move) {
  
 exports.nextTurn = function(channel, end) {
     let game = exports.channels[channel.id];
-    if (end == 0) game.turn = game.turn == 0 ? 1 : 0;
+    if (end == 0) {
+        game.turn = game.turn == 0 ? 1 : 0;
+        game.player = game.players[game.turn];
+    }
     board = new Discord.Attachment(exports.drawBoard(game, end, highlight), `${shortname}_${end}.png`);
     if (exports.channels[channel.id].lastDisplay) exports.channels[channel.id].lastDisplay.delete();
     if (end != 0) {

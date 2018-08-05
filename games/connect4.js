@@ -15,7 +15,7 @@ exports.timer = setInterval(function() {
 }, 10);
  
 exports.newGame = function(channel, player1, cmd) {
-    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:''};
+    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:'',player:false,RE:/^[1-7]$/};
     game = exports.channels[channel.id];
     game.board = [[],[],[],[],[],[],[]];
     game.channel = channel;
@@ -40,6 +40,7 @@ exports.startGame = function(channel, player2) {
     }
  
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
+    game.player = game.players[0];
  
     return ["The game has started! <@" + game.players[0] + "> will be red, and <@" + game.players[1] + "> will be blue!\n\nTo place a piece, just say the number of the column you wish to place in.", new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
 }
@@ -197,7 +198,10 @@ exports.takeTurn = function(channel, move) {
  
 exports.nextTurn = function(channel, end, highlight) {
     let game = exports.channels[channel.id];
-    if (end == 0) game.turn = game.turn == 0 ? 1 : 0;
+    if (end == 0) {
+        game.turn = game.turn == 0 ? 1 : 0;
+        game.player = game.players[game.turn];
+    }
     board = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
     if (exports.channels[channel.id].lastDisplay) exports.channels[channel.id].lastDisplay.delete();
     return board;

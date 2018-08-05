@@ -1,4 +1,4 @@
-var version = "2.23.0.19";
+var version = "2.23.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -6,18 +6,12 @@ const Jimp = require("jimp");
 const GIFEncoder = require("gifencoder");
 const streamBuffers = require('stream-buffers');
 
-const client = require("./Xyvy.js").client;
-const config = require("./Xyvy.js").config;
-
+var client = require("./Xyvy.js").client;
+var config = require("./Xyvy.js").config;
 var Profile = require('./profile.js');
-var Color = require('./color.js').color;
+var Color = require('./color.js').rgb;
 var titles = require("./stuffs/titles.json");
 var backgrounds = require("./stuffs/images.json");
-
-var connect4 = require("./games/connect4.js");
-var squares = require("./games/squares.js");
-var othello = require("./games/othello.js");
-var gomoku = require("./games/gomoku.js");
 
 var admins = "357700219825160194".split(' ');
 var RE = {
@@ -60,50 +54,39 @@ var requestTimer = setInterval(function() {
         if (requestTimers[i] == 0) delete requestTimers[i];
     }
 }, 10);
-   
+var games = {
+    connect4: require("./games/connect4.js"),
+    squares: require("./games/squares.js"),
+    othello: require("./games/othello.js"),
+    gomoku: require("./games/gomoku.js")
+}
 
 function command(message) {
   
-    a = message.channel.type == "dm";
-      
-    let args = message.content.split(/ {1,}/),
-        cmd = args.shift().replace("x!", '').toLowerCase(),
-        input = args.join(' '),
-        user = a ? message.channel.recipient : message.channel.guild.members.get(message.author.id);
-   
+    let a = message.channel.type == "dm" ? "user" : "guild";
+    let args = message.content.split(/ {1,}/);
+    let cmd = args.shift().replace("x!", '').toLowerCase();
+    let input = args.join(' ');
+    let user = a == "user" ? message.channel.recipient : message.channel.guild.members.get(message.author.id);
     let sendChat = function(content, options) {
         if (typeof content == "string") content = content.replace(/\$user\$/g, `<@${message.author.id}>`);
         if (options == undefined) message.channel.send(content);
         else message.channel.send(content, options);
     }
    
-    if (a) for (let i in userAliases) {
-        if (userAliases[i].includes(cmd))
+    for (let i in aliases[a])
+        if (aliases[a][i].includes(cmd))
             try {
                 return commands[i](cmd, args, input, message, sendChat, user, a);
             } catch (error) {
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
-                let a = [];
+                let errs = [];
                 for (let i = 0; i < error.stack.split('\n').length; i++) {
                     if (error.stack.split('\n')[i].includes("at emitOne")) break
-                    else a.push(error.stack.split('\n')[i]);
+                    else errs.push(error.stack.split('\n')[i]);
                 }
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, errs));
             }
-    } else for (let i in guildAliases) {
-        if (guildAliases[i].includes(cmd))
-            try {
-                return commands[i](cmd, args, input, message, sendChat, user, a);
-            } catch (error) {
-                sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
-                let a = [];
-                for (let i = 0; i < error.stack.split('\n').length; i++) {
-                    if (error.stack.split('\n')[i].includes("at emitOne")) break
-                    else a.push(error.stack.split('\n')[i]);
-                }
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
-            }
-    }
    
 }
    
@@ -114,56 +97,21 @@ function other(message) {
         else message.channel.send(content, options);
     }
     if (message.channel.type == "dm" || message.author.bot) return;
-    else {
-        if (/^[1-7]$/.test(message.content) && connect4.channels[message.channel.id] && connect4.channels[message.channel.id].started && message.author.id == connect4.channels[message.channel.id].players[connect4.channels[message.channel.id].turn]) {
+
+    for (let i in games) {
+        if (games[i].channels[message.channel.id].RE.test(message.content) && games[i].channels[message.channel.id] && games[i].channels[message.channel.id].started && message.author.id == games[i].channels[message.channel.id].player) {
             message.delete();
             try {
-                return sendChat(connect4.takeTurn(message.channel, message.content));
+                return sendChat(games[i].takeTurn(message.channel, message.content));
             } catch (error) {
-                delete connect4.channels[message.channel.id];
+                delete games.connect4.channels[message.channel.id];
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
                 let a = [];
                 for (let i = 0; i < error.stack.split('\n').length; i++) {
                     if (error.stack.split('\n')[i].includes("at emitOne")) break
                     else a.push(error.stack.split('\n')[i]);
                 }
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
-            }
-        }
-        if (squares.channels[message.channel.id] && squares.channels[message.channel.id].started && message.author.id == squares.channels[message.channel.id].players[Math.floor(squares.channels[message.channel.id].turn)]) {
-            let k = squares.channels[message.channel.id].size;
-            let a = 'abcdefghijklmno'[k - 1];
-            if (k < 10) b = "[1-" + k + "]";
-            else b = "(1[0-" + (k - 10) + "]|[1-9])";
-            if (new RegExp(`^([a-${a}]${b}|${b}[a-${a}])$`, 'i').test(message.content)) {
-                message.delete();
-                try {
-                    return sendChat(squares.takeTurn(message.channel, [message.content.match(new RegExp(`(${b})`))[0] - 1, "abcdefghijklmno".split('').indexOf(message.content.toLowerCase().match(new RegExp(`[a-${a}]`))[0])]));
-                } catch (error) {
-                    delete squares.channels[message.channel.id];
-                    sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-                    let a = [];
-                    for (let i = 0; i < error.stack.split('\n').length; i++) {
-                        if (error.stack.split('\n')[i].includes("at emitOne")) break
-                        else a.push(error.stack.split('\n')[i]);
-                    }
-                    client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
-                }
-            }
-        }
-        if (/^([a-h][1-8]|[1-8][a-h])$/i.test(message.content) && othello.channels[message.channel.id] && othello.channels[message.channel.id].started && message.author.id == othello.channels[message.channel.id].players[othello.channels[message.channel.id].turn]) {
-            message.delete();
-            try {
-                return sendChat(othello.takeTurn(message.channel, [message.content.match(/[1-8]/)[0] - 1, "abcdefgh".split('').indexOf(message.content.toLowerCase().match(/[a-h]/)[0])]));
-            } catch (error) {
-                delete othello.channels[message.channel.id];
-                sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-                let a = [];
-                for (let i = 0; i < error.stack.split('\n').length; i++) {
-                    if (error.stack.split('\n')[i].includes("at emitOne")) break
-                    else a.push(error.stack.split('\n')[i]);
-                }
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a));
+                return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a)); 
             }
         }
     }
@@ -172,44 +120,44 @@ function other(message) {
 function bot(message) {
     if (message.attachments.array().length != 0) {
         let ids;
-        if (othello.channels[message.channel.id]) ids = othello.channels[message.channel.id].players;
-        else if (squares.channels[message.channel.id]) ids = squares.channels[message.channel.id].players;
-        else if (connect4.channels[message.channel.id]) ids = connect4.channels[message.channel.id].players;
+        if (games.othello.channels[message.channel.id]) ids = games.othello.channels[message.channel.id].players;
+        else if (games.squares.channels[message.channel.id]) ids = games.squares.channels[message.channel.id].players;
+        else if (games.connect4.channels[message.channel.id]) ids = games.connect4.channels[message.channel.id].players;
         else return;
         db.query(`SELECT * FROM profiles WHERE id = '${ids[0]}' OR id = '${ids[1]}'`, function(err, res) {
             if (err) return message.channel.send("```" + err + "```");
             let result = false;
-            if (connect4.channels[message.channel.id]) {
-                if (/connect4_0_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return connect4.channels[message.channel.id].lastDisplay = message;
+            if (games.connect4.channels[message.channel.id]) {
+                if (/connect4_0_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return games.connect4.channels[message.channel.id].lastDisplay = message;
                 if (/connect4_1_[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) {
-                    game = connect4.channels[message.channel.id];
+                    game = games.connect4.channels[message.channel.id];
                     result.winner = game.players[game.winner];
                     result.loser = game.players[game.winner == 0 ? 1 : 0];
                     result.game = "1";
-                    delete connect4.channels[message.channel.id];
+                    delete games.connect4.channels[message.channel.id];
                 }
-                if (/connect4_2_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete connect4.channels[message.channel.id];
-            } else if (squares.channels[message.channel.id]) {
-                if (/squares_0_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return squares.channels[message.channel.id].lastDisplay = message;
+                if (/connect4_2_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete games.connect4.channels[message.channel.id];
+            } else if (games.squares.channels[message.channel.id]) {
+                if (/squares_0_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return games.squares.channels[message.channel.id].lastDisplay = message;
                 if (/squares_1_1?[0-9]_[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) {
-                    game = squares.channels[message.channel.id];
+                    game = games.squares.channels[message.channel.id];
                     result.winner = game.players[game.winner];
                     result.loser = game.players[game.winner == 0 ? 1 : 0];
                     result.game = "2";
-                    delete squares.channels[message.channel.id];
+                    delete games.squares.channels[message.channel.id];
                 }
-                if (/squares_2_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete squares.channels[message.channel.id];
-            } else if (othello.channels[message.channel.id]) {
-                if (/othello_0_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return othello.channels[message.channel.id].lastDisplay = message;
+                if (/squares_2_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete games.squares.channels[message.channel.id];
+            } else if (games.othello.channels[message.channel.id]) {
+                if (/othello_0_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return games.othello.channels[message.channel.id].lastDisplay = message;
                 if (/othello_1_[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) {
-                    game = othello.channels[message.channel.id];
+                    game = games.othello.channels[message.channel.id];
                     result.winner = game.players[game.winner];
                     result.loser = game.players[game.winner == 0 ? 1 : 0];
                     result.game = "3";
                     result.score = game.score;
-                    delete othello.channels[message.channel.id];
+                    delete games.othello.channels[message.channel.id];
                 }
-                if (/othello_2_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete othello.channels[message.channel.id];
+                if (/othello_2_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete games.othello.channels[message.channel.id];
             }
             if (result) {
                 let wins = false;
@@ -282,9 +230,9 @@ function bot(message) {
             }
         });
     } else {
-        if (message.content.includes("is now requesting a new game of Connect Four")) return connect4.channels[message.channel.id].lastDisplay = message;
-        if (message.content.includes("is now requesting a new game of Squares")) return squares.channels[message.channel.id].lastDisplay = message;
-        if (message.content.includes("is now requesting a new game of Othello")) return othello.channels[message.channel.id].lastDisplay = message;
+        if (message.content.includes("is now requesting a new game of Connect Four")) return games.connect4.channels[message.channel.id].lastDisplay = message;
+        if (message.content.includes("is now requesting a new game of Squares")) return games.squares.channels[message.channel.id].lastDisplay = message;
+        if (message.content.includes("is now requesting a new game of Othello")) return games.othello.channels[message.channel.id].lastDisplay = message;
         if ([
             "Column is full, please pick another.",
             "There's already a stone there, pick another spot!",
@@ -318,69 +266,72 @@ function newUser(id, channel) {
     });
     return { id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lorr: "right", money: 0, wins1: 0,  lose1: 0,  wins2: 0,  lose2: 0,  wins3: 0,  lose3: 0,  wins4: 0,  lose4: 0,  wins5: 0,  lose5: 0 };
 }
-   
-var guildAliases = {
-    // Games
-    "connect4": ["connectfour", "connect4", "cfour", "c4"],
-    "squares": ["squares"],
-    "othello": ["othello"],
-    "profile": ["profile", "scorecard", "prof"],
-   
-    // Utility
-    "help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
-    "avatar": ["avatar", "pfp"],
-    "aliases": ["aliases"],
-    "guild": ["guild", "server"],
-    "kick": ["kick"],
-    "ban": ["ban"],
-   
-    // Miscellaneous
-    "anime": ["anime"],
-    "manga": ["manga"],
-    "jisho": ["jisho", "kanji", "japanese", "jp"],
-    "jshelp": ["jshelp", "javascript"],
-    "nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
-    "cats": ["cats", "cat", "meow"],
-    "calc": ["calc"],
-    "graph": ["graph"],
-   
-    // NSFW
-    "nsfw": ["nsfw", "hentai", "lewd", "porn"],
-   
-    // Admin-only
-    "js": ["js"],
-    "pg": ["pg"],
-};
-var userAliases = {
-    // Games
-    "profile": ["profile", "scorecard", "prof"],
 
-    // Small Games
-   
-    // Utility
-    "help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
-    "avatar": ["avatar", "pfp"],
-    "aliases": ["aliases"],
-    "bug": ["reportbug", "bugreport", "bug", "report"],
-    "request": ["request", "suggest", "suggestion", "requestion"],
-   
-    // Miscellaneous
-    "anime": ["anime"],
-    "manga": ["manga"],
-    "jisho": ["jisho", "kanji", "japanese", "jp"],
-    "jshelp": ["jshelp", "javascript"],
-    "nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
-    "cats": ["cats", "cat", "meow"],
-    "calc": ["calc"],
-    "graph": ["graph"],
-   
-    // NSFW
-    "nsfw": ["nsfw", "hentai", "lewd", "porn"],
-   
-    // Admin-only
-    "js": ["js"],
-    "pg": ["pg"],
-};
+var aliases = {
+    guild: {
+        // Games
+        "connect4": ["connectfour", "connect4", "cfour", "c4"],
+        "squares": ["squares"],
+        "othello": ["othello"],
+        "profile": ["profile", "scorecard", "prof"],
+       
+        // Utility
+        "help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
+        "avatar": ["avatar", "pfp"],
+        "aliases": ["aliases"],
+        "guild": ["guild", "server"],
+        "kick": ["kick"],
+        "ban": ["ban"],
+       
+        // Miscellaneous
+        "anime": ["anime"],
+        "manga": ["manga"],
+        "jisho": ["jisho", "kanji", "japanese", "jp"],
+        "jshelp": ["jshelp", "javascript"],
+        "nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
+        "cats": ["cats", "cat", "meow"],
+        "calc": ["calc"],
+        "graph": ["graph"],
+       
+        // NSFW
+        "nsfw": ["nsfw", "hentai", "lewd", "porn"],
+       
+        // Admin-only
+        "js": ["js"],
+        "pg": ["pg"],
+    },
+    user: {
+        // Games
+        "profile": ["profile", "scorecard", "prof"],
+    
+        // Small Games
+       
+        // Utility
+        "help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
+        "avatar": ["avatar", "pfp"],
+        "aliases": ["aliases"],
+        "bug": ["reportbug", "bugreport", "bug", "report"],
+        "request": ["request", "suggest", "suggestion", "requestion"],
+       
+        // Miscellaneous
+        "anime": ["anime"],
+        "manga": ["manga"],
+        "jisho": ["jisho", "kanji", "japanese", "jp"],
+        "jshelp": ["jshelp", "javascript"],
+        "nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
+        "cats": ["cats", "cat", "meow"],
+        "calc": ["calc"],
+        "graph": ["graph"],
+       
+        // NSFW
+        "nsfw": ["nsfw", "hentai", "lewd", "porn"],
+       
+        // Admin-only
+        "js": ["js"],
+        "pg": ["pg"],
+    }
+}
+
 var commands = {
    
     // Games
@@ -388,26 +339,26 @@ var commands = {
         if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
         if (!input) return sendChat(`__**Connect Four**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(input)) {
-            if (!connect4.channels[message.channel.id]) return sendChat(connect4.newGame(message.channel, message.author.id, cmd));
-            if (!connect4.channels[message.channel.id].started) {
-                if (message.author.id != connect4.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
-                    k = connect4.startGame(message.channel, message.author.id);
+            if (!games.connect4.channels[message.channel.id]) return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd));
+            if (!games.connect4.channels[message.channel.id].started) {
+                if (message.author.id != games.connect4.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+                    k = games.connect4.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
             }
-            if (connect4.channels[message.channel.id].started) {
+            if (games.connect4.channels[message.channel.id].started) {
                 return sendChat("Game has already started, you cannot join it now.");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!connect4.channels[message.channel.id]) return sendChat("There is no active Connect Four game in this channel, $user$!");
-            if (!connect4.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            return sendChat(new Discord.Attachment(connect4.drawBoard(connect4.channels[message.channel.id], 0)))
+            if (!games.connect4.channels[message.channel.id]) return sendChat("There is no active Connect Four game in this channel, $user$!");
+            if (!games.connect4.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+            return sendChat(new Discord.Attachment(games.connect4.drawBoard(games.connect4.channels[message.channel.id], 0)))
         } else if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!connect4.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
-            if (message.author.id != connect4.channels[message.channel.id].players[0] && message.author.id != connect4.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
-            if (!connect4.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+            if (!games.connect4.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
+            if (message.author.id != games.connect4.channels[message.channel.id].players[0] && message.author.id != games.connect4.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
+            if (!games.connect4.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
             else sendChat("$user$ has forfeit the game.");
-            delete connect4.channels[message.channel.id];
+            delete games.connect4.channels[message.channel.id];
         } else if (["rules", "howtoplay"].includes(args[0])) {
                
         }
@@ -417,32 +368,32 @@ var commands = {
         if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
         if (!input) return sendChat(`__**Squares**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
-            if (!squares.channels[message.channel.id]) {
+            if (!games.squares.channels[message.channel.id]) {
                 if (!args[1]) size = 10;
                 else if (!isNaN(args[1])) return sendChat("Invalid board size.");
                 else if (args[1] > 15) return sendChat("Board size cannot be bigger than 15x15");
                 else if (args[1] < 8) return sendChat("Board size cannot be smaller than 8x8");
-                return sendChat(squares.newGame(message.channel, message.author.id, cmd, size, true));
+                return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, size, true));
             }
-            if (!squares.channels[message.channel.id].started) {
-                if (message.author.id != squares.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
-                    k = squares.startGame(message.channel, message.author.id);
+            if (!games.squares.channels[message.channel.id].started) {
+                if (message.author.id != games.squares.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+                    k = games.squares.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
             }
-            if (squares.channels[message.channel.id].started) {
+            if (games.squares.channels[message.channel.id].started) {
                 return sendChat("Game has already started, you cannot join it now.");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!squares.channels[message.channel.id]) return sendChat("There is no active Squares game in this channel, $user$!");
-            if (!squares.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            return sendChat(new Discord.Attachment(squares.drawBoard(squares.channels[message.channel.id], 0)))
+            if (!games.squares.channels[message.channel.id]) return sendChat("There is no active squares game in this channel, $user$!");
+            if (!games.squares.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+            return sendChat(new Discord.Attachment(games.squares.drawBoard(games.squares.channels[message.channel.id], 0)))
         } else if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!squares.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
-            if (message.author.id != squares.channels[message.channel.id].players[0] && message.author.id != squares.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
-            if (!squares.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+            if (!games.squares.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
+            if (message.author.id != games.squares.channels[message.channel.id].players[0] && message.author.id != games.squares.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
+            if (!games.squares.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
             else sendChat("$user$ has forfeit the game.");
-            delete squares.channels[message.channel.id];
+            delete games.squares.channels[message.channel.id];
         } else if (["rules", "howtoplay"].includes(args[0])) {
                
         }
@@ -453,26 +404,26 @@ var commands = {
         if (!input) return sendChat(`__**Othello**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(input)) {
             message.delete();
-            if (!othello.channels[message.channel.id]) return sendChat(othello.newGame(message.channel, message.author.id, cmd));
-            if (!othello.channels[message.channel.id].started) {
-                if (message.author.id != othello.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
-                    k = othello.startGame(message.channel, message.author.id);
+            if (!games.othello.channels[message.channel.id]) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd));
+            if (!games.othello.channels[message.channel.id].started) {
+                if (message.author.id != games.othello.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+                    k = games.othello.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
             }
-            if (othello.channels[message.channel.id].started) {
+            if (games.othello.channels[message.channel.id].started) {
                 return sendChat("Game has already started, you cannot join it now.");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!othello.channels[message.channel.id]) return sendChat("There is no active Othello game in this channel, $user$!");
-            if (!othello.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            return sendChat(new Discord.Attachment(othello.drawBoard(othello.channels[message.channel.id], 0)));
+            if (!games.othello.channels[message.channel.id]) return sendChat("There is no active Othello game in this channel, $user$!");
+            if (!games.othello.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+            return sendChat(new Discord.Attachment(games.othello.drawBoard(games.othello.channels[message.channel.id], 0)));
         } else if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!othello.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
-            if (message.author.id != othello.channels[message.channel.id].players[0] && message.author.id != othello.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
-            if (!othello.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+            if (!games.othello.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
+            if (message.author.id != games.othello.channels[message.channel.id].players[0] && message.author.id != games.othello.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
+            if (!games.othello.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
             else sendChat("$user$ has forfeit the game.");
-            delete othello.channels[message.channel.id];
+            delete games.othello.channels[message.channel.id];
         } else if (["rules", "howtoplay"].includes(args[0])) {
                
         }
@@ -522,9 +473,11 @@ var commands = {
                     });
                 }).catch(err => sendChat("```" + err + "```"));
             });
-        } else if (input.startsWith('[')) {
-            return sendChat("With***out*** the brackets, you twit.");
-        } else if (["background", "backgrounds", "bg", "bgs"].includes(args[0])) {
+        }
+        
+        else if (input.startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
+        
+        else if (["background", "backgrounds", "bg", "bgs"].includes(args[0])) {
             if (!args[1] && !["backgrounds", "bgs"].includes(args[0])) {
                 return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
                     if (err) return sendChat("```" + err + "```");

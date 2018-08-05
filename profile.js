@@ -82,7 +82,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.textBaseline = "hanging";
         ctx.font = "20px meiryo";
         ctx.fillStyle = colors.tx;
-        ctx.fillText(profile.username, res[0] - 78 - text.un, 2, text.un);
+        ctx.fillText(username, res[0] - 78 - text.un, 2, text.un);
   
         // Title
         ctx.beginPath();

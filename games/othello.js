@@ -15,7 +15,7 @@ exports.timer = setInterval(function() {
 }, 10);
   
 exports.newGame = function(channel, player1, cmd) {
-    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:'',over:false};
+    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:'',over:false,player:false,RE:/^([a-h][1-8]|[1-8][a-h])$/i};
     game = exports.channels[channel.id];
     let _ = false;
     game.channel = channel;
@@ -50,6 +50,7 @@ exports.startGame = function(channel, player2) {
     }
   
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
+    game.player = game.players[0];
   
     return ["The game has started! <@" + game.players[0] + "> will be black, and <@" + game.players[1] + "> will be white!\n\nThe small green circles are the places you can put a stone.\nTo place a stone, say the letter of the row and the number of the column, like \"F4\".", new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_${game.players[0]}vs${game.players[1]}.png`)];
 }
@@ -263,8 +264,10 @@ exports.drawBoard = function(game, end) {
     return canvas.toBuffer();
 }
   
-exports.takeTurn = function(channel, move, save) {
+exports.takeTurn = function(channel, Move) {
     let game = exports.channels[channel.id];
+
+    let move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.match(/[a-h]/)[0])];
   
     // Function will vary with game
     possible = game.possible;
@@ -291,16 +294,18 @@ exports.takeTurn = function(channel, move, save) {
         message: "Whoops, it looks like <@" + game.players[game.turn == 0 ? 1 : 0] + "> has run out of time, so the game is over!"
     }
       
-    return exports.nextTurn(channel, save);
+    return exports.nextTurn(channel);
 }
   
-exports.nextTurn = function(channel, save) {
+exports.nextTurn = function(channel) {
     let game = exports.channels[channel.id];
     game.turn = game.turn == 0 ? 1 : 0;
+    game.player = game.players[game.turn];
     board = exports.drawBoard(game, false);
     board = new Discord.Attachment(board, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     if (game.possible.length == 0) {
         game.turn = game.turn == 0 ? 1 : 0;
+        game.player = game.players[game.turn];
         board = new Discord.Attachment(exports.drawBoard(game, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
         if (game.possible.length == 0) {
             board = exports.drawBoard(game, true);

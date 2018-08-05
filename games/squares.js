@@ -15,7 +15,7 @@ exports.timer = setInterval(function() {
 }, 10);
   
 exports.newGame = function(channel, player1, cmd, size) {
-    exports.channels[channel.id] = {turn:0.5,players:[],started:false,lastmove:'',size:size,isOver:false};
+    exports.channels[channel.id] = {turn:0.5,players:[],started:false,lastmove:'',size:size,isOver:false,player:false,RE:/stuff/};
     game = exports.channels[channel.id];
     let _ = false;
     game.board = [];
@@ -24,6 +24,11 @@ exports.newGame = function(channel, player1, cmd, size) {
         for (let i = game.size; i--;) row.push(_);
         game.board.push(row);
     }
+
+    let a = 'abcdefghijklmno'[game.size - 1];
+    if (game.size < 10) b = "[1-" + k + "]";
+    else b = "(1[0-" + (game.size - 10) + "]|[1-9])";
+    game.RE = new RegExp(`^([a-${a}]${b}|${b}[a-${a}])$`, 'i');
   
     game.timer = {
         time: 100 * 60 * 15,
@@ -45,6 +50,7 @@ exports.startGame = function(channel, player2) {
     }
   
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
+    game.player = game.players[0];
     return ["The game has started! <@" + game.players[0] + "> will be black, and <@" + game.players[1] + "> will be white!\n\nTo place a stone, say the letter of the row and the number of the column, like \"F4\".", new Discord.Attachment(exports.drawBoard(game, 0, false, [0, 0]), `${shortname}_0_${game.size}_${game.players[0]}vs${game.players[1]}.png`)];
 }
   
@@ -168,8 +174,10 @@ exports.drawBoard = function(game, end, highlight, score) {
     return canvas.toBuffer();
 }
   
-exports.takeTurn = function(channel, move, save) {
+exports.takeTurn = function(channel, Move) {
     let game = exports.channels[channel.id];
+
+    let move = [Move.match(/[a-o]/i)[0], Move.match(/[1?[0-9]]/)[0]];
       
     // Function will vary with game
     if (game.board[move[0]][move[1]] !== false) return "There's already a stone there, pick another spot!";
@@ -203,13 +211,14 @@ exports.takeTurn = function(channel, move, save) {
     }
     if (end == 1) game.winner = Math.floor(game.turn);
       
-    return exports.nextTurn(channel, end, highlight, score, save);
+    return exports.nextTurn(channel, end, highlight, score);
 }
   
-exports.nextTurn = function(channel, end, highlight, score, save) {
+exports.nextTurn = function(channel, end, highlight, score) {
     let game = exports.channels[channel.id];
     if (end == 0) {
         game.turn = game.turn == 1.5 ? 0 : game.turn + 0.5;
+        game.player = game.players[Math.floor(game.turn)];
     }
     board = new Discord.Attachment(exports.drawBoard(game, end, highlight, score), end == 1 ? `${shortname}_${end}_${game.size}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.size}_${game.players[0]}vs${game.players[1]}.png`);
     if (exports.channels[channel.id].lastDisplay) exports.channels[channel.id].lastDisplay.delete();

@@ -1,15 +1,14 @@
-console.log("\n".repeat(10));
+console.log("\n".repeat(9));
 
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
 client.login(process.env.TOKEN);
-
 client.on("ready", () => {
     console.log("Xyvyjsa Successfully launched~! Launching version " + commands.version);
 });
-
 exports.client = client;
+
 var config = {
     DATABASE_URL: process.env.DATABASE_URL,
     HIREZ_API: process.env.HIREZ_API.split(' '),
