@@ -1,11 +1,10 @@
-var version = "2.24.0.3";
+var version = "2.24.0.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const Jimp = require("jimp");
 const GIFEncoder = require("gifencoder");
 const streamBuffers = require('stream-buffers');
-const server = require('./server.js');
 
 var client = require("./Xyvy.js").client;
 var config = require("./Xyvy.js").config;
