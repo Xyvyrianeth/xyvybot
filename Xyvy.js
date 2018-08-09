@@ -5,7 +5,15 @@ const client = new Discord.Client();
 
 client.login(process.env.TOKEN);
 client.on("ready", () => {
-    console.log("Xyvyjsa Successfully launched~! Launching version " + commands.version);
+    console.log("Xyvybot Successfully launched~! Launching version " + commands.version);
+    client.user.setPresence({
+        status: "online",
+        game: {
+            name: "version " + commands.version + "~",
+            type: "STREAMING",
+            url: "https://xyvybot.herokuapp.com/"
+        }
+    })
 });
 exports.client = client;
 
