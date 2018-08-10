@@ -272,7 +272,7 @@ exports.takeTurn = function(channel, Move) {
 
     let move;
     let quit;
-    if (move !== "quit") move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.match(/[a-h]/)[0])];
+    if (Move !== "quit") move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.match(/[a-h]/)[0])];
     else quit = true;
   
     // Function will vary with game
