@@ -55,12 +55,11 @@ exports.startGame = function(channel, player2) {
     return ["The game has started! <@" + game.players[0] + "> will be black, and <@" + game.players[1] + "> will be white!\n\nThe small green circles are the places you can put a stone.\nTo place a stone, say the letter of the row and the number of the column, like \"F4\".", new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_${game.players[0]}vs${game.players[1]}.png`)];
 }
   
-exports.drawBoard = function(game, end) {
+exports.drawBoard = function(game, end, quit) {
     canvas = new Canvas(230, 250);
     ctx = canvas.getContext('2d');
       
     // Function will vary with game
-
     
     if (!end) {
 
@@ -213,18 +212,22 @@ exports.drawBoard = function(game, end) {
         k += ctx.measureText("'s turn.  ").width;
     } else if (game.score[0] !== game.score[1]) { // Winner winner chicken dinner
         ctx.font = "bold 20px calibri";
-        let n = game.score[0] > game.score[1] ? "Black" : "White";
+        let n;
+        if (quit) n = game.turn == 1 ? "Black" : "White";
+        else n = game.score[0] > game.score[1] ? "Black" : "White";
         k = ctx.measureText(n).width;
         if (n == "Black") ctx.fillStyle = "#000";
         if (n == "White") ctx.fillStyle = "#fff";
         ctx.fillText(n, 5, 5);
         ctx.font = "20px calibri";
-        ctx.fillText(" wins!", k + 5, 5);
-        k += ctx.measureText(" wins!  ").width;
+        let v
+        if (quit) v = " forfeits!";
+        else v = " wins!";
+        ctx.fillText(v, k + 5, 5);
+        k += ctx.measureText(v + "  ").width;
  
-        game.winner = game.score[0] > game.score[1] ? 0 : 1;
-        //For testing:
-        throw "Whoops! Sorry~";
+        if (quit) game.winner = game.turn;
+        else game.winner = game.score[0] > game.score[1] ? 0 : 1;
     } else if (game.score[0] == game.score[1]) { // Tie game
         ctx.fillStyle = "#888";
         ctx.font = "20px calibri";
@@ -267,37 +270,46 @@ exports.drawBoard = function(game, end) {
 exports.takeTurn = function(channel, Move) {
     let game = exports.channels[channel.id];
 
-    let move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.match(/[a-h]/)[0])];
+    let move;
+    let quit;
+    if (move !== "quit") move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.match(/[a-h]/)[0])];
+    else quit = true;
   
     // Function will vary with game
-    possible = game.possible;
-    game.highlight = [];
-    if (game.board[move[0]][move[1]] !== true) return "You cannot place there.";
-    for (let i = 0; i < possible.length; i++) {
-        if (move[0] == possible[i][0] && move[1] == possible[i][1]) {
-            game.board[move[0]][move[1]] = game.turn;
-            for (let x = 0; x < possible[i][2].length; x++) {
-                for (let y = 1; y < possible[i][2][x][2]; y++) {
-                    game.board[move[0] + (possible[i][2][x][0] * y)][move[1] + (possible[i][2][x][1] * y)] = game.turn;
-                    game.highlight.push([move[0] + (possible[i][2][x][0] * y), move[1] + (possible[i][2][x][1] * y)]);
+    if (!quit) {
+        possible = game.possible;
+        game.highlight = [];
+        if (game.board[move[0]][move[1]] !== true) return "You cannot place there.";
+        for (let i = 0; i < possible.length; i++) {
+            if (move[0] == possible[i][0] && move[1] == possible[i][1]) {
+                game.board[move[0]][move[1]] = game.turn;
+                for (let x = 0; x < possible[i][2].length; x++) {
+                    for (let y = 1; y < possible[i][2][x][2]; y++) {
+                        game.board[move[0] + (possible[i][2][x][0] * y)][move[1] + (possible[i][2][x][1] * y)] = game.turn;
+                        game.highlight.push([move[0] + (possible[i][2][x][0] * y), move[1] + (possible[i][2][x][1] * y)]);
+                    }
                 }
             }
         }
-    }
  
-    game.highlight.unshift(move);
+        game.highlight.unshift(move);
+    }
   
     //
   
-    game.timer = {
+    if (!quit) game.timer = {
         time: 100 * 60 * 5,
         message: "Whoops, it looks like <@" + game.players[game.turn == 0 ? 1 : 0] + "> has run out of time, so the game is over!"
     }
-      
-    return exports.nextTurn(channel);
+    return exports.nextTurn(channel, quit);
 }
   
-exports.nextTurn = function(channel) {
+exports.nextTurn = function(channel, quit) {
+    if (quit) {
+        game.turn = game.turn == 0 ? 1 : 0;
+        board = exports.drawBoard(game, true, true);
+        return board = new Discord.Attachment(board, `${shortname}_1_${game.players[game.turn]}.png`);
+    }
     let game = exports.channels[channel.id];
     game.turn = game.turn == 0 ? 1 : 0;
     game.player = game.players[game.turn];

@@ -1,4 +1,4 @@
-var version = "2.24.0.2";
+var version = "2.24.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -100,7 +100,9 @@ function other(message) {
 
     for (let i in games) {
         if (games[i].channels[message.channel.id] && games[i].channels[message.channel.id].started && message.author.id == games[i].channels[message.channel.id].player && games[i].channels[message.channel.id].RE.test(message.content)) {
-            message.delete();
+            setTimeout(function() {
+                message.delete();
+            }, 5000);
             try {
                 return sendChat(games[i].takeTurn(message.channel, message.content));
             } catch (error) {
@@ -422,7 +424,7 @@ var commands = {
             if (!games.othello.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
             if (message.author.id != games.othello.channels[message.channel.id].players[0] && message.author.id != games.othello.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
             if (!games.othello.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
-            else sendChat("$user$ has forfeit the game.");
+            else return sendChat(games.othello.takeTurn(message.channel, "quit"));
             delete games.othello.channels[message.channel.id];
         } else if (["rules", "howtoplay"].includes(args[0])) {
                
