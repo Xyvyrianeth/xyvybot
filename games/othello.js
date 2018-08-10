@@ -305,12 +305,12 @@ exports.takeTurn = function(channel, Move) {
 }
   
 exports.nextTurn = function(channel, quit) {
+    let game = exports.channels[channel.id];
     if (quit) {
         game.turn = game.turn == 0 ? 1 : 0;
         board = exports.drawBoard(game, true, true);
         return board = new Discord.Attachment(board, `${shortname}_1_${game.players[game.turn]}.png`);
     }
-    let game = exports.channels[channel.id];
     game.turn = game.turn == 0 ? 1 : 0;
     game.player = game.players[game.turn];
     board = exports.drawBoard(game, false);
