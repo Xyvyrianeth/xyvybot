@@ -210,24 +210,29 @@ exports.drawBoard = function(game, end, quit) {
         ctx.fillStyle = "#888";
         ctx.fillText("'s turn.", k + 5, 5);
         k += ctx.measureText("'s turn.  ").width;
-    } else if (game.score[0] !== game.score[1]) { // Winner winner chicken dinner
+    } else if (quit) {
         ctx.font = "bold 20px calibri";
-        let n;
-        if (quit) n = game.turn == 1 ? "Black" : "White";
-        else n = game.score[0] > game.score[1] ? "Black" : "White";
+        let n = game.turn == 1 ? "Black" : "White";
         k = ctx.measureText(n).width;
         if (n == "Black") ctx.fillStyle = "#000";
         if (n == "White") ctx.fillStyle = "#fff";
         ctx.fillText(n, 5, 5);
         ctx.font = "20px calibri";
-        let v
-        if (quit) v = " forfeits!";
-        else v = " wins!";
-        ctx.fillText(v, k + 5, 5);
-        k += ctx.measureText(v + "  ").width;
+        ctx.fillText(" forfeits!", k + 5, 5);
+        k += ctx.measureText(" forfeits!  ").width;
+        game.winner = game.turn;
+    } else if (game.score[0] !== game.score[1]) { // Winner winner chicken dinner
+        ctx.font = "bold 20px calibri";
+        let n = game.score[0] > game.score[1] ? "Black" : "White";
+        k = ctx.measureText(n).width;
+        if (n == "Black") ctx.fillStyle = "#000";
+        if (n == "White") ctx.fillStyle = "#fff";
+        ctx.fillText(n, 5, 5);
+        ctx.font = "20px calibri";
+        ctx.fillText(" wins!", k + 5, 5);
+        k += ctx.measureText(" wins!  ").width;
  
-        if (quit) game.winner = game.turn;
-        else game.winner = game.score[0] > game.score[1] ? 0 : 1;
+        game.winner = game.score[0] > game.score[1] ? 0 : 1;
     } else if (game.score[0] == game.score[1]) { // Tie game
         ctx.fillStyle = "#888";
         ctx.font = "20px calibri";
