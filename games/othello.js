@@ -142,7 +142,7 @@ exports.drawBoard = function(game, end, quit) {
                 ctx.arc(c, r, 5, 0, 2 * Math.PI);
                 ctx.stroke();
   
-            } else if (game.board[y][x] === true) { // Possible Placement
+            } else if (game.board[y][x] === true && !quit) { // Possible Placement
                 ctx.beginPath();
                 ctx.strokeStyle = "#8f8";
                 ctx.moveTo(c + 5, r);
@@ -242,7 +242,7 @@ exports.drawBoard = function(game, end, quit) {
     }
 
     // Draws the piece last played and pieces captured
-    if (game.highlight) {
+    if (game.highlight && !quit) {
         for (let i = 0; i < game.highlight.length; i++) {
             r = 42.5 + (25 * game.highlight[i][0]);
             c = (game.highlight[i][1] + 1) * 25 + 7.5;
