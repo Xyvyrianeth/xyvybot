@@ -134,7 +134,7 @@ exports.drawBoard = function(game, end, quit) {
         let r = 42.5 + (25 * y);
         for (let x = 0; x < 8; x++) {
             let c = (x + 1) * 25 + 7.5;
-  
+
             if (game.board[y][x] === false && !quit) { // Blank Spot
                 ctx.beginPath();
                 ctx.strokeStyle = "rgba(200, 200, 200, 0.25)";
