@@ -1,4 +1,4 @@
-var version = "2.24.1.5";
+var version = "2.24.2.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -130,28 +130,28 @@ function bot(message) {
             if (err) return message.channel.send("```" + err + "```");
             let result = false;
             if (games.connect4.channels[message.channel.id]) {
-                if (/connect4_0_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return games.connect4.channels[message.channel.id].lastDisplay = message;
-                if (/connect4_1_[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) {
+                if (/^connect4_0_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return games.connect4.channels[message.channel.id].lastDisplay = message;
+                if (/^connect4_1_[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) {
                     game = games.connect4.channels[message.channel.id];
                     result.winner = game.players[game.winner];
                     result.loser = game.players[game.winner == 0 ? 1 : 0];
                     result.game = "1";
                     delete games.connect4.channels[message.channel.id];
                 }
-                if (/connect4_2_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete games.connect4.channels[message.channel.id];
+                if (/^connect4_2_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return delete games.connect4.channels[message.channel.id];
             } else if (games.squares.channels[message.channel.id]) {
-                if (/squares_0_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return games.squares.channels[message.channel.id].lastDisplay = message;
-                if (/squares_1_1?[0-9]_[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) {
+                if (/^squares_0_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return games.squares.channels[message.channel.id].lastDisplay = message;
+                if (/^squares_1_1?[0-9]_[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) {
                     game = games.squares.channels[message.channel.id];
                     result.winner = game.players[game.winner];
                     result.loser = game.players[game.winner == 0 ? 1 : 0];
                     result.game = "2";
                     delete games.squares.channels[message.channel.id];
                 }
-                if (/squares_2_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete games.squares.channels[message.channel.id];
+                if (/^squares_2_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return delete games.squares.channels[message.channel.id];
             } else if (games.othello.channels[message.channel.id]) {
-                if (/othello_0_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return games.othello.channels[message.channel.id].lastDisplay = message;
-                if (/othello_1_[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) {
+                if (/^othello_0_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return games.othello.channels[message.channel.id].lastDisplay = message;
+                if (/^othello_1_[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) {
                     game = games.othello.channels[message.channel.id];
                     result.winner = game.players[game.winner];
                     result.loser = game.players[game.winner == 0 ? 1 : 0];
@@ -159,7 +159,8 @@ function bot(message) {
                     result.score = game.score;
                     delete games.othello.channels[message.channel.id];
                 }
-                if (/othello_2_[0-9]{1,}vs[0-9]{1,}\.png/.test(message.attachments.array()[0].filename)) return delete games.othello.channels[message.channel.id];
+                if (/^othello_2_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return delete games.othello.channels[message.channel.id];
+                if (/^othello_1_[0-9]{1,}_fun.png$/.test(message.attachments.array()[0].filename)) return delete games.othello.channels[message.channel.id];
             }
             if (result) {
                 let wins = false;
@@ -419,7 +420,8 @@ var commands = {
         } else if (["board", "showboard"].includes(input)) {
             if (!games.othello.channels[message.channel.id]) return sendChat("There is no active Othello game in this channel, $user$!");
             if (!games.othello.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            return sendChat(new Discord.Attachment(games.othello.drawBoard(games.othello.channels[message.channel.id], 0)));
+            let game = games.othello.channels[message.channel.id];
+            return sendChat(new Discord.Attachment(game.buffer, `othello_0_${game.players[0]}vs${game.players[1]}.png`));
         } else if (["quit", "forfeit", "leave"].includes(input)) {
             if (!games.othello.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
             if (message.author.id != games.othello.channels[message.channel.id].players[0] && message.author.id != games.othello.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");

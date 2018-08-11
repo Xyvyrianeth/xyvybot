@@ -8,14 +8,15 @@ exports.timer = setInterval(function() {
     for (let i in exports.channels) {
         exports.channels[i].timer.time -= 1;
         if (exports.channels[i].timer.time == 0) {
-            exports.channels[i].channel.send(exports.channels[i].timer.message);
+            if (exports.channels[i].timer.image) exports.channels[i].channel.send(exports.channels[i].timer.message, exports.channels[i].buffer);
+            else exports.channels[i].channel.send(exports.channels[i].timer.message);
             delete exports.channels[i];
         }
     }
 }, 10);
   
-exports.newGame = function(channel, player1, cmd) {
-    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:'',over:false,player:false,RE:/^([a-h][1-8]|[1-8][a-h])$/i};
+exports.newGame = function(channel, player1, cmd, mode) {
+    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:'',over:false,player:false,RE:/^([a-h][1-8]|[1-8][a-h])$/i,casual:mode};
     game = exports.channels[channel.id];
     let _ = false;
     game.channel = channel;
@@ -32,7 +33,8 @@ exports.newGame = function(channel, player1, cmd) {
   
     game.timer = {
         time: 100 * 60 * 15,
-        message: "It appears nobody wants to play right now, <@" + player1 + ">."
+        message: "It appears nobody wants to play right now, <@" + player1 + ">.",
+        image: false
     }
   
     game.players[0] = player1;
@@ -46,7 +48,8 @@ exports.startGame = function(channel, player2) {
   
     game.timer = {
         time: 100 * 60 * 5,
-        message: "Whoops, it looks like <@" + game.players[0] + "> has run out of time, so the game is over!"
+        message: "Whoops, it looks like <@" + game.players[0] + "> has run out of time, so the game is over!",
+        image: true
     }
   
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
@@ -304,29 +307,33 @@ exports.takeTurn = function(channel, Move) {
   
     if (!quit) game.timer = {
         time: 100 * 60 * 5,
-        message: "Whoops, it looks like <@" + game.players[game.turn == 0 ? 1 : 0] + "> has run out of time, so the game is over!"
+        message: "Whoops, it looks like <@" + game.players[game.turn == 0 ? 1 : 0] + "> has run out of time, so the game is over!",
+        image: true;
     }
     return exports.nextTurn(channel, quit);
 }
   
 exports.nextTurn = function(channel, quit) {
     let game = exports.channels[channel.id];
+    let board;
     if (quit) {
         game.turn = game.turn == 0 ? 1 : 0;
-        board = exports.drawBoard(game, true, true);
-        return board = new Discord.Attachment(board, `${shortname}_1_${game.players[game.turn]}.png`);
+        game.buffer = exports.drawBoard(game, true, true);
+        board = new Discord.Attachment(game.buffer, `${shortname}_1_${game.players[game.turn]}${game.casual ? "_fun" : ''}.png`);
+        return board;
     }
     game.turn = game.turn == 0 ? 1 : 0;
     game.player = game.players[game.turn];
-    board = exports.drawBoard(game, false);
-    board = new Discord.Attachment(board, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+    game.buffer = exports.drawBoard(game, false);
+    board = new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     if (game.possible.length == 0) {
         game.turn = game.turn == 0 ? 1 : 0;
         game.player = game.players[game.turn];
-        board = new Discord.Attachment(exports.drawBoard(game, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+        game.buffer = exports.drawBoard(game, false);
+        board = new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
         if (game.possible.length == 0) {
-            board = exports.drawBoard(game, true);
-            board = new Discord.Attachment(board, game.score[0] !== game.score[1] ? `${shortname}_1_${game.players[game.winner]}.png` : `${shortname}_2_${game.players[0]}vs${game.players[1]}.png`);
+            game.buffer = exports.drawBoard(game, true);
+            board = new Discord.Attachment(game.buffer, game.score[0] !== game.score[1] ? `${shortname}_1_${game.players[game.winner]}${game.casual ? "_fun" : ''}.png` : `${shortname}_2_${game.players[0]}vs${game.players[1]}.png`);
         }
     }
     if (exports.channels[channel.id].lastDisplay) exports.channels[channel.id].lastDisplay.delete();
