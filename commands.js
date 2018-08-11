@@ -1,4 +1,4 @@
-var version = "2.24.2.1";
+var version = "2.24.2.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -405,12 +405,14 @@ var commands = {
     "othello": function(cmd, args, input, message, sendChat, user) {
         if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
         if (!input) return sendChat(`__**Othello**__\nTo start a game, type \`x!${cmd} start\`!`);
-        if (["start"].includes(input)) {
+        if (["start"].includes(args[0])) {
             message.delete();
             if (!games.othello.channels[message.channel.id]) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd));
             if (!games.othello.channels[message.channel.id].started) {
                 if (message.author.id != games.othello.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
-                    k = games.othello.startGame(message.channel, message.author.id);
+                    let casual = false;
+                    if (args[1] && ["casual", "fun"].includes(args[1])) casual = true;
+                    k = games.othello.startGame(message.channel, message.author.id, casual);
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
             }
