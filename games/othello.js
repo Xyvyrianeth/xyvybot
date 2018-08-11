@@ -308,7 +308,7 @@ exports.takeTurn = function(channel, Move) {
     if (!quit) game.timer = {
         time: 100 * 60 * 5,
         message: "Whoops, it looks like <@" + game.players[game.turn == 0 ? 1 : 0] + "> has run out of time, so the game is over!",
-        image: true;
+        image: true
     }
     return exports.nextTurn(channel, quit);
 }
