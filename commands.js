@@ -1,4 +1,4 @@
-var version = "2.24.2.2";
+var version = "2.24.3.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1129,7 +1129,7 @@ var commands = {
         if (message.channel.type != "dm" && !message.channel.nsfw) return;
         if (["help"].includes(input)) {
             let embed = new Discord.RichEmbed();
-            embed.setDescription("If you don't really care what kind of lewd you want, just do `x!nsfw`\nIf you *do* care, do `x!nsfw [category]`\nThese are all my available NSFW categories:\n`Gif  Pussy  NekoGif  Neko  Lesbian  Kuni  Cumsluts  Classic  Boobs  Bj  Anal`\n\nHappy fapping~");
+            embed.setDescription("If you don't really care what kind of lewd you want, just do `x!nsfw`\nIf you *do* care, do `x!nsfw [tag]`\nThese are all my available NSFW tags:\n`Gif  Pussy  NekoGif  Neko  Lesbian  Kuni  Cumsluts  Classic  Boobs  Bj  Anal`");
             embed.setTitle("NSFW Command help");
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random())
@@ -1137,20 +1137,7 @@ var commands = {
         }
         if (!input) {
             let type = ["RandomHentaiGif", "Pussy", "NekoGif", "Neko", "Lesbian", "Kuni", "Cumsluts", "Classic", "Boobs", "Bj", "Anal"].random();
-            let desc = {
-                "gif": "if you want any random gif of someone getting fucked in hentai!",
-                "pussy": "if you want gifs of pussies getting fucked~",
-                "nekogif": "if you want gifs of lewd neko girls~",
-                "neko": "if you want pictures of lewd neko girls~",
-                "lesbian": "if you want to watch two girls fuck each other!",
-                "kuni": "if you like watching pussies get licked!",
-                "cumsluts": "if you enjoy seeing girls covered in semen!",
-                "classic": "if you like some good ol' fashion fucking!",
-                "boobs": "if you want to see some bouncy breasts~",
-                "bj": "if you like watching girls give blowjobs~",
-                "anal": "if you enjoy watching girls getting fucked in the ass!"
-            }[type.replace("RandomHentai", "").toLowerCase()];
-            return Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~\nDo \`x!nsfw ${type.replace("RandomHentai", "").toLowerCase()}\` ${desc}\nDo \`x!nsfw help\` to see all the kinds of lewds I can do~`).setFooter("Powered by Nekos.Life").setColor(new Color().random())));
+            return Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~\nTag: \`${type.replace("RandomHentai", "").toLowerCase()}\` (Do \`x!nsfw [tag]\` to use)`).setFooter("Powered by Nekos.Life").setColor(new Color().random())));
         }
         if (!["gif", "pussy", "neko", "lesbian", "yuri", "kuni", "cumslut", "cumsluts", "classic", "boobs", "tits", "boobies", "titties", "bj", "blowjob", "anal"].includes(input))
             return sendChat("Sorry, I don't have that");

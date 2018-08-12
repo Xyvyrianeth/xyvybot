@@ -11,9 +11,9 @@ client.on("ready", () => {
         game: {
             name: "version " + commands.version + "~",
             type: "STREAMING",
-            url: "https://xyvybot.herokuapp.com/"
+            url: "https://twitch.tv/Xyvyrianeth"
         }
-    })
+    });
 });
 exports.client = client;
 
