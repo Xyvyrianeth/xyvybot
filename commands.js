@@ -1,4 +1,4 @@
-var version = "2.24.3.1";
+var version = "2.24.3.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1136,7 +1136,7 @@ var commands = {
             return Nekos.getNSFWNeko().then(help => sendChat(embed.setImage(help.url)));
         }
         if (!input) {
-            let type = ["RandomHentaiGif", "Pussy", "NekoGif", "Neko", "Lesbian", "Kuni", "Cumsluts", "Classic", "Boobs", "Bj", "Anal"].random();
+            let type = ["RandomHentaiGif", "Pussy", "NekoGif", "Neko", "Lesbian", "Kuni", "Cumsluts", "Classic", "Boobs", "BJ", "Anal"].random();
             return Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~\nTag: \`${type.replace("RandomHentai", "").toLowerCase()}\` (Do \`x!nsfw [tag]\` to use)`).setFooter("Powered by Nekos.Life").setColor(new Color().random())));
         }
         if (!["gif", "pussy", "neko", "lesbian", "yuri", "kuni", "cumslut", "cumsluts", "classic", "boobs", "tits", "boobies", "titties", "bj", "blowjob", "anal"].includes(input))
