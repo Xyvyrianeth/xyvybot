@@ -1,4 +1,4 @@
-var version = "2.24.4.1";
+var version = "2.24.4.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -6,6 +6,7 @@ const Jimp = require("jimp");
 const GIFEncoder = require("gifencoder");
 const streamBuffers = require("stream-buffers");
 const ytdl = require("ytdl-core");
+const ffmpeg = require("ffmpeg-binaries");
 
 var client = require("./Xyvy.js").client;
 var config = require("./Xyvy.js").config;
