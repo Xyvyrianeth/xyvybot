@@ -1,15 +1,16 @@
-var version = "2.24.3.2";
+var version = "2.24.4.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const Jimp = require("jimp");
 const GIFEncoder = require("gifencoder");
-const streamBuffers = require('stream-buffers');
+const streamBuffers = require("stream-buffers");
+const youtubeStream = require("youtube-audio-stream");
 
 var client = require("./Xyvy.js").client;
 var config = require("./Xyvy.js").config;
-var Profile = require('./profile.js');
-var Color = require('./color.js').rgb;
+var Profile = require("./profile.js");
+var Color = require("./color.js").rgb;
 var titles = require("./stuffs/titles.json");
 var backgrounds = require("./stuffs/images.json");
 

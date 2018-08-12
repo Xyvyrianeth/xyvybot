@@ -18,6 +18,7 @@
 		"nekos.life": "latest",
 		"paladins-api": "latest",
 		"gifencoder": "latest",
-		"stream-buffers": "latest"
+		"stream-buffers": "latest",
+		"youtube-audio-stream": "latest"
 	}
 }
