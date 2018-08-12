@@ -1,7 +1,7 @@
 {
 	"name": "xyvybot",
 	"author": "Xyvyrianeth",
-	"version": "v2.24.3",
+	"version": "v2.24.4",
 	"scripts": {
 		"start": "node Xyvy.js --harmony"
 	},
@@ -19,6 +19,6 @@
 		"paladins-api": "latest",
 		"gifencoder": "latest",
 		"stream-buffers": "latest",
-		"youtube-audio-stream": "latest"
+		"ytdl-core": "latest"
 	}
 }
