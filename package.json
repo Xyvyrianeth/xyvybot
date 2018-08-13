@@ -20,6 +20,6 @@
 		"gifencoder": "latest",
 		"stream-buffers": "latest",
 		"ytdl-core": "latest",
-		"ffmpeg": "FFmpeg/FFmpeg"
+		"ffmpeg-binaries": "latest"
 	}
 }
