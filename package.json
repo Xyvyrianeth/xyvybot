@@ -20,6 +20,6 @@
 		"gifencoder": "latest",
 		"stream-buffers": "latest",
 		"ytdl-core": "latest",
-		"ffmpeg-binaries": "https://git.ffmpeg.org/ffmpeg.git"
+		"ffmpeg": "git+https://git.ffmpeg.org/ffmpeg.git"
 	}
 }
