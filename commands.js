@@ -1,4 +1,4 @@
-var version = "2.25.1.2";
+var version = "2.25.1.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1146,10 +1146,10 @@ var commands = {
             embed.setColor(new Color().random());
             return Nekos["getNSFW" + type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
         }
-        if (["tags"].includes(input)) {
+        if (["tags", "help"].includes(input)) {
             let embed = new Discord.RichEmbed();
             embed.setTitle("NSFW Tags");
-            embed.setDescription('```\n' + tags.join('   ') + '```');
+            embed.setDescription('```\n' + tags.join('   ') + '```\n**Usage**: `x!nsfw [tag]`');
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random());
             return Nekos.getNSFWNeko().then(help => sendChat(embed.setImage(help.url)));
