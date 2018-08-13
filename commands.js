@@ -1,4 +1,4 @@
-var version = "2.25.1.7";
+var version = "2.25.1.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1150,7 +1150,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setTitle("NSFW Tags");
             let joined = '';
-            for (let i = 0; i < tags.length; i++) joined += tags[i] + ' '.repeat(8 - (tags[i].length % 4));
+            for (let i = 0; i < tags.length; i++) joined += tags[i] + ' '.repeat(12 - (tags[i].length % 12));
             embed.setDescription('```\n' + joined.trim() + '```\n**Usage**: `x!nsfw [tag]`');
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random());
