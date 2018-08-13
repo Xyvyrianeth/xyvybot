@@ -1,4 +1,4 @@
-var version = "2.25.1.3";
+var version = "2.25.1.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1136,7 +1136,7 @@ var commands = {
    
     // NSFW
     "nsfw": function(cmd, args, input, message, sendChat, user) {
-        let tags = ["RandomHentaiGif", "Pussy", "NekoGif", "Neko", "Lesbian", "Kuni", "Cumsluts", "Classic", "Boobs", "BJ", "Anal", "AnalArts", "Yuri", "Trap", "Tits", "GirlSoloGif", "GirlSolo", "SmallBoobs", "PussyWankGif", "PussyArt", "Kemonomimi", "Kitsune", "Keta", "Holo", "HoloEro", "Hentai", "Futanari", "Femdom", "FeetGif", "EroFeet", "Feet", "Ero", "EroKitsune", "EroKemonomimi", "EroNeko", "EroYuri", "CumArts", "BlowJob", "PussyGif"];
+        let tags = Object.keys(Nekos).filter(x => x.startsWith("getNSFW")).join(' ').replace(/getNSFW/g, '').split(' ');
         if (message.channel.type != "dm" && !message.channel.nsfw) return;
         if (!input) {
             let type = tags.random();
