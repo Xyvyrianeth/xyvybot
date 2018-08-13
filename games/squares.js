@@ -220,7 +220,7 @@ exports.nextTurn = function(channel, end, highlight, score) {
         game.turn = game.turn == 1.5 ? 0 : game.turn + 0.5;
         game.player = game.players[Math.floor(game.turn)];
     }
-    board = new Discord.Attachment(exports.drawBoard(game, end, highlight, score), end == 1 ? `${shortname}_${end}_${game.size}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.size}_${game.players[0]}vs${game.players[1]}.png`);
+    board = new Discord.Attachment(exports.drawBoard(game, end, highlight, score), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
     if (exports.channels[channel.id].lastDisplay) exports.channels[channel.id].lastDisplay.delete();
     return board;
 }

@@ -1,4 +1,4 @@
-var version = "2.24.4.2";
+var version = "2.25.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -63,6 +63,29 @@ var games = {
     gomoku: require("./games/gomoku.js")
 }
 
+function botError(message, err) {
+    return `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n`
+         + `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n`
+         + `\`\`\`User errored on:\`\`\`<@${message.author.id}>\n\n`
+         + `\`\`\`\n`
+         + `Message sent:\`\`\`\`\`\`\n`
+         + `${message.content.replace(/`/g, "\\\`")}\`\`\`\n`
+         + `\`\`\`\n`
+         + `${err.join("\n")}\`\`\``
+}
+function sqlError(message, err, res) {
+    message.channel.send("```Whoops! It appears there was some sort of error with the database! Not sure if it's my fault or not, but Xyvy will look into it!```");
+    return client.guilds.get("399327996076621825").channels.get("478371618620571648").send(
+        `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
+        `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
+        `\`\`\`\n` +
+        `Query:\`\`\`\`\`\`sql\n` +
+        `${res.replace(/`/g, "\\\`")}\`\`\`\n` +
+        `\`\`\`\n` +
+        `${err}\`\`\``
+    );
+}
+
 function command(message) {
   
     let a = message.channel.type == "dm" ? "user" : "guild";
@@ -87,7 +110,7 @@ function command(message) {
                     if (error.stack.split('\n')[i].includes("at emitOne")) break
                     else errs.push(error.stack.split('\n')[i]);
                 }
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, errs));
+                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(botError(message, errs));
             }
    
 }
@@ -108,14 +131,14 @@ function other(message) {
             try {
                 return sendChat(games[i].takeTurn(message.channel, message.content));
             } catch (error) {
-                delete games.connect4.channels[message.channel.id];
+                delete games[i].channels[message.channel.id];
                 sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-                let a = [];
+                let errs = [];
                 for (let i = 0; i < error.stack.split('\n').length; i++) {
                     if (error.stack.split('\n')[i].includes("at emitOne")) break
-                    else a.push(error.stack.split('\n')[i]);
+                    else errs.push(error.stack.split('\n')[i]);
                 }
-                return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(newError(message, cmd, a)); 
+                return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(botError(message, errs));
             }
         }
     }
@@ -123,48 +146,30 @@ function other(message) {
    
 function bot(message) {
     if (message.attachments.array().length != 0) {
-        let ids;
-        if (games.othello.channels[message.channel.id]) ids = games.othello.channels[message.channel.id].players;
-        else if (games.squares.channels[message.channel.id]) ids = games.squares.channels[message.channel.id].players;
-        else if (games.connect4.channels[message.channel.id]) ids = games.connect4.channels[message.channel.id].players;
-        else return;
-        db.query(`SELECT * FROM profiles WHERE id = '${ids[0]}' OR id = '${ids[1]}'`, function(err, res) {
-            if (err) return message.channel.send("```" + err + "```");
+        let img = message.attachments.first().filename;
+        if (/^(connect4|squares|othello)_[0-2]_0-9{1,}(|vs[0-9]{1,})\.png$/.test(img)) {
+            let cso = img.match(/(connect4|squares|othello)/)[0];
+            let end = img.match(/_[0-2]_/)[0].substring(1, 2);
+
+            if (!games[cso].channels[message.channel.id]) return client.guilds.get("399327996076621825").channels.get("467902250128506880").send("Bot is sending images when it shouldn't @`function bot`.");
+
+            if (end === '0') return games.squares.channels[message.channel.id].lastDisplay = message;
+            if (end === '2') return delete games[cso].channels[message.channel.id];
+
             let result = false;
-            if (games.connect4.channels[message.channel.id]) {
-                if (/^connect4_0_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return games.connect4.channels[message.channel.id].lastDisplay = message;
-                if (/^connect4_1_[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) {
-                    game = games.connect4.channels[message.channel.id];
-                    result.winner = game.players[game.winner];
-                    result.loser = game.players[game.winner == 0 ? 1 : 0];
-                    result.game = "1";
-                    delete games.connect4.channels[message.channel.id];
-                }
-                if (/^connect4_2_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return delete games.connect4.channels[message.channel.id];
-            } else if (games.squares.channels[message.channel.id]) {
-                if (/^squares_0_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return games.squares.channels[message.channel.id].lastDisplay = message;
-                if (/^squares_1_1?[0-9]_[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) {
-                    game = games.squares.channels[message.channel.id];
-                    result.winner = game.players[game.winner];
-                    result.loser = game.players[game.winner == 0 ? 1 : 0];
-                    result.game = "2";
-                    delete games.squares.channels[message.channel.id];
-                }
-                if (/^squares_2_1?[0-9]_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return delete games.squares.channels[message.channel.id];
-            } else if (games.othello.channels[message.channel.id]) {
-                if (/^othello_0_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return games.othello.channels[message.channel.id].lastDisplay = message;
-                if (/^othello_1_[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) {
-                    game = games.othello.channels[message.channel.id];
-                    result.winner = game.players[game.winner];
-                    result.loser = game.players[game.winner == 0 ? 1 : 0];
-                    result.game = "3";
-                    result.score = game.score;
-                    delete games.othello.channels[message.channel.id];
-                }
-                if (/^othello_2_[0-9]{1,}vs[0-9]{1,}\.png$/.test(message.attachments.array()[0].filename)) return delete games.othello.channels[message.channel.id];
-                if (/^othello_1_[0-9]{1,}_fun.png$/.test(message.attachments.array()[0].filename)) return delete games.othello.channels[message.channel.id];
+            if (end === '1') {
+                game = games[cso].channels[message.channel.id];
+                result = {
+                    winner: game.players[game.winner],
+                    loser: game.players[game.winner == 0 ? 1 : 0],
+                    game: JSON.stringify(["connect4", "squares", "othello"].indexOf(cso) + 1)
+                };
+                if (result.game === '3') result.score = game.score;
+                delete games[cso].channels[message.channel.id];
             }
-            if (result) {
+
+            if (result) db.query(`SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`, function(err, res) {
+                if (err) sqlError(message, err, `SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`);
                 let wins = false;
                 let lose = false;
                 if (res.rows.length == 0) return;
@@ -208,9 +213,11 @@ function bot(message) {
                         message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["million"] + "\" (`million`).");
                     }
                     db.query(`UPDATE profiles
-                              SET titles = ARRAY ${JSON.stringify(wins.titles).replace(/"/g, "'")}, wins${result.game} = ${wins["wins" + result.game] + 1}, money = "${wins.money + 5}
-                              WHERE id = '${wins.id}'`, function(err) {
-                        if (err) return message.channel.send("```" + err + "```");
+                        SET titles = ARRAY ${JSON.stringify(wins.titles).replace(/"/g, "'")}, wins${result.game} = ${wins["wins" + result.game] + 1}, money = "${wins.money + 5}
+                        WHERE id = '${wins.id}'`, function(err) {
+                            if (err) sqlError(message, err, `UPDATE profiles
+                                SET titles = ARRAY ${JSON.stringify(wins.titles).replace(/"/g, "'")}, wins${result.game} = ${wins["wins" + result.game] + 1}, money = "${wins.money + 5}
+                                WHERE id = '${wins.id}'`);
                     });
                 }
                 if (lose) {
@@ -227,13 +234,15 @@ function bot(message) {
                         message.channel.send("<@" + lose.id + "> has obtained the title \"" + titles["1K_play"] + "\" (`1K_play`).");
                     }
                     db.query(`UPDATE profiles
-                              SET titles = ARRAY ${JSON.stringify(lose.titles).replace(/"/g, "'")}, lose${result.game} = ${lose["lose" + result.game] + 1}
-                              WHERE id = '${lose.id}'`, function(err) {
-                        if (err) return message.channel.send("```" + err + "```");
+                        SET titles = ARRAY ${JSON.stringify(lose.titles).replace(/"/g, "'")}, lose${result.game} = ${lose["lose" + result.game] + 1}
+                        WHERE id = '${lose.id}'`, function(err) {
+                            if (err) sqlError(message, err, `UPDATE profiles
+                                SET titles = ARRAY ${JSON.stringify(lose.titles).replace(/"/g, "'")}, lose${result.game} = ${lose["lose" + result.game] + 1}
+                                WHERE id = '${lose.id}'`);
                     });
                 }
-            }
-        });
+            }); 
+        }
     } else {
         if (message.content.includes("is now requesting a new game of Connect Four")) return games.connect4.channels[message.channel.id].lastDisplay = message;
         if (message.content.includes("is now requesting a new game of Squares")) return games.squares.channels[message.channel.id].lastDisplay = message;
@@ -248,26 +257,16 @@ function bot(message) {
             }, 10000);
     }
 }
-
-function newError(message, cmd, a) {
-    return `\`\`\`\nError with command x!${cmd}\`\`\`\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n`
-         + `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n`
-         + `\`\`\`User errored on:\`\`\`<@${message.author.id}>\n\n`
-         + `\`\`\`\n`
-         + `Message sent:\`\`\`\`\`\`\n`
-         + `${message.content.replace(/`/g, "\\\`")}\`\`\`\n`
-         + `\`\`\`\n`
-         + `${a.join("\n")}\`\`\``
-}
    
 function newUser(id, channel) {
     let image = backgrounds.ids.random();
-    db.query(`INSERT INTO profiles (
-        id,       color,   title,      titles,             background,  backgrounds,         lorr,     money,  wins1,  lose1,  wins2,  lose2,  wins3,  lose3,  wins4,  lose4,  wins5,  lose5
-    ) VALUES (
-        '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0
-    )`, function(err) {
-        if (err) return channel.send("```" + err + "```");
+    let query = `INSERT INTO profiles (
+            id,       color,   title,      titles,             background,  backgrounds,         lorr,     money,  wins1,  lose1,  wins2,  lose2,  wins3,  lose3,  wins4,  lose4,  wins5,  lose5
+        ) VALUES (
+            '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0
+        )`;
+    db.query(query, function(err) {
+        if (err) return sqlError(message, err, query);
     });
     return { id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lorr: "right", money: 0, wins1: 0,  lose1: 0,  wins2: 0,  lose2: 0,  wins3: 0,  lose3: 0,  wins4: 0,  lose4: 0,  wins5: 0,  lose5: 0 };
 }
@@ -448,7 +447,7 @@ var commands = {
             else member = member.user;
    
             db.query(`SELECT * FROM profiles WHERE id = '${member.id}'`, function(err, res) {
-                if (err) return sendChat("```" + err + "```");
+                if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
   
                 let profile;
                 if (res.rows.length == 0 && !input) profile = newUser(message.author.id, message.channel);
@@ -495,7 +494,7 @@ var commands = {
                 });
             } else if (["owned"].includes(args[1]) || (!args[1] && ["backgrounds", "bgs"].includes(args[0]))) {
                 db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) sendChat("```" + err + "```");
+                    if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot view the backgrounds you own. If you want to change that fact, do `x!profile` right now!");
                     if (res.rows[0].backgrounds.length == 1) return sendChat("You only have 1 background, and it's the one you have equipped.");
                     let b1 = res.rows[0].backgrounds;
@@ -508,7 +507,7 @@ var commands = {
                 });
             } else if (["buy", "purchase"].includes(args[1])) {
                 db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) return sendChat("```" + err + "```");
+                    if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot yet purchase a new background. If you want to change that fact, do `x!profile` right now!");
                     if (res.rows[0].backgrounds.length == backgrounds.ids.length) return sendChat("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, okay~?");
                     if (res.rows[0].money < 20) return sendChat("You do not have enough money to buy another background! Get more money by playing games (and winning)!");
@@ -519,23 +518,27 @@ var commands = {
                     } while (res.rows[0].backgrounds.includes(newbg));
                     res.rows[0].backgrounds.push(newbg);
                     db.query(`UPDATE profiles
+                        SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "'")}, money = '${res.rows[0].money - 20}'
+                        WHERE id = '${message.author.id}'`, function(err) {
+                            if (err) sqlError(message, err, `UPDATE profiles
                                 SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "'")}, money = '${res.rows[0].money - 20}'
-                                WHERE id = '${message.author.id}'`, function(err) {
-                        if (err) sendChat("```" + err + "```");
-                        else return sendChat("Successfully purchased a new background! To equip it, do `x!profile background [background ID]`. New background ID: `" + newbg + '`', new Discord.Attachment("./img/backgrounds/" + newbg.substring(0, 7) + (newbg.substring(7) == "j" ? ".jpg" : ".png")));
+                                WHERE id = '${message.author.id}'`);
+                            else return sendChat("Successfully purchased a new background! To equip it, do `x!profile background [background ID]`. New background ID: `" + newbg + '`', new Discord.Attachment("./img/backgrounds/" + newbg.substring(0, 7) + (newbg.substring(7) == "j" ? ".jpg" : ".png")));
                     });
                 });
             } else if (/^[a-zA-Z0-9]{7}[jp]$/.test(args[1])) {
                 if (!backgrounds.ids.includes(args[1])) return sendChat("That image ID does not exist. Did you make sure you capitalized the correct letters? That's important, you know.");
                 db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) return sendChat("```" + err + "```");
+                    if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot yet equip a new background. If you want to change that fact, do `x!profile` right now!");
                     if (!res.rows[0].backgrounds.includes(args[1])) return sendChat("You do not own that background!");
                     return db.query(`UPDATE profiles
-                                     SET background = '${args[1]}'
-                                     WHERE id = '${message.author.id}'`, function(err) {
-                        if (err) sendChat("```" + err + "```");
-                        else return sendChat("Successfully equipped the background `" + args[1] + "`!");
+                        SET background = '${args[1]}'
+                        WHERE id = '${message.author.id}'`, function(err) {
+                            if (err) sqlError(message, err, `UPDATE profiles
+                                SET background = '${args[1]}'
+                                WHERE id = '${message.author.id}'`);
+                            else return sendChat("Successfully equipped the background `" + args[1] + "`!");
                     });
                 });
             } else if (args[1].startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
@@ -547,20 +550,22 @@ var commands = {
                 if (args[1] == 'l') args[1] = "left";
                 if (args[1] == 'r') args[1] = "right";
                 db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) return sendChat("```" + err + "```");
+                    if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so your information is displayed on neither the left nor the right. If you want to change that fact, do `x!profile` right now!");
                     db.query(`UPDATE profiles
-                              SET lorr = '${args[1]}'
-                              WHERE id = '${message.author.id}'`, function(err) {
-                        if (err) sendChat("```" + err + "```");
-                        else return sendChat("Successfully updated your information display to the " + args[1] + " side!");
+                        SET lorr = '${args[1]}'
+                        WHERE id = '${message.author.id}'`, function(err) {
+                            if (err) sqlError(message, err, `UPDATE profiles
+                                SET lorr = '${args[1]}'
+                                WHERE id = '${message.author.id}'`);
+                            else return sendChat("Successfully updated your information display to the " + args[1] + " side!");
                     });
                 });
             }
         } else if (["title", "titles"].includes(args[0])) {
             if (!args[1]) {
                 return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) return sendChat("```" + err + "```");
+                    if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you do not yet have any titles. If you want to change that fact, do `x!profile` right now!");
                     if (res.rows[0].titles.length == 1) return sendChat("The only title you own is the title you currently have equipped. Get some more and then check back with me, okay~?");
                     let t1 = res.rows[0].titles;
@@ -575,30 +580,34 @@ var commands = {
             if (args[1].startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
             if (!Object.keys(titles).includes(args[1])) return sendChat("That title ID does not exist. Try again.");
             return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                if (err) return sendChat("```" + err + "```");
+                if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
                 if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you do not yet have the ability to change your title. If you want to change that fact, do `x!profile` right now!");
                 return db.query(`UPDATE profiles
-                                 SET title = '${args[1]}'
-                                 WHERE id = '${message.author.id}'`, function(err) {
-                    if (err) return sendChat("```" + err + "```");
-                    return sendChat("Successfully updated your title to `" + titles[args[1]] + "`!");
+                    SET title = '${args[1]}'
+                    WHERE id = '${message.author.id}'`, function(err) {
+                        if (err) return sqlError(message, err, `UPDATE profiles
+                            SET title = '${args[1]}'
+                            WHERE id = '${message.author.id}'`);
+                        return sendChat("Successfully updated your title to `" + titles[args[1]] + "`!");
                 });
             });
         } else if (["color", "colors"].includes(args[0])) {
             if (!args[1]) return sendChat("Please include the color you wish to set your profile color to, and please make it a hexidecimal value ('#' followed by 3 or 6 digits and/or letters).");
             else if (!RE.color.test(args[1])) return sendChat("That is not a color hexidecimal. Try again.");
             db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                if (err) return sendChat("```" + err + "```");
+                if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
                 if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you do not yet have the ability to change your profile's color. If you want to change that fact, do `x!profile` right now!");
                 return db.query(`UPDATE profiles
+                    SET color = '${(args[1].startsWith('#') ? '' : '#') + args[1]}'
+                    WHERE id = '${message.author.id}'`, function(err) {
+                        if (err) return sqlError(message, err, `UPDATE profiles
                             SET color = '${(args[1].startsWith('#') ? '' : '#') + args[1]}'
-                            WHERE id = '${message.author.id}'`, function(err) {
-                    if (err) return sendChat("```" + err + "```");
-                    let canvas = new Canvas(100, 40);
-                    let ctx = canvas.getContext('2d');
-                    ctx.fillStyle = (args[1].startsWith('#') ? '' : '#') + args[1];
-                    ctx.fillRect(0, 0, 100, 40);
-                    return sendChat("Successfully updated your color to `" + (args[1].startsWith('#') ? '' : '#') + args[1] + "`!", new Discord.Attachment(canvas.toBuffer()));
+                            WHERE id = '${message.author.id}'`);
+                        let canvas = new Canvas(100, 40);
+                        let ctx = canvas.getContext('2d');
+                        ctx.fillStyle = (args[1].startsWith('#') ? '' : '#') + args[1];
+                        ctx.fillRect(0, 0, 100, 40);
+                        return sendChat("Successfully updated your color to `" + (args[1].startsWith('#') ? '' : '#') + args[1] + "`!", new Discord.Attachment(canvas.toBuffer()));
                 });
             });
         } else if (["help"].includes(input)) return sendChat("**Available sub-commands for `x!profile`** (do `x!profile [subcommand]`):\n\n**backgrounds** - opens the background menu for changing your profile's background\n**displaylorr** - allows you to change which side all the text n stuff is displayed on in your profile\n**title** - can display your currently equipped title, your currently owned titles, or allows you to change your currently equipped title (if you know the ID for it)\n**color** - allows you to change the color your profile uses to display text");
