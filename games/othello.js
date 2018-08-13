@@ -8,7 +8,7 @@ exports.timer = setInterval(function() {
     for (let i in exports.channels) {
         exports.channels[i].timer.time -= 1;
         if (exports.channels[i].timer.time == 0) {
-            if (exports.channels[i].timer.image) exports.channels[i].channel.send(exports.channels[i].timer.message, exports.channels[i].buffer);
+            if (exports.channels[i].buffer) exports.channels[i].channel.send(exports.channels[i].timer.message, exports.channels[i].buffer);
             else exports.channels[i].channel.send(exports.channels[i].timer.message);
             delete exports.channels[i];
         }

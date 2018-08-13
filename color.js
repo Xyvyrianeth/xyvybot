@@ -83,7 +83,7 @@ Color.addToMap = function(hexa, name) {
 	Color.map[name] = new Color(hexa);
 };
 
-exports.rgb = Color;
+exports.Color = Color;
 
 /*
 Color Names
