@@ -1,4 +1,4 @@
-var version = "2.25.0.5";
+var version = "2.25.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1136,41 +1136,40 @@ var commands = {
    
     // NSFW
     "nsfw": function(cmd, args, input, message, sendChat, user) {
+        let tags = ["RandomHentaiGif", "Pussy", "NekoGif", "Neko", "Lesbian", "Kuni", "Cumsluts", "Classic", "Boobs", "BJ", "Anal", "AnalArts", "Yuri", "Trap", "Tits", "GirlSoloGif", "GirlSolo", "SmallBoobs", "PussyWankGif", "PussyArt", "Kemonomimi", "Kitsune", "Keta", "Holo", "HoloEro", "Hentai", "Futanari", "Femdom", "FeetGif", "EroFeet", "Feet", "Ero", "EroKitsune", "EroKemonomimi", "EroNeko", "EroYuri", "CumArts", "BlowJob", "PussyGif"];
         if (message.channel.type != "dm" && !message.channel.nsfw) return;
+        if (!input) {
+            let type = tags.random();
+            let embed = new Discord.RichEmbed();
+            embed.setDescription(`Have some random NSFW~\nTag: \`${type}\` (Do \`x!nsfw [tag]\` to use)`);
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random());
+            return Nekos["getNSFW" + type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+        }
         if (["help"].includes(input)) {
             let embed = new Discord.RichEmbed();
-            embed.setDescription("If you don't really care what kind of lewd you want, just do `x!nsfw`\nIf you *do* care, do `x!nsfw [tag]`\nThese are all my available NSFW tags:\n`Gif  Pussy  NekoGif  Neko  Lesbian  Kuni  Cumsluts  Classic  Boobs  Bj  Anal`");
+            embed.setDescription("If you don't really care what kind of lewd you want, just do `x!nsfw`\nIf you *do* care, do `x!nsfw [tag]`\nTo see all available tags, do `x!nsfw tags`");
             embed.setTitle("NSFW Command help");
             embed.setFooter("Powered by Nekos.Life");
-            embed.setColor(new Color().random())
+            embed.setColor(new Color().random());
             return Nekos.getNSFWNeko().then(help => sendChat(embed.setImage(help.url)));
         }
-        if (!input) {
-            let type = ["RandomHentaiGif", "Pussy", "NekoGif", "Neko", "Lesbian", "Kuni", "Cumsluts", "Classic", "Boobs", "BJ", "Anal"].random();
-            return Nekos["getNSFW" + type]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(`Have something NSFW~\nTag: \`${type.replace("RandomHentai", "").toLowerCase()}\` (Do \`x!nsfw [tag]\` to use)`).setFooter("Powered by Nekos.Life").setColor(new Color().random())));
+        if (["tags"].includes(input)) {
+            let embed = new Discord.RichEmbed();
+            embed.setTitle("NSFW Tags");
+            embed.setDescription('```\n' + tags.join('   ') + '```');
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random());
+            return Nekos.getNSFWNeko().then(help => sendChat(embed.setImage(help.url)));
         }
-        if (!["gif", "pussy", "neko", "lesbian", "yuri", "kuni", "cumslut", "cumsluts", "classic", "boobs", "tits", "boobies", "titties", "bj", "blowjob", "anal"].includes(input))
-            return sendChat("Sorry, I don't have that");
-        let type = {
-            "gif": ["RandomHentaiGif", "Have a hentai gif~"],
-            "pussy": ["Pussy", "Have some anime pussy~"],
-            "neko": [["NekoGif", "Neko"].random(), "Have a lewd neko~"],
-            "nekogif": ["NekoGif", "Have a lewd neko gif~"],
-            "lesbian": ["Lesbian", "Have some yuri~"],
-            "yuri": ["Lesbian", "Have some yuri~"],
-            "kuni": ["Kuni", "Have some anime pussy-licking~"],
-            "cumslut": ["Cumsluts", "Have an anime cumslut~"],
-            "cumsluts": ["Cumsluts", "Have an anime cumslut~"],
-            "classic": ["Classic", "Have some classic anime sex~"],
-            "boobs": ["Boobs", "Have some anime boobs~"],
-            "tits": ["Boobs", "Have some anime tits~"],
-            "boobies": ["Boobs", "Have some anime boobies~"],
-            "titties": ["Boobs", "Have some anime titties~"],
-            "bj": ["Bj", "Have an anime blowjob~"],
-            "blowjob": ["Bj", "Have an anime blowjob~"],
-            "anal": ["Anal", "Have some anime anal sex~"],
-        }[input];
-        return Nekos["getNSFW" + type[0]]().then(nsfw => sendChat(new Discord.RichEmbed().setImage(nsfw.url).setDescription(type[1]).setFooter("Powered by Nekos.Life").setColor(new Color().random())));
+        if (!tags.join(' ').toLowerCase().split(' ').includes(input.toLowerCase())) return sendChat("Sorry, I don't have that");
+        
+        let type = tags[tags.join(' ').toLowerCase().split(' ').indexOf(input.toLowerCase())];
+        let embed = new Discord.RichEmbed();
+        embed.setDescription(`Tag: \`${type}\``);
+        embed.setFooter("Powered by Nekos.Life");
+        embed.setColor(new Color().random())
+        return Nekos["getNSFW" + type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
     },
    
     // Admin-only
