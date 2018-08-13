@@ -19,7 +19,6 @@
 		"paladins-api": "latest",
 		"gifencoder": "latest",
 		"stream-buffers": "latest",
-		"ytdl-core": "latest",
-		"ffmpeg": "git+https://git.ffmpeg.org/ffmpeg.git"
+		"ytdl-core": "latest"
 	}
 }
