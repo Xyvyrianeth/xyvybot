@@ -21,7 +21,7 @@ var RE = {
     id2: /^[0-9]{1,}$/,
     color: /^#([0-9a-f]{3}|[0-9a-f]{6})$/i
 };
-   
+
 const pg = require("pg");
 var db = new pg.Client(config.DATABASE_URL);
 db.connect().then(() => console.log("Connected to Database!")).catch(() => console.error("Could not connect to Database."));
