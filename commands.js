@@ -1,4 +1,4 @@
-var version = "2.25.1.1";
+var version = "2.25.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1141,18 +1141,10 @@ var commands = {
         if (!input) {
             let type = tags.random();
             let embed = new Discord.RichEmbed();
-            embed.setDescription(`Have some random NSFW~\nTag: \`${type}\` (Do \`x!nsfw [tag]\` to use)`);
+            embed.setDescription(`Have some random NSFW~\nTag: \`${type}\` | Do \`x!nsfw [tag]\` to see more like this\nDo \`x!nsfw tags\` to see all tags`);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random());
             return Nekos["getNSFW" + type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
-        }
-        if (["help"].includes(input)) {
-            let embed = new Discord.RichEmbed();
-            embed.setDescription("If you don't really care what kind of lewd you want, just do `x!nsfw`\nIf you *do* care, do `x!nsfw [tag]`\nTo see all available tags, do `x!nsfw tags`");
-            embed.setTitle("NSFW Command help");
-            embed.setFooter("Powered by Nekos.Life");
-            embed.setColor(new Color().random());
-            return Nekos.getNSFWNeko().then(help => sendChat(embed.setImage(help.url)));
         }
         if (["tags"].includes(input)) {
             let embed = new Discord.RichEmbed();
