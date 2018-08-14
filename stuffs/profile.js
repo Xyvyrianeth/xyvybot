@@ -1,6 +1,6 @@
 const Canvas = require('canvas');
-var Color = require('./color.js');
-var titles = require('./stuffs/titles.json');
+var Color = require('/app/stuffs/color.js');
+var titles = require('/app/stuffs/titles.json');
 
 function newResolution(width, height) {
     if (height <= 300 && width <= 400) return [width, height];

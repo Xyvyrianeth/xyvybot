@@ -24,7 +24,7 @@ var config = {
 };
 exports.config = config;
 
-var commands = require("./commands.js");
+var commands = require("/app/commands.js");
 
 client.on('message', message => {
     if (message.author.bot) {
