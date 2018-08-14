@@ -47,7 +47,7 @@ exports.drawBoard = function(game, end, highlight) {
     // Function will vary with game
     
     ctx.textAlign = "center";
-    for (let i = game.width; i--;) ctx.fillText("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[game.width - 1], (i + 1) * 25 + 7.5, 42 + (25 * game.width));
+    for (let i = game.width; i--;) ctx.fillText("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i], (i + 1) * 25 + 7.5, 42 + (25 * game.width));
     for (let i = game.height; i--;) ctx.fillText(i + 1, 13, (i + 1) * 25 + 21);
     ctx.textAlign = "start";
   
@@ -192,7 +192,7 @@ exports.takeTurn = function(channel, Move) {
         }
         if (move[1] > game.width - 3) {
             for (let i = game.height; i--;) {
-                for (let ii = 0; ii < move[0] - (game.height - 3); i++) game.board[i].push(false);
+                for (let ii = 0; ii < move[0] - (game.height - 3); i++) game.board[ii].push(false);
             }
             do {
                 for (let i = game.height; i--;) game.board[i].pop();
