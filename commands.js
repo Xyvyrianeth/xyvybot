@@ -1,4 +1,4 @@
-var version = "2.25.1.13";
+var version = "2.26.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -7,12 +7,11 @@ const GIFEncoder = require("gifencoder");
 const streamBuffers = require("stream-buffers");
 const ytdl = require("ytdl-core");
 
-var { client } = require("./Xyvy.js");
-var { config } = require("./Xyvy.js");
-var Profile = require("./profile.js");
-var { Color } = require("./color.js");
-var titles = require("./stuffs/titles.json");
-var backgrounds = require("./stuffs/images.json");
+var { client,config } = require("/app/Xyvy.js");
+var Profile = require("/app/stuffs/profile.js");
+var { Color } = require("/app/stuffs/color.js");
+var titles = require("/app/stuffs/titles.json");
+var backgrounds = require("/app/stuffs/images.json");
 
 var admins = "357700219825160194".split(' ');
 var RE = {
@@ -56,10 +55,12 @@ var requestTimer = setInterval(function() {
     }
 }, 10);
 var games = {
-    connect4: require("./games/connect4.js"),
-    squares: require("./games/squares.js"),
-    othello: require("./games/othello.js"),
-    gomoku: require("./games/gomoku.js")
+    connect4: require("/app/games/connect4.js"),
+    squares: require("/app/games/squares.js"),
+    othello: require("/app/games/othello.js"),
+    gomoku: require("/app/games/gomoku.js"),
+
+    channels: require("/app/games/channels.js").channels
 }
 
 function botError(message, err) {
@@ -122,23 +123,21 @@ function other(message) {
     }
     if (message.channel.type == "dm" || message.author.bot) return;
 
-    for (let i in games) {
-        if (games[i].channels[message.channel.id] && games[i].channels[message.channel.id].started && message.author.id == games[i].channels[message.channel.id].player && games[i].channels[message.channel.id].RE.test(message.content)) {
-            setTimeout(function() {
-                message.delete();
-            }, 5000);
-            try {
-                return sendChat(games[i].takeTurn(message.channel, message.content));
-            } catch (error) {
-                delete games[i].channels[message.channel.id];
-                sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-                let errs = [];
-                for (let i = 0; i < error.stack.split('\n').length; i++) {
-                    if (error.stack.split('\n')[i].includes("at emitOne")) break
-                    else errs.push(error.stack.split('\n')[i]);
-                }
-                return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(botError(message, errs));
+    if (games.channels[message.channel.id] && games.channels[message.channel.id].started && message.author.id == games.channels[message.channel.id].player && games.channels[message.channel.id].RE.test(message.content)) {
+        setTimeout(function() {
+            message.delete();
+        }, 5000);
+        try {
+            return sendChat(games.channels[message.channel.id].takeTurn(message.channel, message.content));
+        } catch (error) {
+            delete games.channels[message.channel.id];
+            sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
+            let errs = [];
+            for (let i = 0; i < error.stack.split('\n').length; i++) {
+                if (error.stack.split('\n')[i].includes("at emitOne")) break
+                else errs.push(error.stack.split('\n')[i]);
             }
+            return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(botError(message, errs));
         }
     }
 }
@@ -146,26 +145,25 @@ function other(message) {
 function bot(message) {
     if (message.attachments.array().length != 0) {
         let img = message.attachments.first().filename;
-        if (/^(connect4|squares|othello)_[0-2]_0-9{1,}(|vs[0-9]{1,})\.png$/.test(img)) {
-            let cso = img.match(/(connect4|squares|othello)/)[0];
+        if (/^(connect4|squares|othello|gomoku)_[0-2]_0-9{1,}(|vs[0-9]{1,})\.png$/.test(img)) {
+            if (!games.channels[message.channel.id]) return client.guilds.get("399327996076621825").channels.get("467902250128506880").send("Bot is sending images when it shouldn't @`function bot`.");
+
+            let game = games.channels[message.channel.id];
             let end = img.match(/_[0-2]_/)[0].substring(1, 2);
-
-            if (!games[cso].channels[message.channel.id]) return client.guilds.get("399327996076621825").channels.get("467902250128506880").send("Bot is sending images when it shouldn't @`function bot`.");
-
-            if (end === '0') return games.squares.channels[message.channel.id].lastDisplay = message;
-            if (end === '2') return delete games[cso].channels[message.channel.id];
+            if (end === '0') return game.lastDisplay = message;
+            if (end === '2') return delete game;
 
             let result = false;
             if (end === '1') {
-                game = games[cso].channels[message.channel.id];
                 result = {
                     winner: game.players[game.winner],
                     loser: game.players[game.winner == 0 ? 1 : 0],
-                    game: JSON.stringify(["connect4", "squares", "othello"].indexOf(cso) + 1)
+                    game: JSON.stringify(["connect4", "squares", "othello", "gomoku"].indexOf(game.game) + 1),
+                    casual: game.casual
                 };
                 if (result.game === '3') result.score = game.score;
-                delete games[cso].channels[message.channel.id];
             }
+            delete game;
 
             if (result) db.query(`SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`, function(err, res) {
                 if (err) sqlError(message, err, `SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`);
@@ -187,41 +185,43 @@ function bot(message) {
                         wins.titles.push("winsIn4");
                         message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["winsIn4"] + "\" (`winsIn4`).");
                     }
-                    if (result.game == '3' && (result.score[0] == 0 || result.score[1] == 0)) {
-                        wins.titles.push("allBorW");
-                        message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["allBorW"] + "\" (`allBorW`).");
-                    }
                     if (result.game == '2' && (result.score[0] >= 100 || result.score[1] >= 100)) {
                         wins.titles.push("100sqrs");
                         message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["100sqrs"] + "\" (`100sqrs`).");
                     }
-                    numbers = [5, 10, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-                    number2 = "5__wins 10_wins 25_wins 50_wins 100wins 200wins 300wins 400wins 500wins 600wins 700wins 800wins 900wins 1K_wins".split(' ');
-                    for (let i = 0; i < numbers.length; i++) {
-                        if (wins.wins1 + wins.wins2 + wins.win3 + wins.wins4 + wins.wins5 == numbers[i]) {
-                            if (!wins.titles.includes(number2[i])) wins.titles.push(number2[i]);
-                            message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles[number2[i]] + "\" (`" + number2[i] + "`).");
+                    if (result.game == '3' && (result.score[0] == 0 || result.score[1] == 0)) {
+                        wins.titles.push("allBorW");
+                        message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["allBorW"] + "\" (`allBorW`).");
+                    }
+                    if (!result.casual) {
+                        let numbers = [5, 10, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+                        let number2 = "5__wins 10_wins 25_wins 50_wins 100wins 200wins 300wins 400wins 500wins 600wins 700wins 800wins 900wins 1K_wins".split(' ');
+                        for (let i = 0; i < numbers.length; i++) {
+                            if (wins.wins1 + wins.wins2 + wins.win3 + wins.wins4 + wins.wins5 == numbers[i]) {
+                                if (!wins.titles.includes(number2[i])) wins.titles.push(number2[i]);
+                                message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles[number2[i]] + "\" (`" + number2[i] + "`).");
+                            }
                         }
+                        if (wins.wins1 + wins.wins2 + wins.win3 + wins.wins4 + wins.wins5 + wins.lose1 + wins.lose2 + wins.lose3 + wins.lose4 + wins.lose5 == 1000) {
+                            wins.titles.push("1K_play");
+                            message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["1K_play"] + "\" (`1K_play`).");
+                        }
+                        if (wins.money + 5 == 10**5 && !wins.titles.includes("million")) {
+                            wins.titles.push("million");
+                            message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["million"] + "\" (`million`).");
+                        }
+                        db.query(`UPDATE profiles
+                            SET titles = ARRAY ${JSON.stringify(wins.titles).replace(/"/g, "'")}, wins${result.game} = ${wins["wins" + result.game] + 1}, money = "${wins.money + 5}
+                            WHERE id = '${wins.id}'`, function(err) {
+                                if (err) sqlError(message, err, `UPDATE profiles
+                                    SET titles = ARRAY ${JSON.stringify(wins.titles).replace(/"/g, "'")}, wins${result.game} = ${wins["wins" + result.game] + 1}, money = "${wins.money + 5}
+                                    WHERE id = '${wins.id}'`);
+                        });
                     }
-                    if (wins.wins1 + wins.wins2 + wins.win3 + wins.wins4 + wins.wins5 + wins.lose1 + wins.lose2 + wins.lose3 + wins.lose4 + wins.lose5 == 1000) {
-                        wins.titles.push("1K_play");
-                        message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["1K_play"] + "\" (`1K_play`).");
-                    }
-                    if (wins.money + 5 == 10**5 && !wins.titles.includes("million")) {
-                        wins.titles.push("million");
-                        message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["million"] + "\" (`million`).");
-                    }
-                    db.query(`UPDATE profiles
-                        SET titles = ARRAY ${JSON.stringify(wins.titles).replace(/"/g, "'")}, wins${result.game} = ${wins["wins" + result.game] + 1}, money = "${wins.money + 5}
-                        WHERE id = '${wins.id}'`, function(err) {
-                            if (err) sqlError(message, err, `UPDATE profiles
-                                SET titles = ARRAY ${JSON.stringify(wins.titles).replace(/"/g, "'")}, wins${result.game} = ${wins["wins" + result.game] + 1}, money = "${wins.money + 5}
-                                WHERE id = '${wins.id}'`);
-                    });
                 }
-                if (lose) {
-                    numbers = [5, 10, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-                    number2 = "5__lose 10_lose 25_lose 50_lose 100lose 200lose 300lose 400lose 500lose 600lose 700lose 800lose 900lose 1K_lose".split(' ');
+                if (lose && !result.casual) {
+                    let numbers = [5, 10, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+                    let number2 = "5__lose 10_lose 25_lose 50_lose 100lose 200lose 300lose 400lose 500lose 600lose 700lose 800lose 900lose 1K_lose".split(' ');
                     for (let i = 0; i < numbers.length; i++) {
                         if (lose.lose1 + lose.lose2 + lose.win3 + lose.lose4 + lose.lose5 == numbers[i]) {
                             if (!lose.titles.includes(number2[i])) lose.titles.push(number2[i]);
@@ -341,16 +341,17 @@ var commands = {
     "connect4": function(cmd, args, input, message, sendChat, user) {
         if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
         if (!input) return sendChat(`__**Connect Four**__\nTo start a game, type \`x!${cmd} start\`!`);
-        if (["start"].includes(input)) {
-            if (!games.connect4.channels[message.channel.id]) return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd));
+        if (["start"].includes(args[0])) {
+            message.delete();
+            if (!games.connect4.channels[message.channel.id]) {
+                if (!args[1]) return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, false));
+                if (["causal", "fun"].includes(args[1])) return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, true));
+            }
             if (!games.connect4.channels[message.channel.id].started) {
                 if (message.author.id != games.connect4.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
                     k = games.connect4.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
-            }
-            if (games.connect4.channels[message.channel.id].started) {
-                return sendChat("Game has already started, you cannot join it now.");
             }
         } else if (["board", "showboard"].includes(input)) {
             if (!games.connect4.channels[message.channel.id]) return sendChat("There is no active Connect Four game in this channel, $user$!");
@@ -363,7 +364,10 @@ var commands = {
             else sendChat("$user$ has forfeit the game.");
             delete games.connect4.channels[message.channel.id];
         } else if (["rules", "howtoplay"].includes(args[0])) {
-               
+            new Discord.RichEmbed();
+            embed.setDescription("If you don't know how to play this game, you had a shitty childhood.");
+            embed.setColor(new Color().random());
+            return sendChat(embed);
         }
     },
    
@@ -371,12 +375,10 @@ var commands = {
         if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
         if (!input) return sendChat(`__**Squares**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
+            message.delete();
             if (!games.squares.channels[message.channel.id]) {
-                if (!args[1]) size = 10;
-                else if (!isNaN(args[1])) return sendChat("Invalid board size.");
-                else if (args[1] > 15) return sendChat("Board size cannot be bigger than 15x15");
-                else if (args[1] < 8) return sendChat("Board size cannot be smaller than 8x8");
-                return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, size, true));
+                if (!args[1]) return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, false));
+                if (["causal", "fun"].includes(args[1])) return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, true));
             }
             if (!games.squares.channels[message.channel.id].started) {
                 if (message.author.id != games.squares.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
@@ -384,13 +386,11 @@ var commands = {
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
             }
-            if (games.squares.channels[message.channel.id].started) {
-                return sendChat("Game has already started, you cannot join it now.");
-            }
         } else if (["board", "showboard"].includes(input)) {
-            if (!games.squares.channels[message.channel.id]) return sendChat("There is no active squares game in this channel, $user$!");
+            if (!games.squares.channels[message.channel.id]) return sendChat("There is no active Squares game in this channel, $user$!");
             if (!games.squares.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            return sendChat(new Discord.Attachment(games.squares.drawBoard(games.squares.channels[message.channel.id], 0)))
+            let game = games.squares.channels[message.channel.id];
+            return sendChat(new Discord.Attachment(game.buffer, `squares_0_${game.players[0]}vs${game.players[1]}.png`));
         } else if (["quit", "forfeit", "leave"].includes(input)) {
             if (!games.squares.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
             if (message.author.id != games.squares.channels[message.channel.id].players[0] && message.author.id != games.squares.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
@@ -398,7 +398,10 @@ var commands = {
             else sendChat("$user$ has forfeit the game.");
             delete games.squares.channels[message.channel.id];
         } else if (["rules", "howtoplay"].includes(args[0])) {
-               
+            new Discord.RichEmbed();
+            embed.setDescription("This game was created by Xyvy himself because he was bored and didn't want to work on Gomoku win logic one night. It's played almost exactly like Gomoku, except for the objective of the game and the limitless board size. The board size is always 10x10, and the object of the game is to have created more squares than your opponent before the end. You make a square by placing 4 of your stones in a square pattern. Stones can be a part of multiple squares, and squares can range in size from 2x2 to 15x15 (if you put a stone in all 4 corners of the map, that's a point to you!).\n\nTaking turns is the same as in Gomoku: 2 stones per turn, but whoever goes first only places 1 stone on their very first turn. This eliminates \"first player advantage\" where player 1 is the only one that can have more stones on the board than their opponent.\n\nThe game ends when there are no more empty spaces on the board. After that, the squares are counted for each player and the player with more squares is declared the winner.");
+            embed.setColor(new Color().random());
+            return sendChat(embed);
         }
     },
    
@@ -407,17 +410,15 @@ var commands = {
         if (!input) return sendChat(`__**Othello**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
             message.delete();
-            if (!games.othello.channels[message.channel.id]) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd));
+            if (!games.othello.channels[message.channel.id]) {
+                if (!args[1]) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, false));
+                if (["causal", "fun"].includes(args[1])) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, true));
+            }
             if (!games.othello.channels[message.channel.id].started) {
                 if (message.author.id != games.othello.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
-                    let casual = false;
-                    if (args[1] && ["casual", "fun"].includes(args[1])) casual = true;
-                    k = games.othello.startGame(message.channel, message.author.id, casual);
+                    k = games.othello.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
-            }
-            if (games.othello.channels[message.channel.id].started) {
-                return sendChat("Game has already started, you cannot join it now.");
             }
         } else if (["board", "showboard"].includes(input)) {
             if (!games.othello.channels[message.channel.id]) return sendChat("There is no active Othello game in this channel, $user$!");
@@ -425,13 +426,51 @@ var commands = {
             let game = games.othello.channels[message.channel.id];
             return sendChat(new Discord.Attachment(game.buffer, `othello_0_${game.players[0]}vs${game.players[1]}.png`));
         } else if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!games.othello.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
-            if (message.author.id != games.othello.channels[message.channel.id].players[0] && message.author.id != games.othello.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
-            if (!games.othello.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
-            else return sendChat(games.othello.takeTurn(message.channel, "quit"));
-            delete games.othello.channels[message.channel.id];
+            message.delete();
+            if (games.othello.channels[message.channel.id] && games.othello.channels[message.channel.id].players.includes(message.author.id)) {
+                if (!games.othello.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+                else return sendChat(games.othello.takeTurn(message.channel, "quit"));
+                delete games.othello.channels[message.channel.id];
+            }
         } else if (["rules", "howtoplay"].includes(args[0])) {
-               
+            new Discord.RichEmbed();
+            embed.setDescription("[Click here to learn how to play Othello!](https://www.wikipedia.org/wiki/Reversi#Rules)\nI don't really know how to explain it without pictures.");
+            embed.setColor(new Color().random());
+            return sendChat(embed);
+        }
+    },
+
+    "gomoku": function(cmd, args, input, message, sendChat, user) {
+        if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
+        if (!input) return sendChat(`__**Gomoku**__\nTo start a game, type \`x!${cmd} start\`!`);
+        if (["start"].includes(args[0])) {
+            message.delete();
+            if (!games.gomoku.channels[message.channel.id]) {
+                if (!args[1]) return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, false));
+                if (["causal", "fun"].includes(args[1])) return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, true));
+            }
+            if (!games.gomoku.channels[message.channel.id].started) {
+                if (message.author.id != games.gomoku.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+                    k = games.gomoku.startGame(message.channel, message.author.id);
+                    return sendChat(k[0], k[1]);
+                } else return sendChat("You cannot play yourself!");
+            }
+        } else if (["board", "showboard"].includes(input)) {
+            if (!games.gomoku.channels[message.channel.id]) return sendChat("There is no active Gomoku game in this channel, $user$!");
+            if (!games.gomoku.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+            let game = games.gomoku.channels[message.channel.id];
+            return sendChat(new Discord.Attachment(game.buffer, `gomoku_0_${game.players[0]}vs${game.players[1]}.png`));
+        } else if (["quit", "forfeit", "leave"].includes(input)) {
+            if (!games.gomoku.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
+            if (message.author.id != games.gomoku.channels[message.channel.id].players[0] && message.author.id != games.gomoku.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
+            if (!games.gomoku.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+            else sendChat("$user$ has forfeit the game.");
+            delete games.gomoku.channels[message.channel.id];
+        } else if (["rules", "howtoplay"].includes(args[0])) {
+            new Discord.RichEmbed();
+            embed.setDescription("Gomoku, also called Go Bang, in the simplest terms, is a very large game of Tic Tac Toe. The board can be virtually any size, and we practice that here: the board starts small, and expands as more space is needed (we stop at 26x26 because who really needs that much space?).\n\nTaking turns differs from traditional 1v1 board games like checkers in that each player does not get 1 move per turn. In Gomoku, both players get 2 moves per turn, but player 1 only gets one move on their very first turn. This removes what's known as \"player 1 advantage,\" which is very prevalent in Tic Tac Toe, where player 1 is able to have more pieces on the board than player 2, but player 2 can never have more pieces on the board than player 1.\n\nTo win, you must have 5 of your stones in a line. No more, no less. That's right: if you have 6 in a line, you cannot win.");
+            embed.setColor(new Color().random());
+            return sendChat(embed);
         }
     },
 
@@ -631,7 +670,7 @@ var commands = {
             embed.setDescription(`Avatar for <@${member.id}>`);
             embed.setImage(`https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png?size=2048`);
             embed.setColor(new Color().random());
-            return sendChat({embed});
+            return sendChat(embed);
         } else return sendChat("Unknown request.");
     },
 
@@ -663,7 +702,7 @@ var commands = {
             }
             embed.setColor(new Color().random());
             embed.setFooter("Xyvybot version " + version);
-            return sendChat({embed});
+            return sendChat(embed);
         } else if (["games", "utility", "profile", "miscellaneous", "misc", "nsfw"].includes(input)) {
             let embed = new Discord.RichEmbed();
             embed.setTitle(input.toUpperCase());
@@ -705,7 +744,7 @@ var commands = {
                         embed.addField("Aliases", '`' + guildAliases[i].join("`\n`") + '`');
                         embed.setFooter("Xyvybot version " + version);
                         embed.setColor(new Color().random());
-                        return sendChat({embed});
+                        return sendChat(embed);
                     }
                 }
                 return sendChat("Unknown request.");
@@ -734,7 +773,7 @@ var commands = {
                         embed.addField("Aliases", '`' + userAliases[i].join("`\n`") + '`');
                         embed.setFooter("Xyvybot version " + version);
                         embed.setColor(new Color().random());
-                        return sendChat({embed});
+                        return sendChat(embed);
                     }
                 }
                 return sendChat("Unknown request.");
@@ -751,7 +790,7 @@ var commands = {
                 embed.setTitle("Aliases for " + i);
                 embed.setDescription("`" + guildAliases.join("`  `") + "`");
                 embed.setColor(new Color().random());
-                return sendChat({embed});
+                return sendChat(embed);
             }
         }
     },
@@ -779,7 +818,7 @@ var commands = {
                 embed.setTitle("Bug Report");
                 embed.setAuthor(message.author.username + "#" + message.author.discriminator + " (" + message.author.id + ")");
                 embed.setDescription("**Command**: " + com + "\n\n" + desc);
-                client.guilds.get("399327996076621825").channels.get("467853697528102912").send({embed});
+                client.guilds.get("399327996076621825").channels.get("467853697528102912").send(embed);
                 bugTimers[message.author.id] = 100 * 60 * 60 * 2;
                 return sendChat("Bug report sent! Thanks for helping out!");
             } else sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
@@ -797,7 +836,7 @@ var commands = {
                 embed.setTitle("User Request");
                 embed.setAuthor(message.author.username + "#" + message.author.discriminator + " (" + message.author.id + ")");
                 embed.setDescription("**Suggestion**:\n" + input);
-                client.guilds.get("399327996076621825").channels.get("468245442388295691").send({embed});
+                client.guilds.get("399327996076621825").channels.get("468245442388295691").send(embed);
                 requestTimers[message.author.id] = 100 * 60 * 60 * 2;
                 return sendChat("Request sent! Thanks for the suggestion!");
             } else sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
@@ -901,7 +940,7 @@ var commands = {
                 embed.setImage(result.strokeOrderDiagramUri);
                 embed.setURL(result.uri);
                
-                sendChat({embed});
+                sendChat(embed);
             });
         }
    
@@ -916,7 +955,7 @@ var commands = {
                 for (let i = 0; i < examples.length; i++) {
                     embed.addField((i + 1) + ") " + examples[i].kanji, `${examples[i].kana}\n${examples[i].english}`);
                 }
-                return sendChat({embed});
+                return sendChat(embed);
             });
         }
    
@@ -930,7 +969,7 @@ var commands = {
                 let definition = result.data[0];
                 embed.addField("Definition", definition.senses[0].english_definitions);
                 embed.addField("Reading", definition.japanese[0].reading);
-                sendChat({embed});
+                sendChat(embed);
             });
         }
    
@@ -955,7 +994,7 @@ var commands = {
    
                 embed.setFooter("Source: Tai Kim's Japanese Guide");
    
-                return sendChat({embed});
+                return sendChat(embed);
             } else if (["charts", "chart"].includes(args[1])) {
                 let embed = new Discord.RichEmbed();
             }
