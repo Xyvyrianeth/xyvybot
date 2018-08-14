@@ -1,4 +1,4 @@
-var version = "2.27.0.10";
+var version = "2.27.0.11";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -163,7 +163,7 @@ function bot(message) {
                 };
                 if (result.game === '3') result.score = game.score;
             }
-            delete game;
+            delete game.channels[message.channel.id];
 
             if (result) db.query(`SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`, function(err, res) {
                 if (err) sqlError(message, err, `SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`);
