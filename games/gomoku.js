@@ -172,43 +172,49 @@ exports.takeTurn = function(channel, Move) {
             }
         }
     } else {
-        if (move[0] < 3) {
+        if (move[0] < 3 && game.height < 26) {
             let a = [];
+            let b = move[0];
             for (let i = game.width; i--;) a.push(false);
-            for (let i = 0; i < 3 - move[0]; i++) {
+            for (let i = 0; i < 3 - b; i++) {
                 game.board.unshift(JSON.parse(JSON.stringify(a)));
                 game.height += 1;
+                move[0] += 1;
             }
             do {
                 game.board.shift();
                 game.height -= 1;
             } while (game.board.length > 26);
         }
-        if (move[0] > game.height - 4) {
+        if (move[0] > game.height - 3 && game.height < 26) {
             let a = [];
             for (let i = game.width; i--;) a.push(false);
-            for (let i = 0; i < move[0] - (game.height - 4); i++) {
+            for (let i = 0; i < move[0] - (game.height - 3); i++) {
                 game.board.push(JSON.parse(JSON.stringify(a)));
                 game.height += 1;
             }
             do {
                 game.board.pop();
                 game.height -= 1;
+                move[0] -= 1;
             } while (game.board.length > 26);
         }
-        if (move[1] < 3) {
-            for (let i = game.height; i--;) {
-                for (let ii = 0; ii < 3 - move[1]; ii++) game.board[ii].unshift(false);
+        if (move[1] < 3 && game.width < 26) {
+            let a = move[1];
+            for (let ii = 0; ii < 3 - a; ii++) {
+                for (let i = game.height; i--;) game.board[i].unshift(false);
                 game.width += 1;
+                move[1] += 1;
             }
             do {
                 for (let i = game.height; i--;) game.board[i].shift();
                 game.width -= 1;
+                move[0] -= 1;
             } while (game.board.filter(x => x.length > 26).length !== 0);
         }
-        if (move[1] > game.width - 4) {
-            for (let i = game.height; i--;) {
-                for (let ii = 0; ii < move[1] - (game.height - 4); ii++) game.board[ii].push(false);
+        if (move[1] > game.width - 3 && game.width < 26) {
+            for (let ii = 0; ii < move[1] - (game.height - 3); ii++) {
+                for (let i = game.height; i--;) game.board[i].push(false);
                 game.width += 1;
             }
             do {
