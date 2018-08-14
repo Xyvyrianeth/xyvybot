@@ -22,9 +22,9 @@
 
  "LOSE": "Titles one obtains from having lost so many games",
  "5__lose": "Am I good, yet?",
- "10_lose": "Failure of the Board",
- "25_lose": "The Easy Win",
- "50_lose": "A Good Sport",
+ "10_lose": "The Easy Win",
+ "25_lose": "Master of Sux",
+ "50_lose": "Clueless Gamer",
  "100lose": "Tabletop Loser",
  "200lose": "Tabletop Loser II",
  "300lose": "Tabletop Loser III",
@@ -34,13 +34,13 @@
  "700lose": "Tabletop Grand Failure",
  "800lose": "Tabletop Grand Failure II",
  "900lose": "Tabletop Grand Failure III",
- "1K_lose": "Tabletop Shit",
+ "1K_lose": "Tabletop Piece of Shit",
 
  "ACHIEVEMENTS": "Titles one obtains by doing things",
  "beatRDB": "Connect 4 Legend",
  "million": "The ATM Machine",
  "1K_play": "I <3 Board Games",
  "100sqrs": "Geometrist",
- "allBorW": "",
+ "allBorW": "Eliminator",
  "winsIn4": "gg ez"
 }
