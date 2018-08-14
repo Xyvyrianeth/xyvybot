@@ -123,7 +123,7 @@ exports.drawBoard = function(game, end, highlight, row) {
         ctx.fillText(" has won!", k + 5, 5);
         ctx.fillStyle = "#0f0";
         ctx.lineWidth = 3;
-        for (let i = row.length; i--;) {
+        for (let i = ; i < row.length; i--;) {
             let r = 42.5 + (25 * row[i][0]);
             let c = (row[i][1] + 1) * 25 + 7.5;
             ctx.beginPath();
@@ -215,34 +215,34 @@ exports.takeTurn = function(channel, Move) {
             // horizontal
             if (x == 0) {
                 if (a[y][x] === b && a[y][x + 1] === b && a[y][x + 2] === b && a[y][x + 3] === b && a[y][x + 4] === b && a[y][x + 5] !== b) {
-                    row = [a[y][x], a[y][x + 1], a[y][x + 2], a[y][x + 3], a[y][x + 4]];
+                    row = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3], [y, x + 4]];
                     end = 1;
                 }
             } else if (x == game.width - 5) {
                 if (a[y][x] === b && a[y][x + 1] === b && a[y][x + 2] === b && a[y][x + 3] === b && a[y][x + 4] === b && a[y][x - 1] !== b) {
-                    row = [a[y][x], a[y][x + 1], a[y][x + 2], a[y][x + 3], a[y][x + 4]];
+                    row = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3], [y, x + 4]];
                     end = 1;
                 }
             } else {
                 if (a[y][x] === b && a[y][x + 1] === b && a[y][x + 2] === b && a[y][x + 3] === b && a[y][x + 4] === b && a[y][x + 5] !== b && a[y][x - 1] !== b) {
-                    row = [a[y][x], a[y][x + 1], a[y][x + 2], a[y][x + 3], a[y][x + 4]];
+                    row = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3], [y, x + 4]];
                     end = 1;
                 }
             }
             // vertical
             if (y == 0) {
                 if (a[y][x] === b && a[y + 1][x] === b && a[y + 2][x] === b && a[y + 3][x] === b && a[y + 4][x] === b && a[y + 5][x] !== b) {
-                    row = [a[y][x], a[y + 1][x], a[y + 2][x], a[y + 3][x], a[y + 4][x]];
+                    row = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x], [y + 4, x]];
                     end = 1;
                 }
             } else if (y == game.height - 5) {
                 if (a[y][x] === b && a[y + 1][x] === b && a[y + 2][x] === b && a[y + 3][x] === b && a[y + 4][x] === b && a[y - 1][x] !== b) {
-                    row = [a[y][x], a[y + 1][x], a[y + 2][x], a[y + 3][x], a[y + 4][x]];
+                    row = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x], [y + 4, x]];
                     end = 1;
                 }
             } else {
                 if (a[y][x] === b && a[y + 1][x] === b && a[y + 2][x] === b && a[y + 3][x] === b && a[y + 4][x] === b && a[y + 5][x] !== b && a[y - 1][x] !== b) {
-                    row = [a[y][x], a[y + 1][x], a[y + 2][x], a[y + 3][x], a[y + 4][x]];
+                    row = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x], [y + 4, x]];
                     end = 1;
                 }
             }
@@ -250,41 +250,41 @@ exports.takeTurn = function(channel, Move) {
             if (x == 0) {
                 if (y == 4) {
                     if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b) {
-                        row = [a[y][x], a[y-1][x+1], a[y-2][x+2], a[y-3][x+3], a[y-4][x+4]];
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
                         end = 1;
                     }
                 } else if (y > 4 && y < game.height) {
                     if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y-5][x+5] !== b) {
-                        row = [a[y][x], a[y-1][x+1], a[y-2][x+2], a[y-3][x+3], a[y-4][x+4]];
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
                         end = 1;
                     }
                 }
             } else if (x < game.width - 5) {
                 if (y == 4) {
                     if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y+1][x-1] !== b) {
-                        row = [a[y][x], a[y-1][x+1], a[y-2][x+2], a[y-3][x+3], a[y-4][x+4]];
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
                         end = 1;
                     }
                 } else if (y > 4 && y < game.height - 5) {
                     if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y+1][x-1] !== b && a[y-5][x+5] !== b) {
-                        row = [a[y][x], a[y-1][x+1], a[y-2][x+2], a[y-3][x+3], a[y-4][x+4]];
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
                         end = 1;
                     }
                 } else if (y == game.height - 1) {
                     if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y-5][x+5] !== b) {
-                        row = [a[y][x], a[y-1][x+1], a[y-2][x+2], a[y-3][x+3], a[y-4][x+4]];
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
                         end = 1;
                     }
                 }
             } else if (x == game.width - 5) {
                 if (y > 3 && y < game.height - 1) {
                     if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y+1][x-1] !== b) {
-                        row = [a[y][x], a[y-1][x+1], a[y-2][x+2], a[y-3][x+3], a[y-4][x+4]];
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
                         end = 1;
                     }
                 } else if (y == game.height - 1) {
                     if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b) {
-                        row = [a[y][x], a[y-1][x+1], a[y-2][x+2], a[y-3][x+3], a[y-4][x+4]];
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
                         end = 1;
                     }
                 }
@@ -293,41 +293,41 @@ exports.takeTurn = function(channel, Move) {
             if (x == 0) {
                 if (y < game.height - 5) {
                     if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y+5][x+5] !== b) {
-                        row = [a[y][x], a[y+1][x+1], a[y+2][x+2], a[y+3][x+3], a[y+4][x+4]];
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
                         end = 1;
                     }
                 } else if (y == game.height - 5) {
                     if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b) {
-                        row = [a[y][x], a[y+1][x+1], a[y+2][x+2], a[y+3][x+3], a[y+4][x+4]];
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
                         end = 1;
                     }
                 }
             } else if (x < game.width - 5) {
                 if (y == 0) {
                     if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y+5][x+5] !== b) {
-                        row = [a[y][x], a[y+1][x+1], a[y+2][x+2], a[y+3][x+3], a[y+4][x+4]];
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
                         end = 1;
                     }
                 } else if (y > 0 && y < game.height - 5) {
                     if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y-1][x-1] !== b && a[y+5][x+5] !== b) {
-                        row = [a[y][x], a[y+1][x+1], a[y+2][x+2], a[y+3][x+3], a[y+4][x+4]];
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
                         end = 1;
                     }
                 } else if (y == game.height - 5) {
                     if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y-1][x-1] !== b) {
-                        row = [a[y][x], a[y+1][x+1], a[y+2][x+2], a[y+3][x+3], a[y+4][x+4]];
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
                         end = 1;
                     }
                 }
             } else if (x == game.width - 5) {
                 if (y == 0) {
                     if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b) {
-                        row = [a[y][x], a[y+1][x+1], a[y+2][x+2], a[y+3][x+3], a[y+4][x+4]];
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
                         end = 1;
                     }
                 } else if (y < game.height - 4) {
                     if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y-1][x-1] !== b) {
-                        row = [a[y][x], a[y+1][x+1], a[y+2][x+2], a[y+3][x+3], a[y+4][x+4]];
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
                         end = 1;
                     }
                 }
