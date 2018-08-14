@@ -1,4 +1,4 @@
-var version = "2.26.0.4";
+var version = "2.26.0.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -145,7 +145,7 @@ function other(message) {
 function bot(message) {
     if (message.attachments.array().length != 0) {
         let img = message.attachments.first().filename;
-        if (/^(connect4|squares|othello|gomoku)_[0-2]_0-9{1,}(|vs[0-9]{1,})\.png$/.test(img)) {
+        if (/^(connect4|squares|othello|gomoku)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img)) {
             if (!games.channels[message.channel.id]) return client.guilds.get("399327996076621825").channels.get("467902250128506880").send("Bot is sending images when it shouldn't @`function bot`.");
 
             let game = games.channels[message.channel.id];
