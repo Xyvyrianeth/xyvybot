@@ -1,5 +1,5 @@
 const Canvas = require('canvas');
-var Color = require('/app/stuffs/color.js');
+var { Color } = require('/app/stuffs/color.js');
 var titles = require('/app/stuffs/titles.json');
 
 function newResolution(width, height) {
@@ -17,7 +17,7 @@ exports.card = function(username, profile, background, avatar) {
     ctx.drawImage(background, 0, 0, res[0], res[1]);
   
     // Set important colors
-    color = new Color.rgb(profile.color);
+    color = new Color(profile.color);
     colors = {
         bg: `rgba(${Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r)}, ${Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g)}, ${Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b)}, 0.5)`,
     //  Background
