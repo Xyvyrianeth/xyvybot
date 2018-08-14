@@ -110,8 +110,6 @@ exports.drawBoard = function(game, end, highlight, row) {
         ctx.font = "20px calibri";
         ctx.fillStyle = "#888";
         ctx.fillText("'s turn.", k + 5, 5);
- 
-        k += ctx.measureText("'s turn.  ").width;
     } else {
         ctx.font = "bold 20px calibri";
         let n = Math.floor(game.turn) == 0 ? "Black" : "White";
@@ -123,15 +121,13 @@ exports.drawBoard = function(game, end, highlight, row) {
         ctx.font = "20px calibri";
         ctx.fillStyle = "#888";
         ctx.fillText(" has won!", k + 5, 5);
- 
-        k += ctx.measureText(" has won!").width;
         ctx.fillStyle = "#0f0";
         ctx.lineWidth = 3;
         for (let i = row.length; i--;) {
             let r = 42.5 + (25 * row[i][0]);
             let c = (row[i][1] + 1) * 25 + 7.5;
             ctx.beginPath();
-            ctx.moveTo(c + 10, r);
+            ctx.moveTo(c + 10.5, r);
             ctx.arc(c, r, 10, 0, 2 * Math.PI);
             ctx.stroke();
         }
@@ -347,7 +343,7 @@ exports.takeTurn = function(channel, Move) {
         message: "Whoops, it looks like <@" + game.players[Math.floor(game.turn)] + "> has run out of time, so the game is over!"
     }
 
-    if (end == 1) game.winner = Math.floor(game.turn);
+    if (end == 1) game.winner = game.players[Math.floor(game.turn)];
      
     return exports.nextTurn(channel, end, highlight, row);
 }
