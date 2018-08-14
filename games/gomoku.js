@@ -40,7 +40,7 @@ exports.startGame = function(channel, player2) {
     return ["The game has started! <@" + game.players[0] + "> will be player1, and <@" + game.players[1] + "> will be player2!\n\nTo place a piece, just say the number of the column you wish to place in, like \"f4\"\nThe board starts out as 10x10, and as more room is needed, the board will expand. The official rules for Gomoku state that there is no legal size limit for the board, so the board will expand to my own physical capabilities, but I'm gonna choose to stop expanding at 26x26.", new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
 }
  
-exports.drawBoard = function(game, end, highlight) {
+exports.drawBoard = function(game, end, highlight, row) {
     let canvas = new Canvas(30 + (25 * game.width), 50 + (25 * game.height));
     let ctx = canvas.getContext("2d");
      
@@ -124,7 +124,17 @@ exports.drawBoard = function(game, end, highlight) {
         ctx.fillStyle = "#888";
         ctx.fillText(" has won!", k + 5, 5);
  
-        k += ctx.measureText(" has won!  ").width;
+        k += ctx.measureText(" has won!").width;
+        ctx.fillStyle = "#0f0";
+        ctx.lineWidth = 3;
+        for (let i = row.length; i--;) {
+            let r = 42.5 + (25 * row[i][0]);
+            let c = (row[i][1] + 1) * 25 + 7.5;
+            ctx.beginPath();
+            ctx.moveTo(c + 10, r);
+            ctx.arc(c, r, 10, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
     }
  
     if (highlight) {
@@ -133,13 +143,13 @@ exports.drawBoard = function(game, end, highlight) {
         ctx.strokeStyle = "#ff8";
         ctx.lineWidth = 2;
         ctx.beginPath();
-           ctx.moveTo(c + 10, r);
+        ctx.moveTo(c + 10, r);
         ctx.arc(c, r, 10, 0, 2 * Math.PI);
         ctx.stroke();
     }
     //
-     
-    return canvas.toBuffer();
+    game.buffer = canvas.toBuffer();
+    return game.buffer;
 }
  
 exports.takeTurn = function(channel, Move) {
@@ -349,7 +359,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.player = game.players[Math.floor(game.turn)];
     }
     game.buffer = exports.drawBoard(game, end, highlight);
-    board = new Discord.Attachment(game.buffer, end == 1 ? `${shortname}_${end}_${game.players[game.turn]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
+    board = new Discord.Attachment(game.buffer, end == 1 ? `${shortname}_${end}_${game.winner}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
     if (channels[channel.id].lastDisplay) channels[channel.id].lastDisplay.delete();
     return board;
 }
