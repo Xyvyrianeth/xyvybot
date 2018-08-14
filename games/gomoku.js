@@ -145,7 +145,7 @@ exports.drawBoard = function(game, end, highlight, row) {
     }
     //
 
-    return game.buffer;
+    return canvas.toBuffer();
 }
  
 exports.takeTurn = function(channel, Move) {
