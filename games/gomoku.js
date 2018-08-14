@@ -123,7 +123,7 @@ exports.drawBoard = function(game, end, highlight, row) {
         ctx.fillText(" has won!", k + 5, 5);
         ctx.fillStyle = "#0f0";
         ctx.lineWidth = 3;
-        for (let i = ; i < row.length; i--;) {
+        for (let i = 0; i < row.length; i++) {
             let r = 42.5 + (25 * row[i][0]);
             let c = (row[i][1] + 1) * 25 + 7.5;
             ctx.beginPath();
@@ -144,7 +144,7 @@ exports.drawBoard = function(game, end, highlight, row) {
         ctx.stroke();
     }
     //
-    game.buffer = canvas.toBuffer();
+
     return game.buffer;
 }
  
