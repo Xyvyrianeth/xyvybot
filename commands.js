@@ -1,4 +1,4 @@
-var version = "2.26.0.5";
+var version = "2.27.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -158,7 +158,7 @@ function bot(message) {
                 result = {
                     winner: game.players[game.winner],
                     loser: game.players[game.winner == 0 ? 1 : 0],
-                    game: JSON.stringify(["connect4", "squares", "othello", "gomoku"].indexOf(game.game) + 1),
+                    game: JSON.stringify(["othello", "squares", "gomoku", "3dttt", "connect4"].indexOf(game.game) + 1),
                     casual: game.casual
                 };
                 if (result.game === '3') result.score = game.score;
@@ -169,77 +169,28 @@ function bot(message) {
                 if (err) sqlError(message, err, `SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`);
                 let wins = false;
                 let lose = false;
-                if (res.rows.length == 0) return;
-                if (res.rows.length == 1) {
-                    wins = res.rows[0].id == result.winner ? res.rows[0] : res.rows[1];
-                } else {
+                if (res.rows.length == 0) {
+                    newUser(result.winner, result.game, 1100);
+                    newUser(result.loser, result.game, 900);
+                } else if (res.rows.length == 2) {
                     wins = res.rows[0].id == result.winner ? res.rows[0] : res.rows[1];
                     lose = res.rows[0].id == result.loser ? res.rows[0] : res.rows[1];
-                }
-                if (wins) {
-                    if (result.game == '1' && result.loser.id == "238916443402534914") {
-                        wins.titles.push("beatRDB");
-                        message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["beatRDB"] + "\" (`beatRDB`).");
-                    }
-                    if (result.game == '1' && (result.turn == 7 || result.turn == 8)) {
-                        wins.titles.push("winsIn4");
-                        message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["winsIn4"] + "\" (`winsIn4`).");
-                    }
-                    if (result.game == '2' && (result.score[0] >= 100 || result.score[1] >= 100)) {
-                        wins.titles.push("100sqrs");
-                        message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["100sqrs"] + "\" (`100sqrs`).");
-                    }
-                    if (result.game == '3' && (result.score[0] == 0 || result.score[1] == 0)) {
-                        wins.titles.push("allBorW");
-                        message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["allBorW"] + "\" (`allBorW`).");
-                    }
-                    if (!result.casual) {
-                        let numbers = [5, 10, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-                        let number2 = "5__wins 10_wins 25_wins 50_wins 100wins 200wins 300wins 400wins 500wins 600wins 700wins 800wins 900wins 1K_wins".split(' ');
-                        for (let i = 0; i < numbers.length; i++) {
-                            if (wins.wins1 + wins.wins2 + wins.win3 + wins.wins4 + wins.wins5 == numbers[i]) {
-                                if (!wins.titles.includes(number2[i])) wins.titles.push(number2[i]);
-                                message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles[number2[i]] + "\" (`" + number2[i] + "`).");
-                            }
-                        }
-                        if (wins.wins1 + wins.wins2 + wins.win3 + wins.wins4 + wins.wins5 + wins.lose1 + wins.lose2 + wins.lose3 + wins.lose4 + wins.lose5 == 1000) {
-                            wins.titles.push("1K_play");
-                            message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["1K_play"] + "\" (`1K_play`).");
-                        }
-                        if (wins.money + 5 == 10**5 && !wins.titles.includes("million")) {
-                            wins.titles.push("million");
-                            message.channel.send("<@" + wins.id + "> has obtained the title \"" + titles["million"] + "\" (`million`).");
-                        }
-                        db.query(`UPDATE profiles
-                            SET titles = ARRAY ${JSON.stringify(wins.titles).replace(/"/g, "'")}, wins${result.game} = ${wins["wins" + result.game] + 1}, money = "${wins.money + 5}
-                            WHERE id = '${wins.id}'`, function(err) {
-                                if (err) sqlError(message, err, `UPDATE profiles
-                                    SET titles = ARRAY ${JSON.stringify(wins.titles).replace(/"/g, "'")}, wins${result.game} = ${wins["wins" + result.game] + 1}, money = "${wins.money + 5}
-                                    WHERE id = '${wins.id}'`);
-                        });
-                    }
-                }
-                if (lose && !result.casual) {
-                    let numbers = [5, 10, 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-                    let number2 = "5__lose 10_lose 25_lose 50_lose 100lose 200lose 300lose 400lose 500lose 600lose 700lose 800lose 900lose 1K_lose".split(' ');
-                    for (let i = 0; i < numbers.length; i++) {
-                        if (lose.lose1 + lose.lose2 + lose.win3 + lose.lose4 + lose.lose5 == numbers[i]) {
-                            if (!lose.titles.includes(number2[i])) lose.titles.push(number2[i]);
-                            message.channel.send("<@" + lose.id + "> has obtained the title \"" + titles[number2[i]] + "\" (`" + number2[i] + "`).");
-                        }
-                    }
-                    if (lose.wins1 + lose.wins2 + lose.win3 + lose.wins4 + lose.wins5 + lose.lose1 + lose.lose2 + lose.lose3 + lose.lose4 + lose.lose5 == 1000) {
-                        lose.titles.push("1K_play");
-                        message.channel.send("<@" + lose.id + "> has obtained the title \"" + titles["1K_play"] + "\" (`1K_play`).");
-                    }
-                    db.query(`UPDATE profiles
-                        SET titles = ARRAY ${JSON.stringify(lose.titles).replace(/"/g, "'")}, lose${result.game} = ${lose["lose" + result.game] + 1}
-                        WHERE id = '${lose.id}'`, function(err) {
-                            if (err) sqlError(message, err, `UPDATE profiles
-                                SET titles = ARRAY ${JSON.stringify(lose.titles).replace(/"/g, "'")}, lose${result.game} = ${lose["lose" + result.game] + 1}
-                                WHERE id = '${lose.id}'`);
+                    let booty = Math.floor(lose["elo" + result.game] / 10);
+                    db.query(`UPDATE profiles SET elo${result.game} = ${wins["elo" + result.game] + booty} WHERE id = '${wins.id}'; UPDATE profiles SET elo${result.game} = ${lose["elo" + result.game] - booty} WHERE id = '${lose.id}';`, function(err) {
+                        if (err) sqlError(message, err, `UPDATE profiles SET elo${result.game} = ${wins["elo" + result.game] + booty} WHERE id = '${wins.id}'; UPDATE profiles SET elo${result.game} = ${lose["elo" + result.game] - booty} WHERE id = '${lose.id}';`);
+                    })
+                } else if (res.rows[0].id == result.winner) {
+                    newUser(result.loser, result.game, 900);
+                    db.query(`UPDATE profiles SET elo${result.game} = ${res.rows[0]["elo" + result.game] + 100} WHERE id = '${res.rows[0].id}'`, function(err) {
+                        if (err) sqlError(message, err, `UPDATE profiles SET elo${result.game} = ${res.rows[0]["elo" + result.game] + 100} WHERE id = '${res.rows[0].id}'`);
+                    });
+                } else if (res.rows[0].id == result.loser) {
+                    newUser(result.winner, result.game, 1000 + Math.floor(res.rows[0]["elo" + result.game] / 10));
+                    db.query(`UPDATE profiles SET elo${result.game} = ${Math.ceil(res.rows[0]["elo" + result.game] * 0.9)} WHERE id = '${res.rows[0].id}'`, function(err) {
+                        if (err) sqlError(message, err, `UPDATE profiles SET elo${result.game} = ${Math.ceil(res.rows[0]["elo" + result.game] * 0.9)} WHERE id = '${res.rows[0].id}'`);
                     });
                 }
+                
             }); 
         }
     } else {
@@ -257,17 +208,19 @@ function bot(message) {
     }
 }
    
-function newUser(id, channel) {
+function newUser(id, game, value) {
     let image = backgrounds.ids.random();
+    let elo = [1000, 1000, 1000, 1000, 1000];
+    if (game) elo[game - 1] = value;
     let query = `INSERT INTO profiles (
-            id,       color,   title,      titles,             background,  backgrounds,         lorr,     money,  wins1,  lose1,  wins2,  lose2,  wins3,  lose3,  wins4,  lose4,  wins5,  lose5
+            id,       color,   title,      titles,             background,  backgrounds,         lorr,     money,  elo1,       elo2,       elo3,       elo4,       elo5
         ) VALUES (
-            '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0
+            '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,      ${elo[0]},  ${elo[1]},  ${elo[2]},  ${elo[3]},  ${elo[4]}
         )`;
     db.query(query, function(err) {
         if (err) return sqlError(message, err, query);
     });
-    return { id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lorr: "right", money: 0, wins1: 0,  lose1: 0,  wins2: 0,  lose2: 0,  wins3: 0,  lose3: 0,  wins4: 0,  lose4: 0,  wins5: 0,  lose5: 0 };
+    return { id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lorr: "right", money: 0, elo1: elo[0], elo2: elo[1], elo3: elo[2], elo4: elo[3], elo5: elo[4] };
 }
 
 var aliases = {
@@ -339,6 +292,12 @@ var aliases = {
 var commands = {
    
     // Games
+    "games": function(cmd, args, input, message, sendChat, user) {
+        if (!input) {
+            let embed = new Discord.RichEmbed();
+        }
+    },
+
     "connect4": function(cmd, args, input, message, sendChat, user) {
         if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
         if (!input) return sendChat(`__**Connect Four**__\nTo start a game, type \`x!${cmd} start\`!`);

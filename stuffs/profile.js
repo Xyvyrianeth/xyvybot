@@ -159,7 +159,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.font = "15px meiryo";
         ctx.textAlign = "start";
         ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Stats:", res[0] - 147, 61, 70);
+        ctx.fillText("Game ELOs:", res[0] - 147, 61, 70);
   
         // Wins and Loses
         ctx.strokeStyle = colors.ii;
@@ -178,23 +178,19 @@ exports.card = function(username, profile, background, avatar) {
   
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
-        ctx.moveTo(res[0] - 70, 77);
-        ctx.lineTo(res[0] - 70, 197);
-        ctx.moveTo(res[0] - 35, 77);
-        ctx.lineTo(res[0] - 35, 197);
+        ctx.moveTo(res[0] - 50, 77);
+        ctx.lineTo(res[0] - 50, 197);
         ctx.moveTo(res[0] - 148, 95);
         ctx.lineTo(res[0] - 1, 95);
         ctx.stroke();
   
         ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Name", res[0] - 148, 80, 75);
-        ctx.fillText("Wins", res[0] - 68, 80, 31);
-        ctx.fillText("Loses", res[0] - 33, 80, 31);
+        ctx.fillText("Game Name", res[0] - 148, 80, 85);
+        ctx.fillText("ELO", res[0] - 68, 80, 31);
         for (let i = 0; i < 5; i++) {
-            let game = ["Connect Four", "Squares", "Othello", "3D Tic Tac Toe", "Gomoku"][i];
+            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][i];
             ctx.fillText(game, res[0] - 148, 97 + (15 * i), 75);
-            ctx.fillText(profile["wins" + (i + 1)], res[0] - 68, 97 + (15 * i));
-            ctx.fillText(profile["lose" + (i + 1)], res[0] - 33, 97 + (15 * i), 31);
+            ctx.fillText(profile["elo" + (i + 1)], res[0] - 48, 97 + (15 * i));
         }
   
     } else if (profile.lorr == "left") {
@@ -315,7 +311,7 @@ exports.card = function(username, profile, background, avatar) {
   
         ctx.textAlign = "start";
         ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Stats:", 77, 61, 70);
+        ctx.fillText("Game ELOs:", 77, 61, 70);
   
         // Wins and Loses
         ctx.beginPath();
@@ -330,23 +326,19 @@ exports.card = function(username, profile, background, avatar) {
   
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
-        ctx.moveTo(80, 77);
-        ctx.lineTo(80, 197);
-        ctx.moveTo(115, 77);
-        ctx.lineTo(115, 197);
+        ctx.moveTo(100, 77);
+        ctx.lineTo(100, 197);
         ctx.moveTo(148, 95);
         ctx.lineTo(1, 95);
         ctx.stroke();
   
         ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Name", 2, 80, 75);
-        ctx.fillText("Wins", 82, 80);
-        ctx.fillText("Loses", 117, 80, 31);
+        ctx.fillText("Game Name", 2, 80, 95);
+        ctx.fillText("ELO", 102, 80);
         for (let i = 0; i < 5; i++) {
-            let game = ["Connect Four", "Squares", "Othello", "3D Tic Tac Toe", "Gomoku"][i];
-            ctx.fillText(game, 2, 97 + (15 * i), 75);
-            ctx.fillText(profile["wins" + (i + 1)], 82, 97 + (15 * i));
-            ctx.fillText(profile["lose" + (i + 1)], 117, 97 + (15 * i), 31);
+            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][i];
+            ctx.fillText(game, 2, 97 + (15 * i), 95);
+            ctx.fillText(profile["elo" + (i + 1)], 82, 97 + (15 * i));
         }
     }
 
