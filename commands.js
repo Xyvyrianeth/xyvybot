@@ -1,4 +1,4 @@
-var version = "2.27.0.4";
+var version = "2.27.0.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -194,9 +194,7 @@ function bot(message) {
             }); 
         }
     } else {
-        if (message.content.includes("is now requesting a new game of Connect Four")) return games.channels[message.channel.id].lastDisplay = message;
-        if (message.content.includes("is now requesting a new game of Squares")) return games.channels[message.channel.id].lastDisplay = message;
-        if (message.content.includes("is now requesting a new game of Othello")) return games.channels[message.channel.id].lastDisplay = message;
+        if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Gomoku), say `x![3a-z]{1,} start` to play against them!/.test(message.content)) return games.channels[message.channel.id].lastDisplay = message;
         if ([
             "Column is full, please pick another.",
             "There's already a stone there, pick another spot!",
