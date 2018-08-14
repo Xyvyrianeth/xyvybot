@@ -153,7 +153,7 @@ exports.drawBoard = function(game, end, highlight) {
     return canvas.toBuffer();
 }
  
-exports.takeTurn = function(channel, move) {
+exports.takeTurn = function(channel, Move) {
     let game = channels[channel.id];
 
     let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghijklmnopqrstuvwxyz'.indexOf(Move.toLowerCase().match(/[a-z]/)[0])];

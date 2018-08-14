@@ -1,4 +1,4 @@
-var version = "2.26.0.0";
+var version = "2.26.0.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -276,6 +276,7 @@ var aliases = {
         "connect4": ["connectfour", "connect4", "cfour", "c4"],
         "squares": ["squares"],
         "othello": ["othello"],
+        "gomoku": ["gomoku", "gobang"],
         "profile": ["profile", "scorecard", "prof"],
        
         // Utility
@@ -687,7 +688,7 @@ var commands = {
                     ["\\*`anime", "\\*`manga", "`jisho", "\\*`jshelp", "`nekos", "`calculate", "`graph"]
                 ];
             else helps = [
-                    ["`connect4", "`squares", "`othello", "\\*`3dtictactoe", "\\*`gomoku", "`profile"],
+                    ["`connect4", "`squares", "`othello", "`gomoku", "\\*`3dtictactoe", "`profile"],
                     ["\\*`hangman", "\\*`quickmaffs", "\\*`iq", "\\*`sequence", "\\*`shuffle"],
                     ["`help", "`avatar", "`aliases", "`server", "`kick", "`ban"],
                     ["\\*`anime", "\\*`manga", "`jisho", "\\*`jshelp", "`nekos", "`calculate", "`graph"]
@@ -729,6 +730,7 @@ var commands = {
                             "connect4": "Play a game of the original vertical checkers game with someone else (that's actually what it used to be called).",
                             "squares": "Play a game of making a bunch of the 2nd coolest shape with someone else! A game created by Xyvy himself.",
                             "othello": "Play a game of Reversi with someone else (Othello = competative Reversi).",
+                            "gomoku": "Play a game of Go Bang with someone else! It's like Tic Tac Toe, but balanced!",
                             "profile": "Get your profile card, complete with game stats and all, which is just your wins and losses.",
                             "anime": "Get information about any anime from MyAnimeList. Weeb shit.",
                             "manga": "Get information about any manga from MyAnimeList. Mega-weeb shit.",
