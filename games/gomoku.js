@@ -126,17 +126,6 @@ exports.drawBoard = function(game, end, highlight) {
  
         k += ctx.measureText(" has won!  ").width;
     }
-    ctx.fillStyle = "#000";
-    ctx.fillText(String(score[0]), k + 5, 5);
- 
-    k += ctx.measureText(String(score[0])).width;
-    ctx.fillStyle = "#888";
-    ctx.fillText(' - ', k + 5, 5);
- 
-    k += ctx.measureText(' - ').width;
-    ctx.fillStyle = "#fff";
-    ctx.fillText(String(score[1]), k + 5, 5);
- 
  
     if (highlight) {
         let r = 42.5 + (25 * highlight[0]);
