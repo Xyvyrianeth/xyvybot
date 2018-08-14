@@ -121,7 +121,7 @@ exports.drawBoard = function(game, end, highlight, row) {
         ctx.font = "20px calibri";
         ctx.fillStyle = "#888";
         ctx.fillText(" has won!", k + 5, 5);
-        ctx.lineStyle = "#0f0";
+        ctx.strokeStyle = "#0f0";
         ctx.lineWidth = 3;
         for (let i = 0; i < row.length; i++) {
             let r = 42.5 + (25 * row[i][0]);
@@ -175,33 +175,45 @@ exports.takeTurn = function(channel, Move) {
         if (move[0] < 2) {
             let a = [];
             for (let i = game.width; i--;) a.push(false);
-            for (let i = 0; i < 2 - move[0]; i++) game.board.unshift(JSON.parse(JSON.stringify(a)));
+            for (let i = 0; i < 2 - move[0]; i++) {
+                game.board.unshift(JSON.parse(JSON.stringify(a)));
+                game.height += 1;
+            }
             do {
                 game.board.shift();
+                game.height -= 1;
             } while (game.board.length > 26);
         }
         if (move[0] > game.height - 3) {
             let a = [];
             for (let i = game.width; i--;) a.push(false);
-            for (let i = 0; i < move[0] - (game.height - 3); i++) game.board.push(JSON.parse(JSON.stringify(a)));
+            for (let i = 0; i < move[0] - (game.height - 3); i++) {
+                game.board.push(JSON.parse(JSON.stringify(a)));
+                game.height += 1;
+            }
             do {
                 game.board.pop();
+                game.height -= 1;
             } while (game.board.length > 26);
         }
         if (move[1] < 2) {
             for (let i = game.height; i--;) {
                 for (let ii = 0; ii < 2 - move[1]; i++) game.board[i].unshift(false);
+                game.width += 1;
             }
             do {
                 for (let i = game.height; i--;) game.board[i].shift();
+                game.width -= 1;
             } while (game.board.filter(x => x.length > 26).length !== 0);
         }
         if (move[1] > game.width - 3) {
             for (let i = game.height; i--;) {
                 for (let ii = 0; ii < move[0] - (game.height - 3); i++) game.board[ii].push(false);
+                game.width += 1;
             }
             do {
                 for (let i = game.height; i--;) game.board[i].pop();
+                game.height -= 1;
             } while (game.board.filter(x => x.length > 26).length !== 0);
         }
     }
