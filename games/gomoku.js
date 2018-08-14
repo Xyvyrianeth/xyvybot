@@ -172,57 +172,43 @@ exports.takeTurn = function(channel, Move) {
             }
         }
     } else {
-        if (move[0] < 3 && game.height < 26) {
+        if (move[0] < 2 && game.height < 26) {
             let a = [];
-            let b = move[0];
+            let b = 2 - move[0];
             for (let i = game.width; i--;) a.push(false);
-            for (let i = 0; i < 3 - b; i++) {
+            for (let i = 0; i < b; i++) {
                 game.board.unshift(JSON.parse(JSON.stringify(a)));
-                game.height += 1;
                 move[0] += 1;
+                if (game.board.length == 26) break;
             }
-            do {
-                game.board.shift();
-                game.height -= 1;
-            } while (game.board.length > 26);
         }
         if (move[0] > game.height - 3 && game.height < 26) {
             let a = [];
+            let b = move[0] - (game.height - 3);
             for (let i = game.width; i--;) a.push(false);
-            for (let i = 0; i < move[0] - (game.height - 3); i++) {
+            for (let i = 0; i < b; i++) {
                 game.board.push(JSON.parse(JSON.stringify(a)));
-                game.height += 1;
+                if (game.board.length == 26) break;
             }
-            do {
-                game.board.pop();
-                game.height -= 1;
-                move[0] -= 1;
-            } while (game.board.length > 26);
         }
-        if (move[1] < 3 && game.width < 26) {
-            let a = move[1];
-            for (let ii = 0; ii < 3 - a; ii++) {
+        if (move[1] < 2 && game.width < 26) {
+            let a = 2 - move[1];
+            for (let ii = 0; ii < a; ii++) {
                 for (let i = game.height; i--;) game.board[i].unshift(false);
-                game.width += 1;
                 move[1] += 1;
+                if (game.board[0].length == 26) break;
             }
-            do {
-                for (let i = game.height; i--;) game.board[i].shift();
-                game.width -= 1;
-                move[0] -= 1;
-            } while (game.board.filter(x => x.length > 26).length !== 0);
         }
         if (move[1] > game.width - 3 && game.width < 26) {
-            for (let ii = 0; ii < move[1] - (game.height - 3); ii++) {
+            let a = move[1] - (game.width - 3);
+            for (let ii = 0; ii < a; ii++) {
                 for (let i = game.height; i--;) game.board[i].push(false);
-                game.width += 1;
+                if (game.board[0].length == 26) break;
             }
-            do {
-                for (let i = game.height; i--;) game.board[i].pop();
-                game.height -= 1;
-            } while (game.board.filter(x => x.length > 26).length !== 0);
         }
     }
+    game.height = game.board.length;
+    game.width = game.board[0].length;
 
     for (let y = 0; y < game.height; y++) {
         for (let x = 0; x < game.width; x++) {
