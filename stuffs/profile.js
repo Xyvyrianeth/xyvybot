@@ -164,12 +164,10 @@ exports.card = function(username, profile, background, avatar) {
         // Wins and Loses
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
-        ctx.fillRect(252, 77, 77, 17);
-        ctx.fillRect(331, 77, 33, 17);
-        ctx.fillRect(366, 77, 33, 17);
-        ctx.fillRect(252, 96, 77, 101);
-        ctx.fillRect(331, 96, 33, 101);
-        ctx.fillRect(366, 96, 33, 101);
+        ctx.fillRect(252, 77, 97, 17);
+        ctx.fillRect(351, 77, 66, 17);
+        ctx.fillRect(252, 96, 97, 101);
+        ctx.fillRect(351, 96, 66, 101);
         ctx.beginPath();
         ctx.strokeStyle = colors.bg;
         ctx.lineWidth = 1;
