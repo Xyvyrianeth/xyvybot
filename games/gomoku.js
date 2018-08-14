@@ -121,7 +121,7 @@ exports.drawBoard = function(game, end, highlight, row) {
         ctx.font = "20px calibri";
         ctx.fillStyle = "#888";
         ctx.fillText(" has won!", k + 5, 5);
-        ctx.fillStyle = "#0f0";
+        ctx.lineStyle = "#0f0";
         ctx.lineWidth = 3;
         for (let i = 0; i < row.length; i++) {
             let r = 42.5 + (25 * row[i][0]);
