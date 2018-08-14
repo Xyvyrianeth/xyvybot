@@ -150,7 +150,7 @@ exports.takeTurn = function(channel, Move) {
      
     // Function will vary with game
     if (game.board[move[0]][move[1]] !== false) return "There's already a stone there, pick another spot!";
-    else game.board[move[0]][move[1]] = '' + Math.floor(game.turn);
+    else game.board[move[0]][move[1]] = Math.floor(game.turn);
 
     let end = 0;
     let highlight = move;
@@ -345,7 +345,7 @@ exports.takeTurn = function(channel, Move) {
 exports.nextTurn = function(channel, end, highlight) {
     let game = channels[channel.id];
     if (end == 0) {
-        game.turn = game.turn == 0 ? 1 : 0;
+        game.turn = game.turn == 1.5 ? 0 : game.turn += 0.5;
         game.player = game.players[game.turn];
     }
     game.buffer = exports.drawBoard(game, end, highlight);
