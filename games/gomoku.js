@@ -349,16 +349,16 @@ exports.takeTurn = function(channel, Move) {
 
     if (end == 1) game.winner = Math.floor(game.turn);
      
-    return exports.nextTurn(channel, end, row);
+    return exports.nextTurn(channel, end, highlight, row);
 }
  
-exports.nextTurn = function(channel, end, highlight) {
+exports.nextTurn = function(channel, end, highlight, row) {
     let game = channels[channel.id];
     if (end == 0) {
         game.turn = game.turn == 1.5 ? 0 : game.turn += 0.5;
         game.player = game.players[Math.floor(game.turn)];
     }
-    game.buffer = exports.drawBoard(game, end, highlight);
+    game.buffer = exports.drawBoard(game, end, highlight, row);
     board = new Discord.Attachment(game.buffer, end == 1 ? `${shortname}_${end}_${game.winner}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
     if (channels[channel.id].lastDisplay) channels[channel.id].lastDisplay.delete();
     return board;
