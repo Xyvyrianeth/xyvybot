@@ -172,10 +172,10 @@ exports.takeTurn = function(channel, Move) {
             }
         }
     } else {
-        if (move[0] < 2) {
+        if (move[0] < 3) {
             let a = [];
             for (let i = game.width; i--;) a.push(false);
-            for (let i = 0; i < 2 - move[0]; i++) {
+            for (let i = 0; i < 3 - move[0]; i++) {
                 game.board.unshift(JSON.parse(JSON.stringify(a)));
                 game.height += 1;
             }
@@ -196,9 +196,9 @@ exports.takeTurn = function(channel, Move) {
                 game.height -= 1;
             } while (game.board.length > 26);
         }
-        if (move[1] < 2) {
+        if (move[1] < 3) {
             for (let i = game.height; i--;) {
-                for (let ii = 0; ii < 2 - move[1]; i++) game.board[i].unshift(false);
+                for (let ii = 0; ii < 3 - move[1]; ii++) game.board[ii].unshift(false);
                 game.width += 1;
             }
             do {
@@ -208,7 +208,7 @@ exports.takeTurn = function(channel, Move) {
         }
         if (move[1] > game.width - 3) {
             for (let i = game.height; i--;) {
-                for (let ii = 0; ii < move[0] - (game.height - 3); i++) game.board[ii].push(false);
+                for (let ii = 0; ii < move[1] - (game.height - 3); ii++) game.board[ii].push(false);
                 game.width += 1;
             }
             do {
