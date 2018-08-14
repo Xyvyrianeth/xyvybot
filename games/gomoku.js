@@ -47,7 +47,7 @@ exports.drawBoard = function(game, end, highlight, row) {
     // Function will vary with game
     
     ctx.textAlign = "center";
-    for (let i = game.width; i--;) ctx.fillText("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i], (i + 1) * 25 + 7.5, 42 + (25 * game.width));
+    for (let i = game.width; i--;) ctx.fillText("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[i], (i + 1) * 25 + 7.5, 42 + (25 * game.height));
     for (let i = game.height; i--;) ctx.fillText(i + 1, 13, (i + 1) * 25 + 21);
     ctx.textAlign = "start";
   
@@ -184,10 +184,10 @@ exports.takeTurn = function(channel, Move) {
                 game.height -= 1;
             } while (game.board.length > 26);
         }
-        if (move[0] > game.height - 3) {
+        if (move[0] > game.height - 4) {
             let a = [];
             for (let i = game.width; i--;) a.push(false);
-            for (let i = 0; i < move[0] - (game.height - 3); i++) {
+            for (let i = 0; i < move[0] - (game.height - 4); i++) {
                 game.board.push(JSON.parse(JSON.stringify(a)));
                 game.height += 1;
             }
@@ -206,9 +206,9 @@ exports.takeTurn = function(channel, Move) {
                 game.width -= 1;
             } while (game.board.filter(x => x.length > 26).length !== 0);
         }
-        if (move[1] > game.width - 3) {
+        if (move[1] > game.width - 4) {
             for (let i = game.height; i--;) {
-                for (let ii = 0; ii < move[1] - (game.height - 3); ii++) game.board[ii].push(false);
+                for (let ii = 0; ii < move[1] - (game.height - 4); ii++) game.board[ii].push(false);
                 game.width += 1;
             }
             do {
@@ -252,7 +252,7 @@ exports.takeTurn = function(channel, Move) {
                     row = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x], [y + 4, x]];
                     end = 1;
                 }
-            } else {
+            } else if (y > 0 && y < game.height - 5) {
                 if (a[y][x] === b && a[y + 1][x] === b && a[y + 2][x] === b && a[y + 3][x] === b && a[y + 4][x] === b && a[y + 5][x] !== b && a[y - 1][x] !== b) {
                     row = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x], [y + 4, x]];
                     end = 1;
