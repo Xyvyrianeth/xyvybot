@@ -1,25 +1,13 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
+const { channels } = require("/app/games/channels.js");
 var gamename = "Othello";
 var shortname = "othello";
   
-exports.channels = {}; // Leave blank
-exports.timer = setInterval(function() {
-    for (let i in exports.channels) {
-        exports.channels[i].timer.time -= 1;
-        if (exports.channels[i].timer.time == 0) {
-            if (exports.channels[i].buffer) exports.channels[i].channel.send(exports.channels[i].timer.message, exports.channels[i].buffer);
-            else exports.channels[i].channel.send(exports.channels[i].timer.message);
-            delete exports.channels[i];
-        }
-    }
-}, 10);
-  
 exports.newGame = function(channel, player1, cmd, mode) {
-    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:'',over:false,player:false,RE:/^([a-h][1-8]|[1-8][a-h])$/i,casual:mode};
-    game = exports.channels[channel.id];
+    channels[channel.id] = {game:shortname,channel:channel,turn:0,players:[],started:false,lastmove:'',over:false,player:false,RE:/^([a-h][1-8]|[1-8][a-h])$/i,casual:mode};
+    game = channels[channel.id];
     let _ = false;
-    game.channel = channel;
     game.board = [];
     for (let i = 8; i--;) {
         let row = [];
@@ -32,9 +20,8 @@ exports.newGame = function(channel, player1, cmd, mode) {
     game.board[4][3] = 0;
   
     game.timer = {
-        time: 100 * 60 * 15,
-        message: "It appears nobody wants to play right now, <@" + player1 + ">.",
-        image: false
+        time: 600 * 15,
+        message: "It appears nobody wants to play right now, <@" + player1 + ">."
     }
   
     game.players[0] = player1;
@@ -42,25 +29,23 @@ exports.newGame = function(channel, player1, cmd, mode) {
 }
   
 exports.startGame = function(channel, player2) {
-    game = exports.channels[channel.id];
+    game = channels[channel.id];
     game.players[1] = player2;
     game.started = true;
   
     game.timer = {
-        time: 100 * 60 * 5,
-        message: "Whoops, it looks like <@" + game.players[0] + "> has run out of time, so the game is over!",
-        image: true
+        time: 600 * 5,
+        message: "Whoops, it looks like <@" + game.players[0] + "> has run out of time, so the game is over!"
     }
   
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
     game.player = game.players[0];
-  
     return ["The game has started! <@" + game.players[0] + "> will be black, and <@" + game.players[1] + "> will be white!\n\nThe small green circles are the places you can put a stone.\nTo place a stone, say the letter of the row and the number of the column, like \"F4\".", new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_${game.players[0]}vs${game.players[1]}.png`)];
 }
   
 exports.drawBoard = function(game, end, quit) {
-    canvas = new Canvas(230, 250);
-    ctx = canvas.getContext('2d');
+    let canvas = new Canvas(230, 250);
+    let ctx = canvas.getContext('2d');
       
     // Function will vary with game
     
@@ -276,11 +261,11 @@ exports.drawBoard = function(game, end, quit) {
 }
   
 exports.takeTurn = function(channel, Move) {
-    let game = exports.channels[channel.id];
+    let game = channels[channel.id];
 
     let move;
     let quit;
-    if (Move !== "quit") move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.match(/[a-h]/i)[0].toLowerCase())];
+    if (Move !== "quit") move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-h]/)[0])];
     else quit = true;
   
     // Function will vary with game
@@ -307,14 +292,13 @@ exports.takeTurn = function(channel, Move) {
   
     if (!quit) game.timer = {
         time: 100 * 60 * 5,
-        message: "Whoops, it looks like <@" + game.players[game.turn == 0 ? 1 : 0] + "> has run out of time, so the game is over!",
-        image: true
+        message: "Whoops, it looks like <@" + game.players[game.turn] + "> has run out of time, so the game is over!"
     }
     return exports.nextTurn(channel, quit);
 }
   
 exports.nextTurn = function(channel, quit) {
-    let game = exports.channels[channel.id];
+    let game = channels[channel.id];
     let board;
     if (quit) {
         game.turn = game.turn == 0 ? 1 : 0;
@@ -336,6 +320,6 @@ exports.nextTurn = function(channel, quit) {
             board = new Discord.Attachment(game.buffer, game.score[0] !== game.score[1] ? `${shortname}_1_${game.players[game.winner]}${game.casual ? "_fun" : ''}.png` : `${shortname}_2_${game.players[0]}vs${game.players[1]}.png`);
         }
     }
-    if (exports.channels[channel.id].lastDisplay) exports.channels[channel.id].lastDisplay.delete();
+    if (channels[channel.id].lastDisplay) channels[channel.id].lastDisplay.delete();
     return board;
 }

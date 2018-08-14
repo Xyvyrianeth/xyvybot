@@ -1,22 +1,12 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
+const { channels } = require("/app/games/channels.js");
 var gamename = "3D Tic Tac Toe";
 var shortname = "3dttt";
- 
-exports.channels = {}; // Leave blank
-exports.timer = setInterval(function() {
-    for (let i in exports.channels) {
-        exports.channels[i].timer.time -= 1;
-        if (exports.channels[i].timer.time == 0) {
-            exports.channels[i].channel.send(exports.channels[i].timer.message);
-            delete exports.channels[i];
-        }
-    }
-}, 10);
- 
-exports.newGame = function(channel, player1, cmd) {
-    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:'',player:false,RE:/stuff/};
-    game = exports.channels[channel.id];
+
+exports.newGame = function(channel, player1, cmd, mode) {
+    channels[channel.id] = {game:shortname,channel:channel,turn:0,players:[],started:false,lastmove:'',player:false,RE:/^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,casual:mode};
+    let game = channels[channel.id];
     game.board = {
         '1': {
             'A': [],
@@ -54,7 +44,7 @@ exports.newGame = function(channel, player1, cmd) {
 }
  
 exports.startGame = function(channel, player2) {
-    game = exports.channels[channel.id];
+    let game = channels[channel.id];
     game.players[1] = player2;
     game.started = true;
  
@@ -70,8 +60,8 @@ exports.startGame = function(channel, player2) {
 }
  
 exports.drawBoard = function(game, end) {
-    canvas = new Canvas(w, h);
-    ctx = canvas.getContext('2d');
+    let canvas = new Canvas(w, h);
+    let ctx = canvas.getContext('2d');
      
     // Function will vary with game
  
@@ -81,7 +71,7 @@ exports.drawBoard = function(game, end) {
 }
  
 exports.takeTurn = function(channel, move) {
-    let game = exports.channels[channel.id];
+    let game = channels[channel.id];
      
     // Function will vary with game
  
@@ -89,22 +79,23 @@ exports.takeTurn = function(channel, move) {
  
     if (end == 0) game.timer = {
         time: 100 * 60 * 5,
-        message: "Whoops, it looks like <@" + game.players[game.turn == 0 ? 1 : 0] + "> has run out of time, so the game is over!"
+        message: "Whoops, it looks like <@" + game.players[game.turn] + "> has run out of time, so the game is over!"
     }
      
     return exports.nextTurn(channel, end);
 }
  
 exports.nextTurn = function(channel, end) {
-    let game = exports.channels[channel.id];
+    let game = channels[channel.id];
     if (end == 0) {
         game.turn = game.turn == 0 ? 1 : 0;
         game.player = game.players[game.turn];
     }
-    board = new Discord.Attachment(exports.drawBoard(game, end, highlight), `${shortname}_${end}.png`);
-    if (exports.channels[channel.id].lastDisplay) exports.channels[channel.id].lastDisplay.delete();
+    game.buffer = exports.drawBoard(game, end, highlight);
+    board = new Discord.Attachment(game.buffer, `${shortname}_${end}.png`);
+    if (channels[channel.id].lastDisplay) channels[channel.id].lastDisplay.delete();
     if (end != 0) {
-        delete exports.channels[channel.id];
+        delete channels[channel.id];
     }
     return board;
 }

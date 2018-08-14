@@ -1,24 +1,13 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
+const { channels } = require("/app/games/channels.js");
 var gamename = "Connect Four";
 var shortname = "connect4";
  
-exports.channels = {}; // Leave blank
-exports.timer = setInterval(function() {
-    for (let i in exports.channels) {
-        exports.channels[i].timer.time -= 1;
-        if (exports.channels[i].timer.time == 0) {
-            exports.channels[i].channel.send(exports.channels[i].timer.message);
-            delete exports.channels[i];
-        }
-    }
-}, 10);
- 
 exports.newGame = function(channel, player1, cmd) {
-    exports.channels[channel.id] = {turn:0,players:[],started:false,lastmove:'',player:false,RE:/^[1-7]$/};
-    game = exports.channels[channel.id];
+    channels[channel.id] = {game:shortname,channel:channel,turn:0,players:[],started:false,lastmove:'',player:false,RE:/^[1-7]$/,casual:mode};
+    let game = channels[channel.id];
     game.board = [[],[],[],[],[],[],[]];
-    game.channel = channel;
  
     game.timer = {
         time: 100 * 60 * 15,
@@ -30,7 +19,7 @@ exports.newGame = function(channel, player1, cmd) {
 }
  
 exports.startGame = function(channel, player2) {
-    game = exports.channels[channel.id];
+    let game = channels[channel.id];
     game.players[1] = player2;
     game.started = true;
  
@@ -46,8 +35,8 @@ exports.startGame = function(channel, player2) {
 }
  
 exports.drawBoard = function(game, end, highlight) {
-    canvas = new Canvas(220, 225);
-    ctx = canvas.getContext("2d");
+    let canvas = new Canvas(220, 225);
+    let ctx = canvas.getContext("2d");
      
     // Function will vary with game
     ctx.textAlign = "center";
@@ -134,7 +123,7 @@ exports.drawBoard = function(game, end, highlight) {
 }
  
 exports.takeTurn = function(channel, move) {
-    let game = exports.channels[channel.id];
+    let game = channels[channel.id];
      
     // Function will vary with game
     let x = move - 1;
@@ -189,7 +178,7 @@ exports.takeTurn = function(channel, move) {
  
     if (end == 0) game.timer = {
         time: 100 * 60 * 5,
-        message: "Whoops, it looks like <@" + game.players[game.turn == 0 ? 1 : 0] + "> has run out of time, so the game is over!"
+        message: "Whoops, it looks like <@" + game.players[game.turn] + "> has run out of time, so the game is over!"
     }
     if (end == 1) game.winner = game.turn;
      
@@ -197,12 +186,13 @@ exports.takeTurn = function(channel, move) {
 }
  
 exports.nextTurn = function(channel, end, highlight) {
-    let game = exports.channels[channel.id];
+    let game = channels[channel.id];
     if (end == 0) {
         game.turn = game.turn == 0 ? 1 : 0;
         game.player = game.players[game.turn];
     }
-    board = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
-    if (exports.channels[channel.id].lastDisplay) exports.channels[channel.id].lastDisplay.delete();
+    game.buffer = exports.drawBoard(game, end, highlight);
+    board = new Discord.Attachment(game.buffer, end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
+    if (channels[channel.id].lastDisplay) channels[channel.id].lastDisplay.delete();
     return board;
 }
