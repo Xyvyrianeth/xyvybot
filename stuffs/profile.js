@@ -184,7 +184,7 @@ exports.card = function(username, profile, background, avatar) {
   
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game Name", res[0] - 148, 80, 85);
-        ctx.fillText("ELO", res[0] - 68, 80, 31);
+        ctx.fillText("ELO", res[0] - 48, 80, 31);
         for (let i = 0; i < 5; i++) {
             let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][i];
             ctx.fillText(game, res[0] - 148, 97 + (15 * i), 75);
