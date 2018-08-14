@@ -1,7 +1,7 @@
 {
 	"name": "xyvybot",
 	"author": "Xyvyrianeth",
-	"version": "v2.25.1",
+	"version": "v2.26.0",
 	"scripts": {
 		"start": "node Xyvy.js --harmony"
 	},
@@ -10,16 +10,16 @@
 		"npm": "5.5.1"
 	},
 	"dependencies": {
-		"discord.js": "latest",
-		"pg": "latest",
-		"jimp": "latest",
 		"canvas": "latest",
-		"unofficial-jisho-api": "latest",
+		"discord.js": "latest",
+		"ffmpeg-binaries": "latest",
+		"gifencoder": "latest",
+		"jimp": "latest",
 		"nekos.life": "latest",
 		"paladins-api": "latest",
-		"gifencoder": "latest",
+		"pg": "latest",
 		"stream-buffers": "latest",
-		"ytdl-core": "latest",
-		"ffmpeg-binaries": "latest"
+		"unofficial-jisho-api": "latest",
+		"ytdl-core": "latest"
 	}
 }
