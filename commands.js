@@ -1,4 +1,4 @@
-var version = "2.26.0.1";
+var version = "2.26.0.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -243,9 +243,9 @@ function bot(message) {
             }); 
         }
     } else {
-        if (message.content.includes("is now requesting a new game of Connect Four")) return games.connect4.channels[message.channel.id].lastDisplay = message;
-        if (message.content.includes("is now requesting a new game of Squares")) return games.squares.channels[message.channel.id].lastDisplay = message;
-        if (message.content.includes("is now requesting a new game of Othello")) return games.othello.channels[message.channel.id].lastDisplay = message;
+        if (message.content.includes("is now requesting a new game of Connect Four")) return games.channels[message.channel.id].lastDisplay = message;
+        if (message.content.includes("is now requesting a new game of Squares")) return games.channels[message.channel.id].lastDisplay = message;
+        if (message.content.includes("is now requesting a new game of Othello")) return games.channels[message.channel.id].lastDisplay = message;
         if ([
             "Column is full, please pick another.",
             "There's already a stone there, pick another spot!",
@@ -344,26 +344,26 @@ var commands = {
         if (!input) return sendChat(`__**Connect Four**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
             message.delete();
-            if (!games.connect4.channels[message.channel.id]) {
+            if (!games.channels[message.channel.id]) {
                 if (!args[1]) return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, false));
                 if (["causal", "fun"].includes(args[1])) return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, true));
             }
-            if (!games.connect4.channels[message.channel.id].started) {
-                if (message.author.id != games.connect4.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+            if (!games.channels[message.channel.id].started) {
+                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
                     k = games.connect4.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!games.connect4.channels[message.channel.id]) return sendChat("There is no active Connect Four game in this channel, $user$!");
-            if (!games.connect4.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            return sendChat(new Discord.Attachment(games.connect4.drawBoard(games.connect4.channels[message.channel.id], 0)))
+            if (!games.channels[message.channel.id]) return sendChat("There is no active Connect Four game in this channel, $user$!");
+            if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+            return sendChat(new Discord.Attachment(games.connect4.drawBoard(games.channels[message.channel.id], 0)))
         } else if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!games.connect4.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
-            if (message.author.id != games.connect4.channels[message.channel.id].players[0] && message.author.id != games.connect4.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
-            if (!games.connect4.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+            if (!games.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
+            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
+            if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
             else sendChat("$user$ has forfeit the game.");
-            delete games.connect4.channels[message.channel.id];
+            delete games.channels[message.channel.id];
         } else if (["rules", "howtoplay"].includes(args[0])) {
             new Discord.RichEmbed();
             embed.setDescription("If you don't know how to play this game, you had a shitty childhood.");
@@ -377,27 +377,27 @@ var commands = {
         if (!input) return sendChat(`__**Squares**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
             message.delete();
-            if (!games.squares.channels[message.channel.id]) {
+            if (!games.channels[message.channel.id]) {
                 if (!args[1]) return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, false));
                 if (["causal", "fun"].includes(args[1])) return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, true));
             }
-            if (!games.squares.channels[message.channel.id].started) {
-                if (message.author.id != games.squares.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+            if (!games.channels[message.channel.id].started) {
+                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
                     k = games.squares.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!games.squares.channels[message.channel.id]) return sendChat("There is no active Squares game in this channel, $user$!");
-            if (!games.squares.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            let game = games.squares.channels[message.channel.id];
+            if (!games.channels[message.channel.id]) return sendChat("There is no active Squares game in this channel, $user$!");
+            if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+            let game = games.channels[message.channel.id];
             return sendChat(new Discord.Attachment(game.buffer, `squares_0_${game.players[0]}vs${game.players[1]}.png`));
         } else if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!games.squares.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
-            if (message.author.id != games.squares.channels[message.channel.id].players[0] && message.author.id != games.squares.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
-            if (!games.squares.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+            if (!games.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
+            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
+            if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
             else sendChat("$user$ has forfeit the game.");
-            delete games.squares.channels[message.channel.id];
+            delete games.channels[message.channel.id];
         } else if (["rules", "howtoplay"].includes(args[0])) {
             new Discord.RichEmbed();
             embed.setDescription("This game was created by Xyvy himself because he was bored and didn't want to work on Gomoku win logic one night. It's played almost exactly like Gomoku, except for the objective of the game and the limitless board size. The board size is always 10x10, and the object of the game is to have created more squares than your opponent before the end. You make a square by placing 4 of your stones in a square pattern. Stones can be a part of multiple squares, and squares can range in size from 2x2 to 15x15 (if you put a stone in all 4 corners of the map, that's a point to you!).\n\nTaking turns is the same as in Gomoku: 2 stones per turn, but whoever goes first only places 1 stone on their very first turn. This eliminates \"first player advantage\" where player 1 is the only one that can have more stones on the board than their opponent.\n\nThe game ends when there are no more empty spaces on the board. After that, the squares are counted for each player and the player with more squares is declared the winner.");
@@ -411,27 +411,27 @@ var commands = {
         if (!input) return sendChat(`__**Othello**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
             message.delete();
-            if (!games.othello.channels[message.channel.id]) {
+            if (!games.channels[message.channel.id]) {
                 if (!args[1]) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, false));
                 if (["causal", "fun"].includes(args[1])) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, true));
             }
-            if (!games.othello.channels[message.channel.id].started) {
-                if (message.author.id != games.othello.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+            if (!games.channels[message.channel.id].started) {
+                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
                     k = games.othello.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!games.othello.channels[message.channel.id]) return sendChat("There is no active Othello game in this channel, $user$!");
-            if (!games.othello.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            let game = games.othello.channels[message.channel.id];
+            if (!games.channels[message.channel.id]) return sendChat("There is no active Othello game in this channel, $user$!");
+            if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+            let game = games.channels[message.channel.id];
             return sendChat(new Discord.Attachment(game.buffer, `othello_0_${game.players[0]}vs${game.players[1]}.png`));
         } else if (["quit", "forfeit", "leave"].includes(input)) {
             message.delete();
-            if (games.othello.channels[message.channel.id] && games.othello.channels[message.channel.id].players.includes(message.author.id)) {
-                if (!games.othello.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+            if (games.channels[message.channel.id] && games.channels[message.channel.id].players.includes(message.author.id)) {
+                if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
                 else return sendChat(games.othello.takeTurn(message.channel, "quit"));
-                delete games.othello.channels[message.channel.id];
+                delete games.channels[message.channel.id];
             }
         } else if (["rules", "howtoplay"].includes(args[0])) {
             new Discord.RichEmbed();
@@ -446,27 +446,27 @@ var commands = {
         if (!input) return sendChat(`__**Gomoku**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
             message.delete();
-            if (!games.gomoku.channels[message.channel.id]) {
+            if (!games.channels[message.channel.id]) {
                 if (!args[1]) return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, false));
                 if (["causal", "fun"].includes(args[1])) return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, true));
             }
-            if (!games.gomoku.channels[message.channel.id].started) {
-                if (message.author.id != games.gomoku.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+            if (!games.channels[message.channel.id].started) {
+                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
                     k = games.gomoku.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 } else return sendChat("You cannot play yourself!");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!games.gomoku.channels[message.channel.id]) return sendChat("There is no active Gomoku game in this channel, $user$!");
-            if (!games.gomoku.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            let game = games.gomoku.channels[message.channel.id];
+            if (!games.channels[message.channel.id]) return sendChat("There is no active Gomoku game in this channel, $user$!");
+            if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+            let game = games.channels[message.channel.id];
             return sendChat(new Discord.Attachment(game.buffer, `gomoku_0_${game.players[0]}vs${game.players[1]}.png`));
         } else if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!games.gomoku.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
-            if (message.author.id != games.gomoku.channels[message.channel.id].players[0] && message.author.id != games.gomoku.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
-            if (!games.gomoku.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+            if (!games.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
+            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
+            if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
             else sendChat("$user$ has forfeit the game.");
-            delete games.gomoku.channels[message.channel.id];
+            delete games.channels[message.channel.id];
         } else if (["rules", "howtoplay"].includes(args[0])) {
             new Discord.RichEmbed();
             embed.setDescription("Gomoku, also called Go Bang, in the simplest terms, is a very large game of Tic Tac Toe. The board can be virtually any size, and we practice that here: the board starts small, and expands as more space is needed (we stop at 26x26 because who really needs that much space?).\n\nTaking turns differs from traditional 1v1 board games like checkers in that each player does not get 1 move per turn. In Gomoku, both players get 2 moves per turn, but player 1 only gets one move on their very first turn. This removes what's known as \"player 1 advantage,\" which is very prevalent in Tic Tac Toe, where player 1 is able to have more pieces on the board than player 2, but player 2 can never have more pieces on the board than player 1.\n\nTo win, you must have 5 of your stones in a line. No more, no less. That's right: if you have 6 in a line, you cannot win.");
