@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-var version = "2.27.1.4";
-=======
 var version = "2.27.1.2";
->>>>>>> parent of 2c81bf6... I don't know how this got broken
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
