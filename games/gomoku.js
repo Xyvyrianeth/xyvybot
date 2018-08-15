@@ -37,7 +37,8 @@ exports.startGame = function(channel, player2) {
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
     game.player = game.players[0];
 
-    return ["The game has started! <@" + game.players[0] + "> will be player1, and <@" + game.players[1] + "> will be player2!\n\nTo place a piece, just say the number of the column you wish to place in, like \"f4\"", new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
+    game.buffer = exports.drawBoard(game, 0);
+    return ["The game has started! <@" + game.players[0] + "> will be player1, and <@" + game.players[1] + "> will be player2!\n\nTo place a piece, just say the number of the column you wish to place in, like \"f4\"", new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
 }
  
 exports.drawBoard = function(game, end, highlight, row) {
