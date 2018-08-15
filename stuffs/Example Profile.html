@@ -10,26 +10,23 @@
         <canvas id="thing" style="position: fixed; top: 300px; left: 0px; border: 1px solid #000"></canvas>
         
         <script>
+            username = "Xyvyrianeth";
             profile = {
                 id: "357700219825160194",
-                username: "Xyvyrianeth",
                 tag: "8292",
                 color: "#90b",
                 title: "default",
                 titles: ["default"],
                 background: "AVw4ejk.jpg",
-                lorr: "right",
+                lorr: "left",
                 money: 5,
-                wins1: 1,
-                lose1: 1,
-                wins2: 0,
-                lose2: 0,
-                wins3: 2,
-                lose3: 3,
-                wins4: 0,
-                lose4: 0,
-                wins5: 0,
-                lose5: 0
+                elo1: 1000,
+                elo2: 1000,
+                elo3: 1000,
+                elo4: 1000,
+                elo5: 1000,
+                elo6: 1000,
+                elo7: 1000
             };
             titles = {
                 "default": "President King Xyvy"
@@ -108,7 +105,7 @@
                 text.tt = Math.floor(ctx.measureText(titles[profile.title]).width > text.un ? text.un : ctx.measureText(titles[profile.title]).width < 96 ? 96 : ctx.measureText(titles[profile.title]).width);     // Title
                     
                 if (profile.lorr == "right") {
-                // Draws avatar box
+                    // Draws avatar box
                     ctx.beginPath();
                     ctx.strokeStyle = colors.ed;
                     ctx.lineWidth = 2;
@@ -151,7 +148,7 @@
                     ctx.textBaseline = "hanging";
                     ctx.font = "20px meiryo";
                     ctx.fillStyle = colors.tx;
-                    ctx.fillText(profile.username, res[0] - 78 - text.un, 2, text.un);
+                    ctx.fillText(username, res[0] - 78 - text.un, 2, text.un);
             
                     // Title
                     ctx.beginPath();
@@ -205,12 +202,12 @@
                     mon = mon3 + mon4 + mon5;
                     ctx.fillText(mon, res[0] - 78, 44, 50);
             
-                    // "Game Stats:" box
+                    // Outer Games ELOs Box
                     ctx.beginPath();
                     ctx.strokeStyle = colors.ed;
                     ctx.moveTo(res[0] - 150, 60);
-                    ctx.lineTo(res[0] - 150, 199);
-                    ctx.lineTo(res[0] + 2, 199);
+                    ctx.lineTo(res[0] - 150, 198);
+                    ctx.lineTo(res[0] + 3, 198);
                     ctx.moveTo(res[0] - 150, 75);
                     ctx.lineTo(res[0] - 76, 75);
                     ctx.stroke();
@@ -228,43 +225,37 @@
                     ctx.font = "15px meiryo";
                     ctx.textAlign = "start";
                     ctx.fillStyle = colors.tx;
-                    ctx.fillText("Game Stats:", res[0] - 147, 61, 70);
+                    ctx.fillText("Game ELOs:", res[0] - 147, 61, 70);
             
-                    // Wins and Loses
+                    // Inner Games ELOs Box
                     ctx.strokeStyle = colors.ii;
                     ctx.fillStyle = colors.bg;
-                    ctx.fillRect(252, 77, 77, 17);
-                    ctx.fillRect(331, 77, 33, 17);
-                    ctx.fillRect(366, 77, 33, 17);
-                    ctx.fillRect(252, 96, 77, 101);
-                    ctx.fillRect(331, 96, 33, 101);
-                    ctx.fillRect(366, 96, 33, 101);
+                    ctx.fillRect(252, 77, 97, 13);
+                    ctx.fillRect(351, 77, 48, 13);
+                    ctx.fillRect(252, 92, 97, 104);
+                    ctx.fillRect(351, 92, 48, 104);
                     ctx.beginPath();
                     ctx.strokeStyle = colors.bg;
                     ctx.lineWidth = 1;
-                    ctx.rect(251.5, 76.5, 148, 121);
+                    ctx.rect(251.5, 76.5, 148, 120);
                     ctx.stroke();
             
                     ctx.beginPath();
                     ctx.strokeStyle = colors.ed;
                     ctx.lineWidth = 2;
-                    ctx.moveTo(res[0] - 70, 77);
-                    ctx.lineTo(res[0] - 70, 197);
-                    ctx.moveTo(res[0] - 35, 77);
-                    ctx.lineTo(res[0] - 35, 197);
-                    ctx.moveTo(res[0] - 148, 95);
-                    ctx.lineTo(res[0] - 1, 95);
+                    ctx.moveTo(res[0] - 50, 77);
+                    ctx.lineTo(res[0] - 50, 196);
+                    ctx.moveTo(res[0] - 148, 91);
+                    ctx.lineTo(res[0] - 1, 91);
                     ctx.stroke();
             
                     ctx.fillStyle = colors.tx;
-                    ctx.fillText("Game Name", res[0] - 148, 80, 75);
-                    ctx.fillText("Wins", res[0] - 68, 80, 31);
-                    ctx.fillText("Loses", res[0] - 33, 80, 31);
-                    for (let i = 0; i < 5; i++) {
-                        let game = ["Connect Four", "Squares", "Othello", "3D Tic Tac Toe", "Gomoku"][i];
-                        ctx.fillText(game, res[0] - 148, 97 + (15 * i), 75);
-                        ctx.fillText(profile["wins" + (i + 1)], res[0] - 68, 97 + (15 * i));
-                        ctx.fillText(profile["lose" + (i + 1)], res[0] - 33, 97 + (15 * i), 31);
+                    ctx.fillText("Game Name", res[0] - 148, 77, 85);
+                    ctx.fillText("ELO", res[0] - 48, 77, 31);
+                    for (let i = 0; i < 7; i++) {
+                        let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][i];
+                        ctx.fillText(game, res[0] - 148, 94 + (15 * i), 95);
+                        ctx.fillText(profile["elo" + (i + 1)], res[0] - 48, 94 + (15 * i));
                     }
             
                 } else if (profile.lorr == "left") {
@@ -308,9 +299,9 @@
                     ctx.stroke();
             
                     ctx.textBaseline = "hanging";
-                    ctx.font = "21fpx meiryo";
+                    ctx.font = "20px meiryo";
                     ctx.fillStyle = colors.tx;
-                    ctx.fillText(profile.username, 77, 2, text.un);
+                    ctx.fillText(username, 77, 2, text.un);
             
                     // Title
                     ctx.beginPath();
@@ -363,12 +354,12 @@
                     mon = mon3 + mon4 + mon5;
                     ctx.fillText(mon, 173, 44, 50);
             
-                    // "Game Stats:" box
+                    // Outer Games ELOs Box
                     ctx.beginPath();
                     ctx.strokeStyle = colors.ed;
                     ctx.moveTo(150, 60);
-                    ctx.lineTo(150, 199);
-                    ctx.lineTo(-2, 199);
+                    ctx.lineTo(150, 198);
+                    ctx.lineTo(-2, 198);
                     ctx.moveTo(150, 75);
                     ctx.lineTo(76, 75);
                     ctx.stroke();
@@ -383,47 +374,41 @@
                     ctx.fill();
                     ctx.stroke();
             
+                    ctx.font = "15px meiryo";
                     ctx.textAlign = "start";
                     ctx.fillStyle = colors.tx;
-                    ctx.fillText("Game Stats:", 77, 61, 70);
+                    ctx.fillText("Game ELOs:", 77, 61, 70);
             
-                    // Wins and Loses
+                    // Inner Games ELOs Box
                     ctx.strokeStyle = colors.ii;
                     ctx.fillStyle = colors.bg;
-                    ctx.fillRect(1, 77, 78, 17);
-                    ctx.fillRect(81, 77, 33, 17);
-                    ctx.fillRect(116, 77, 32, 17);
-                    ctx.fillRect(1, 96, 78, 101);
-                    ctx.fillRect(81, 96, 33, 101);
-                    ctx.fillRect(116, 96, 32, 101);
+                    ctx.fillRect(1, 77, 97, 13);
+                    ctx.fillRect(100, 77, 48, 13);
+                    ctx.fillRect(1, 92, 97, 104);
+                    ctx.fillRect(100, 92, 48, 104);
                     ctx.beginPath();
                     ctx.strokeStyle = colors.bg;
                     ctx.lineWidth = 1;
-                    ctx.rect(0.5, 76.5, 148, 121);
+                    ctx.rect(0.5, 76.5, 148, 120);
                     ctx.stroke();
             
                     ctx.beginPath();
                     ctx.strokeStyle = colors.ed;
                     ctx.lineWidth = 2;
-                    ctx.moveTo(80, 77);
-                    ctx.lineTo(80, 197);
-                    ctx.moveTo(115, 77);
-                    ctx.lineTo(115, 197);
-                    ctx.moveTo(148, 95);
-                    ctx.lineTo(1, 95);
+                    ctx.moveTo(99, 77);
+                    ctx.lineTo(99, 196);
+                    ctx.moveTo(148, 91);
+                    ctx.lineTo(1, 91);
                     ctx.stroke();
             
                     ctx.fillStyle = colors.tx;
-                    ctx.fillText("Game Name", 2, 80, 75);
-                    ctx.fillText("Wins", 82, 80, 31);
-                    ctx.fillText("Loses", 117, 80, 31);
-                    for (let i = 0; i < 5; i++) {
-                        let game = ["Connect Four", "Squares", "Othello", "3D Tic Tac Toe", "Gomoku"][i];
-                        ctx.fillText(game, 2, 97 + (15 * i), 75);
-                        ctx.fillText(profile["wins" + (i + 1)], 82, 97 + (15 * i));
-                        ctx.fillText(profile["lose" + (i + 1)], 117, 97 + (15 * i), 31);
+                    ctx.fillText("Game Name", 1, 77, 85);
+                    ctx.fillText("ELO", 101, 77, 31);
+                    for (let i = 0; i < 7; i++) {
+                        let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][i];
+                        ctx.fillText(game, 1, 94 + (15 * i), 95);
+                        ctx.fillText(profile["elo" + (i + 1)], 101, 94 + (15 * i));
                     }
-            
                 }
         
             }, 1000);

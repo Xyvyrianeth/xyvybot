@@ -1,4 +1,4 @@
-var version = "2.27.0.17";
+var version = "2.27.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -426,7 +426,7 @@ var commands = {
             delete games.channels[message.channel.id];
         } else if (["rules", "howtoplay"].includes(args[0])) {
             new Discord.RichEmbed();
-            embed.setDescription("Gomoku, also called Go Bang, in the simplest terms, is a very large game of Tic Tac Toe. The board can be virtually any size, and we practice that here: the board starts small, and expands as more space is needed (we stop at 26x26 because who really needs that much space?).\n\nTaking turns differs from traditional 1v1 board games like checkers in that each player does not get 1 move per turn. In Gomoku, both players get 2 moves per turn, but player 1 only gets one move on their very first turn. This removes what's known as \"player 1 advantage,\" which is very prevalent in Tic Tac Toe, where player 1 is able to have more pieces on the board than player 2, but player 2 can never have more pieces on the board than player 1.\n\nTo win, you must have 5 of your stones in a line. No more, no less. That's right: if you have 6 in a line, you cannot win.");
+            embed.setDescription("Gomoku, also called Go Bang or Renju, in the simplest terms, is a very large game of Tic Tac Toe. The board is 19x19 instead of 3x3, and instead of a 3-in-a-row, you want a 5-in-a-row.\n\nTaking turns differs from traditional 1v1 board games like checkers in that each player does not get 1 move per turn. In Gomoku, both players get 2 moves per turn, but player 1 only gets one move on their very first turn. This removes what's known as \"player 1 advantage,\" which is very prevalent in Tic Tac Toe, where player 1 is able to have more pieces on the board than player 2, but player 2 can never have more pieces on the board than player 1.\n\nTo win, you must have 5 of your stones in a line. No more, no less. That's right: if you have 6 or more in a line, you cannot win.");
             embed.setColor(new Color().random());
             return sendChat(embed);
         }

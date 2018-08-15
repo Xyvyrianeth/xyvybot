@@ -48,7 +48,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(res[0] + 2, 75);
         ctx.lineTo(res[0] + 2, 0);
         ctx.stroke();
-          
+        
         ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
@@ -60,7 +60,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
         ctx.drawImage(avatar, res[0] - 72, 2, 70, 70);
-  
+
         // Username
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
@@ -68,7 +68,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(res[0] - 81 - text.un, 25);
         ctx.lineTo(res[0] - 107 - text.un, -1);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
@@ -78,12 +78,12 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(res[0] - 76, -1);
         ctx.fill();
         ctx.stroke();
-  
+
         ctx.textBaseline = "hanging";
-        ctx.font = "20px meiryo";
+        ctx.font = "20px";
         ctx.fillStyle = colors.tx;
         ctx.fillText(username, res[0] - 78 - text.un, 2, text.un);
-  
+
         // Title
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
@@ -91,7 +91,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(res[0] - 80 - text.tt, 42);
         ctx.lineTo(res[0] - 80 - text.tt, 26);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
@@ -101,12 +101,12 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(res[0] - 76, 26);
         ctx.fill();
         ctx.stroke();
-  
+
         ctx.textBaseline = "hanging";
-        ctx.font = "15px meiryo";
+        ctx.font = "15px";
         ctx.fillStyle = colors.tx;
         ctx.fillText(titles[profile.title], res[0] - 78 - text.tt, 26, text.tt);
-  
+
         // Money
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
@@ -114,7 +114,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(res[0] - 176, 59);
         ctx.lineTo(res[0] - 176, 43);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
@@ -124,7 +124,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(res[0] - 76, 43);
         ctx.fill();
         ctx.stroke();
-  
+
         ctx.fillStyle = colors.tx;
         ctx.fillText("Money:", res[0] - 174, 44, 40);
         ctx.textAlign = "end";
@@ -135,17 +135,17 @@ exports.card = function(username, profile, background, avatar) {
         mon5 = " K M B Tr Qu Pn".split(' ')[Math.floor((mon1.length - 1) / 3)];
         mon = mon3 + mon4 + mon5;
         ctx.fillText(mon, res[0] - 78, 44, 50);
-  
-        // "Game Stats:" box
+
+        // Outer Games ELOs Box
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
         ctx.moveTo(res[0] - 150, 60);
-        ctx.lineTo(res[0] - 150, 199);
-        ctx.lineTo(res[0] + 2, 199);
+        ctx.lineTo(res[0] - 150, 198);
+        ctx.lineTo(res[0] + 3, 198);
         ctx.moveTo(res[0] - 150, 75);
         ctx.lineTo(res[0] - 76, 75);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
@@ -155,42 +155,43 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(res[0] - 76, 60);
         ctx.fill();
         ctx.stroke();
-  
-        ctx.font = "15px meiryo";
+
+        ctx.font = "15px";
         ctx.textAlign = "start";
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game ELOs:", res[0] - 147, 61, 70);
-  
-        // Wins and Loses
+
+        // Inner Games ELOs Box
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
-        ctx.fillRect(252, 77, 97, 17);
-        ctx.fillRect(351, 77, 66, 17);
-        ctx.fillRect(252, 96, 97, 101);
-        ctx.fillRect(351, 96, 66, 101);
+        ctx.fillRect(252, 77, 97, 13);
+        ctx.fillRect(351, 77, 48, 13);
+        ctx.fillRect(252, 92, 97, 104);
+        ctx.fillRect(351, 92, 48, 104);
         ctx.beginPath();
         ctx.strokeStyle = colors.bg;
         ctx.lineWidth = 1;
-        ctx.rect(251.5, 76.5, 148, 121);
+        ctx.rect(251.5, 76.5, 148, 120);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
+        ctx.lineWidth = 2;
         ctx.moveTo(res[0] - 50, 77);
-        ctx.lineTo(res[0] - 50, 197);
-        ctx.moveTo(res[0] - 148, 95);
-        ctx.lineTo(res[0] - 1, 95);
+        ctx.lineTo(res[0] - 50, 196);
+        ctx.moveTo(res[0] - 148, 91);
+        ctx.lineTo(res[0] - 1, 91);
         ctx.stroke();
-  
+
         ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Name", res[0] - 148, 80, 85);
-        ctx.fillText("ELO", res[0] - 48, 80, 31);
+        ctx.fillText("Game Name", res[0] - 148, 77, 85);
+        ctx.fillText("ELO", res[0] - 48, 77, 31);
         for (let i = 0; i < 5; i++) {
-            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][i];
-            ctx.fillText(game, res[0] - 148, 97 + (15 * i), 75);
-            ctx.fillText(profile["elo" + (i + 1)], res[0] - 48, 97 + (15 * i));
+            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][i];
+            ctx.fillText(game, res[0] - 148, 94 + (15 * i), 95);
+            ctx.fillText(profile["elo" + (i + 1)], res[0] - 48, 94 + (15 * i));
         }
-  
+
     } else if (profile.lorr == "left") {
         // Draws avatar box
         ctx.beginPath();
@@ -201,7 +202,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(-2, 75);
         ctx.lineTo(-2, 0);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
@@ -212,7 +213,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.fill();
         ctx.stroke();
         ctx.drawImage(avatar, 2, 2, 70, 70);
-  
+
         // Username
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
@@ -220,7 +221,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(81 + text.un, 25);
         ctx.lineTo(107 + text.un, -1);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
@@ -230,12 +231,12 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(76, -1);
         ctx.fill();
         ctx.stroke();
-  
+
         ctx.textBaseline = "hanging";
-        ctx.font = "20px meiryo";
+        ctx.font = "20px";
         ctx.fillStyle = colors.tx;
         ctx.fillText(username, 77, 2, text.un);
-  
+
         // Title
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
@@ -243,7 +244,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(80 + text.tt, 42);
         ctx.lineTo(80 + text.tt, 26);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
@@ -253,11 +254,11 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(76, 26);
         ctx.fill();
         ctx.stroke();
-  
-        ctx.font = "15px meiryo";
+
+        ctx.font = "15px";
         ctx.fillStyle = colors.tx;
         ctx.fillText(titles[profile.title], 77, 26, text.tt);
-  
+
         // Money
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
@@ -265,7 +266,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(176, 59);
         ctx.lineTo(176, 43);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
@@ -275,7 +276,7 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(76, 43);
         ctx.fill();
         ctx.stroke();
-  
+
         ctx.fillStyle = colors.tx;
         ctx.fillText("Money:", 77, 44, 40);
         ctx.textAlign = "end";
@@ -286,17 +287,17 @@ exports.card = function(username, profile, background, avatar) {
         mon5 = " K M B Tr Qu Pn".split(' ')[Math.floor((mon1.length - 1) / 3)];
         mon = mon3 + mon4 + mon5;
         ctx.fillText(mon, 173, 44, 50);
-  
-        // "Game Stats:" box
+
+        // Outer Games ELOs Box
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
         ctx.moveTo(150, 60);
-        ctx.lineTo(150, 199);
-        ctx.lineTo(-2, 199);
+        ctx.lineTo(150, 198);
+        ctx.lineTo(-2, 198);
         ctx.moveTo(150, 75);
         ctx.lineTo(76, 75);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
@@ -306,37 +307,41 @@ exports.card = function(username, profile, background, avatar) {
         ctx.lineTo(76, 60);
         ctx.fill();
         ctx.stroke();
-  
+
+        ctx.font = "15px";
         ctx.textAlign = "start";
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game ELOs:", 77, 61, 70);
-  
-        // Wins and Loses
-        ctx.beginPath();
+
+        // Inner Games ELOs Box
         ctx.strokeStyle = colors.ii;
         ctx.fillStyle = colors.bg;
-        ctx.moveTo(149, 76);
-        ctx.lineTo(149, 198);
-        ctx.lineTo(-2, 198);
-        ctx.lineTo(-2, 76);
-        ctx.fill();
+        ctx.fillRect(1, 77, 97, 13);
+        ctx.fillRect(100, 77, 48, 13);
+        ctx.fillRect(1, 92, 97, 104);
+        ctx.fillRect(100, 92, 48, 104);
+        ctx.beginPath();
+        ctx.strokeStyle = colors.bg;
+        ctx.lineWidth = 1;
+        ctx.rect(0.5, 76.5, 148, 120);
         ctx.stroke();
-  
+
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
-        ctx.moveTo(100, 77);
-        ctx.lineTo(100, 197);
-        ctx.moveTo(148, 95);
-        ctx.lineTo(1, 95);
+        ctx.lineWidth = 2;
+        ctx.moveTo(99, 77);
+        ctx.lineTo(99, 196);
+        ctx.moveTo(148, 91);
+        ctx.lineTo(1, 91);
         ctx.stroke();
-  
+
         ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Name", 2, 80, 95);
-        ctx.fillText("ELO", 102, 80);
+        ctx.fillText("Game Name", 1, 77, 85);
+        ctx.fillText("ELO", 101, 77, 31);
         for (let i = 0; i < 5; i++) {
-            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][i];
-            ctx.fillText(game, 2, 97 + (15 * i), 95);
-            ctx.fillText(profile["elo" + (i + 1)], 82, 97 + (15 * i));
+            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][i];
+            ctx.fillText(game, 1, 94 + (15 * i), 95);
+            ctx.fillText(profile["elo" + (i + 1)], 101, 94 + (15 * i));
         }
     }
 
