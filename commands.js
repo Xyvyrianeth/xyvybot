@@ -1,4 +1,4 @@
-var version = "2.27.1.1";
+var version = "2.27.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -549,7 +549,7 @@ var commands = {
                         if (err) sqlError(message, err, `UPDATE profiles
                             SET lorr = '${res.rows[0].lorr == "left" ? "right" : "left"}'
                             WHERE id = '${message.author.id}'`);
-                        else return sendChat("Successfully updated your information display to the " + res.rows[0].lorr == "left" ? "right" : "left" + " side!");
+                        else return sendChat("Successfully updated your information display to the " + (res.rows[0].lorr == "left" ? "right" : "left") + " side!");
                 });
             });
         } else if (["title", "titles"].includes(args[0])) {
