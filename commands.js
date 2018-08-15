@@ -1,4 +1,4 @@
-var version = "2.27.1.0";
+var version = "2.27.1.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -540,24 +540,18 @@ var commands = {
             } else if (args[1].startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
             else return sendChat("Unknown request.");
         } else if (["lorr", "sidedisplay", "displayside", "displaylorr", "leftorright", "rightorleft"].includes(args[0])) {
-            if (!args[1]) return sendChat("Left or right? Which side is all your information displayed on in that profile thing I create for you?");
-            else if (!['left', 'l', 'right', 'r'].includes(args[1])) return sendChat("I don't know what that means. Nothing you put after \"" + args[0] + "\" means either left or right to me.");
-            else {
-                if (args[1] == 'l') args[1] = "left";
-                if (args[1] == 'r') args[1] = "right";
-                db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
-                    if (res.rows.length == 0) return sendChat("You have not yet created a profile, so your information is displayed on neither the left nor the right. If you want to change that fact, do `x!profile` right now!");
-                    db.query(`UPDATE profiles
-                        SET lorr = '${args[1]}'
-                        WHERE id = '${message.author.id}'`, function(err) {
-                            if (err) sqlError(message, err, `UPDATE profiles
-                                SET lorr = '${args[1]}'
-                                WHERE id = '${message.author.id}'`);
-                            else return sendChat("Successfully updated your information display to the " + args[1] + " side!");
-                    });
+            db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
+                if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
+                if (res.rows.length == 0) return sendChat("You have not yet created a profile, so your information is displayed on neither the left nor the right. If you want to change that fact, do `x!profile` right now!");
+                db.query(`UPDATE profiles
+                    SET lorr = '${res.rows[0].lorr == "left" ? "right" : "left"}'
+                    WHERE id = '${message.author.id}'`, function(err) {
+                        if (err) sqlError(message, err, `UPDATE profiles
+                            SET lorr = '${res.rows[0].lorr == "left" ? "right" : "left"}'
+                            WHERE id = '${message.author.id}'`);
+                        else return sendChat("Successfully updated your information display to the " + res.rows[0].lorr == "left" ? "right" : "left" + " side!");
                 });
-            }
+            });
         } else if (["title", "titles"].includes(args[0])) {
             if (!args[1]) {
                 return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
