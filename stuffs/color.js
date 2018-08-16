@@ -10,9 +10,9 @@ function Color() {
 				b = parseInt(hexa.substring(4, 6), 16);
 			}
 			if (hexa.length == 3) {
-				r = parseInt(hexa[0], 16);
-				g = parseInt(hexa[1], 16);
-				b = parseInt(hexa[2], 16);
+				r = parseInt(hexa[0] + hexa[0], 16);
+				g = parseInt(hexa[1] + hexa[1], 16);
+				b = parseInt(hexa[2] + hexa[2], 16);
 			}
 		}
 	} else if (arguments.length === 3) {
