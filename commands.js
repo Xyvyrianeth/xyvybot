@@ -1,4 +1,4 @@
-var version = "2.27.2.1";
+var version = "2.27.2.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -332,10 +332,11 @@ var commands = {
 
                 let ids = [], elos = [], winrates = [];
                 for (let i = 0; i < 10; i++) {
-                    ids.push(top.id);
-                    if (!args[1]) elos.push(top.elo1 + top.elo2 + top.elo3 + top.elo4 + top.elo5 + top.elo6 + top.elo7);
-                    else elos.push(top[sort]);
-                    if (!args[1]) elos.push(((top.win1 + top.win2 + top.win3 + top.win4 + top.win5 + top.win6 + top.win7) / (top.win1 + top.win2 + top.win3 + top.win4 + top.win5 + top.win6 + top.win7 + top.los1 + top.los2 + top.los3 + top.los4 + top.los5 + top.los6 + top.los7) * 100).toFixed(2) + "%");
+                    ids.push(top[i].id);
+                    if (!args[1]) elos.push(top[i].elo1 + top[i].elo2 + top[i].elo3 + top[i].elo4 + top[i].elo5 + top[i].elo6 + top[i].elo7);
+                    else elos.push(top[i][sort]);
+                    if (!args[1]) elos.push(((top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7) / (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7 + top[i].los1 + top[i].los2 + top[i].los3 + top[i].los4 + top[i].los5 + top[i].los6 + top[i].los7) * 100).toFixed(2) + "%");
+                    else elos.push((top[i]["win" + sort[3]] / top[i]["los" + sort[3]]).toFixed(2) + "%");
                 }
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Leaderboard for " + game);
