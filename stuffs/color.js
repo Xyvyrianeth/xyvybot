@@ -1,13 +1,18 @@
 function Color() {
 	var r, g, b;
 	if (arguments.length === 1) {
-		var hexa = arguments[0].toLowerCase();
-		if (hexa.match(/^#[0-9a-f]{6}$/i)) {
-			hexa = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hexa);
-			if (hexa && hexa.length === 4) {
-				r = parseInt(hexa[1], 16);
-				g = parseInt(hexa[2], 16);
-				b = parseInt(hexa[3], 16);
+		var hex = arguments[0].toLowerCase();
+		if (hexa.match(/([0-9a-f]{6}|[0-9a-f]{3})$/i)) {
+			hexa = hex.match(/([0-9a-f]{6}|[0-9a-f]{3})$/i)[0];
+			if (hexa.length == 6) {
+				r = parseInt(hexa.substring(0, 2), 16);
+				g = parseInt(hexa.substring(2, 4), 16);
+				b = parseInt(hexa.substring(4, 6), 16);
+			}
+			if (hexa.length == 3) {
+				r = parseInt(hexa[0], 16);
+				g = parseInt(hexa[1], 16);
+				b = parseInt(hexa[2], 16);
 			}
 		}
 	} else if (arguments.length === 3) {
