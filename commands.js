@@ -1,4 +1,4 @@
-var version = "2.27.2.4";
+var version = "2.27.2.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -341,10 +341,10 @@ var commands = {
                     let winrate;
                     if (!args[1]) winrate = (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7) / (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7 + top[i].los1 + top[i].los2 + top[i].los3 + top[i].los4 + top[i].los5 + top[i].los6 + top[i].los7);
                     else winrate = (top[i]["win" + sort[3]] / (top[i]["win" + sort[3]] + top[i]["los" + sort[3]])).toFixed(2);
-                    if (isNaN(winrate)) winrate = "N/A";
-                    else winrate = (winrate * 100).toFixed(2) + "%";
+                    if (isNaN(winrate)) winrate = "  N/A  ";
+                    else winrate = (winrate * 100).toFixed(2);
 
-                    users.push('`' + (i == 9 ? '' : '\u034f ') + (i + 1) + ')` `' + elo + '` (`' + winrate + '`) <@' + id + '>');
+                    users.push('`' + (i == 9 ? '' : '\u034f ') + (i + 1) + ')` `' + elo + '` (`' + (winrate < 100 ? winrate < 10 ? "00" : "0" : '') + winrate + '%`) <@' + id + '>');
                 }
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Leaderboard for " + game);
