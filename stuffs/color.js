@@ -1,8 +1,8 @@
 function Color() {
 	var r, g, b;
 	if (arguments.length === 1) {
-		var hexa = arguments[0].toLowerCase();
-		if (hexa.match(/([0-9a-f]{6}|[0-9a-f]{3})$/i)) {
+		var hex = arguments[0].toLowerCase();
+		if (hex.match(/([0-9a-f]{6}|[0-9a-f]{3})$/i)) {
 			hexa = hex.match(/([0-9a-f]{6}|[0-9a-f]{3})$/i)[0];
 			if (hexa.length == 6) {
 				r = parseInt(hexa.substring(0, 2), 16);
