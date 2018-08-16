@@ -1,4 +1,4 @@
-var version = "2.27.2.11";
+var version = "2.27.2.12";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -221,7 +221,7 @@ function newUser(id) {
     db.query(query, function(err) {
         if (err) return sqlError(message, err, query);
     });
-    return { id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lorr: "right", money: 0, elo1: elo[0], elo2: elo[1], elo3: elo[2], elo4: elo[3], elo5: elo[4] };
+    return { id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lorr: "right", money: 0, elo1: 1000, elo2: 1000, elo3: 1000, elo4: 1000, elo5: 1000, elo6: 1000, elo7: 1000, win1: 0, win2: 0, win3: 0, win4: 0, win5: 0, win6: 0, win7: 0, los1: 0, los2: 0, los3: 0, los4: 0, los5: 0, los6: 0, los7: 0 };
 }
 
 var aliases = {
