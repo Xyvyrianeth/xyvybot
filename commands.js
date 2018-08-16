@@ -1,4 +1,4 @@
-var version = "2.27.2.8";
+var version = "2.27.2.9";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -339,8 +339,8 @@ var commands = {
                     else elo = top[i][sort];
 
                     let winrate;
-                    if (!args[1]) winrate = (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7) / (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7 + top[i].los1 + top[i].los2 + top[i].los3 + top[i].los4 + top[i].los5 + top[i].los6 + top[i].los7);
-                    else winrate = (top[i]["win" + sort[3]] / (top[i]["win" + sort[3]] + top[i]["los" + sort[3]])).toFixed(2);
+                    if (!args[1]) winrate = ((top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7) / (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7 + top[i].los1 + top[i].los2 + top[i].los3 + top[i].los4 + top[i].los5 + top[i].los6 + top[i].los7) * 100).toFixed(2);
+                    else winrate = ((top[i]["win" + sort[3]] / (top[i]["win" + sort[3]] + top[i]["los" + sort[3]])) * 100).toFixed(2);
                     winrate = (winrate < 100 ? winrate < 10 ? "\u034f \u034f " : "\u034f " : '') + winrate + "%";
 
                     users.push('`' + (i == 9 ? '' : '\u034f ') + (i + 1) + ')` `' + elo + '` (`' + winrate + '`) <@' + id + '>');
