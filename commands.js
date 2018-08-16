@@ -1,4 +1,4 @@
-var version = "2.27.1.2";
+var version = "2.27.2.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -64,23 +64,26 @@ var games = {
 }
 
 function botError(message, err) {
-    return `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n`
-         + `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n`
-         + `\`\`\`User errored on:\`\`\`<@${message.author.id}>\n\n`
-         + `\`\`\`\n`
-         + `Message sent:\`\`\`\`\`\`\n`
-         + `${message.content.replace(/`/g, "\\\`")}\`\`\`\n`
-         + `\`\`\`\n`
-         + `${err.join("\n")}\`\`\``
+    message.channel.send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
+    return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(
+        `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
+        `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
+        `\`\`\`User errored on:\`\`\`<@${message.author.id}>\n\n` +
+        `\`\`\`\n` +
+        `Message sent:\`\`\`\`\`\`\n` +
+        `${message.content.replace(/`/g, "\\\`")}\`\`\`\n` +
+        `\`\`\`\n` +
+        `${err.join("\n")}\`\`\``
+    );
 }
 function sqlError(message, err, res) {
-    message.channel.send("```Whoops! It appears there was some sort of error with the database! Not sure if it's my fault or not, but Xyvy will look into it!```");
+    message.channel.send("```\nWhoops! It appears there was some sort of error with the database! Not sure if it's my fault or not, but Xyvy will look into it!```");
     return client.guilds.get("399327996076621825").channels.get("478371618620571648").send(
         `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
         `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
         `\`\`\`\n` +
         `Query:\`\`\`\`\`\`sql\n` +
-        `${res.replace(/`/g, "\\\`")}\`\`\`\n` +
+        `${res.replace(/`/g, "\\\`").replace(/ {4,}/g, "    ")}\`\`\`\n` +
         `\`\`\`\n` +
         `${err}\`\`\``
     );
@@ -104,13 +107,12 @@ function command(message) {
             try {
                 return commands[i](cmd, args, input, message, sendChat, user, a);
             } catch (error) {
-                sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
                 let errs = [];
                 for (let i = 0; i < error.stack.split('\n').length; i++) {
                     if (error.stack.split('\n')[i].includes("at emitOne")) break
                     else errs.push(error.stack.split('\n')[i]);
                 }
-                client.guilds.get("399327996076621825").channels.get("467902250128506880").send(botError(message, errs));
+                botError(message, errs);
             }
    
 }
@@ -146,7 +148,7 @@ function bot(message) {
     if (message.attachments.array().length != 0) {
         let img = message.attachments.first().filename;
         if (/^(connect4|squares|othello|gomoku)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img)) {
-            if (!games.channels[message.channel.id]) return client.guilds.get("399327996076621825").channels.get("467902250128506880").send("Bot is sending images when it shouldn't @`function bot`.");
+            if (!games.channels.hasOwnProperty(message.channel.id)) return client.guilds.get("399327996076621825").channels.get("467902250128506880").send("Bot is sending images when it shouldn't @`function bot`.");
 
             let game = games.channels[message.channel.id];
             let end = img.match(/_[0-2]_/)[0].substring(1, 2);
@@ -159,35 +161,39 @@ function bot(message) {
                     winner: game.players[game.winner],
                     loser: game.players[game.winner == 0 ? 1 : 0],
                     game: JSON.stringify(["othello", "squares", "gomoku", "3dttt", "connect4"].indexOf(game.game) + 1),
-                    casual: game.casual
+                    casual: game.casual,
+                    score: game.score
                 };
-                if (result.game === '3') result.score = game.score;
             }
             delete game.channels[message.channel.id];
 
             if (result) db.query(`SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`, function(err, res) {
                 if (err) sqlError(message, err, `SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`);
-                let wins = false;
-                let lose = false;
-                if (res.rows.length == 0) {
-                    newUser(result.winner, result.game, 1100);
-                    newUser(result.loser, result.game, 900);
-                } else if (res.rows.length == 2) {
-                    wins = res.rows[0].id == result.winner ? res.rows[0] : res.rows[1];
-                    lose = res.rows[0].id == result.loser ? res.rows[0] : res.rows[1];
-                    let booty = Math.floor(lose["elo" + result.game] / 10);
-                    db.query(`UPDATE profiles SET elo${result.game} = ${wins["elo" + result.game] + booty} WHERE id = '${wins.id}'; UPDATE profiles SET elo${result.game} = ${lose["elo" + result.game] - booty} WHERE id = '${lose.id}';`, function(err) {
-                        if (err) sqlError(message, err, `UPDATE profiles SET elo${result.game} = ${wins["elo" + result.game] + booty} WHERE id = '${wins.id}'; UPDATE profiles SET elo${result.game} = ${lose["elo" + result.game] - booty} WHERE id = '${lose.id}';`);
-                    })
-                } else if (res.rows[0].id == result.winner) {
-                    newUser(result.loser, result.game, 900);
-                    db.query(`UPDATE profiles SET elo${result.game} = ${res.rows[0]["elo" + result.game] + 100} WHERE id = '${res.rows[0].id}'`, function(err) {
-                        if (err) sqlError(message, err, `UPDATE profiles SET elo${result.game} = ${res.rows[0]["elo" + result.game] + 100} WHERE id = '${res.rows[0].id}'`);
-                    });
-                } else if (res.rows[0].id == result.loser) {
-                    newUser(result.winner, result.game, 1000 + Math.floor(res.rows[0]["elo" + result.game] / 10));
-                    db.query(`UPDATE profiles SET elo${result.game} = ${Math.ceil(res.rows[0]["elo" + result.game] * 0.9)} WHERE id = '${res.rows[0].id}'`, function(err) {
-                        if (err) sqlError(message, err, `UPDATE profiles SET elo${result.game} = ${Math.ceil(res.rows[0]["elo" + result.game] * 0.9)} WHERE id = '${res.rows[0].id}'`);
+                if (!result.casual) {
+                    let wins;
+                    let lose;
+                    if (res.rows.length == 0) {
+                        wins = newUser(result.winner);
+                        lose = newUser(result.loser);
+                    } else if (res.rows.length == 2) {
+                        wins = res.rows[0].id == result.winner ? res.rows[0] : res.rows[1];
+                        lose = res.rows[0].id == result.loser ? res.rows[0] : res.rows[1];
+                    } else if (res.rows[0].id == result.winner) {
+                        lose = newUser(result.loser);
+                        wins = res.rows[0];
+                    } else if (res.rows[0].id == result.loser) {
+                        lose = res.rows[0];
+                        wins = newUser(result.winner);
+                    }
+                    let booty = Math.ceil(lose["elo" + result.game] / 10);
+                    let query = `UPDATE profiles
+                        SET elo${result.game} = ${wins["elo" + result.game] + booty}, win${result.game} = ${wins["win" + result.game] + 1}
+                        WHERE id = '${wins.id}';
+                        UPDATE profiles
+                        SET elo${result.game} = ${lose["elo" + result.game] - booty}, los${result.game} = ${lose["los" + result.game] + 1}
+                        WHERE id = '${lose.id}';`
+                    db.query(query, function(err) {
+                        if (err) sqlError(message, err, query);
                     });
                 }
                 
@@ -206,14 +212,13 @@ function bot(message) {
     }
 }
    
-function newUser(id, game, value) {
+function newUser(id) {
     let image = backgrounds.ids.random();
-    let elo = [1000, 1000, 1000, 1000, 1000];
     if (game) elo[game - 1] = value;
     let query = `INSERT INTO profiles (
-            id,       color,   title,      titles,             background,  backgrounds,         lorr,     money,  elo1,       elo2,       elo3,       elo4,       elo5
+            id,       color,   title,      titles,             background,  backgrounds,         lorr,     money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7
         ) VALUES (
-            '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,      ${elo[0]},  ${elo[1]},  ${elo[2]},  ${elo[3]},  ${elo[4]}
+            '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,      1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0
         )`;
     db.query(query, function(err) {
         if (err) return sqlError(message, err, query);
@@ -224,10 +229,13 @@ function newUser(id, game, value) {
 var aliases = {
     guild: {
         // Games
-        "connect4": ["connectfour", "connect4", "cfour", "c4"],
-        "squares": ["squares"],
         "othello": ["othello"],
-        "gomoku": ["gomoku", "gobang"],
+        "squares": ["squares"],
+        "gomoku": ["gomoku", "gobang", "renju"],
+        "ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
+        "connect4": ["connectfour", "connect4", "cfour", "c4"],
+        "pente": ["pente"],
+        "ninemen": ["ninemen", "morris", "ninemensmorris", "ninemenmorris"],
         "profile": ["profile", "scorecard", "prof"],
        
         // Utility
@@ -291,8 +299,49 @@ var commands = {
    
     // Games
     "games": function(cmd, args, input, message, sendChat, user) {
-        if (!input) {
+        if (!args[0]) {
             let embed = new Discord.RichEmbed();
+            embed.setDescription("Input tree for command x!games\n`x!games [input]`");
+            embed.addField("leaderboard", "View the players with the 10 highest ELOs for every game or the players with the 10 highest combined ELOs.\n`x!games leaderboard [game]`\nLeave `[game]` blank for general top 10 players.");
+            embed.addField("stats", "View either your stats or another player's stats.");
+            embed.addField("info", "A detailed information about how the ELO system works and the entire ranking system in general.");
+            embed.addField("games", "A list of all the games that are a part of the ranking system and a few details about them.");
+            embed.addField("about", "Some general information about the bot, not necessarily about the games and stuff, but in, like, you know, general.");
+        }
+        if (["leaderboard", "top"].includes(args[0])) {
+            if (!args[1])                                 sort = "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7";
+            if (aliases.guild.othello.includes(args[1]))  sort = "elo1";
+            if (aliases.guild.squares.includes(args[1]))  sort = "elo2";
+            if (aliases.guild.gomoku.includes(args[1]))   sort = "elo3";
+            if (aliases.guild.ttt3d.includes(args[1]))    sort = "elo4";
+            if (aliases.guild.connect4.includes(args[1])) sort = "elo5";
+            if (aliases.guild.pente.includes(args[1]))    sort = "elo6";
+            if (aliases.guild.ninemen.includes(args[1]))  sort = "elo7";
+            let query = `SELECT * FROM profiles ORDER BY ${sort} DESC`;
+            db.query(query, function(err, res) {
+                if (err) sqlError(message, err, query);
+                let top = [];
+                for (let i = 0; i < 10; i++) top.push(res.rows[i]);
+
+                let game;
+                if (!args[1]) game = "All Games"
+                else game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][sort[3] - 1];
+
+                let ids = [], elos = [], winrates = [];
+                for (let i = 0; i < 10; i++) {
+                    ids.push(top.id);
+                    if (!args[1]) elos.push(top.elo1 + top.elo2 + top.elo3 + top.elo4 + top.elo5 + top.elo6 + top.elo7);
+                    else elos.push(top[sort]);
+                    if (!args[1]) elos.push(((top.win1 + top.win2 + top.win3 + top.win4 + top.win5 + top.win6 + top.win7) / (top.win1 + top.win2 + top.win3 + top.win4 + top.win5 + top.win6 + top.win7 + top.los1 + top.los2 + top.los3 + top.los4 + top.los5 + top.los6 + top.los7) * 100).toFixed(2) + "%");
+                }
+                let embed = new Discord.RichEmbed();
+                embed.setTitle("Leaderboard for " + game);
+                embed.addField("User", `<@${ids.join('>\n<@')}>`, true);
+                embed.addField("ELO", `\`${elos.join('`\n`')}\``, true);
+                embed.addField("Win%", `\`${winrates.join('`\n`')}\``, true);
+                embed.setColor(new Color().random());
+                sendChat(embed);
+            })
         }
     },
 
@@ -301,7 +350,7 @@ var commands = {
         if (!input) return sendChat(`__**Connect Four**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
             message.delete();
-            if (!games.channels[message.channel.id]) {
+            if (!games.channels.hasOwnProperty(message.channel.id)) {
                 if (!args[1]) return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, false));
                 if (["causal", "fun"].includes(args[1])) return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, true));
             }
@@ -312,11 +361,11 @@ var commands = {
                 } else return sendChat("You cannot play yourself!");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!games.channels[message.channel.id]) return sendChat("There is no active Connect Four game in this channel, $user$!");
+            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is no active Connect Four game in this channel, $user$!");
             if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
             return sendChat(new Discord.Attachment(games.connect4.drawBoard(games.channels[message.channel.id], 0)))
         } else if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!games.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
+            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is not a game in this channel for you to quit!");
             if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
             if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
             else sendChat("$user$ has forfeit the game.");
@@ -334,7 +383,7 @@ var commands = {
         if (!input) return sendChat(`__**Squares**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
             message.delete();
-            if (!games.channels[message.channel.id]) {
+            if (!games.channels.hasOwnProperty(message.channel.id)) {
                 if (!args[1]) return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, false));
                 if (["causal", "fun"].includes(args[1])) return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, true));
             }
@@ -345,12 +394,12 @@ var commands = {
                 } else return sendChat("You cannot play yourself!");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!games.channels[message.channel.id]) return sendChat("There is no active Squares game in this channel, $user$!");
+            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is no active Squares game in this channel, $user$!");
             if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
             let game = games.channels[message.channel.id];
             return sendChat(new Discord.Attachment(game.buffer, `squares_0_${game.players[0]}vs${game.players[1]}.png`));
         } else if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!games.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
+            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is not a game in this channel for you to quit!");
             if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
             if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
             else sendChat("$user$ has forfeit the game.");
@@ -368,7 +417,7 @@ var commands = {
         if (!input) return sendChat(`__**Othello**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
             message.delete();
-            if (!games.channels[message.channel.id]) {
+            if (!games.channels.hasOwnProperty(message.channel.id)) {
                 if (!args[1]) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, false));
                 if (["causal", "fun"].includes(args[1])) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, true));
             }
@@ -379,7 +428,7 @@ var commands = {
                 } else return sendChat("You cannot play yourself!");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!games.channels[message.channel.id]) return sendChat("There is no active Othello game in this channel, $user$!");
+            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is no active Othello game in this channel, $user$!");
             if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
             let game = games.channels[message.channel.id];
             return sendChat(new Discord.Attachment(game.buffer, `othello_0_${game.players[0]}vs${game.players[1]}.png`));
@@ -403,7 +452,7 @@ var commands = {
         if (!input) return sendChat(`__**Gomoku**__\nTo start a game, type \`x!${cmd} start\`!`);
         if (["start"].includes(args[0])) {
             message.delete();
-            if (!games.channels[message.channel.id]) {
+            if (!games.channels.hasOwnProperty(message.channel.id)) {
                 if (!args[1]) return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, false));
                 if (["causal", "fun"].includes(args[1])) return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, true));
             }
@@ -414,12 +463,12 @@ var commands = {
                 } else return sendChat("You cannot play yourself!");
             }
         } else if (["board", "showboard"].includes(input)) {
-            if (!games.channels[message.channel.id]) return sendChat("There is no active Gomoku game in this channel, $user$!");
+            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is no active Gomoku game in this channel, $user$!");
             if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
             let game = games.channels[message.channel.id];
             return sendChat(new Discord.Attachment(game.buffer, `gomoku_0_${game.players[0]}vs${game.players[1]}.png`));
         } else if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!games.channels[message.channel.id]) return sendChat("There is not a game in this channel for you to quit!");
+            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is not a game in this channel for you to quit!");
             if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
             if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
             else sendChat("$user$ has forfeit the game.");

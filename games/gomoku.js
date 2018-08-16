@@ -40,7 +40,7 @@ exports.startGame = function(channel, player2) {
 }
  
 exports.drawBoard = function(game, end, highlight, row) {
-    let canvas = new Canvas(30 + (25 * game.width), 50 + (25 * game.height));
+    let canvas = new Canvas(30 + (25 * 19), 50 + (25 * 19));
     let ctx = canvas.getContext("2d");
      
     // Function will vary with game
@@ -50,9 +50,9 @@ exports.drawBoard = function(game, end, highlight, row) {
     for (let i = 19; i--;) ctx.fillText(i + 1, 13, (i + 1) * 25 + 21);
     ctx.textAlign = "start";
   
-    for (let y = 0; y < game.height; y++) {
+    for (let y = 0; y < 19; y++) {
         let r = 42.5 + (25 * y);
-        for (let x = 0; x < game.width; x++) {
+        for (let x = 0; x < 19; x++) {
             let c = (x + 1) * 25 + 7.5;
   
             if (game.board[y][x] === false) { // Blank Spot
@@ -168,8 +168,8 @@ exports.takeTurn = function(channel, Move) {
         }
     }
 
-    for (let y = 0; y < game.height; y++) {
-        for (let x = 0; x < game.width; x++) {
+    for (let y = 0; y < 19; y++) {
+        for (let x = 0; x < 19; x++) {
             let a = game.board;
             let b = Math.floor(game.turn);
 
