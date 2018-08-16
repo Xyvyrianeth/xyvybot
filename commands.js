@@ -1,4 +1,4 @@
-var version = "2.27.2.7";
+var version = "2.27.2.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -320,18 +320,18 @@ var commands = {
             if (aliases.guild.connect4.includes(args[1])) sort = "elo5";
             if (aliases.guild.pente.includes(args[1]))    sort = "elo6";
             if (aliases.guild.ninemen.includes(args[1]))  sort = "elo7";
-            let query = `SELECT * FROM profiles ORDER BY ${sort} DESC`;
+            let query = `SELECT * FROM profiles WHERE ${sort.replace(/elo/g, "win")} + ${sort.replace(/elo/g, "los")} > 0 ORDER BY ${sort} DESC, (${sort.replace(/elo/g, "win")}) / (${sort.replace(/elo/g, "win")} + ${sort.replace(/elo/g, "los")}) DESC LIMIT 10`;
             db.query(query, function(err, res) {
                 if (err) sqlError(message, err, query);
                 let top = [];
-                for (let i = 0; i < 10; i++) top.push(res.rows[i]);
+                for (let i = 0; i < res.rows.length; i++) top.push(res.rows[i]);
 
                 let game;
                 if (!args[1]) game = "All Games"
                 else game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][sort[3] - 1];
 
                 let users = [];
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < top.length; i++) {
                     let id = top[i].id;
 
                     let elo;
@@ -341,20 +341,18 @@ var commands = {
                     let winrate;
                     if (!args[1]) winrate = (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7) / (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7 + top[i].los1 + top[i].los2 + top[i].los3 + top[i].los4 + top[i].los5 + top[i].los6 + top[i].los7);
                     else winrate = (top[i]["win" + sort[3]] / (top[i]["win" + sort[3]] + top[i]["los" + sort[3]])).toFixed(2);
-                    if (isNaN(winrate)) winrate = "\u034f \u034f N/A \u034f \u034f";
-                    else {
-                        winrate = (winrate * 100).toFixed(2);
-                        winrate = (winrate < 100 ? winrate < 10 ? "\u034f \u034f " : "\u034f " : '') + winrate;
-                        winrate += "%";
-                    }
+                    winrate = (winrate < 100 ? winrate < 10 ? "\u034f \u034f " : "\u034f " : '') + winrate + "%";
 
                     users.push('`' + (i == 9 ? '' : '\u034f ') + (i + 1) + ')` `' + elo + '` (`' + winrate + '`) <@' + id + '>');
                 }
-                let embed = new Discord.RichEmbed();
-                embed.setTitle("Leaderboard for " + game);
-                embed.addField("RANK) ELO (Winrate) <@User>", users.join('\n'));
-                embed.setColor(new Color().random());
-                sendChat(embed);
+                if (users.length > 0) {
+                    let embed = new Discord.RichEmbed();
+                    embed.addField("Leaderboard for " + game, users.join('\n'));
+                    embed.setColor(new Color().random());
+                    sendChat(embed);
+                } else {
+                    sendChat("Nobody has played this game, yet, so I can't yet give a scoreboard.");
+                }
             });
         }
     },
