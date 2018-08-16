@@ -1,4 +1,4 @@
-var version = "2.27.2.9";
+var version = "2.27.2.10";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -153,7 +153,6 @@ function bot(message) {
             let game = games.channels[message.channel.id];
             let end = img.match(/_[0-2]_/)[0].substring(1, 2);
             if (end === '0') return game.lastDisplay = message;
-            if (end === '2') return delete game;
 
             let result = false;
             if (end === '1') {
@@ -165,7 +164,7 @@ function bot(message) {
                     score: game.score
                 };
             }
-            delete game.channels[message.channel.id];
+            delete games.channels[message.channel.id];
 
             if (result) db.query(`SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`, function(err, res) {
                 if (err) sqlError(message, err, `SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`);
