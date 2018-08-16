@@ -1,4 +1,4 @@
-var version = "2.27.2.10";
+var version = "2.27.2.11";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -213,7 +213,6 @@ function bot(message) {
    
 function newUser(id) {
     let image = backgrounds.ids.random();
-    if (game) elo[game - 1] = value;
     let query = `INSERT INTO profiles (
             id,       color,   title,      titles,             background,  backgrounds,         lorr,     money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7
         ) VALUES (
