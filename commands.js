@@ -1,4 +1,4 @@
-var version = "2.27.2.0";
+var version = "2.27.2.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -229,6 +229,7 @@ function newUser(id) {
 var aliases = {
     guild: {
         // Games
+        "games": ["games"],
         "othello": ["othello"],
         "squares": ["squares"],
         "gomoku": ["gomoku", "gobang", "renju"],
@@ -307,6 +308,8 @@ var commands = {
             embed.addField("info", "A detailed information about how the ELO system works and the entire ranking system in general.");
             embed.addField("games", "A list of all the games that are a part of the ranking system and a few details about them.");
             embed.addField("about", "Some general information about the bot, not necessarily about the games and stuff, but in, like, you know, general.");
+            embed.setColor(new Color().random());
+            sendChat(embed);
         }
         if (["leaderboard", "top"].includes(args[0])) {
             if (!args[1])                                 sort = "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7";
