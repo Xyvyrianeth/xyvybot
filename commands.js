@@ -1,4 +1,4 @@
-var version = "2.27.3.3";
+var version = "2.27.3.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -330,7 +330,8 @@ var commands = {
             if (aliases.guild.connect4.includes(args[1])) sort = "elo5";
             if (aliases.guild.pente.includes(args[1]))    sort = "elo6";
             if (aliases.guild.ninemen.includes(args[1]))  sort = "elo7";
-            let query = `SELECT id, ${sort} AS elo, ${sort.replace(/elo/g, "win")} AS win, ${sort.replace(/elo/g, "los")} AS los FROM profiles WHERE win + los > 0 ORDER BY elo DESC, ((win + 1.9208) / (win + los) - 1.96 * SQRT((win * los) / (win + los) + 0.9604) / (win + los)) / (1 + 3.8416 / (win + los)) DESC, id ASC LIMIT 10`;
+            let ci_lower_bound = "((win + 1.9208) / (win + los) - 1.96 * SQRT((win * los) / (win + los) + 0.9604) / (win + los)) / (1 + 3.8416 / (win + los))".replace(/win/g, '(' + sort.replace(/elo/g, "win") + ')').replace(/los/g, '(' + sort.replace(/elo/g, "los") + ')');
+            let query = `SELECT id, ${sort} AS elo, ${sort.replace(/elo/g, "win")} AS win, ${sort.replace(/elo/g, "los")} AS los FROM profiles WHERE ${sort.replace(/elo/g, "win")} + ${sort.replace(/elo/g, "los")} > 0 ORDER BY ${sort} DESC, ${ci_lower_bound} DESC, id ASC LIMIT 10`;
             return db.query(query, function(err, res) {
                 if (err) sqlError(message, err, query);
                 if (res.rows.length > 0) {
