@@ -1,4 +1,4 @@
-var version = "2.27.3.1";
+var version = "2.27.3.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -229,7 +229,7 @@ function newUser(id) {
         ) VALUES (
             '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,      1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0
         )`;
-    return db.query(query, function(err) {
+    db.query(query, function(err) {
         if (err) return sqlError(message, err, query);
     });
     return { id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lorr: "right", money: 0, elo1: 1000, elo2: 1000, elo3: 1000, elo4: 1000, elo5: 1000, elo6: 1000, elo7: 1000, win1: 0, win2: 0, win3: 0, win4: 0, win5: 0, win6: 0, win7: 0, los1: 0, los2: 0, los3: 0, los4: 0, los5: 0, los6: 0, los7: 0 };
@@ -330,7 +330,7 @@ var commands = {
             if (aliases.guild.connect4.includes(args[1])) sort = "elo5";
             if (aliases.guild.pente.includes(args[1]))    sort = "elo6";
             if (aliases.guild.ninemen.includes(args[1]))  sort = "elo7";
-            let query = `SELECT id, (((${sort.replace(/elo/g, "win")}) + 1.9208) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")})) - 1.96 * Math.sqrt(((${sort.replace(/elo/g, "win")}) * (${sort.replace(/elo/g, "los")})) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")})) + 0.9604) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")}))) / (1 + 3.8416 / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")}))) AS ci_lower_bound FROM profiles WHERE ${sort.replace(/elo/g, "win")} + ${sort.replace(/elo/g, "los")} > 0 ORDER BY ${sort} DESC, ci_lower_bound DESC, id ASC LIMIT 10`;
+            let query = `SELECT id, ${sort} AS elo, ${sort.replace(/elo/g, "win")} AS win, ${sort.replace(/elo/g, "los")} AS los, (((${sort.replace(/elo/g, "win")}) + 1.9208) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")})) - 1.96 * SQRT(((${sort.replace(/elo/g, "win")}) * (${sort.replace(/elo/g, "los")})) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")})) + 0.9604) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")}))) / (1 + 3.8416 / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")}))) AS ci_lower_bound FROM profiles WHERE ${sort.replace(/elo/g, "win")} + ${sort.replace(/elo/g, "los")} > 0 ORDER BY ${sort} DESC, ci_lower_bound DESC, id ASC LIMIT 10`;
             return db.query(query, function(err, res) {
                 if (err) sqlError(message, err, query);
                 if (res.rows.length > 0) {
@@ -346,17 +346,8 @@ var commands = {
                     for (let i = 0; i < top.length; i++) {
                         let id = top[i].id;
 
-                        let elo;
-                        if (!args[1]) elo = top[i].elo1 + top[i].elo2 + top[i].elo3 + top[i].elo4 + top[i].elo5 + top[i].elo6 + top[i].elo7;
-                        else
-                        elo = top[i][sort];
-
-                        let winrate;
-                        if (!args[1]) winrate = ((top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7) / (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7 + top[i].los1 + top[i].los2 + top[i].los3 + top[i].los4 + top[i].los5 + top[i].los6 + top[i].los7) * 100).toFixed(2);
-                        else
-                        winrate = ((top[i]["win" + sort[3]] / (top[i]["win" + sort[3]] + top[i]["los" + sort[3]])) * 100).toFixed(2);
-
-                        winrate = (winrate < 100 ? winrate < 10 ? "\u034f \u034f " : "\u034f " : '') + winrate + "%";
+                        let elo = top[i].elo;
+                        let winrate = (top[i].win / (top[i].win + top[i].los) * 100).toFixed(2) + '%';
 
                         users.push('`' + (i == 9 ? '' : '\u034f ') + (i + 1) + ')` `' + elo + '` (`' + winrate + '`) <@' + id + '>');
                     }
