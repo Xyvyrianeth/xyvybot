@@ -1,4 +1,4 @@
-var version = "2.27.3.5";
+var version = "2.27.3.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -322,6 +322,7 @@ var commands = {
             sendChat(embed);
         }
         if (["leaderboard", "top"].includes(args[0])) {
+            let sort;
             if (!args[1])                                 sort = "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7";
             if (aliases.guild.othello.includes(args[1]))  sort = "elo1";
             if (aliases.guild.squares.includes(args[1]))  sort = "elo2";
@@ -330,7 +331,26 @@ var commands = {
             if (aliases.guild.connect4.includes(args[1])) sort = "elo5";
             if (aliases.guild.pente.includes(args[1]))    sort = "elo6";
             if (aliases.guild.ninemen.includes(args[1]))  sort = "elo7";
-            let query = `SELECT id, ${sort} AS elo, ${sort.replace(/elo/g, "win")} AS win, ${sort.replace(/elo/g, "los")} AS los, ${"((win) * (los)) / ((win) + (los))".replace(/win/g, sort.replace(/elo/g, "win")).replace(/los/g, sort.replace(/elo/g, "los"))} AS square FROM profiles WHERE ${sort.replace(/elo/g, "win")} + ${sort.replace(/elo/g, "los")} > 0 ORDER BY elo DESC, ((win + 1.9208) / (win + los) - 1.96 * SQRT(square + 0.9604) / (win + los)) / (1 + 3.8416 / (win + los)) DESC, id ASC LIMIT 10`;
+            else
+            return sendChat("Unknown game.");
+            
+            let wins = sort.replace(/elo/g, "win");
+            let loss = sort.replace(/elo/g, "los");
+            let query = `
+                SELECT 
+                  id,
+                  sort AS elo,
+                  wins AS win,
+                  loss AS los,
+                  ((wins * loss) / (wins + loss)) + 0.9604 AS square
+                FROM profiles
+                WHERE wins + loss > 0
+                ORDER BY
+                  elo DESC,
+                  ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT(square) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) DESC,
+                  id ASC
+                LIMIT 10
+            `.replace(/sort/g, '(' + sort + ')').replace(/wins/g, '(' + wins + ')').replace(/loss/g, '(' + loss + ')');
             return db.query(query, function(err, res) {
                 if (err) sqlError(message, err, query);
                 if (res.rows.length > 0) {
