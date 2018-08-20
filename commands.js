@@ -1,4 +1,4 @@
-var version = "2.27.3.9";
+var version = "2.27.3.10";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -384,6 +384,8 @@ var commands = {
             let id = message.author.id;
             let gm = "all";
             let games = [].concat(aliases.guild.othello, aliases.guild.squares, aliases.guild.gomoku, aliases.guild.ttt3d, aliases.guild.connect4, aliases.guild.pente, aliases.guild.ninemen);
+            if (!args[1]) {}
+            else
             if (args[1] && !args[2]) {
                 if (RegExp.id1.test(args[1])) id = args[1];
                 else
