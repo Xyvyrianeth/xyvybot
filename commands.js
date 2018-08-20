@@ -1,4 +1,4 @@
-var version = "2.27.3.7";
+var version = "2.27.3.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -322,7 +322,7 @@ var commands = {
             sendChat(embed);
         }
         if (["leaderboard", "top"].includes(args[0])) {
-            let sort;
+            let sort = false;
             if (!args[1])                                 sort = "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7";
             if (aliases.guild.othello.includes(args[1]))  sort = "elo1";
             if (aliases.guild.squares.includes(args[1]))  sort = "elo2";
@@ -331,8 +331,7 @@ var commands = {
             if (aliases.guild.connect4.includes(args[1])) sort = "elo5";
             if (aliases.guild.pente.includes(args[1]))    sort = "elo6";
             if (aliases.guild.ninemen.includes(args[1]))  sort = "elo7";
-            else
-            return sendChat("Unknown game.");
+            if (!sort) return sendChat("Unknown game.");
             
             let wins = sort.replace(/elo/g, "win");
             let loss = sort.replace(/elo/g, "los");
