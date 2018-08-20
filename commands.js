@@ -1,4 +1,4 @@
-var version = "2.27.3.0";
+var version = "2.27.3.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -95,7 +95,6 @@ function command(message) {
     let args = message.content.split(/ {1,}/);
     let cmd = args.shift().replace("x!", '').toLowerCase();
     let input = args.join(' ');
-    let user = a == "user" ? message.channel.recipient : message.channel.guild.members.get(message.author.id);
     let sendChat = function(content, options) {
         if (typeof content == "string") content = content.replace(/\$user\$/g, `<@${message.author.id}>`);
         if (options == undefined) message.channel.send(content);
@@ -331,36 +330,36 @@ var commands = {
             if (aliases.guild.connect4.includes(args[1])) sort = "elo5";
             if (aliases.guild.pente.includes(args[1]))    sort = "elo6";
             if (aliases.guild.ninemen.includes(args[1]))  sort = "elo7";
-            let query = `SELECT * FROM profiles WHERE ${sort.replace(/elo/g, "win")} + ${sort.replace(/elo/g, "los")} > 0 ORDER BY ${sort} DESC, (((${sort.replace(/elo/g, "win")}) + 1.9208) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")})) - 1.96 * Math.sqrt(((${sort.replace(/elo/g, "win")}) * (${sort.replace(/elo/g, "los")})) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")})) + 0.9604) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")}))) / (1 + 3.8416 / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")}))) DESC, id ASC LIMIT 10`;
+            let query = `SELECT id, (((${sort.replace(/elo/g, "win")}) + 1.9208) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")})) - 1.96 * Math.sqrt(((${sort.replace(/elo/g, "win")}) * (${sort.replace(/elo/g, "los")})) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")})) + 0.9604) / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")}))) / (1 + 3.8416 / ((${sort.replace(/elo/g, "win")}) + (${sort.replace(/elo/g, "los")}))) AS ci_lower_bound FROM profiles WHERE ${sort.replace(/elo/g, "win")} + ${sort.replace(/elo/g, "los")} > 0 ORDER BY ${sort} DESC, ci_lower_bound DESC, id ASC LIMIT 10`;
             return db.query(query, function(err, res) {
                 if (err) sqlError(message, err, query);
-                let top = [];
-                for (let i = 0; i < res.rows.length; i++) top.push(res.rows[i]);
+                if (res.rows.length > 0) {
+                    let top = [];
+                    for (let i = 0; i < res.rows.length; i++) top.push(res.rows[i]);
 
-                let game;
-                if (!args[1]) game = "All Games"
-                else
-                game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][sort[3] - 1];
-
-                let users = [];
-                for (let i = 0; i < top.length; i++) {
-                    let id = top[i].id;
-
-                    let elo;
-                    if (!args[1]) elo = top[i].elo1 + top[i].elo2 + top[i].elo3 + top[i].elo4 + top[i].elo5 + top[i].elo6 + top[i].elo7;
+                    let game;
+                    if (!args[1]) game = "All Games"
                     else
-                    elo = top[i][sort];
+                    game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][sort[3] - 1];
 
-                    let winrate;
-                    if (!args[1]) winrate = ((top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7) / (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7 + top[i].los1 + top[i].los2 + top[i].los3 + top[i].los4 + top[i].los5 + top[i].los6 + top[i].los7) * 100).toFixed(2);
-                    else
-                    winrate = ((top[i]["win" + sort[3]] / (top[i]["win" + sort[3]] + top[i]["los" + sort[3]])) * 100).toFixed(2);
+                    let users = [];
+                    for (let i = 0; i < top.length; i++) {
+                        let id = top[i].id;
 
-                    winrate = (winrate < 100 ? winrate < 10 ? "\u034f \u034f " : "\u034f " : '') + winrate + "%";
+                        let elo;
+                        if (!args[1]) elo = top[i].elo1 + top[i].elo2 + top[i].elo3 + top[i].elo4 + top[i].elo5 + top[i].elo6 + top[i].elo7;
+                        else
+                        elo = top[i][sort];
 
-                    users.push('`' + (i == 9 ? '' : '\u034f ') + (i + 1) + ')` `' + elo + '` (`' + winrate + '`) <@' + id + '>');
-                }
-                if (users.length > 0) {
+                        let winrate;
+                        if (!args[1]) winrate = ((top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7) / (top[i].win1 + top[i].win2 + top[i].win3 + top[i].win4 + top[i].win5 + top[i].win6 + top[i].win7 + top[i].los1 + top[i].los2 + top[i].los3 + top[i].los4 + top[i].los5 + top[i].los6 + top[i].los7) * 100).toFixed(2);
+                        else
+                        winrate = ((top[i]["win" + sort[3]] / (top[i]["win" + sort[3]] + top[i]["los" + sort[3]])) * 100).toFixed(2);
+
+                        winrate = (winrate < 100 ? winrate < 10 ? "\u034f \u034f " : "\u034f " : '') + winrate + "%";
+
+                        users.push('`' + (i == 9 ? '' : '\u034f ') + (i + 1) + ')` `' + elo + '` (`' + winrate + '`) <@' + id + '>');
+                    }
                     let embed = new Discord.RichEmbed();
                     embed.addField("Leaderboard for " + game, users.join('\n'));
                     embed.setColor(new Color().random());
@@ -447,7 +446,7 @@ var commands = {
             embed.setDescription("I, Xyvyrianeth (I'm speaking through this bot), am a big fan of [abstract strategy games](https://en.wikipedia.org/wiki/Abstract_strategy_game). I like them so much I tried to create my own competetive social network in Discord that revolves around a select few of these types of games.");
             embed.addField("\u034f", "Like every network of competition, there needs to be a way to evaluate who's better than who. Most PvP games, like League of Legends, have a score called attached to each player called ELO. ELO is most likely a number of some sort, and the method in which players can gain or lose ELO differs for each game. In some games, you gain ELO exclusively by winning and lose it exclusively from losing. In other games, ELO gained or lossed is based on the player's personal evaluation in a given match, and winning or losing only somewhat or doesn't affect it.");
             embed.addField("\u034f", "For my bot, I used a system I heard from a friend (I don't know if he made it up or heard it from somewhere else or not, but credit goes to you, WholeWheatThins). Basically, everyone starts out with an ELO of 1000. After a game ends, the loser loses 10% of their ELO (rounded up) and it goes to the winner.\nIf the loser of a game had 1000 ELO, they lose 100, which goes to the winner.\nIf the loser had 1500 ELO, they lose 150.\nIf 5 ELO, they lose 1 (10% of 5 rounded up is 1. You stop losing ELO from losing when you have no ELO left to lose).\nWith this system, you better benefit winning against people who are supposedly better than you are. You don't gain much from beating people who aren't very good, and that applies to both ELO and your own skill of the game you suck at because you only play against other people who suck, so git gud.");
-            embed.addField("\u034f", "ELOs can be sorted either by game or totally, which is average ELO for all games (some people might only care about Othello). Everyone has their own ELO, but those numbers can sometimes end up being the same for multiple users, so instead of sorting by alphabetical order next, we'll use the [Lower bound of Wilson score confidence interval for a Bernoulli parameter](https://www.evanmiller.org/how-not-to-sort-by-average-rating.html): A user with 500 wins and 500 losses will score above someone with 5 wins and 1 loss, and the user with 5 wins and 1 loss will score above someone with 500 wins and 1000 losses. It's the perfect balance between `wins / total games played` and `wins - losses`.\nIf two users have the same ELO *and* the same number of wins and losses, *then* we'll sort them by ID, I guess.");
+            embed.addField("\u034f", "ELOs can be sorted either by game or totally, which is average ELO for all games (some people might only care about Othello). Everyone has their own ELO, but those numbers can sometimes end up being the same for multiple users, so instead of sorting by alphabetical order next, we'll use the [Lower bound of Wilson score confidence interval for a Bernoulli parameter](https://www.evanmiller.org/how-not-to-sort-by-average-rating.html): A user with 500 wins and 500 losses will score above someone with 5 wins and 1 loss, and the user with 5 wins and 1 loss will score above someone with 500 wins and 1000 losses. It's the perfect balance between net positive results (`wins - losses`) and average results (`wins / (wins + losses)`).\nIf two users have the same ELO *and* the same number of wins and losses, *then* we'll sort them by ID, I guess.");
             embed.addField("\u034f", "For now, these scores and such won't mean anything other than a way to sort out the best. Until I think enough people are playing games on my bot, I won't be forming any sort of tournaments, and ELOs will never be reset. Get more people using this bot and I might change that.");
             embed.setColor(new Color().random());
             return sendChat(embed);
@@ -1083,6 +1082,7 @@ var commands = {
     },
 
     "kick": function(cmd, args, input, message, sendChat) {
+        let user = message.channel.guild.members.get(message.author.id);
         if (!user.hasPermission("KICK_MEMBERS")) return;
         if (!input) return sendChat("**Proper Usage**: `x!kick <@user>`");
         if (!RE.ping.test(args[0]) || !RE.id2.test(args[0])) return sendChat("Invalid user mention, try again.");
@@ -1094,6 +1094,7 @@ var commands = {
     },
 
     "ban": function(cmd, args, input, message, sendChat) {
+        let user = message.channel.guild.members.get(message.author.id);
         if (user.hasPermission("BAN_MEMBERS")) return;
         if (!input) return sendChat("**Proper Usage**: `x!ban <@user>`");
         if (!RE.ping.test(args[0]) || !RE.id2.test(args[0])) return sendChat("Invalid user mention, try again.");
@@ -1463,7 +1464,7 @@ var commands = {
     },
    
     "pg": function(cmd, args, input, message, sendChat) {
-        if (!admins.includes(user.user.id)) return;
+        if (!admins.includes(message.author.id)) return;
         if (input.startsWith("```sql\n") && input.endsWith("```")) {
             return db.query(input.substring(7, input.length - 3), function(err, res) {
                 if (err) return sendChat("```" + err + "```");
