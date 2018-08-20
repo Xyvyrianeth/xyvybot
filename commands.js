@@ -1,4 +1,4 @@
-var version = "2.27.3.6";
+var version = "2.27.3.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -342,12 +342,11 @@ var commands = {
                   sort AS elo,
                   wins AS win,
                   loss AS los,
-                  ((wins * loss) / (wins + loss)) + 0.9604 AS square
                 FROM profiles
                 WHERE wins + loss > 0
                 ORDER BY
                   elo DESC,
-                  ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT(square) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) DESC,
+                  ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) DESC,
                   id ASC
                 LIMIT 10
             `.replace(/sort/g, '(' + sort + ')').replace(/wins/g, '(' + wins + ')').replace(/loss/g, '(' + loss + ')');
