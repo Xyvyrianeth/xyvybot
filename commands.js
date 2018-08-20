@@ -1,4 +1,4 @@
-var version = "2.27.3.8";
+var version = "2.27.3.9";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -340,7 +340,7 @@ var commands = {
                   id,
                   sort AS elo,
                   wins AS win,
-                  loss AS los,
+                  loss AS los
                 FROM profiles
                 WHERE wins + loss > 0
                 ORDER BY
