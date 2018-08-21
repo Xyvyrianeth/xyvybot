@@ -1,4 +1,4 @@
-var version = "2.28.1.0";
+var version = "2.28.1.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -79,12 +79,14 @@ function botError(message, err) {
 }
 function sqlError(message, err, res) {
     message.channel.send("```\nWhoops! It appears there was some sort of error with the database! Not sure if it's my fault or not, but Xyvy will look into it!```");
+    let query = res.replace(/`/g, "\\`").length > 1500 ? "Check console" : res.replace(/`/g, "\\`");
+    if (query == "Check console") console.log(res);
     return client.guilds.get("399327996076621825").channels.get("478371618620571648").send(
         `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
         `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
         `\`\`\`\n` +
         `Query:\`\`\`\`\`\`sql\n` +
-        `${res.replace(/`/g, "\\\`")}\`\`\`\n` +
+        `${query}\`\`\`\n` +
         `\`\`\`\n` +
         `${err}\`\`\``
     );
@@ -376,6 +378,7 @@ var commands = {
                 `    AND`,
                 `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) > ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) FROM profiles WHERE id = '${message.author.id}');`
             ].join('\n').replace(/elos/g, '(' + elos + ')').replace(/wins/g, '(' + wins + ')').replace(/loss/g, '(' + loss + ')');
+            console.log(`${elos}\n${wins}\n${loss}\n${query}`);
             return db.query(query, function(err, res) {
                 if (err) return sqlError(message, err, query);
                 if (!res || res.length !== 3) return sqlError(message, "No res", query);
