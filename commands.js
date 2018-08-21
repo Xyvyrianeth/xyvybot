@@ -1,4 +1,4 @@
-var version = "2.28.1.3";
+var version = "2.28.1.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -393,13 +393,20 @@ var commands = {
 
                     let users = [];
                     for (let i = 0; i < top.length; i++) {
+                        if (i == 0) top[i].place = i + 1;
+                        else
+                        if (top[i].elo == top[i - 1].elo && top[i].ci_lower_bound == top[i - 1].ci_lower_bound) top[i].place = top[i - 1].place;
+                        else
+                        top[i].place = i + 1;
+
+                        let place = top[i].place;
                         let id = top[i].id;
                         let elo = top[i].elo;
                         let win = top[i].win;
                         let los = top[i].los;
                         let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
 
-                        users.push('`' + '\u034f '.repeat(5 - String(i + 1).length) + (i + 1) + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) <@" + id + ">");
+                        users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) <@" + id + ">");
                     }
                     if (res[1].rows.length != 0) {
                         users.push('');
@@ -412,7 +419,7 @@ var commands = {
                         let los = user.los;
                         let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
 
-                        users.push('`' + '\u034f '.repeat(5 - String(i + 1).length) + (i + 1) + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) <@" + id + ">");
+                        users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) <@" + id + ">");
                     }
                     let embed = new Discord.RichEmbed();
                     embed.setTitle("Leaderboard for " + game);
