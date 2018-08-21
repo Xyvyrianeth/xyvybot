@@ -1,4 +1,4 @@
-var version = "2.28.1.4";
+var version = "2.28.1.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -378,7 +378,6 @@ var commands = {
                 `    AND`,
                 `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) > ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) FROM profiles WHERE id = '${message.author.id}');`
             ].join('\n').replace(/elos/g, elos).replace(/wins/g, wins).replace(/loss/g, loss);
-            console.log(`${elos}\n${wins}\n${loss}\n${query}`);
             return db.query(query, function(err, res) {
                 if (err) return sqlError(message, err, query);
                 if (!res || res.length !== 3) return sqlError(message, "No res", query);
