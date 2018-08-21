@@ -22,7 +22,7 @@ function table(res) {
                 for (let x = 0; x < a.length; x++) {
                     let f = [];
                     for (let y = 0; y < a[x].length; y++) {
-                        f.push(a[x][y] + ' '.repeat(c[y] - JSON.stringify(a[x][y]).length));
+                        f.push(a[x][y] + ' '.repeat(c[y] - a[x][y].length));
                     }
                     e += f.join(' | ') + '\n';
                     if (x == 0) e += '-'.repeat(f.join(' | ').length) + '\n';
@@ -55,7 +55,7 @@ function table(res) {
             for (let x = 0; x < a.length; x++) {
                 let f = [];
                 for (let y = 0; y < a[x].length; y++) {
-                    f.push(a[x][y] + ' '.repeat(c[y] - JSON.stringify(a[x][y]).length));
+                    f.push(a[x][y] + ' '.repeat(c[y] - a[x][y].length));
                 }
                 e += f.join(' | ') + '\n';
                 if (x == 0) e += '-'.repeat(f.join(' | ').length) + '\n';
