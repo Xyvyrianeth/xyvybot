@@ -1,4 +1,4 @@
-var version = "2.28.1.7";
+var version = "2.28.1.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -405,7 +405,7 @@ var commands = {
                         let los = top[i].los;
                         let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
 
-                        users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) <@" + id + ">");
+                        users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) | <@" + id + ">");
                     }
                     if (res[1].rows.length != 0) {
                         users.push('');
@@ -418,11 +418,11 @@ var commands = {
                         let los = user.los;
                         let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
 
-                        users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) <@" + id + ">");
+                        users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) | <@" + id + ">");
                     }
                     let embed = new Discord.RichEmbed();
                     embed.setTitle("Leaderboard for " + game);
-                    embed.setDescription("__`\u034f RANK \u034f` | `\u034f ELO \u034f` | `\u034f W \u034f` / `\u034f L \u034f` (`\u034f WIN % \u034f`) <@USER>__\n" + users.join('\n'));
+                    embed.setDescription("__`\u034f RANK \u034f` | `\u034f ELO \u034f` | `\u034f W \u034f` / `\u034f L \u034f` (`WINRATE`) | <@USER>__\n" + users.join('\n'));
                     embed.setColor(new Color().random());
                     sendChat(embed);
                 }
