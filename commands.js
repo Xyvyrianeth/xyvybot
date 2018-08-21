@@ -1,4 +1,4 @@
-var version = "2.28.0.3";
+var version = "2.28.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -323,111 +323,104 @@ var commands = {
             sendChat(embed);
         }
         if (["leaderboard", "top"].includes(args[0])) {
-            let sort = false;
-            if (!args[1])                                 sort = "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7";
-            if (aliases.guild.othello.includes(args[1]))  sort = "elo1";
-            if (aliases.guild.squares.includes(args[1]))  sort = "elo2";
-            if (aliases.guild.gomoku.includes(args[1]))   sort = "elo3";
-            if (aliases.guild.ttt3d.includes(args[1]))    sort = "elo4";
-            if (aliases.guild.connect4.includes(args[1])) sort = "elo5";
-            if (aliases.guild.pente.includes(args[1]))    sort = "elo6";
-            if (aliases.guild.ninemen.includes(args[1]))  sort = "elo7";
-            if (!sort) return sendChat("Unknown game.");
+            let elos = false;
+            if (!args[1])                                 elos = "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7";
+            if (aliases.guild.othello.includes(args[1]))  elos = "elo1";
+            if (aliases.guild.squares.includes(args[1]))  elos = "elo2";
+            if (aliases.guild.gomoku.includes(args[1]))   elos = "elo3";
+            if (aliases.guild.ttt3d.includes(args[1]))    elos = "elo4";
+            if (aliases.guild.connect4.includes(args[1])) elos = "elo5";
+            if (aliases.guild.pente.includes(args[1]))    elos = "elo6";
+            if (aliases.guild.ninemen.includes(args[1]))  elos = "elo7";
+            if (!elos) return sendChat("Unknown game.");
             
-let wins = sort.replace(/elo/g, "win");
-let loss = sort.replace(/elo/g, "los");
-let lowB = "((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))";
-let query = [
-    `SELECT`,
-    `    id,`,
-    `    sort AS elo,`,
-    `    wins AS win,`,
-    `    loss AS los,`,
-    `    ${lowB} AS ci_lower_bound,`,
-    `    (SELECT CAST(COUNT(id) - 1 AS int)`,
-    `        FROM profiles`,
-    `        WHERE`,
-    `            1 = ANY (SELECT COUNT(id) FROM profiles WHERE id = ${message.author.id} AND wins + loss > 0)`,
-    `            AND`,
-    `            wins + loss > 0`,
-    `            AND`,
-    `            sort >= ANY (SELECT sort FROM profiles WHERE id = ${message.author.id})`,
-    `            AND`,
-    `            ${lowB} >= ANY (SELECT ${lowB} FROM profiles WHERE id = ${message.author.id})) AS place"`,
-    `FROM profiles`,
-    `WHERE wins + loss > 0`,
-    `ORDER BY`,
-    `    elo DESC,`,
-    `    ci_lower_bound DESC,`,
-    `    id ASC`,
-    `LIMIT 10;`,
-    `SELECT`,
-    `    id,`,
-    `    sort AS elo,`,
-    `    wins AS win,`,
-    `    loss AS los,`,
-    `    ${lowB} AS ci_lower_bound,`,
-    `    (SELECT CAST(COUNT(id) - 1 AS int)`,
-    `        FROM profiles`,
-    `        WHERE`,
-    `            1 = ANY (SELECT COUNT(id) FROM profiles WHERE id = ${message.author.id} AND wins + loss > 0)`,
-    `            AND`,
-    `            wins + loss > 0`,
-    `            AND`,
-    `            sort >= ANY (SELECT sort FROM profiles WHERE id = ${message.author.id})`,
-    `            AND`,
-    `            ${lowB} >= ANY (SELECT ${lowB} FROM profiles WHERE id = ${message.author.id})) AS place"`,
-    `FROM profiles`,
-    `WHERE`,
-    `    id = '${message.author.id}'`,
-    `    AND`,
-    `    wins + loss > 0;`
-].join('\n').replace(/sort/g, '(' + sort + ')').replace(/wins/g, '(' + wins + ')').replace(/loss/g, '(' + loss + ')');
-return db.query(query, function(err, res) {
-    if (err) return sqlError(message, err, query);
-    if (!res) return sqlError(message, "No res", query);
-    if (res[0].rows.length > 0) {
-        let top = [];
-        for (let i = 0; i < res[0].rows.length; i++) top.push(res[0].rows[i]);
+            let wins = elos.replace(/elo/g, "win");
+            let loss = elos.replace(/elo/g, "los");
+            let query = [
+                `SELECT`,
+                `    id,`,
+                `    elos AS elo,`,
+                `    wins AS win,`,
+                `    loss AS los,`,
+                `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound`,
+                `FROM profiles`,
+                `WHERE wins + loss > 0`,
+                `ORDER BY`,
+                `    elo DESC,`,
+                `    ci_lower_bound DESC,`,
+                `    id ASC`,
+                `LIMIT 10;`,
+                ``,
+                `SELECT`,
+                `    id,`,
+                `    elos AS elo,`,
+                `    wins AS wins,`,
+                `    loss AS loss,`,
+                `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound`,
+                `FROM profiles`,
+                `WHERE`,
+                `    id = '${message.author.id}'`,
+                `    AND`,
+                `    wins + loss > 0;`,
+                ``,
+                `SELECT CAST(COUNT(id) + 1 AS int) AS place`,
+                `FROM profiles`,
+                `WHERE`,
+                `    0 < ANY (SELECT wins + loss FROM profiles WHERE id = '${message.author.id}')`,
+                `    AND`,
+                `    id != '${message.author.id}'`,
+                `    AND`,
+                `    wins + loss > 0`,
+                `    AND`,
+                `    elos >= ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}')`,
+                `    AND`,
+                `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) > ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) FROM profiles WHERE id = '${message.author.id}');`
+            ].join('\n').replace(/elos/g, '(' + elos + ')').replace(/wins/g, '(' + wins + ')').replace(/loss/g, '(' + loss + ')');
+            return db.query(query, function(err, res) {
+                if (err) return sqlError(message, err, query);
+                if (!res || res.length !== 3) return sqlError(message, "No res", query);
+                if (res[0].rows.length > 0) {
+                    let top = [];
+                    for (let i = 0; i < res[0].rows.length; i++) top.push(res[0].rows[i]);
 
-        let game;
-        if (!args[1]) game = "All Games"
-        else
-        game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][sort[3] - 1];
+                    let game;
+                    if (!args[1]) game = "All Games"
+                    else
+                    game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][sort[3] - 1];
 
-        let users = [];
-        for (let i = 0; i < top.length; i++) {
-            let id = top[i].id;
-            let place = top[i].place;
-            let elo = top[i].elo;
-            let win = top[i].win;
-            let los = top[i].los;
-            let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
+                    let users = [];
+                    for (let i = 0; i < top.length; i++) {
+                        let id = top[i].id;
+                        let elo = top[i].elo;
+                        let win = top[i].win;
+                        let los = top[i].los;
+                        let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
 
-            users.push('`' + place + ' \u034f'.repeat(5 - String(place).length) + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`)");
-        }
-        if (res.length == 2 && res[1].rows.length == 1) {
-            let user = res[1].rows;
-            let id = user.id;
-            let place = user.place
-            let elo = user.elo;
-            let win = user.win;
-            let los = user.los;
-            let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
+                        users.push('`' + '\u034f '.repeat(5 - String(i + 1).length) + (i + 1) + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`)");
+                    }
+                    if (res[1].rows.length != 0) {
+                        users.push('');
+                        let user = res[1].rows[0];
+                        let place = res[2].rows[0].place;
+                        let id = user.id;
+                        let elo = user.elo;
+                        let win = user.win;
+                        let los = user.los;
+                        let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
 
-            users.push('`' + place + ' \u034f'.repeat(5 - String(place).length) + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`)");
-        }
-        let embed = new Discord.RichEmbed();
-        embed.setTitle("Leaderboard for " + game);
-        embed.setDescription("__` RANK `__ | __`\u034f ELO \u034f`__ | __`\u034f W \u034f`__ / __`\u034f L \u034f`__ (__`\u034f WIN % \u034f`__)\n" + users.join('\n'));
-        embed.setColor(new Color().random());
-        sendChat(embed);
-    }
-    else
-    {
-        sendChat("Nobody has played this game, yet, so I can't yet give a scoreboard.");
-    }
-});
+                        users.push('`' + place + ' \u034f'.repeat(5 - String(place).length) + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`)");
+                    }
+                    let embed = new Discord.RichEmbed();
+                    embed.setTitle("Leaderboard for " + game);
+                    embed.setDescription("__` RANK `__ | __`\u034f ELO \u034f`__ | __`\u034f W \u034f`__ / __`\u034f L \u034f`__ (__`\u034f WIN % \u034f`__)\n" + users.join('\n'));
+                    embed.setColor(new Color().random());
+                    sendChat(embed);
+                }
+                else
+                {
+                    sendChat("Nobody has played this game, yet, so I can't yet give a scoreboard.");
+                }
+            });
         }
         if (["stats", "statistics"].includes(args[0])) {
             let id = message.author.id;
