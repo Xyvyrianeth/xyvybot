@@ -1,4 +1,4 @@
-var version = "2.27.3.12";
+var version = "2.28.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -12,6 +12,7 @@ var Profile = require("/app/stuffs/profile.js");
 var { Color } = require("/app/stuffs/color.js");
 var titles = require("/app/stuffs/titles.json");
 var backgrounds = require("/app/stuffs/images.json");
+var { table } = require("/app/stuffs/table.js");
 
 var admins = "357700219825160194".split(' ');
 var RE = {
@@ -83,7 +84,7 @@ function sqlError(message, err, res) {
         `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
         `\`\`\`\n` +
         `Query:\`\`\`\`\`\`sql\n` +
-        `${res.replace(/`/g, "\\\`").replace(/ {4,}/g, "    ")}\`\`\`\n` +
+        `${res.replace(/`/g, "\\\`")}\`\`\`\n` +
         `\`\`\`\n` +
         `${err}\`\`\``
     );
@@ -333,82 +334,100 @@ var commands = {
             if (aliases.guild.ninemen.includes(args[1]))  sort = "elo7";
             if (!sort) return sendChat("Unknown game.");
             
-            let wins = sort.replace(/elo/g, "win");
-            let loss = sort.replace(/elo/g, "los");
-            let query = `
-                SELECT 
-                    id,
-                    sort AS elo,
-                    wins AS win,
-                    loss AS los,
-                    LowerBound(wins, loss) AS ci_lower_bound,
-                    Place(id) AS place
-                FROM profiles
-                WHERE wins + loss > 0
-                ORDER BY
-                    elo DESC,
-                    ci_lower_bound DESC,
-                    id ASC
-                LIMIT 10;
+let wins = sort.replace(/elo/g, "win");
+let loss = sort.replace(/elo/g, "los");
+let lowB = "((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))";
+let query = [
+    `SELECT`,
+    `    id,`,
+    `    sort AS elo,`,
+    `    wins AS win,`,
+    `    loss AS los,`,
+    `    ${lowB} AS ci_lower_bound,`,
+    `    (SELECT CAST(COUNT(id) - 1 AS int)`,
+    `        FROM profiles`,
+    `        WHERE`,
+    `            1 = ANY (SELECT COUNT(id) FROM profiles WHERE id = ${message.author.id} AND wins + loss > 0)`,
+    `            AND`,
+    `            wins + loss > 0`,
+    `            AND`,
+    `            sort >= ANY (SELECT sort FROM profiles WHERE id = ${message.author.id})`,
+    `            AND`,
+    `            ${lowB} >= ANY (SELECT ${lowB} FROM profiles WHERE id = ${message.author.id})) AS place"`,
+    `FROM profiles`,
+    `WHERE wins + loss > 0`,
+    `ORDER BY`,
+    `    elo DESC,`,
+    `    ci_lower_bound DESC,`,
+    `    id ASC`,
+    `LIMIT 10;`,
+    `SELECT`,
+    `    id,`,
+    `    sort AS elo,`,
+    `    wins AS win,`,
+    `    loss AS los,`,
+    `    ${lowB} AS ci_lower_bound,`,
+    `    (SELECT CAST(COUNT(id) - 1 AS int)`,
+    `        FROM profiles`,
+    `        WHERE`,
+    `            1 = ANY (SELECT COUNT(id) FROM profiles WHERE id = ${message.author.id} AND wins + loss > 0)`,
+    `            AND`,
+    `            wins + loss > 0`,
+    `            AND`,
+    `            sort >= ANY (SELECT sort FROM profiles WHERE id = ${message.author.id})`,
+    `            AND`,
+    `            ${lowB} >= ANY (SELECT ${lowB} FROM profiles WHERE id = ${message.author.id})) AS place"`,
+    `FROM profiles`,
+    `WHERE`,
+    `    id = '${message.author.id}'`,
+    `    AND`,
+    `    wins + loss > 0;`
+].join('\n').replace(/sort/g, '(' + sort + ')').replace(/wins/g, '(' + wins + ')').replace(/loss/g, '(' + loss + ')');
+return db.query(query, function(err, res) {
+    if (err) return sqlError(message, err, query);
+    if (!res) return sqlError(message, "No res", query);
+    if (res[0].rows.length > 0) {
+        let top = [];
+        for (let i = 0; i < res[0].rows.length; i++) top.push(res[0].rows[i]);
 
-                SELECT
-                    id,
-                    sort AS elo,
-                    wins AS win,
-                    loss AS los,
-                    LowerBounds(wins, loss) AS ci_lower_bound,
-                    Place(id) AS place
-                FROM profiles
-                WHERE
-                    id = '${message.author.id}'
-                    AND
-                    wins + loss > 0;
-            `.replace(/sort/g, '(' + sort + ')').replace(/wins/g, '(' + wins + ')').replace(/loss/g, '(' + loss + ')');
-            return db.query(query, function(err, res) {
-                if (err) sqlError(message, err, query);
-                if (!res) sqlError(message, "No res", query);
-                if (res[0].rows.length > 0) {
-                    let top = [];
-                    for (let i = 0; i < res[0].rows.length; i++) top.push(res[0].rows[i]);
+        let game;
+        if (!args[1]) game = "All Games"
+        else
+        game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][sort[3] - 1];
 
-                    let game;
-                    if (!args[1]) game = "All Games"
-                    else
-                    game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][sort[3] - 1];
+        let users = [];
+        for (let i = 0; i < top.length; i++) {
+            let id = top[i].id;
+            let place = top[i].place;
+            let elo = top[i].elo;
+            let win = top[i].win;
+            let los = top[i].los;
+            let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
 
-                    let users = [];
-                    for (let i = 0; i < top.length; i++) {
-                        let id = top[i].id;
-                        let place = top[i].place;
-                        let elo = top[i].elo;
-                        let win = top[i].win;
-                        let los = top[i].los;
-                        let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
+            users.push('`' + place + ' \u034f'.repeat(5 - String(place).length) + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`)");
+        }
+        if (res.length == 2 && res[1].rows.length == 1) {
+            let user = res[1].rows;
+            let id = user.id;
+            let place = user.place
+            let elo = user.elo;
+            let win = user.win;
+            let los = user.los;
+            let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
 
-                        users.push('`' + place + ' \u034f'.repeat(5 - String(place).length) + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`)");
-                    }
-                    if (res.length == 2 && res[1].rows.length == 1) {
-                        let user = res[1].rows;
-                        let id = user.id;
-                        let place = user.place
-                        let elo = user.elo;
-                        let win = user.win;
-                        let los = user.los;
-                        let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
-
-                        users.push('`' + place + ' \u034f'.repeat(5 - String(place).length) + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`)");
-                    }
-                    let embed = new Discord.RichEmbed();
-                    embed.setTitle("Leaderboard for " + game);
-                    embed.setDescription("__` RANK `__ | __`\u034f ELO \u034f`__ | __`\u034f W \u034f`__ / __`\u034f L \u034f`__ (__`\u034f WIN % \u034f`__)\n" + users.join('\n'));
-                    embed.setColor(new Color().random());
-                    sendChat(embed);
-                }
-                else
-                {
-                    sendChat("Nobody has played this game, yet, so I can't yet give a scoreboard.");
-                }
-            });
+            users.push('`' + place + ' \u034f'.repeat(5 - String(place).length) + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`)");
+        }
+        let embed = new Discord.RichEmbed();
+        embed.setTitle("Leaderboard for " + game);
+        embed.setDescription("__` RANK `__ | __`\u034f ELO \u034f`__ | __`\u034f W \u034f`__ / __`\u034f L \u034f`__ (__`\u034f WIN % \u034f`__)\n" + users.join('\n'));
+        embed.setColor(new Color().random());
+        sendChat(embed);
+    }
+    else
+    {
+        sendChat("Nobody has played this game, yet, so I can't yet give a scoreboard.");
+    }
+});
         }
         if (["stats", "statistics"].includes(args[0])) {
             let id = message.author.id;
@@ -1509,7 +1528,7 @@ var commands = {
         if (input.startsWith("```sql\n") && input.endsWith("```")) {
             return db.query(input.substring(7, input.length - 3), function(err, res) {
                 if (err) return sendChat("```" + err + "```");
-                return sendChat("```js\n" + JSON.stringify(res) + "```");
+                return sendChat(table(res));
             });
         }
     },
