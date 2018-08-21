@@ -1,4 +1,4 @@
-var version = "2.28.1.1";
+var version = "2.28.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -344,7 +344,7 @@ var commands = {
                 `    elos AS elo,`,
                 `    wins AS win,`,
                 `    loss AS los,`,
-                `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound`,
+                `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound`,
                 `FROM profiles`,
                 `WHERE wins + loss > 0`,
                 `ORDER BY`,
@@ -356,9 +356,9 @@ var commands = {
                 `SELECT`,
                 `    id,`,
                 `    elos AS elo,`,
-                `    wins AS wins,`,
-                `    loss AS loss,`,
-                `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound`,
+                `    wins AS win,`,
+                `    loss AS los,`,
+                `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound`,
                 `FROM profiles`,
                 `WHERE`,
                 `    id = '${message.author.id}'`,
@@ -376,8 +376,8 @@ var commands = {
                 `    AND`,
                 `    elos >= ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}')`,
                 `    AND`,
-                `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) > ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc(wins * loss, 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) FROM profiles WHERE id = '${message.author.id}');`
-            ].join('\n').replace(/elos/g, '(' + elos + ')').replace(/wins/g, '(' + wins + ')').replace(/loss/g, '(' + loss + ')');
+                `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) > ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) FROM profiles WHERE id = '${message.author.id}');`
+            ].join('\n').replace(/elos/g, elos).replace(/wins/g, wins).replace(/loss/g, loss);
             console.log(`${elos}\n${wins}\n${loss}\n${query}`);
             return db.query(query, function(err, res) {
                 if (err) return sqlError(message, err, query);
