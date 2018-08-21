@@ -3,7 +3,7 @@ function table(res) {
     let tables = [];
     if (res.length > 1) {
         for (let i = 0; i < res.length; i++) {
-            let e = '```\nQUERY ' + (i + 1) + ': ' + res[i].command + '\n' + '-'.repeat(8 + String(i + 1).length + res[i].command.length) + '\n';
+            let e = '```\nQUERY ' + (i + 1) + ': ' + res[i].command + '\n' + '-'.repeat(8 + JSON.stringify(i + 1).length + res[i].command.length) + '\n';
             if (res[i].command == "SELECT") {
                 let a = [Object.keys(res[i].rows[0])]; // Values
                 let b = a[0];
@@ -14,15 +14,15 @@ function table(res) {
                 for (let x = 0; x < res[i].rows.length; x++) {
                     let d = [];
                     for (let y = 0; y < b.length; y++) {
-                        d.push(res[i].rows[x][b[y]]);
-                        if (String(res[i].rows[x][b[y]]).length > c[y]) c[y] = String(res[i].rows[x][b[y]]).length;
+                        d.push(JSON.stringify(res[i].rows[x][b[y]]));
+                        if (JSON.stringify(res[i].rows[x][b[y]]).length > c[y]) c[y] = JSON.stringify(res[i].rows[x][b[y]]).length;
                     }
                     a.push(d);
                 }
                 for (let x = 0; x < a.length; x++) {
                     let f = [];
                     for (let y = 0; y < a[x].length; y++) {
-                        f.push(a[x][y] + ' '.repeat(c[y] - String(a[x][y]).length));
+                        f.push(a[x][y] + ' '.repeat(c[y] - JSON.stringify(a[x][y]).length));
                     }
                     e += f.join(' | ') + '\n';
                     if (x == 0) e += '-'.repeat(f.join(' | ').length) + '\n';
@@ -47,15 +47,15 @@ function table(res) {
             for (let x = 0; x < res.rows.length; x++) {
                 let d = [];
                 for (let y = 0; y < b.length; y++) {
-                    d.push(res.rows[x][b[y]]);
-                    if (String(res.rows[x][b[y]]).length > c[y]) c[y] = String(res.rows[x][b[y]]).length;
+                    d.push(JSON.stringify(res.rows[x][b[y]]));
+                    if (JSON.stringify(res.rows[x][b[y]]).length > c[y]) c[y] = JSON.stringify(res.rows[x][b[y]]).length;
                 }
                 a.push(d);
             }
             for (let x = 0; x < a.length; x++) {
                 let f = [];
                 for (let y = 0; y < a[x].length; y++) {
-                    f.push(a[x][y] + ' '.repeat(c[y] - String(a[x][y]).length));
+                    f.push(a[x][y] + ' '.repeat(c[y] - JSON.stringify(a[x][y]).length));
                 }
                 e += f.join(' | ') + '\n';
                 if (x == 0) e += '-'.repeat(f.join(' | ').length) + '\n';
