@@ -1,4 +1,4 @@
-var version = "2.28.1.5";
+var version = "2.28.1.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -388,7 +388,7 @@ var commands = {
                     let game;
                     if (!args[1]) game = "All Games"
                     else
-                    game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][sort[3] - 1];
+                    game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][elos[3] - 1];
 
                     let users = [];
                     for (let i = 0; i < top.length; i++) {
