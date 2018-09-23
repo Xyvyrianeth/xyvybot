@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Other Canvas Testing</title>
+    </head>
+    <body style="background-color: black">
+        
+        <canvas id="thing" width="299" height="299" style="position: fixed; border: 1px solid #000"></canvas>
+        
+        <script>
+            input = 'x'//tan(x/20)*20 + 7; tan(x/20)*20 + 5; tan(x/20)*20 + 3; tan(x/20)*20 + 1; tan(x/20)*20 - 1; tan(x/20)*20 - 3; tan(x/20)*20 - 5; tan(x/20)*20 - 7';
+            scale = ["PI / 2", "1"];
+            let equ = function(equation, xy) {
+                if (xy !== undefined) {
+                    if (xy.length > 0) equation = equation.replace(/x/g, '(' + xy[0] + ')');
+                    if (xy.length > 1) equation = equation.replace(/y/g, '(' + xy[1] + ')');
+                }
+                equation = equation.replace(/(sin|cos|tan|csc|sec|cot|log)([0-9.xy]{1,})/gi, "$1($2)");
+                equation = equation.replace(/(sin|cos|tan|csc|sec|cot|log)/gi, 'Math.$1');
+                equation = equation.replace(/(pi|π)/gi, 'Math.PI');
+                equation = equation.replace(/([0-9.xy])\(/gi, "$1*(");
+                equation = equation.replace(/\)([0-9.xy])/i, ")*$1");
+                equation = equation.replace(/([0-9])M/g, '$1*M');
+                equation = equation.replace(/\)\(/g, ")*(");
+                equation = equation.replace(/\^/g, '**');
+                if (/\|/.test(equation)) {
+                    a = equation.match(/\|/g);
+                    if (a.length % 2 == 1) console.log("`Unmatched |`");
+                    for (let i = 0; i < a.length; i++) {
+                        if (i % 2 == 0) equation = equation.replace('|', 'Math.abs(');
+                        else
+                        equation = equation.replace('|', ')');
+                    }
+                }
+    
+                try {
+                    return eval(equation);
+                } catch (err) {
+                    console.log('`' + err + '`');
+                }
+    
+            }
+    
+            canvas = document.getElementById("thing");
+            ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, 300, 300);
+            ctx.translate(149.5, 149.5);
+            ctx.strokeStyle = "#aaa";
+            for (let i = 80; i--;) {
+                ctx.moveTo(-150, i * 10 - 150);
+                ctx.lineTo(150, i * 10 - 150);
+            }
+            for (let i = 80; i--;) {
+                ctx.moveTo(i * 10 - 150, -150);
+                ctx.lineTo(i * 10 - 150, 150);
+            }
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "#000";
+            ctx.moveTo(0, -150);
+            ctx.lineTo(0, 150);
+            ctx.moveTo(-150, 0);
+            ctx.lineTo(150, 0);
+            ctx.stroke();
+    
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(-140, -140, 10, 10);
+            ctx.font = "10px Calibri";
+            ctx.fillStyle = "#000000"
+            ctx.fillText("= 10(" + scale[0] + ") by 10(" + scale[1] + ") units\u00b2", -126, -132);
+
+            ctx.scale(1 / equ(scale[0]), -1 / equ(scale[1]));
+            ctx.lineWidth = 2;
+            e = input.toLowerCase().split(';');
+            colors = ["#f00", "#f80", "#ff0", "#0f0", "#080", "#0ff", "#00f", "#909", "#840", "#f8f"];
+            if (/;$/.test(input)) e.pop();
+            if (e.length > colors.length) console.log("`Too many equations!`");
+            else
+            for (let z = 0; z < e.length; z++) {
+                ctx.beginPath();
+                ctx.strokeStyle = colors[z];
+                let q = e[z].split('=');
+                if (q.length == 1) {
+                    if (q[0].includes('y') && q[0].includes('x')) console.log('`' + e[z] + "`\nInvalid equation: must have a set value for x and y to be on the same side of the equation.");
+                    else
+                    if (!q[0].includes('y')) {
+                        let equation = q[0].replace(/ /g, '');
+                        let ans = [];
+                        let bns = [];
+                        for (let x = -151 ; x < 151; x += 0.5) {
+                            let a = equ(equation, [x * scale[0]]);
+                            if (Math.floor(x) != x) ans.push([x * scale[0], a]);
+                            else
+                            bns.push([x, a]);
+                        }
+                        for (let x = -151; x < 151; x++) {
+                            if (ans[x + 151][1] < -150 && ans[x + 150][1] > 150 && bns[x + 150][1] == )
+                            ctx.lineTo(ans[x + 151][0], ans[x + 151][1]);
+                        }
+                        ctx.stroke();
+                    }
+                }
+            }
+    
+            for (let i = e.length; i--;) e[i] = '  ' + e[i].replace(/ /g, '') + ' - ' + ["Red", "Orange", "Yellow", "Light Green", "Dark Green", "Teal", "Blue", "Purple", "Brown", "Pink"][i];
+            console.log("Equation" + (e.length > 1 ? 's' : '') + ":\n" + e.join('\n') );
+        </script>
+    </body>
+</html>

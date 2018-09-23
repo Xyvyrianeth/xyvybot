@@ -1,4 +1,4 @@
-var version = "2.28.1.8";
+var version = "2.28.2.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -11,7 +11,7 @@ var { client,config } = require("/app/Xyvy.js");
 var Profile = require("/app/stuffs/profile.js");
 var { Color } = require("/app/stuffs/color.js");
 var titles = require("/app/stuffs/titles.json");
-var backgrounds = require("/app/stuffs/images.json");
+var images = require("/app/stuffs/images.json");
 var { table } = require("/app/stuffs/table.js");
 
 var admins = "357700219825160194".split(' ');
@@ -250,6 +250,13 @@ var aliases = {
         "pente": ["pente"],
         "ninemen": ["ninemen", "morris", "ninemensmorris", "ninemenmorris"],
         "profile": ["profile", "scorecard", "prof"],
+
+        // Small Games
+        "hangman": ["hangman", "hm"],
+        "math": ["math", "quickmath", "quickmaffs", "maffs"],
+        "iq": ["iq", "fakeiqtest", "fakeiqquiz", "fakeiq"],
+        "sequence": ["sequence", "pattern"],
+        "shuffle": ["shuffle", "scramble"],
        
         // Utility
         "about": ["about", "info", "bot"],
@@ -695,6 +702,18 @@ var commands = {
         }
     },
 
+    "ttt3d": function(cmd, args, input, message, sendChat) {
+        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
+    },
+
+    "pente": function(cmd, args, input, message, sendChat) {
+        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
+    },
+
+    "ninemen": function(cmd, args, input, message, sendChat) {
+        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
+    },
+
     "profile": function(cmd, args, input, message, sendChat) {
         if (!input || RE.ping.test(input) || RE.id2.test(input)) {
             let member;
@@ -768,9 +787,9 @@ var commands = {
                     let b1 = res.rows[0].backgrounds;
                     let b2 = [];
                     for (let i = 0; i < res.rows[0].backgrounds.length; i++) {
-                        if (b1[i] !== res.rows[0].background) b2.push('[' + backgrounds.titles[b1[i]] + "](" + b1[i] + ')');
+                        if (b1[i] !== res.rows[0].background) b2.push('[' + images.titles[b1[i]] + "](" + b1[i] + ')');
                         else
-                        b2.push('[' + backgrounds.titles[b1[i]] + "](" + b1[i] + ') (Equipped)');
+                        b2.push('[' + images.titles[b1[i]] + "](" + b1[i] + ') (Equipped)');
                     }
                     return sendChat(`\`\`\`md\n# All Backgrounds owned by user ${res.rows[0].id}:\n\n  [Background Title](background ID)\n\n  ${b2.join("\n  ")}\n\nIf you wish to equip any of these, do \`x!profiles background [title ID]\` (capitals are important!)\`\`\``);
                 });
@@ -780,12 +799,12 @@ var commands = {
                 return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
                     if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot yet purchase a new background. If you want to change that fact, do `x!profile` right now!");
-                    if (res.rows[0].backgrounds.length == backgrounds.ids.length) return sendChat("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, okay~?");
+                    if (res.rows[0].backgrounds.length == images.ids.length) return sendChat("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, okay~?");
                     if (res.rows[0].money < 20) return sendChat("You do not have enough money to buy another background! Get more money by playing games (and winning)!");
   
-                    newbg = backgrounds.ids.random();
+                    newbg = images.ids.random();
                     do {
-                        newbg = backgrounds.ids.random();
+                        newbg = images.ids.random();
                     } while (res.rows[0].backgrounds.includes(newbg));
                     res.rows[0].backgrounds.push(newbg);
                     return db.query(`UPDATE profiles
@@ -801,7 +820,7 @@ var commands = {
             }
             else
             if (/^[a-zA-Z0-9]{7}[jp]$/.test(args[1])) {
-                if (!backgrounds.ids.includes(args[1])) return sendChat("That image ID does not exist. Did you make sure you capitalized the correct letters? That's important, you know.");
+                if (!images.ids.includes(args[1])) return sendChat("That image ID does not exist. Did you make sure you capitalized the correct letters? That's important, you know.");
                 return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
                     if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot yet equip a new background. If you want to change that fact, do `x!profile` right now!");
@@ -900,6 +919,26 @@ var commands = {
    
     // Smaller Games
 
+    "hangman": function(cmd, args, input, message, sendChat) {
+        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
+    },
+
+    "math": function(cmd, args, input, message, sendChat) {
+        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
+    },
+
+    "iq": function(cmd, args, input, message, sendChat) {
+        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
+    },
+
+    "sequence": function(cmd, args, input, message, sendChat) {
+        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
+    },
+
+    "shuffle": function(cmd, args, input, message, sendChat) {
+        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
+    },
+
     // Utility
     "avatar": function(cmd, args, input, message, sendChat) {
         if (!input || RE.ping.test(input) || RE.id2.test(input)) {
@@ -972,8 +1011,8 @@ var commands = {
         else
         {
             if (message.channel.type != "dm") {
-                for (let i in guildAliases) {
-                    if (guildAliases[i].includes(input)) {
+                for (let i in aliases.guild) {
+                    if (aliases.guild[i].includes(input)) {
                         let embed = new Discord.RichEmbed();
                         embed.setTitle("Command Info");
                         embed.setDescription({
@@ -984,8 +1023,16 @@ var commands = {
                             "user": "Get information about your user in relation to this guild. Or someone else, too.",
                             "connect4": "Play a game of the original vertical checkers game with someone else (that's actually what it used to be called).",
                             "squares": "Play a game of making a bunch of the 2nd coolest shape with someone else! A game created by Xyvy himself.",
-                            "othello": "Play a game of Reversi with someone else (Othello = competative Reversi).",
-                            "gomoku": "Play a game of Go Bang with someone else! It's like Tic Tac Toe, but balanced!",
+                            "othello": "Play a game of Reversi with someone else (Othello = competative Reversi, they're the same thing).",
+                            "gomoku": "Play a game of Go Bang with someone else! It's like Tic Tac Toe, but bigger!",
+                            "ttt3d": "Play a game of 3D Tic Tac Toe with someone else! It's like Tic Tac Toe, but a cube!",
+                            "pente": "Play a game of Pente with someone else! It's like Tic Tac Toe, but violent!",
+                            "ninemen": "Play a game of Nine Men's Morris with someone else! It's not like Tic Tac Toe. Well, it kinda is, but in the same sense, not really.",
+                            "hangman": "Play a game of Hangman with other people!",
+                            "math": "Compete with other people to see who can do math the fastest!",
+                            "iq": "Simple things you might find on a fake IQ test!",
+                            "sequence": "Find the next item in the pattern!",
+                            "shuffle": "Be the first to unscramble a big word!",
                             "profile": "Get your profile card, complete with game stats and all, which is just your wins and losses.",
                             "anime": "Get information about any anime from MyAnimeList. Weeb shit.",
                             "manga": "Get information about any manga from MyAnimeList. Mega-weeb shit.",
@@ -998,7 +1045,7 @@ var commands = {
                             "aliases": "Get all existing aliases for any given command. All of them.",
                             "nsfw": "Get a NSFW image or gif. It will most likely be hentai-esque." + (message.channel.nsfw ? " You can use that here. Go ahead." : " You cannot use that here. Don't even try."),
                         }[i]);
-                        embed.addField("Aliases", '`' + guildAliases[i].join("`\n`") + '`');
+                        embed.addField("Aliases", '`' + aliases.guild[i].join("`\n`") + '`');
                         embed.setFooter("Xyvybot version " + version);
                         embed.setColor(new Color().random());
                         return sendChat(embed);
@@ -1008,8 +1055,8 @@ var commands = {
             }
             else
             {
-                for (let i in userAliases) {
-                    if (userAliases[i].includes(input)) {
+                for (let i in aliases.user) {
+                    if (aliases.user[i].includes(input)) {
                         let embed = new Discord.RichEmbed()
                         embed.setTitle("Command Info");
                         embed.setDescription({
@@ -1029,7 +1076,7 @@ var commands = {
                             "aliases": "Get all existing aliases for any given command. All of them.",
                             "nsfw": "Get a NSFW image or gif. It will most likely be hentai-esque. You can use that here. Go ahead. I'll FILL your DMs with hentai if you really want me to.",
                         }[i]);
-                        embed.addField("Aliases", '`' + userAliases[i].join("`\n`") + '`');
+                        embed.addField("Aliases", '`' + aliases.user[i].join("`\n`") + '`');
                         embed.setFooter("Xyvybot version " + version);
                         embed.setColor(new Color().random());
                         return sendChat(embed);
@@ -1040,15 +1087,21 @@ var commands = {
         }
     },
   
+    "about": function(cmd, args, input, message, sendChat) {
+        let embed = new Discord.RichEmbed();
+        embed.setTitle("About me");
+        embed.addDescription("Let's start off by saying that the only reason this bot exists is because someone else told me I should make it. Not for any reason in particular, they were just testing me to see if I could do it.\nWell, I did it, and then I found I enjoyed making it, so I kept building on it. It's still a piece of crap, but it works, and that's all that matters, right?\n\nFast-forward 2 years and I find myself interested in abstract strategy games, like Go and Othello. It's not easy using a completely different application or software to play simple games with my friends on Discord, so I made this bot able to do what those other apps did, and we had fun.\n*Then*, someone suggested I make this bot go public so *other people* won't have the same problem. Thank that person (I forgot who, honestly) for telling me to solve that problem for you if you had it as well.");
+    },
+
     "aliases": function(cmd, args, input, message, sendChat) {
         if (!input) return sendChat("To view all the aliases for a command, do `x!aliases` `[command name]`");
         else
         if (input.startsWith('[')) return sendChat("With***out*** the brackets.");
-        for (let i in guildAliases) {
-            if (guildAliases[i].includes(input)) {
+        for (let i in aliases.guild) {
+            if (aliases.guild[i].includes(input)) {
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Aliases for " + i);
-                embed.setDescription("`" + guildAliases.join("`  `") + "`");
+                embed.setDescription("`" + aliases.guild.join("`  `") + "`");
                 embed.setColor(new Color().random());
                 return sendChat(embed);
             }
@@ -1064,7 +1117,7 @@ var commands = {
                 let com = input.split("\n")[0];
                 console.log('"' + com + '"');
                 if (com.startsWith("[")) return sendChat("With***out*** the brackets, you twit.");
-                let aliases = message.channel.type == "dm" ? userAliases : guildAliases;
+                let aliases = message.channel.type == "dm" ? aliases.user : aliases.guild;
                 let a = false;
                 for (let i in aliases) 
                     if (aliases[i].includes(com)) {
@@ -1363,15 +1416,16 @@ var commands = {
         ctx.moveTo(0, 150);
         ctx.lineTo(301, 150);
         ctx.stroke();
-        input = input.toLowerCase().split(';');
-        colors = ["#f00", "#00f", "#080", "#909", "#f80", "#ff0", "#0ff", "#0f0", "#840", "#f8f"];
-        if (input.length > colors.length) return sendChat("`Too many equations!`");
-        for (let z = 0; z < input.length; z++) {
+        e = input.toLowerCase().split(';');
+        colors = ["#f00", "#f80", "#ff0", "#0f0", "#080", "#08f", "#00f", "#909", "#840", "#f8f"];
+        if (/;$/.test(input)) e.pop();
+        if (e.length > colors.length) return sendChat("`Too many equations!`");
+        for (let z = 0; z < e.length; z++) {
             ctx.beginPath();
             ctx.strokeStyle = colors[z];
-            q = input[z].split('=');
+            q = e[z].split('=');
             if (q.length == 1) {
-                if (q[0].includes('y') && q[0].includes('x')) return sendChat('`' + input[z] + "`\nInvalid equation: must have a set value for x and y to be on the same side of the equation.");
+                if (q[0].includes('y') && q[0].includes('x')) return sendChat('`' + e[z] + "`\nInvalid equation: must have a set value for x and y to be on the same side of the equation.");
                 else
                 if (!q[0].includes('y')) {
                     equation = q[0].replace(/ /g, '');

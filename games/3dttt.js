@@ -74,7 +74,7 @@ exports.takeTurn = function(channel, move) {
     let game = channels[channel.id];
      
     // Function will vary with game
- 
+    
     //
  
     if (end == 0) game.timer = {
