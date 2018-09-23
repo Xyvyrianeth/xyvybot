@@ -6,14 +6,25 @@ const client = new Discord.Client();
 client.login(process.env.TOKEN);
 client.on("ready", () => {
     console.log("Xyvybot Successfully launched~! Launching version " + commands.version);
-    client.user.setPresence({
-        status: "online",
-        game: {
-            name: "version " + commands.version + "~",
-            type: "STREAMING",
-            url: "https://twitch.tv/Xyvyrianeth"
-        }
-    });
+    let i = 0;
+    setInterval(function() {
+        let ii = [
+            "version " + commands.version + "~",
+            "in " + client.guilds.array().length + " servers~",
+            "Othello, Gomoku, and Connect Four~",
+            "x!help"
+        ];
+        client.user.setPresence({
+            status: "online",
+            game: {
+                name: ii[i],
+                type: "STREAMING",
+                url: "https://twitch.tv/Xyvyrianeth"
+            }
+        });
+        if (i == 3) i = 0;
+        else i += 1;
+    }, 15000);
 });
 exports.client = client;
 
