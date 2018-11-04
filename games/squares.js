@@ -21,7 +21,7 @@ exports.newGame = function(channel, player1, cmd, mode) {
     }
   
     game.players[0] = player1;
-    return `**$user$** is now requesting a new game of ${gamename}, say \`x!${cmd} start\` to play against them!\n\nBoard size: ${size}`;
+    return `**$user$** is now requesting a new game of ${gamename}, say \`x!${cmd} start\` to play against them!`;
 }
   
 exports.startGame = function(channel, player2) {
