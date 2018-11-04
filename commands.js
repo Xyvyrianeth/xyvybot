@@ -1,4 +1,4 @@
-var version = "2.28.3.0";
+var version = "2.29.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1417,6 +1417,7 @@ var commands = {
         ctx.lineTo(301, 150);
         ctx.stroke();
         e = input.toLowerCase().split(';');
+        input = input.split(';');
         colors = ["#f00", "#f80", "#ff0", "#0f0", "#080", "#08f", "#00f", "#909", "#840", "#f8f"];
         if (/;$/.test(input)) e.pop();
         if (e.length > colors.length) return sendChat("`Too many equations!`");
