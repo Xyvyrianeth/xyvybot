@@ -1,4 +1,4 @@
-var version = "2.29.1.2";
+var version = "2.29.1.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -32,6 +32,7 @@ const jisho = new jishoApi();
 const nekos = require("nekos.life");
 const Nekos = new nekos();
 
+/* Does not work
 const paladinsAPI = require("paladins-api");
 const paladins = new paladinsAPI(config.HIREZ_API[0], config.HIREZ_API[1]);
 var palID;
@@ -39,6 +40,7 @@ paladins.connect("PC", (err, res) => {
     if (err) return console.log(err);
     palID = res;
 });
+*/
 
 var bugTimers = {};
 var bugTimer = setInterval(function() {
