@@ -1,4 +1,4 @@
-var version = "2.30.0.3";
+var version = "2.30.0.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1451,6 +1451,7 @@ var commands = {
                 return eval(equation);
             } catch (err) {
                 console.log(err);
+                console.log(equation);
                 return sendChat('`' + err + '`');
             }
    
