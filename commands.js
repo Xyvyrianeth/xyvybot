@@ -1398,30 +1398,6 @@ var commands = {
                 ], [
                     /(infinity|∞)/g,
                     "(Math.Infinity)"
-            ] ];
-            for (let i = 0; i < terms.length; i++) {
-                equation = equation.replace(terms[i][0], terms[i][1]);
-            }
-            let methods = [ [
-                    /((?:a?(?:sin|cos|tan|csc|sec|cot)|(?:sin|cos|tan|csc|sec|cot)(?:\^-1|))|log)([0-9\.]{1,})/g,
-                    "Math.$1$2($3)"
-                ], [
-                    /(?:\\sqrt|√)\[([0-9\.]{1,})\]\(([0-9\.]{1,})\)/g,
-                    "Math.pow($2, 1/$1)"
-                ], [
-                    /(?:\\sqrt|√)\(([0-9\.]{1,})\)/g,
-                    "Math.pow($1, 1/2)"
-                ], [
-                    /()^((?:\(\-?[0-9.]\)))/
-                ],/*  [
-                    /(?:\\sum|∑)\[n=([0-9\.]{1,})\]^\(([0-9\.]{1,})\)/g,
-                    "Math.sum($1, 2)"
-                ],[  // Soon^TM
-                    /(?:\\prod|∏)\[n=([0-9\.]{1,})\]^\(([0-9\.]{1,})\)/g,
-                    "Math.prod($1, 2)"
-                ], */ [
-                    /|([0-9\.]{1,})|/g,
-                    "Math.abs($1)"
                 ], [
                     /([0-9\.])\(/g,
                     "$1*("
@@ -1435,17 +1411,60 @@ var commands = {
                     /\)\(/g,
                     ")*("
             ] ];
+            for (let i = 0; i < terms.length; i++) {
+                equation = equation.replace(terms[i][0], terms[i][1]);
+            }
+            let methods = [ [
+                    /(sin|cos|tan|csc|sec|cot|log)([0-9\.]{1,})/g,
+                    "Math.$1$2($3)"
+                ], [
+                    /(?:a?(sin|cos|tan|csc|sec|cot)|(sin|cos|tan|csc|sec|cot)\^-1)([0-9\.]{1,})/g,
+                    "Math.a$1$2($3)"
+                ], [
+                    /(?:\\sqrt|√)\[([0-9\.]{1,})\]\(([0-9\.]{1,})\)/g,
+                    "Math.pow($2,(1/$1))"
+                ], [
+                    /(?:\\sqrt|√)\(([0-9\.]{1,})\)/g,
+                    "Math.sqrt($1)"
+                ], [
+                    /((?:\(\-?[0-9.]{1,}\)|-?[0-9.]{1,}))\^((?:\(\-?[0-9.]{1,}\)|-?[0-9.]{1,}))/g,
+                    "Math.pow($1,$2)"
+                ],/*  [
+                    /(?:\\sum|∑)\[n=([0-9\.]{1,})\]^\(([0-9\.]{1,})\)/g,
+                    "Math.sum($1, 2)"
+                ],[  // Soon^TM
+                    /(?:\\prod|∏)\[n=([0-9\.]{1,})\]^\(([0-9\.]{1,})\)/g,
+                    "Math.prod($1, 2)"
+                ], */ [
+                    /\|([0-9\.]{1,})\|/g,
+                    "Math.abs($1)"
+            ] ];
             do {
-                if (/\([0-9.\(\)+\-\/\*]\)/.test(equation)) {
-                    equate = equation.match(/\([0-9.\(\)+\-\/\*]\)/g);
+                if (/\([0-9.+\-\/\*]{1,}\)/.test(equation)) {
+                    equate = equation.match(/\([0-9.+\-\/\*]{1,}\)/g);
+                    for (let i = 0; i < equate.length; i++) {
+                        if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                    }
+                }
+                if (/\([0-9.\(\)+\-\/\*]{1,}\)/.test(equation)) {
+                    equate = equation.match(/\([0-9.\(\)+\-\/\*]{1,}\)/g);
+                    for (let i = 0; i < equate.length; i++) {
+                        if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                    }
+                }
+                do {
+                    equation = equation.replace(/\(\((\-?[0-9.]{1,})\)\)/, "($1)");
+                } while (/\(\((\-?[0-9.]{1,})\)\)/.test(equation));
+                for (let i = 0; i < methods.length; i++) {
+                    equation = equation.replace(methods[i][0], methods[i][1]);
+                }
+                if (/Math\.(a?sin|a?cos|a?tan|a?csc|a?sec|a?cot|log|sqrt|pow|abs|sum|prod)\((\(\-?[0-9\.]{1,}\)|-?[0-9\.]{1,})(,(\(\-?[0-9\.]{1,}\)|\-?[0-9\.]{1,}))?\)/g.test(equation)) {
+                    equate = equation.match(/Math\.(a?sin|a?cos|a?tan|a?csc|a?sec|a?cot|log|sqrt|pow|abs|sum|prod)\((\(\-?[0-9\.]{1,}\)|-?[0-9\.]{1,})(,(\(\-?[0-9\.]{1,}\)|\-?[0-9\.]{1,}))?\)/g);
                     for (let i = 0; i < equate.length; i++) {
                         equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                     }
                 }
-                for (let i = 0; i < methods.length; i++) {
-                    equation = equation.replace(methods[i][0], methods[i][1]);
-                }
-            } while (/[0-9.xy()]/.test(equation));
+            } while (!/^(\-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))$/.test(equation));
    
             try {
                 return eval(equation);
