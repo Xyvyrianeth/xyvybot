@@ -5,7 +5,7 @@
     </head>
     <body style="background-color: black">
         
-        <canvas id="thing" width="299" height="299" style="position: fixed; border: 1px solid #000"></canvas>
+        <canvas id="thing" width="301" height="301" style="position: fixed; border: 1px solid #000"></canvas>
         
         <script>
             input = 'x'//tan(x/20)*20 + 7; tan(x/20)*20 + 5; tan(x/20)*20 + 3; tan(x/20)*20 + 1; tan(x/20)*20 - 1; tan(x/20)*20 - 3; tan(x/20)*20 - 5; tan(x/20)*20 - 7';
@@ -45,7 +45,7 @@
             ctx = canvas.getContext('2d');
             ctx.fillStyle = '#fff';
             ctx.fillRect(0, 0, 300, 300);
-            ctx.translate(149.5, 149.5);
+            ctx.translate(150.5, 150.5);
             ctx.strokeStyle = "#aaa";
             for (let i = 80; i--;) {
                 ctx.moveTo(-150, i * 10 - 150);
@@ -77,32 +77,10 @@
             e = input.toLowerCase().split(';');
             colors = ["#f00", "#f80", "#ff0", "#0f0", "#080", "#0ff", "#00f", "#909", "#840", "#f8f"];
             if (/;$/.test(input)) e.pop();
-            if (e.length > colors.length) console.log("`Too many equations!`");
+            if (e.length > 9) console.log("`Too many equations!`");
             else
-            for (let z = 0; z < e.length; z++) {
-                ctx.beginPath();
-                ctx.strokeStyle = colors[z];
-                let q = e[z].split('=');
-                if (q.length == 1) {
-                    if (q[0].includes('y') && q[0].includes('x')) console.log('`' + e[z] + "`\nInvalid equation: must have a set value for x and y to be on the same side of the equation.");
-                    else
-                    if (!q[0].includes('y')) {
-                        let equation = q[0].replace(/ /g, '');
-                        let ans = [];
-                        let bns = [];
-                        for (let x = -151 ; x < 151; x += 0.5) {
-                            let a = equ(equation, [x * scale[0]]);
-                            if (Math.floor(x) != x) ans.push([x * scale[0], a]);
-                            else
-                            bns.push([x, a]);
-                        }
-                        for (let x = -151; x < 151; x++) {
-                            if (ans[x + 151][1] < -150 && ans[x + 150][1] > 150 && bns[x + 150][1] == )
-                            ctx.lineTo(ans[x + 151][0], ans[x + 151][1]);
-                        }
-                        ctx.stroke();
-                    }
-                }
+            for (let i = 0; i < e.length; i++) {
+                
             }
     
             for (let i = e.length; i--;) e[i] = '  ' + e[i].replace(/ /g, '') + ' - ' + ["Red", "Orange", "Yellow", "Light Green", "Dark Green", "Teal", "Blue", "Purple", "Brown", "Pink"][i];

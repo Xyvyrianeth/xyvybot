@@ -1,4 +1,4 @@
-var version = "2.29.1.4";
+var version = "2.30.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1365,19 +1365,78 @@ var commands = {
     },
    
     "graph": function(cmd, args, input, message, sendChat) {
+        if (["info", "about", "history"].includes(args[0])) {
+            let embed = new Discord.RichEmbed();
+            embed.setTitle("Brief History of the Xyvyrianethian Graphic Calculator");
+            embed.setAuthor("By Xyvyrianeth");
+            embed.setDescription("Okay, well, I made this simply because I had nothing better to do with my time. When I started, it was 100% text-drawn, "
+                                +"and it was really cool because I could add a lot of features to it when it didn't have to be accurate. Then I moved to "
+                                +"Node Canvas and had to start over. I'm still not anywhere near the level of Desmos, but I'm proud of myself with what "
+                                +"I have.");
+            embed.addField("Other Sub-Commands", "`x!" + cmd + "`  `syntax`");
+        }
+        else
+        if (["help", "syntax"].includes(args[0])) {
+            let embed = new Discord.RichEmbed();
+            embed.setTitle("How to Graphic Calculator, Xyvybot Style");
+            embed.setAuthor("by Xyvyrianeth");
+            embed.setDescription("In order to have a more advanced calculator, there needs to be a more strict syntax. I had to change a lot of things in "
+                                +"the old syntax just to enable something simple like square root, cube root, or n-root of x, and I'll have to change even "
+                                +"more if I want to add something like Π and ∑.");
+            embed.addField("Basic Arithmatic: + - * /", "");
+
+        }
+        else
         let equ = function(equation, xy) {
             if (xy !== undefined) {
                 if (xy.length > 0) equation = equation.replace(/x/g, '(' + xy[0] + ')');
                 if (xy.length > 1) equation = equation.replace(/y/g, '(' + xy[1] + ')');
             }
-            equation = equation.replace(/(sin|cos|tan|csc|sec|cot|log)([0-9.xy]{1,})/g, "$1($2)");
-            equation = equation.replace(/(sin|cos|tan|csc|sec|cot|log)/g, 'Math.$1');
-            equation = equation.replace(/(pi|π)/g, 'Math.PI');
-            equation = equation.replace(/([0-9.xy])\(/g, "$1*(");
-            equation = equation.replace(/\)([0-9.xy])/, ")*$1");
-            equation = equation.replace(/([0-9])M/g, '$1*M');
-            equation = equation.replace(/\)\(/g, ")*(");
-            equation = equation.replace(/\^/g, '**');
+            let methods = [ [
+                    /((?:(?:a|)(?:sin|cos|tan|csc|sec|cot)|(?:sin|cos|tan|csc|sec|cot)(?:\^-1|))|log)([0-9\.xy]{1,})/g,
+                    "Math.$1$2($3)"
+                ], [
+                    /(?:\\sqrt|√)\[([0-9\.xy]{1,})\]\(([0-9\.xy]{1,})\)/g,
+                    "Math.pow($2, 1/$1)"
+                ], [
+                    /(?:\\sqrt|√)\(([0-9\.xy]{1,})\)/g,
+                    "Math.pow($1, 1/2)"
+                ], [
+                    /(?:\\sum|∑)\[n=([0-9\.xy]{1,})\]^\(([0-9\.xy]{1,})\)/g,
+                    "Math.sum($1, 2)"
+                ], /* [  // Soon^TM
+                    /(?:\\prod|∏)\[n=([0-9\.xy]{1,})\]^\(([0-9\.xy]{1,})\)/g,
+                    "Math.prod($1, 2)"
+                ], [
+                    /|([0-9\.xy]{1,})|/g,
+                    "Math.abs($1)"
+                ], */
+                [
+                    /(pi|π)/g,
+                    "(Math.PI)"
+                ], [
+                    /(infinity|∞)/g,
+                    "(Math.Infinity)"
+                ],
+                [
+                    /([0-9\.xy])\(/g,
+                    "$1*("
+                ], [
+                    /\)([0-9\.xy])/,
+                    ")*$1"
+                ], [
+                    /([0-9\.xy])M/g,
+                    "$1*M"
+                ], [
+                    /\)\(/g,
+                    ")*("
+                ], [
+                    /\^/g,
+                    "**"
+            ], ];
+            for (let i = 0; i < methods.length; i++) {
+                equations = equations.replace(methods[i][0], methods[i][1]);
+            }
             if (/\|/.test(equation)) {
                 a = equation.match(/\|/g);
                 if (a.length % 2 == 1) return sendChat("`Unmatched |`");
@@ -1423,12 +1482,13 @@ var commands = {
         colors = ["#f00", "#f80", "#ff0", "#0f0", "#080", "#08f", "#00f", "#909", "#840", "#f8f"];
         if (/;$/.test(input)) e.pop();
         if (e.length > colors.length) return sendChat("`Too many equations!`");
+
         for (let z = 0; z < e.length; z++) {
             ctx.beginPath();
             ctx.strokeStyle = colors[z];
             q = e[z].split('=');
             if (q.length == 1) {
-                if (q[0].includes('y') && q[0].includes('x')) return sendChat('`' + e[z] + "`\nInvalid equation: must have a set value for x and y to be on the same side of the equation.");
+                if (q[0].includes('y') && q[0].includes('x')) return sendChat("")
                 else
                 if (!q[0].includes('y')) {
                     equation = q[0].replace(/ /g, '');
@@ -1455,24 +1515,36 @@ var commands = {
             else
             if (q.length == 2) {
                 if ((/y/.test(q[0]) && /x/.test(q[0])) || (/y/.test(q[1]) && /x/.test(q[1]))) {
-                    if ((/y/.test(q[0]) && /y/.test(q[1])) || (/x/.test(q[0]) && /x/.test(q[1]))) return sendChat('`' + input[z] + "`\nInvalid equation: neither x nor y may be on both sides of the equation.");
-   
-                    equ1 = /y/.test(q[0]) ? q[0] : q[1];
-                    equ2 = equ1 == q[1] ? q[0] : q[1];
-                    for (let x = 151; x > -151; x--) {
-                        for (let y = 151; y > -151; y--) {
-                            ans = equ(equ1, [x, y]);
-                            if (typeof ans !== "number") return sendChat("Error.");
-                            if (ans > equ2 - 1 && ans < equ2 + 1) {
-                                ctx.moveTo(150 + x, 150 - y);
-                                ctx.lineTo(150 + x, 150 - y);
+                    if ((/y/.test(q[0]) && /y/.test(q[1])) || (/x/.test(q[0]) && /x/.test(q[1]))) {
+                        equation = q[0].replace(/ /g, '');
+                        let values = [];
+                        for (let x = 151; x > -151; x--) {
+                            try {
+                                let a = equ(equation, [x]);
+                            } catch (err) {
+                                return sendChat("```" + err + "```");
                             }
                         }
                     }
-                    ctx.stroke();
+                    else
+                    {
+                        equ1 = /y/.test(q[0]) ? q[0] : q[1];
+                        equ2 = equ1 == q[1] ? q[0] : q[1];
+                        for (let x = 151; x > -151; x--) {
+                            for (let y = 151; y > -151; y--) {
+                                ans = equ(equ1, [x, y]);
+                                if (typeof ans !== "number") return sendChat("Error.");
+                                if (ans > equ2 - 1 && ans < equ2 + 1) {
+                                    ctx.moveTo(150 + x, 150 - y);
+                                    ctx.lineTo(150 + x, 150 - y);
+                                }
+                            }
+                        }
+                        ctx.stroke();
+                    }
                 }
                 else
-                if ((/y/.test(q[0]) && q[0].trim() !== 'y') || (/y/.test(q[1]) && q[1].trim() !== 'y')) {
+                if ((/y/.test(q[0]) && q[0].trim() !== 'y') || (/y/.test(q[1]) && q[1].trim() !== 'y')) {  // Soon^TM
                     equ = /x/.test(q[0]) ? q[0] : q[1];
                     ans = /y/.test(q[0]) ? q[0] : q[1];
    
@@ -1631,6 +1703,20 @@ Object.defineProperty(Array.prototype, 'shuffle', {
         return b;
     }
 });
+Math.sum = function(n, a, b) {
+    n = Math.round(n);
+    a = Math.round(a);
+    c = 0;
+    for (let i = n; i <= a; i++) c += b;
+    return c;
+}
+Math.prod = function(n, a, b) {
+    n = Math.round(n);
+    a = Math.round(a);
+    c = 0;
+    for (let i = n; i <= a; i++) c *= b;
+    return c;
+}
    
 exports.db = db;
 exports.version = version;
