@@ -1,4 +1,4 @@
-var version = "2.30.0.0";
+var version = "2.30.0.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1435,7 +1435,7 @@ var commands = {
                     "**"
             ], ];
             for (let i = 0; i < methods.length; i++) {
-                equations = equations.replace(methods[i][0], methods[i][1]);
+                equation = equation.replace(methods[i][0], methods[i][1]);
             }
             if (/\|/.test(equation)) {
                 a = equation.match(/\|/g);
