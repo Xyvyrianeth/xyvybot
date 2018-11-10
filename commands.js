@@ -1387,7 +1387,7 @@ var commands = {
 
         }
         else
-        let equ = function(equation, xy) {
+        function equ(equation, xy) {
             if (xy !== undefined) {
                 if (xy.length > 0) equation = equation.replace(/x/g, '(' + xy[0] + ')');
                 if (xy.length > 1) equation = equation.replace(/y/g, '(' + xy[1] + ')');
