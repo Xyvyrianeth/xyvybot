@@ -1,4 +1,4 @@
-var version = "2.30.0.4";
+var version = "2.30.0.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1392,60 +1392,60 @@ var commands = {
                 if (xy.length > 0) equation = equation.replace(/x/g, '(' + xy[0] + ')');
                 if (xy.length > 1) equation = equation.replace(/y/g, '(' + xy[1] + ')');
             }
-            let methods = [ [
-                    /((?:(?:a|)(?:sin|cos|tan|csc|sec|cot)|(?:sin|cos|tan|csc|sec|cot)(?:\^-1|))|log)([0-9\.xy]{1,})/g,
-                    "Math.$1$2($3)"
-                ], [
-                    /(?:\\sqrt|√)\[([0-9\.xy]{1,})\]\(([0-9\.xy]{1,})\)/g,
-                    "Math.pow($2, 1/$1)"
-                ], [
-                    /(?:\\sqrt|√)\(([0-9\.xy]{1,})\)/g,
-                    "Math.pow($1, 1/2)"
-                ], [
-                    /(?:\\sum|∑)\[n=([0-9\.xy]{1,})\]^\(([0-9\.xy]{1,})\)/g,
-                    "Math.sum($1, 2)"
-                ], /* [  // Soon^TM
-                    /(?:\\prod|∏)\[n=([0-9\.xy]{1,})\]^\(([0-9\.xy]{1,})\)/g,
-                    "Math.prod($1, 2)"
-                ], [
-                    /|([0-9\.xy]{1,})|/g,
-                    "Math.abs($1)"
-                ], */
-                [
+            let terms = [ [
                     /(pi|π)/g,
                     "(Math.PI)"
                 ], [
                     /(infinity|∞)/g,
                     "(Math.Infinity)"
-                ],
-                [
-                    /([0-9\.xy])\(/g,
+            ] ];
+            for (let i = 0; i < terms.length; i++) {
+                equation = equation.replace(terms[i][0], terms[i][1]);
+            }
+            let methods = [ [
+                    /((?:a?(?:sin|cos|tan|csc|sec|cot)|(?:sin|cos|tan|csc|sec|cot)(?:\^-1|))|log)([0-9\.]{1,})/g,
+                    "Math.$1$2($3)"
+                ], [
+                    /(?:\\sqrt|√)\[([0-9\.]{1,})\]\(([0-9\.]{1,})\)/g,
+                    "Math.pow($2, 1/$1)"
+                ], [
+                    /(?:\\sqrt|√)\(([0-9\.]{1,})\)/g,
+                    "Math.pow($1, 1/2)"
+                ], [
+                    /()^((?:\(\-?[0-9.]\)))/
+                ],/*  [
+                    /(?:\\sum|∑)\[n=([0-9\.]{1,})\]^\(([0-9\.]{1,})\)/g,
+                    "Math.sum($1, 2)"
+                ],[  // Soon^TM
+                    /(?:\\prod|∏)\[n=([0-9\.]{1,})\]^\(([0-9\.]{1,})\)/g,
+                    "Math.prod($1, 2)"
+                ], */ [
+                    /|([0-9\.]{1,})|/g,
+                    "Math.abs($1)"
+                ], [
+                    /([0-9\.])\(/g,
                     "$1*("
                 ], [
-                    /\)([0-9\.xy])/,
+                    /\)([0-9\.])/,
                     ")*$1"
                 ], [
-                    /([0-9\.xy])M/g,
+                    /([0-9\.])M/g,
                     "$1*M"
                 ], [
                     /\)\(/g,
                     ")*("
-                ], [
-                    /\^/g,
-                    "**"
-            ], ];
-            for (let i = 0; i < methods.length; i++) {
-                equation = equation.replace(methods[i][0], methods[i][1]);
-            }
-            if (/\|/.test(equation)) {
-                a = equation.match(/\|/g);
-                if (a.length % 2 == 1) return sendChat("`Unmatched |`");
-                for (let i = 0; i < a.length; i++) {
-                    if (i % 2 == 0) equation = equation.replace('|', 'Math.abs(');
-                    else
-                    equation = equation.replace('|', ')');
+            ] ];
+            do {
+                if (/\([0-9.\(\)+\-\/\*]\)/.test(equation)) {
+                    equate = equation.match(/\([0-9.\(\)+\-\/\*]\)/g);
+                    for (let i = 0; i < equate.length; i++) {
+                        equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                    }
                 }
-            }
+                for (let i = 0; i < methods.length; i++) {
+                    equation = equation.replace(methods[i][0], methods[i][1]);
+                }
+            } while (/[0-9.xy()]/.test(equation));
    
             try {
                 return eval(equation);
