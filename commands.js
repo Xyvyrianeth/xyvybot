@@ -1,4 +1,4 @@
-var version = "2.30.0.2";
+var version = "2.30.0.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1450,6 +1450,7 @@ var commands = {
             try {
                 return eval(equation);
             } catch (err) {
+                console.log(err);
                 return sendChat('`' + err + '`');
             }
    
@@ -1505,6 +1506,7 @@ var commands = {
                             else
                             ctx.lineTo(150 + x, 150 - a);
                         } catch (err) {
+                            console.log(err);
                             return sendChat("```" + err + "```");
                         }
    
@@ -1522,6 +1524,7 @@ var commands = {
                             try {
                                 let a = equ(equation, [x]);
                             } catch (err) {
+                                console.log(err);
                                 return sendChat("```" + err + "```");
                             }
                         }
@@ -1570,6 +1573,7 @@ var commands = {
                             else
                             ctx.lineTo(150 + x, 150 - a);
                         } catch (err) {
+                            console.log(err);
                             return sendChat("```" + err + "```");
                         }
    
