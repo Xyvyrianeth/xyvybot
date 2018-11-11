@@ -1,4 +1,4 @@
-var version = "2.30.1.1";
+var version = "2.30.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1530,6 +1530,8 @@ var commands = {
                     xy = ic[0];
                 }
             }
+            else
+            xy = ic[0];
 
             // start graphing
             let xy = xy.split('=');
