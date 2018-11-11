@@ -1,4 +1,4 @@
-var version = "2.30.1.0";
+var version = "2.30.1.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1515,7 +1515,7 @@ var commands = {
         if (e.length > colors.length) return sendChat("`Too many equations!`");
         let display = [];
 
-        for (let i = ii; i < e.length; i++) {
+        for (let i = 0; i < e.length; i++) {
 
             // decide color
             let ic = e[i].split(';');
