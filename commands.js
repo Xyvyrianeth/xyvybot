@@ -1,4 +1,4 @@
-var version = "2.30.0.5";
+var version = "2.30.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1387,10 +1387,16 @@ var commands = {
 
         }
         else
-        function equ(equation, xy) {
-            if (xy !== undefined) {
-                if (xy.length > 0) equation = equation.replace(/x/g, '(' + xy[0] + ')');
-                if (xy.length > 1) equation = equation.replace(/y/g, '(' + xy[1] + ')');
+        function equ(equation, xy, XY) {
+            if (xy !== undefined && XY !== undefined) {
+                if (XY == 'x') equation = equation.replace(/x/g, xy);
+                else
+                if (XY == 'y') equation = equation.replace(/y/g, xy);
+                else
+                if (XY == 'xy') {
+                    equation = equation.replace(/x/g, xy[0]);
+                    equation = equation.replace(/y/g, xy[1]);
+                }
             }
             let terms = [ [
                     /(pi|π)/g,
@@ -1416,15 +1422,15 @@ var commands = {
             }
             let methods = [ [
                     /(sin|cos|tan|csc|sec|cot|log)([0-9\.]{1,})/g,
-                    "Math.$1$2($3)"
+                    "Math.$1($2)"
                 ], [
-                    /(?:a?(sin|cos|tan|csc|sec|cot)|(sin|cos|tan|csc|sec|cot)\^-1)([0-9\.]{1,})/g,
+                    /(?:a?(sin|cos|tan|csc|sec|cot)|(sin|cos|tan|csc|sec|cot)\^-1)(\-?[0-9\.]{1,})/g,
                     "Math.a$1$2($3)"
                 ], [
-                    /(?:\\sqrt|√)\[([0-9\.]{1,})\]\(([0-9\.]{1,})\)/g,
+                    /(?:\\sqrt|√)\[(\-?[0-9\.]{1,})\]\((\-?[0-9\.]{1,})\)/g,
                     "Math.pow($2,(1/$1))"
                 ], [
-                    /(?:\\sqrt|√)\(([0-9\.]{1,})\)/g,
+                    /(?:\\sqrt|√)\((\-?[0-9\.]{1,})\)/g,
                     "Math.sqrt($1)"
                 ], [
                     /((?:\(\-?[0-9.]{1,}\)|-?[0-9.]{1,}))\^((?:\(\-?[0-9.]{1,}\)|-?[0-9.]{1,}))/g,
@@ -1439,7 +1445,8 @@ var commands = {
                     /\|([0-9\.]{1,})\|/g,
                     "Math.abs($1)"
             ] ];
-            do {
+            for (let i = 0; i < 1; i++) {
+                let lastEquation = equation;
                 if (/\([0-9.+\-\/\*]{1,}\)/.test(equation)) {
                     equate = equation.match(/\([0-9.+\-\/\*]{1,}\)/g);
                     for (let i = 0; i < equate.length; i++) {
@@ -1464,7 +1471,8 @@ var commands = {
                         equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                     }
                 }
-            } while (!/^(\-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))$/.test(equation));
+                if (equation != lastEquation) i--;
+            }
    
             try {
                 return eval(equation);
@@ -1476,142 +1484,171 @@ var commands = {
    
         }
    
+        // Draw blank graph
         canvas = new Canvas(300, 300);
         ctx = canvas.getContext('2d');
+        ctx.translate(150, 150);
         ctx.fillStyle = '#fff';
-        ctx.fillRect(0, 0, 300, 300);
+        ctx.fillRect(-150, -150, 150, 150);
         ctx.strokeStyle = "#aaa";
         for (let i = 80; i--;) {
-            ctx.moveTo(0, i * 10);
-            ctx.lineTo(300, i * 10);
+            ctx.moveTo(-150, i * 10);
+            ctx.lineTo(150, i * 10);
         }
         for (let i = 80; i--;) {
-            ctx.moveTo(i * 10, 0);
-            ctx.lineTo(i * 10, 300);
+            ctx.moveTo(i * 10, -150);
+            ctx.lineTo(i * 10, 150);
         }
         ctx.stroke();
         ctx.beginPath();
         ctx.lineWidth = 2;
         ctx.strokeStyle = "#000";
-        ctx.moveTo(150, 0);
-        ctx.lineTo(150, 300);
-        ctx.moveTo(0, 150);
-        ctx.lineTo(301, 150);
+        ctx.moveTo(0, -150);
+        ctx.lineTo(0, 150);
+        ctx.moveTo(-150, 0);
+        ctx.lineTo(150, 0);
         ctx.stroke();
-        e = input.toLowerCase().split(';');
-        input = input.split(';');
+        e = input.toLowerCase().replace(/ /g, "").split('\n');
+        input = input.split('\n');
         colors = ["#f00", "#f80", "#ff0", "#0f0", "#080", "#08f", "#00f", "#909", "#840", "#f8f"];
         if (/;$/.test(input)) e.pop();
         if (e.length > colors.length) return sendChat("`Too many equations!`");
+        let display = [];
 
-        for (let z = 0; z < e.length; z++) {
-            ctx.beginPath();
-            ctx.strokeStyle = colors[z];
-            q = e[z].split('=');
-            if (q.length == 1) {
-                if (q[0].includes('y') && q[0].includes('x')) return sendChat("")
+        for (let i = ii; i < e.length; i++) {
+
+            // decide color
+            let ic = e[i].split(';');
+            let color = colors[i];
+            if (ic.length == 2) {
+                if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[0].toLowerCase())) {
+                    color = ic[0].toLowerCase();
+                    xy = ic[1];
+                }
+                if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase())) {
+                    color = ic[1].toLowerCase();
+                    xy = ic[0];
+                }
+            }
+
+            // start graphing
+            let xy = xy.split('=');
+            let canEquate;
+            let result;
+            
+            if (xy.length == 1) {
+                if (xy[0].includes('x') && xy[0].includes('y')) {
+                    canEquate = false;
+                    result = "Equations cannot be graphed without **input** (*x*) or **output** (*y*) set equal to something.";
+                }
                 else
-                if (!q[0].includes('y')) {
-                    equation = q[0].replace(/ /g, '');
-                    for (let x = 151; x > -151; x--) {
-                        try {
-                            let a = equ(equation, [x]);
-                            if (typeof a !== "number") return sendChat("Error.");
-                            if (x == 151) ctx.moveTo(150 + x, 150 - a);
-                            else
-                            if (a == undefined || a == Infinity) {
-                                ctx.lineTo(150 + x, 0);
-                                ctx.moveTo(150 + x, 300);
-                            }
-                            else
-                            ctx.lineTo(150 + x, 150 - a);
-                        } catch (err) {
-                            console.log(err);
-                            return sendChat("```" + err + "```");
-                        }
-   
+                if (xy[0].includes('x') && !xy[0].includes('y')) {
+                    canEquate = true;
+                    result = [];
+                    for (let x = -150; x < 150; x++) {
+                        let ans = equ(equation, x, 'x');
+                        result.push([x, ans]);
                     }
-                    ctx.stroke();
+                }
+                else
+                if (!xy[0].includes('x') && xy[0].includes('y')) {
+                    canEquate = false;
+                    result = "Cannot take **output** (*y*) to determine **input** (*x*) without setting it equal to something.";
                 }
             }
             else
-            if (q.length == 2) {
-                if ((/y/.test(q[0]) && /x/.test(q[0])) || (/y/.test(q[1]) && /x/.test(q[1]))) {
-                    if ((/y/.test(q[0]) && /y/.test(q[1])) || (/x/.test(q[0]) && /x/.test(q[1]))) {
-                        equation = q[0].replace(/ /g, '');
-                        let values = [];
-                        for (let x = 151; x > -151; x--) {
-                            try {
-                                let a = equ(equation, [x]);
-                            } catch (err) {
-                                console.log(err);
-                                return sendChat("```" + err + "```");
-                            }
+            if (xy.length == 2) {
+                if ((xy[0].includes('x') && xy[1].includes('x')) || (xy[0].includes('y') && xy[1].includes('y'))) {
+                    canEquate = false;
+                    result = "Neither **input** (*x*) nor **output** (*y*) can be on both sides of an equation.";
+                }
+                else
+                if ((xy[0].includes('x') && xy[1].includes('y')) || (xy[0].includes('y') && xy[1].includes('x'))) {
+                    canEquate = true;
+                    result = [];
+                    if (xy[1].includes('x')) xy = [xy[1], xy[0]];
+                    for (let x = -150; x < 150; x++) {
+                        for (let y = -150; y < 150; y++) {
+                            let X = equ(xy[0], x, 'x');
+                            let Y = equ(xy[1], y, 'y');
+                            if (Math.abs(X - Y) <= 0.5) result.push([x, y]);
+                        }
+                    }
+                }
+                else
+                if (!xy[0].includes('x') && !xy[1].includes('x') && !xy[0].includes('y') && !xy[1].includes('y')) {
+                    canEquate = false;
+                    result = "Equations cannot be graphed without **input** (*x*) or **output** (*y*) set equal to something.";
+                }
+                else
+                if (!xy[0].includes('x') && !xy[1].includes('x')) {
+                    if (xy[0].includes('y')) {
+                        canEquate = true;
+                        result = [];
+                        for (let y = -150; y < 150; y++) {
+                            X = equ(xy[1]);
+                            Y = equ(xy[0], y, 'y');
+                            if (Math.abs(X - Y) <= 0.5) result.push([X, Y]);
                         }
                     }
                     else
                     {
-                        equ1 = /y/.test(q[0]) ? q[0] : q[1];
-                        equ2 = equ1 == q[1] ? q[0] : q[1];
-                        for (let x = 151; x > -151; x--) {
-                            for (let y = 151; y > -151; y--) {
-                                ans = equ(equ1, [x, y]);
-                                if (typeof ans !== "number") return sendChat("Error.");
-                                if (ans > equ2 - 1 && ans < equ2 + 1) {
-                                    ctx.moveTo(150 + x, 150 - y);
-                                    ctx.lineTo(150 + x, 150 - y);
-                                }
-                            }
+                        canEquate = true;
+                        result = [];
+                        for (let y = -150; y < 150; y++) {
+                            X = equ(xy[0]);
+                            Y = equ(xy[1], y, 'y');
+                            if (Math.abs(X - Y) <= 0.5) result.push([X, Y]);
                         }
-                        ctx.stroke();
                     }
                 }
                 else
-                if ((/y/.test(q[0]) && q[0].trim() !== 'y') || (/y/.test(q[1]) && q[1].trim() !== 'y')) {  // Soon^TM
-                    equ = /x/.test(q[0]) ? q[0] : q[1];
-                    ans = /y/.test(q[0]) ? q[0] : q[1];
-   
-                    for (let x = 151; x > -151; x--) {
-                           
+                if (!xy[0].includes('y') && !xy[1].includes('y')) {
+                    if (xy[0].includes('x')) {
+                        canEquate = true;
+                        result = [];
+                        for (let x = -150; x < 150; x++) {
+                            X = equ(xy[0], x, 'x');
+                            Y = equ(xy[1]);
+                            if (Math.abs(X - Y) <= 0.5) result.push([X, Y]);
+                        }
                     }
-                }
-                else
-                {
-                    if (q[0].includes('y')) equation = q[1].replace(/ /g, '');
                     else
-                    equation = q[0].replace(/ /g, '');
-                    for (let x = 151; x > -151; x--) {
-                        try {
-                            let a = equ(equation, [x]);
-                            if (typeof a !== "number") return sendChat("Error.");
-                            if (x == 151) ctx.moveTo(150 + x, 150 - a);
-                            else
-                            if (a == undefined || a == Infinity) {
-                                ctx.lineTo(150 + x, 0);
-                                ctx.moveTo(150 + x, 300);
-                            }
-                            else
-                            ctx.lineTo(150 + x, 150 - a);
-                        } catch (err) {
-                            console.log(err);
-                            return sendChat("```" + err + "```");
+                    {
+                        canEquate = true;
+                        result = [];
+                        for (let x = -150; x < 150; x++) {
+                            X = equ(xy[1], x, 'x');
+                            Y = equ(xy[0]);
+                            if (Math.abs(X - Y) <= 0.5) result.push([X, Y]);
                         }
-   
                     }
-                    ctx.stroke();
                 }
             }
+
+            let result_;
+            if (canEquate) {
+                ctx.strokeColor = color;
+                for (let i = 0; i < result.length; i++) {
+                    if (i == 0) ctx.moveTo(result[i][0]);
+                    else
+                    ctx.lineTo(result[i]);
+                }
+                ctx.stroke();
+                result = new Color(color).getName();
+            } else {
+                result_ = result;
+            }
+            display.push(input[i] + " - " + result_);
         }
    
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = 1;
-        ctx.strokeRect(10, 10, 10, 10);
+        ctx.strokeRect(-140, -140, -130, -130);
         ctx.font = "10px Calibri";
         ctx.fillStyle = "#000000"
-        ctx.fillText("= 10 units\u00b2", 24, 19);
-   
-        for (let i = input.length; i--;) input[i] = '  ' + input[i].replace(/ /g, '') + ' - ' + ["Red", "Blue", "Green", "Purple", "Orange", "Yellow", "Teal", "Light Green", "Brown", "Pink"][i];
-        sendChat("```Equation" + (input.length > 1 ? 's' : '') + ":\n" + input.join('\n') + "```", new Discord.Attachment(canvas.toBuffer()));
+        ctx.fillText("= 10 units\u00b2", -126, -131);
+        sendChat("```Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n') + "```", new Discord.Attachment(canvas.toBuffer()));
    
     },
    
