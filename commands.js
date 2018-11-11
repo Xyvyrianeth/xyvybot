@@ -1,4 +1,4 @@
-var version = "2.30.1.2";
+var version = "2.30.1.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1520,6 +1520,7 @@ var commands = {
             // decide color
             let ic = e[i].split(';');
             let color = colors[i];
+            let xy = ic[0];
             if (ic.length == 2) {
                 if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[0].toLowerCase())) {
                     color = ic[0].toLowerCase();
@@ -1530,8 +1531,6 @@ var commands = {
                     xy = ic[0];
                 }
             }
-            else
-            xy = ic[0];
 
             // start graphing
             let xy = xy.split('=');
