@@ -1,4 +1,4 @@
-var version = "2.30.1.3";
+var version = "2.30.1.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1531,9 +1531,9 @@ var commands = {
                     xy = ic[0];
                 }
             }
+            xy = xy.split('=');
 
             // start graphing
-            let xy = xy.split('=');
             let canEquate;
             let result;
             
