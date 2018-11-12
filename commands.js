@@ -1,4 +1,4 @@
-var version = "2.30.2.2";
+var version = "2.30.2.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1569,6 +1569,7 @@ var commands = {
         ctx.font = "10px Calibri";
         ctx.fillStyle = "#000000"
         ctx.fillText("= 10 units\u00b2", -126, -131);
+        console.log(display);
         sendChat("```Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n') + "```", new Discord.Attachment(canvas.toBuffer()));
    
     },
