@@ -5,12 +5,16 @@
     </head>
     <body style="background-color: black">
         
-        <canvas id="thing" width="301" height="301" style="position: fixed; border: 1px solid #000"></canvas>
-        <p style="color: #fff; position: fixed; top: 350px" id="text">Text<p>
+        <canvas id="thing" width="301" height="301" style="position:fixed; border:1px solid #000"></canvas>
+        <textarea style="position: fixed; top: 10px; left: 320px; min-height: 200px; min-width: 300px" id="input" placeholder="Put equations here"></textarea>
+        <button style="position:fixed; top:350px; left:350px;" onClick="draw()">Equate</button>
+        <p id="text" style="color: white; position:fixed; top:300px;">Output</p>
         <script>
-            input = '\\sqrt((50^2) - (x^2)); #f00\n-\\sqrt((50^2) - (x^2)); #f00\n\\sin(x*10)*10';
+            canvas = document.getElementById("thing");
+            ctx = canvas.getContext('2d');
+            ctx.translate(150.5, 150.5);
             function equ(equation, x) {
-            if (x !== undefined) equation = equation.replace(/x/g, x);
+            if (x !== undefined) equation = equation.replace(/x/g, '(' + x + ')');
             let terms = [ [
                     /(pi|π)/g,
                     "(Math.PI)"
@@ -43,7 +47,7 @@
                     /(?:\\sqrt|√)\[(\-?[0-9\.]{1,})\]\((\-?[0-9\.]{1,})\)/g,
                     "Math.pow($2,(1/$1))"
                 ], [
-                    /(?:\\sqrt|√)\((\-?[0-9\.]{1,})\)/g,
+                    /(?:\\sqrt|√)(\-?[0-9\.]{1,}|\(\-?[0-9\.]{1,}\))/g,
                     "Math.sqrt($1)"
                 ], [
                     /((?:\(\-?[0-9.]{1,}\)|-?[0-9.]{1,}))\^((?:\(\-?[0-9.]{1,}\)|-?[0-9.]{1,}))/g,
@@ -61,6 +65,10 @@
             let lastEquation;
             for (let i = 0; i < 1; i++) {
                 lastEquation = equation;
+                if (/\(Math.(PI|Infinity)\)/g.test(equation)) {
+                	equation = equation.replace(/\(Math.PI\)/g, Math.PI);
+                    equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+                }
                 if (/\([0-9.+\-\/\*]{1,}\)/.test(equation)) {
                     equate = equation.match(/\([0-9.+\-\/\*]{1,}\)/g);
                     for (let i = 0; i < equate.length; i++) {
@@ -97,106 +105,109 @@
             }
    
         }
+        function draw() {
    
-        // Draw blank graph
-        canvas = document.getElementById("thing");
-        ctx = canvas.getContext('2d');
-        ctx.translate(150.5, 150.5);
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(-150, -150, 300, 300);
-        ctx.strokeStyle = "#aaa";
-        for (let i = 80; i--;) {
-            ctx.moveTo(-150, i * 10 - 150);
-            ctx.lineTo(150, i * 10 - 150);
-        }
-        for (let i = 80; i--;) {
-            ctx.moveTo(i * 10 - 150, -150);
-            ctx.lineTo(i * 10 - 150, 150);
-        }
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.strokeStyle = "#000";
-        ctx.moveTo(0, -150);
-        ctx.lineTo(0, 150);
-        ctx.moveTo(-150, 0);
-        ctx.lineTo(150, 0);
-        ctx.stroke();
-        e = input.toLowerCase().replace(/ /g, "").split('\n');
-        input = input.split('\n');
-        colors = ["#f00", "#f80", "#ff0", "#0f0", "#080", "#08f", "#00f", "#909", "#840", "#f8f"];
-        if (/;$/.test(input)) e.pop();
-        if (e.length > colors.length) console.log("`Too many equations!`");
-        let display = [];
-
-        for (let i = 0; i < e.length; i++) {
-
-            // decide color
-            let ic = e[i].split(';');
-            let color = colors[i];
-            let y = ic[0];
-            if (ic.length == 2) {
-                if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[0].toLowerCase())) {
-                    color = ic[0].toLowerCase();
-                    y = ic[1];
-                }
-                if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase())) {
-                    color = ic[1].toLowerCase();
-                    y = ic[0];
-                }
+            // Draw blank graph
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(-150, -150, 300, 300);
+            ctx.strokeStyle = "#aaa";
+            for (let i = 80; i--;) {
+                ctx.moveTo(-150, i * 10 - 150);
+                ctx.lineTo(150, i * 10 - 150);
             }
-            y = y.replace(/^y ?= ?/, '');
-
-            // start graphing
-            let canEquate = true;
-            let result;
-            
-            if (y.includes('y')) {
-                canEquate = false;
-                result = "Output (*y*) must remain isolated in all equations.";
+            for (let i = 80; i--;) {
+                ctx.moveTo(i * 10 - 150, -150);
+                ctx.lineTo(i * 10 - 150, 150);
             }
-            else
-            {
-                result = [];
-                for (let x = -150; x < 151; x++) {
-                    let ans = equ(y, x);
-                    if (ans[0] == "error") {
-                        result = ans[1];
-                        canEquate = false;
-                        break;
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.strokeStyle = "#000";
+            ctx.moveTo(0, -150);
+            ctx.lineTo(0, 150);
+            ctx.moveTo(-150, 0);
+            ctx.lineTo(150, 0);
+            ctx.stroke();
+            let input = document.getElementById("input").value;
+            e = input.toLowerCase().replace(/ /g, "").split('\n');
+            input = input.split('\n');
+            colors = ["#f00", "#f80", "#ff0", "#0f0", "#080", "#08f", "#00f", "#909", "#840", "#f8f"];
+            if (/;$/.test(input)) e.pop();
+            if (e.length > colors.length) console.log("`Too many equations!`");
+            let display = [];
+
+            for (let i = 0; i < e.length; i++) {
+
+                // decide color
+                let ic = e[i].split(';');
+                let color = colors[i];
+                let y = ic[0];
+                if (ic.length == 2) {
+                    if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[0].toLowerCase())) {
+                        color = ic[0].toLowerCase();
+                        y = ic[1];
                     }
-                    result.push([x, ans[1]]);
+                    if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase())) {
+                        color = ic[1].toLowerCase();
+                        y = ic[0];
+                    }
                 }
+                y = y.replace(/^y ?= ?/, '');
+
+                // start graphing
+                let canEquate = true;
+                let result;
+
+                if (y.includes('y')) {
+                    canEquate = false;
+                    result = "Output (*y*) must remain isolated in all equations.";
+                }
+                else
+                {
+                    result = [];
+                    for (let x = -150; x < 151; x++) {
+                        let ans = equ(y, x);
+                        if (ans[0] == "error") {
+                            result = ans[1];
+                            canEquate = false;
+                            break;
+                        }
+                        result.push([x, ans[1]]);
+                    }
+                }
+
+                let result_;
+                if (canEquate) {
+                    ctx.strokeStyle = color;
+                    ctx.beginPath();
+                    for (let i = 0; i < result.length; i++) {
+                        if (i == 0) {
+                        	ctx.moveTo(result[i][0], -result[i][1]);
+                        }
+                        else
+                        {
+                        	ctx.lineTo(result[i][0], -result[i][1]);
+                        }
+                    }
+                    ctx.stroke();
+                    result_ = color;
+                }
+                else
+                {
+                    result_ = result;
+                }
+                display.push("y = " + input[i].split(';')[0] + " - " + result_);
             }
 
-            let result_;
-            if (canEquate) {
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                for (let i = 0; i < result.length; i++) {
-                    if (i == 0) ctx.moveTo(result[i][0], -result[i][1]);
-                    else
-                    ctx.lineTo(result[i][0], -result[i][1]);
-                }
-                ctx.stroke();
-                result_ = color;
-            }
-            else
-            {
-                result_ = result;
-            }
-            display.push("y = " + input[i] + " - " + result_);
+            ctx.beginPath();
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(-140, -140, 10, 10);
+            ctx.font = "11px Calibri";
+            ctx.fillStyle = "#000000"
+            ctx.fillText("= 10 units\u00b2", -126, -132);
+            let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
+            document.getElementById("text").innerText = text;
         }
-   
-        ctx.beginPath();
-        ctx.strokeStyle = "#000000";
-        ctx.lineWidth = 1;
-        ctx.strokeRect(-140, -140, 10, 10);
-        ctx.font = "11px Calibri";
-        ctx.fillStyle = "#000000"
-        ctx.fillText("= 10 units\u00b2", -126, -132);
-        let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
-        document.getElementById("text").innerText = text;
         </script>
     </body>
 </html>
