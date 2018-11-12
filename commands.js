@@ -1,4 +1,4 @@
-var version = "2.30.2.3";
+var version = "2.30.2.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1527,7 +1527,7 @@ var commands = {
             y = y.replace(/^y ?= ?/, '');
 
             // start graphing
-            let canEquate;
+            let canEquate = true;
             let result;
             
             if (y.includes('y')) {
@@ -1550,7 +1550,6 @@ var commands = {
 
             let result_;
             if (canEquate) {
-                console.log('1' + result_);
                 ctx.strokeStyle = color;
                 ctx.beginPath();
                 for (let i = 0; i < result.length; i++) {
@@ -1558,18 +1557,14 @@ var commands = {
                     else
                     ctx.lineTo(result[i][0], -result[i][1]);
                 }
-                console.log('2' + result_);
                 ctx.stroke();
                 result_ = new Color(color).getName();
-                console.log('3' + result_);
             }
             else
             {
                 result_ = result;
-                console.log('4' + result_);
             }
             display.push("y = " + input[i] + " - " + result_);
-            console.log('5' + result_);
         }
    
         ctx.strokeStyle = "#000000";
