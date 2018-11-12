@@ -1,4 +1,4 @@
-var version = "2.30.1.8";
+var version = "2.30.1.9";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1547,7 +1547,7 @@ var commands = {
                     canEquate = true;
                     result = [];
                     for (let x = -150; x < 150; x++) {
-                        let ans = equ(equation, x, 'x');
+                        let ans = equ(xy[0], x, 'x');
                         result.push([x, ans]);
                     }
                 }
