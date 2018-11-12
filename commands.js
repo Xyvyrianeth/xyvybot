@@ -1,4 +1,4 @@
-var version = "2.30.1.10";
+var version = "2.30.2.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1387,17 +1387,8 @@ var commands = {
 
         }
         else
-        function equ(equation, xy, XY) {
-            if (xy !== undefined && XY !== undefined) {
-                if (XY == 'x') equation = equation.replace(/x/g, xy);
-                else
-                if (XY == 'y') equation = equation.replace(/y/g, xy);
-                else
-                if (XY == 'xy') {
-                    equation = equation.replace(/x/g, xy[0]);
-                    equation = equation.replace(/y/g, xy[1]);
-                }
-            }
+        function equ(equation, x) {
+            if (x !== undefined) equation = equation.replace(/x/g, x);
             let terms = [ [
                     /(pi|π)/g,
                     "(Math.PI)"
@@ -1520,24 +1511,24 @@ var commands = {
             // decide color
             let ic = e[i].split(';');
             let color = colors[i];
-            let xy = ic[0];
+            let y = ic[0];
             if (ic.length == 2) {
                 if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[0].toLowerCase())) {
                     color = ic[0].toLowerCase();
-                    xy = ic[1];
+                    y = ic[1];
                 }
                 if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase())) {
                     color = ic[1].toLowerCase();
-                    xy = ic[0];
+                    y = ic[0];
                 }
             }
-            xy = xy.replace(/^y ?= ?/, '');
+            y = y.replace(/^y ?= ?/, '');
 
             // start graphing
             let canEquate;
             let result;
             
-            if (xy.includes('y')) {
+            if (y.includes('y')) {
                 canEquate = false;
                 result = "Output (*y*) must remain isolated in all equations.";
             }
@@ -1545,7 +1536,7 @@ var commands = {
             {
                 result = [];
                 for (let x = -150; x < 150; x++) {
-                    let ans = equ(xy, x, 'x');
+                    let ans = equ(y, x);
                     result.push([x, ans]);
                 }
             }
