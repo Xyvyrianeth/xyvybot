@@ -1,4 +1,4 @@
-var version = "2.30.1.7";
+var version = "2.30.1.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1445,8 +1445,9 @@ var commands = {
                     /\|([0-9\.]{1,})\|/g,
                     "Math.abs($1)"
             ] ];
+            let lastEquation;
             for (let i = 0; i < 1; i++) {
-                let lastEquation = equation;
+                lastEquation = equation;
                 if (/\([0-9.+\-\/\*]{1,}\)/.test(equation)) {
                     equate = equation.match(/\([0-9.+\-\/\*]{1,}\)/g);
                     for (let i = 0; i < equate.length; i++) {
@@ -1475,11 +1476,10 @@ var commands = {
             }
    
             try {
-                return eval(equation);
+                return ["equated", eval(equation)];
             } catch (err) {
-                console.log(err);
-                console.log(equation);
-                return sendChat('`' + err + '`');
+                console.log(lastEquation + '\n' + equation);
+                return ["error", err];
             }
    
         }
@@ -1572,7 +1572,17 @@ var commands = {
                         for (let y = -150; y < 150; y++) {
                             let X = equ(xy[0], x, 'x');
                             let Y = equ(xy[1], y, 'y');
-                            if (Math.abs(X - Y) <= 0.5) result.push([x, y]);
+                            if (X[0] == "error" || Y[0] == "error") {
+                                canEquate = false;
+                                let err;
+                                if (X[0] == "error") err = X[1];
+                                else
+                                if (Y[0] == "error") err = Y[1];
+                                result = err;
+                                break;
+                            }
+                            else
+                            if (Math.abs(X[1] - Y[1]) <= 0.5) result.push([x, y]);
                         }
                     }
                 }
@@ -1589,7 +1599,17 @@ var commands = {
                         for (let y = -150; y < 150; y++) {
                             X = equ(xy[1]);
                             Y = equ(xy[0], y, 'y');
-                            if (Math.abs(X - Y) <= 0.5) result.push([X, Y]);
+                            if (X[0] == "error" || Y[0] == "error") {
+                                canEquate = false;
+                                let err;
+                                if (X[0] == "error") err = X[1];
+                                else
+                                if (Y[0] == "error") err = Y[1];
+                                result = err;
+                                break;
+                            }
+                            else
+                            if (Math.abs(X[1] - Y[1]) <= 0.5) result.push([X, Y]);
                         }
                     }
                     else
@@ -1599,7 +1619,17 @@ var commands = {
                         for (let y = -150; y < 150; y++) {
                             X = equ(xy[0]);
                             Y = equ(xy[1], y, 'y');
-                            if (Math.abs(X - Y) <= 0.5) result.push([X, Y]);
+                            if (X[0] == "error" || Y[0] == "error") {
+                                canEquate = false;
+                                let err;
+                                if (X[0] == "error") err = X[1];
+                                else
+                                if (Y[0] == "error") err = Y[1];
+                                result = err;
+                                break;
+                            }
+                            else
+                            if (Math.abs(X[1] - Y[1]) <= 0.5) result.push([X, Y]);
                         }
                     }
                 }
@@ -1611,7 +1641,17 @@ var commands = {
                         for (let x = -150; x < 150; x++) {
                             X = equ(xy[0], x, 'x');
                             Y = equ(xy[1]);
-                            if (Math.abs(X - Y) <= 0.5) result.push([X, Y]);
+                            if (X[0] == "error" || Y[0] == "error") {
+                                canEquate = false;
+                                let err;
+                                if (X[0] == "error") err = X[1];
+                                else
+                                if (Y[0] == "error") err = Y[1];
+                                result = err;
+                                break;
+                            }
+                            else
+                            if (Math.abs(X[1] - Y[1]) <= 0.5) result.push([X, Y]);
                         }
                     }
                     else
@@ -1621,7 +1661,17 @@ var commands = {
                         for (let x = -150; x < 150; x++) {
                             X = equ(xy[1], x, 'x');
                             Y = equ(xy[0]);
-                            if (Math.abs(X - Y) <= 0.5) result.push([X, Y]);
+                            if (X[0] == "error" || Y[0] == "error") {
+                                canEquate = false;
+                                let err;
+                                if (X[0] == "error") err = X[1];
+                                else
+                                if (Y[0] == "error") err = Y[1];
+                                result = err;
+                                break;
+                            }
+                            else
+                            if (Math.abs(X[1] - Y[1]) <= 0.5) result.push([X, Y]);
                         }
                     }
                 }
@@ -1630,6 +1680,7 @@ var commands = {
             let result_;
             if (canEquate) {
                 ctx.strokeStyle = color;
+                ctx.beginPath();
                 for (let i = 0; i < result.length; i++) {
                     if (i == 0) ctx.moveTo(result[i][0], -result[i][1]);
                     else
