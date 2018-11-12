@@ -1,4 +1,4 @@
-var version = "2.30.2.6";
+var version = "2.30.2.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1471,16 +1471,15 @@ var commands = {
                 return ["equated", eval(equation)];
             }
             catch (err) {
-                console.log(lastEquation + '\n' + equation);
                 return ["error", err];
             }
    
         }
    
         // Draw blank graph
-        canvas = new Canvas(300, 300);
+        canvas = new Canvas(301, 301);
         ctx = canvas.getContext('2d');
-        ctx.translate(150, 150);
+        ctx.translate(150.5, 150.5);
         ctx.fillStyle = '#fff';
         ctx.fillRect(-150, -150, 300, 300);
         ctx.strokeStyle = "#aaa";
@@ -1537,7 +1536,7 @@ var commands = {
             else
             {
                 result = [];
-                for (let x = -150; x < 150; x++) {
+                for (let x = -150; x < 151; x++) {
                     let ans = equ(y, x);
                     if (ans[0] == "error") {
                         result = ans[1];
@@ -1551,6 +1550,7 @@ var commands = {
             let result_;
             if (canEquate) {
                 ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
                 ctx.beginPath();
                 for (let i = 0; i < result.length; i++) {
                     if (i == 0) ctx.moveTo(result[i][0], -result[i][1]);
@@ -1571,9 +1571,9 @@ var commands = {
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = 1;
         ctx.strokeRect(-140, -140, 10, 10);
-        ctx.font = "10px Calibri";
+        ctx.font = "11px Calibri";
         ctx.fillStyle = "#000000"
-        ctx.fillText("= 10 units\u00b2", -126, -131);
+        ctx.fillText("= 10 units\u00b2", -126, -132);
         sendChat("```Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n') + "```", new Discord.Attachment(canvas.toBuffer()));
    
     },
