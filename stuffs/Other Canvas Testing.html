@@ -6,7 +6,7 @@
     <body style="background-color: black">
         
         <canvas id="thing" width="301" height="301" style="position: fixed; border: 1px solid #000"></canvas>
-        
+        <p style="color: #fff" id="text">Text<p>
         <script>
             input = '\\sqrt((50^2) - (x^2)); #f00\n-\\sqrt((50^2) - (x^2)); #f00\nsin(x*10)*10';
             function equ(equation, x) {
@@ -195,7 +195,8 @@
         ctx.font = "11px Calibri";
         ctx.fillStyle = "#000000"
         ctx.fillText("= 10 units\u00b2", -126, -132);
-        console.log("Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n'));
+        let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
+        document.getElementById("text").innerText = text;
         </script>
     </body>
 </html>
