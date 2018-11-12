@@ -1,4 +1,4 @@
-var version = "2.30.2.7";
+var version = "2.30.2.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1493,7 +1493,6 @@ var commands = {
         }
         ctx.stroke();
         ctx.beginPath();
-        ctx.lineWidth = 2;
         ctx.strokeStyle = "#000";
         ctx.moveTo(0, -150);
         ctx.lineTo(0, 150);
