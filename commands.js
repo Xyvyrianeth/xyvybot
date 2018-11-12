@@ -1629,7 +1629,7 @@ var commands = {
 
             let result_;
             if (canEquate) {
-                ctx.strokeColor = color;
+                ctx.strokeStyle = color;
                 for (let i = 0; i < result.length; i++) {
                     if (i == 0) ctx.moveTo(result[i][0], result[i][1]);
                     else
