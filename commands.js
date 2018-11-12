@@ -1,4 +1,4 @@
-var version = "2.30.1.5";
+var version = "2.30.1.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1489,15 +1489,15 @@ var commands = {
         ctx = canvas.getContext('2d');
         ctx.translate(150, 150);
         ctx.fillStyle = '#fff';
-        ctx.fillRect(-150, -150, 150, 150);
+        ctx.fillRect(-150, -150, 300, 300);
         ctx.strokeStyle = "#aaa";
         for (let i = 80; i--;) {
-            ctx.moveTo(-150, i * 10);
-            ctx.lineTo(150, i * 10);
+            ctx.moveTo(-150, i * 10 - 150);
+            ctx.lineTo(150, i * 10 - 150);
         }
         for (let i = 80; i--;) {
-            ctx.moveTo(i * 10, -150);
-            ctx.lineTo(i * 10, 150);
+            ctx.moveTo(i * 10 - 150, -150);
+            ctx.lineTo(i * 10 - 150, 150);
         }
         ctx.stroke();
         ctx.beginPath();
@@ -1645,7 +1645,7 @@ var commands = {
    
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = 1;
-        ctx.strokeRect(-140, -140, -130, -130);
+        ctx.strokeRect(-140, -140, 10, 10);
         ctx.font = "10px Calibri";
         ctx.fillStyle = "#000000"
         ctx.fillText("= 10 units\u00b2", -126, -131);
