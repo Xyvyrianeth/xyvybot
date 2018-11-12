@@ -8,7 +8,7 @@
         <canvas id="thing" width="301" height="301" style="position: fixed; border: 1px solid #000"></canvas>
         <p style="color: #fff; position: fixed; top: 350px" id="text">Text<p>
         <script>
-            input = '\\sqrt((50^2) - (x^2)); #f00\n-\\sqrt((50^2) - (x^2)); #f00\nsin(x*10)*10';
+            input = '\\sqrt((50^2) - (x^2)); #f00\n-\\sqrt((50^2) - (x^2)); #f00\n\\sin(x*10)*10';
             function equ(equation, x) {
             if (x !== undefined) equation = equation.replace(/x/g, x);
             let terms = [ [
@@ -34,10 +34,10 @@
                 equation = equation.replace(terms[i][0], terms[i][1]);
             }
             let methods = [ [
-                    /(sin|cos|tan|csc|sec|cot|log)([0-9\.]{1,})/g,
+                    /\\(sin|cos|tan|csc|sec|cot|log)(\-?[0-9\.]{1,}|\(\-?[0-9\.]{1,}\))/g,
                     "Math.$1($2)"
                 ], [
-                    /(?:a?(sin|cos|tan|csc|sec|cot)|(sin|cos|tan|csc|sec|cot)\^-1)(\-?[0-9\.]{1,})/g,
+                    /\\(?:a?(sin|cos|tan|csc|sec|cot)|(sin|cos|tan|csc|sec|cot)\^-1)(\-?[0-9\.]{1,}|\(\-?[0-9\.]{1,}\))/g,
                     "Math.a$1$2($3)"
                 ], [
                     /(?:\\sqrt|√)\[(\-?[0-9\.]{1,})\]\((\-?[0-9\.]{1,})\)/g,
