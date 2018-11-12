@@ -1,4 +1,4 @@
-var version = "2.30.1.9";
+var version = "2.30.1.10";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1531,149 +1531,22 @@ var commands = {
                     xy = ic[0];
                 }
             }
-            xy = xy.split('=');
+            xy = xy.replace(/^y ?= ?/, '');
 
             // start graphing
             let canEquate;
             let result;
             
-            if (xy.length == 1) {
-                if (xy[0].includes('x') && xy[0].includes('y')) {
-                    canEquate = false;
-                    result = "Equations cannot be graphed without **input** (*x*) or **output** (*y*) set equal to something.";
-                }
-                else
-                if (xy[0].includes('x') && !xy[0].includes('y')) {
-                    canEquate = true;
-                    result = [];
-                    for (let x = -150; x < 150; x++) {
-                        let ans = equ(xy[0], x, 'x');
-                        result.push([x, ans]);
-                    }
-                }
-                else
-                if (!xy[0].includes('x') && xy[0].includes('y')) {
-                    canEquate = false;
-                    result = "Cannot take **output** (*y*) to determine **input** (*x*) without setting it equal to something.";
-                }
+            if (xy.includes('y')) {
+                canEquate = false;
+                result = "Output (*y*) must remain isolated in all equations.";
             }
             else
-            if (xy.length == 2) {
-                if ((xy[0].includes('x') && xy[1].includes('x')) || (xy[0].includes('y') && xy[1].includes('y'))) {
-                    canEquate = false;
-                    result = "Neither **input** (*x*) nor **output** (*y*) can be on both sides of an equation.";
-                }
-                else
-                if ((xy[0].includes('x') && xy[1].includes('y')) || (xy[0].includes('y') && xy[1].includes('x'))) {
-                    canEquate = true;
-                    result = [];
-                    if (xy[1].includes('x')) xy = [xy[1], xy[0]];
-                    for (let x = -150; x < 150; x++) {
-                        for (let y = -150; y < 150; y++) {
-                            let X = equ(xy[0], x, 'x');
-                            let Y = equ(xy[1], y, 'y');
-                            if (X[0] == "error" || Y[0] == "error") {
-                                canEquate = false;
-                                let err;
-                                if (X[0] == "error") err = X[1];
-                                else
-                                if (Y[0] == "error") err = Y[1];
-                                result = err;
-                                break;
-                            }
-                            else
-                            if (Math.abs(X[1] - Y[1]) <= 0.5) result.push([x, y]);
-                        }
-                    }
-                }
-                else
-                if (!xy[0].includes('x') && !xy[1].includes('x') && !xy[0].includes('y') && !xy[1].includes('y')) {
-                    canEquate = false;
-                    result = "Equations cannot be graphed without **input** (*x*) or **output** (*y*) set equal to something.";
-                }
-                else
-                if (!xy[0].includes('x') && !xy[1].includes('x')) {
-                    if (xy[0].includes('y')) {
-                        canEquate = true;
-                        result = [];
-                        for (let y = -150; y < 150; y++) {
-                            X = equ(xy[1]);
-                            Y = equ(xy[0], y, 'y');
-                            if (X[0] == "error" || Y[0] == "error") {
-                                canEquate = false;
-                                let err;
-                                if (X[0] == "error") err = X[1];
-                                else
-                                if (Y[0] == "error") err = Y[1];
-                                result = err;
-                                break;
-                            }
-                            else
-                            if (Math.abs(X[1] - Y[1]) <= 0.5) result.push([X, Y]);
-                        }
-                    }
-                    else
-                    {
-                        canEquate = true;
-                        result = [];
-                        for (let y = -150; y < 150; y++) {
-                            X = equ(xy[0]);
-                            Y = equ(xy[1], y, 'y');
-                            if (X[0] == "error" || Y[0] == "error") {
-                                canEquate = false;
-                                let err;
-                                if (X[0] == "error") err = X[1];
-                                else
-                                if (Y[0] == "error") err = Y[1];
-                                result = err;
-                                break;
-                            }
-                            else
-                            if (Math.abs(X[1] - Y[1]) <= 0.5) result.push([X, Y]);
-                        }
-                    }
-                }
-                else
-                if (!xy[0].includes('y') && !xy[1].includes('y')) {
-                    if (xy[0].includes('x')) {
-                        canEquate = true;
-                        result = [];
-                        for (let x = -150; x < 150; x++) {
-                            X = equ(xy[0], x, 'x');
-                            Y = equ(xy[1]);
-                            if (X[0] == "error" || Y[0] == "error") {
-                                canEquate = false;
-                                let err;
-                                if (X[0] == "error") err = X[1];
-                                else
-                                if (Y[0] == "error") err = Y[1];
-                                result = err;
-                                break;
-                            }
-                            else
-                            if (Math.abs(X[1] - Y[1]) <= 0.5) result.push([X, Y]);
-                        }
-                    }
-                    else
-                    {
-                        canEquate = true;
-                        result = [];
-                        for (let x = -150; x < 150; x++) {
-                            X = equ(xy[1], x, 'x');
-                            Y = equ(xy[0]);
-                            if (X[0] == "error" || Y[0] == "error") {
-                                canEquate = false;
-                                let err;
-                                if (X[0] == "error") err = X[1];
-                                else
-                                if (Y[0] == "error") err = Y[1];
-                                result = err;
-                                break;
-                            }
-                            else
-                            if (Math.abs(X[1] - Y[1]) <= 0.5) result.push([X, Y]);
-                        }
-                    }
+            {
+                result = [];
+                for (let x = -150; x < 150; x++) {
+                    let ans = equ(xy, x, 'x');
+                    result.push([x, ans]);
                 }
             }
 
@@ -1687,7 +1560,7 @@ var commands = {
                     ctx.lineTo(result[i][0], -result[i][1]);
                 }
                 ctx.stroke();
-                result = new Color(color).getName();
+                result_ = new Color(color).getName();
             } else {
                 result_ = result;
             }
