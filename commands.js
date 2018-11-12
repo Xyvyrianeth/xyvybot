@@ -1453,7 +1453,8 @@ var commands = {
                 }
                 do {
                     equation = equation.replace(/\(\((\-?[0-9.]{1,})\)\)/, "($1)");
-                } while (/\(\((\-?[0-9.]{1,})\)\)/.test(equation));
+                }
+                while (/\(\((\-?[0-9.]{1,})\)\)/.test(equation));
                 for (let i = 0; i < methods.length; i++) {
                     equation = equation.replace(methods[i][0], methods[i][1]);
                 }
@@ -1468,7 +1469,8 @@ var commands = {
    
             try {
                 return ["equated", eval(equation)];
-            } catch (err) {
+            }
+            catch (err) {
                 console.log(lastEquation + '\n' + equation);
                 return ["error", err];
             }
@@ -1548,6 +1550,7 @@ var commands = {
 
             let result_;
             if (canEquate) {
+                console.log('1' + result_);
                 ctx.strokeStyle = color;
                 ctx.beginPath();
                 for (let i = 0; i < result.length; i++) {
@@ -1555,12 +1558,18 @@ var commands = {
                     else
                     ctx.lineTo(result[i][0], -result[i][1]);
                 }
+                console.log('2' + result_);
                 ctx.stroke();
                 result_ = new Color(color).getName();
-            } else {
-                result_ = result;
+                console.log('3' + result_);
             }
-            display.push(input[i] + " - " + result_);
+            else
+            {
+                result_ = result;
+                console.log('4' + result_);
+            }
+            display.push("y = " + input[i] + " - " + result_);
+            console.log('5' + result_);
         }
    
         ctx.strokeStyle = "#000000";
@@ -1569,7 +1578,6 @@ var commands = {
         ctx.font = "10px Calibri";
         ctx.fillStyle = "#000000"
         ctx.fillText("= 10 units\u00b2", -126, -131);
-        console.log(display);
         sendChat("```Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n') + "```", new Discord.Attachment(canvas.toBuffer()));
    
     },
