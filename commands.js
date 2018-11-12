@@ -1,4 +1,4 @@
-var version = "2.30.1.6";
+var version = "2.30.1.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1631,9 +1631,9 @@ var commands = {
             if (canEquate) {
                 ctx.strokeStyle = color;
                 for (let i = 0; i < result.length; i++) {
-                    if (i == 0) ctx.moveTo(result[i][0], result[i][1]);
+                    if (i == 0) ctx.moveTo(result[i][0], -result[i][1]);
                     else
-                    ctx.lineTo(result[i][0], result[i][1]);
+                    ctx.lineTo(result[i][0], -result[i][1]);
                 }
                 ctx.stroke();
                 result = new Color(color).getName();
