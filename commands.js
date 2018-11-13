@@ -1372,18 +1372,22 @@ var commands = {
             embed.setDescription("Okay, well, I made this simply because I had nothing better to do with my time. When I started, it was 100% text-drawn, "
                                 +"and it was really cool because I could add a lot of features to it when it didn't have to be accurate. Then I moved to "
                                 +"Node Canvas and had to start over. I'm still not anywhere near the level of Desmos, but I'm proud of myself with what "
-                                +"I have.");
+                                +"I have.\n"
+                                +"\n"
+                                +"In order to have a more advanced calculator, there needs to be a more strict syntax. I had to change a lot of things in "
+                                +"the old syntax just to enable something simple like square root, cube root, or n-root of x, and I'll have to change even "
+                                +"more if I want to add something like Π and ∑. I also had to change the method it uses to calculate almost entirely: instead "
+                                +"of it trying to do everything at once, it has to solve it step by step. It has its own order of operation it has to follow.\n"
+                                +"\n"
+                                +"I'm constantly refining it little by little, and soon it'll be something. Maybe not great, but something.");
             embed.addField("Other Sub-Commands", "`x!" + cmd + "`  `syntax`");
         }
         else
-        if (["help", "syntax"].includes(args[0])) {
+        if (["help", "syntax", "rules"].includes(args[0])) {
             let embed = new Discord.RichEmbed();
             embed.setTitle("How to Graphic Calculator, Xyvybot Style");
             embed.setAuthor("by Xyvyrianeth");
-            embed.setDescription("In order to have a more advanced calculator, there needs to be a more strict syntax. I had to change a lot of things in "
-                                +"the old syntax just to enable something simple like square root, cube root, or n-root of x, and I'll have to change even "
-                                +"more if I want to add something like Π and ∑.");
-            embed.addField("Basic Arithmatic: + - * /", "");
+            embed.setDescription("[[Click this link, it totally isn't spoopy]](");
 
         }
         else
@@ -1412,11 +1416,11 @@ var commands = {
                 equation = equation.replace(terms[i][0], terms[i][1]);
             }
             let methods = [ [
-                    /(sin|cos|tan|csc|sec|cot|log)([0-9\.]{1,})/g,
+                    /\\(sin|cos|tan|csc|sec|cot|log)(\-?[0-9\.]{1,}|\(\-?[0-9\.]{1,}\))/g,
                     "Math.$1($2)"
                 ], [
-                    /(?:a?(sin|cos|tan|csc|sec|cot)|(sin|cos|tan|csc|sec|cot)\^-1)(\-?[0-9\.]{1,})/g,
-                    "Math.a$1$2($3)"
+                    /\\(a(?:sin|cos|tan|csc|sec|cot))(\-?[0-9\.]{1,}|\(\-?[0-9\.]{1,}\))/g,
+                    "Math.$1($2)"
                 ], [
                     /(?:\\sqrt|√)\[(\-?[0-9\.]{1,})\]\((\-?[0-9\.]{1,})\)/g,
                     "Math.pow($2,(1/$1))"
