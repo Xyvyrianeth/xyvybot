@@ -33,7 +33,7 @@
                     ], [
                         /\)\(/g,
                         ")*("
-                ] ];0
+                ] ];
                 for (let i = 0; i < terms.length; i++) {
                     equation = equation.replace(terms[i][0], terms[i][1]);
                 }
@@ -50,23 +50,21 @@
                         /(?:\\rt|√)\[(\-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g,
                         "Math.pow($2,(1/Math.round($1)))"
                     ], [ // If the radicand is negative and the radical is odd
-                        /(?:\\rt|√)\[(\-?[0-9]{0,}[02468]{1,})\](\(\-[0-9.]{1,}\)|\-[0-9.]{1,})/g,
-                        "-Math.pow($2,(1/Math.round($1)))"
+                        /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1,})\](?:\(\-([0-9.]{1,})\)|\-([0-9.]{1,}))/g,
+                        "-Math.pow($2$3,(1/Math.round($1)))"
                     ], [ // If the radicand is negative and the radical is even
-                        /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1,})\](\(\-[0-9.]{1,}\)|\-[0-9.]{1,})/g,
+                        /(?:\\rt|√)\[\-?[0-9]{0,}[02468]{1,}\](?:\(\-[0-9.]{1,}\)|\-[0-9.]{1,})/g,
                         "NaN"
                     ], [
                         /(\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})\^(\(\-?[0-9]{1,}\)|\-?[0-9]{1,})/g,
                         "Math.pow($1,Math.round($2))"
                     ], [
-                    	/* Soon^TM
-                        /(?:\\sum|∑)\[n=([0-9\.]{1,})\]^\(([0-9\.]{1,})\)/g,
-                        "Math.sum($1, 2)"
+                    	/(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(\-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
+                        "Math.sum($1, $2, $3)"
                     ], [
-                        /(?:\\prod|∏)\[n=([0-9\.]{1,})\]^\(([0-9\.]{1,})\)/g,
-                        "Math.prod($1, 2)"
+                        /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(\-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
+                        "Math.prod($1, $2, $3)"
                     ], [
-                        */
                         /\|(\(\-?[0-9.+\-/*()]{1,})\|/g,
                         "Math.abs($1)"
                 ] ];
@@ -76,6 +74,9 @@
                     if (/\(Math.(PI|Infinity)\)/g.test(equation)) {
                         equation = equation.replace(/\(Math.PI\)/g, Math.PI);
                         equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+                    }
+                    if (/\(-?[0-9.]{1,}\)/g.test(equation)) {
+                        equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
                     }
                     if (/\([0-9.+\-/*]{1,}\)/.test(equation)) {
                         equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
@@ -89,10 +90,6 @@
                             if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                         }
                     }
-                    do {
-                        equation = equation.replace(/\(\((\-?[0-9.]{1,})\)\)/, "($1)");
-                    }
-                    while (/\(\((\-?[0-9.]{1,})\)\)/.test(equation));
                     for (let i = 0; i < methods.length; i++) {
                         equation = equation.replace(methods[i][0], methods[i][1]);
                     }
@@ -156,7 +153,7 @@
                 let input = document.getElementById("input").value;
                 e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
                 input = input.split('\n');
-                colors = ["#f00", "#f80", "#ff0", "#0f0", "#080", "#08f", "#00f", "#909", "#840", "#f8f"];
+                colors = ["#ff0000", "#ff7f0", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
                 if (/;$/.test(input)) e.pop();
                 if (e.length > colors.length) console.log("`Too many equations!`");
                 let display = [];
@@ -168,13 +165,20 @@
                     let color = colors[i];
                     let y = ic[0];
                     if (ic.length == 2) {
-                        if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[0].toLowerCase())) {
-                            color = ic[0].toLowerCase();
-                            y = ic[1];
-                        }
-                        if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase())) {
-                            color = ic[1].toLowerCase();
-                            y = ic[0];
+                        if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase())) color = ic[1].toLowerCase();
+                        if (/^(red|orange|yellow|(?:light||blue)green|blue|purple|brown|pink)$/i.test(ic[1])) {
+                            color = {
+                                "red": "#ff0000",
+                                "orange": "#ff7F00",
+                                "yellow": "#fefe33",
+                                "lightgreen": "00ff00",
+                                "green": "#008000",
+                                "bluegreen": "#0d98ba",
+                                "blue": "#0000ff",
+                                "purple": "#a020f0",
+                                "brown": "#964b00",
+                                "pink": "#ffc0cb"
+                            }[ic[1].toLowerCase()];
                         }
                     }
                     y = y.replace(/^y ?= ?/, '');
@@ -205,8 +209,7 @@
                     if (canEquate) {
                         ctx.strokeStyle = color;
                         ctx.beginPath();
-                        ctx.lineWidth = 2;
-                        ctx.lineJoin="round";
+                        ctx.lineJoin = "round";
                         ctx.lineCap = "round";
                         for (let i = 0; i < result.length; i++) {
                             if (i == 0) {
@@ -236,6 +239,14 @@
                 ctx.fillText("= 10 units\u00b2", -126, -132);
                 let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
                 document.getElementById("text").innerText = text;
+            }
+            Math.sum = function(n, a, b) {
+                c = a - n + 1;
+                return b * c;
+            }
+            Math.prod = function(n, a, b) {
+                c = a - n + 1;
+                return Math.pow(b, c);
             }
         </script>
     </body>
