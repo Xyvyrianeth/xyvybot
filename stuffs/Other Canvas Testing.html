@@ -33,6 +33,9 @@
                     ], [
                         /\)\(/g,
                         ")*("
+                    ], [
+                    	/-\(/g,
+                        "(-1)*("
                 ] ];
                 for (let i = 0; i < terms.length; i++) {
                     equation = equation.replace(terms[i][0], terms[i][1]);
@@ -65,7 +68,7 @@
                         /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(\-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
                         "Math.prod($1, $2, $3)"
                     ], [
-                        /\|(\(\-?[0-9.+\-/*()]{1,})\|/g,
+                        /\|(\-?[0-9.+\-/*()]{1,})\|/g,
                         "Math.abs($1)"
                 ] ];
                 let lastEquation;
@@ -153,7 +156,7 @@
                 let input = document.getElementById("input").value;
                 e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
                 input = input.split('\n');
-                colors = ["#ff0000", "#ff7f0", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
+                colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
                 if (/;$/.test(input)) e.pop();
                 if (e.length > colors.length) console.log("`Too many equations!`");
                 let display = [];
