@@ -82,36 +82,44 @@
                         equation = equation.replace(/\(Math.PI\)/g, Math.PI);
                         equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
                     }
+                    if (x == -150.5) console.log(equation);
                     if (/(?<![0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
                         equation = equation.replace(/(?<![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
                     }
-                    if (/(?<=[0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
-                        equation = equation.replace(/(?<=[0-9)])-\(-([0-9.]{1,})\)/g, "$1");
+                    if (x == -150.5) console.log(equation);
+                    if (/(?<![0-9)])\(-[0-9.]{1,}\)/g.test(equation)) {
+                        equation = equation.replace(/(?<![0-9)])\((-[0-9.]{1,})\)/g, "$1");
                     }
-                    if (/\(-?[0-9.]{1,}\)/g.test(equation)) {
-                        equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
+                    if (x == -150.5) console.log(equation);
+                    if (/(?<![0-9)])\([0-9.]{1,}\)/g.test(equation)) {
+                        equation = equation.replace(/(?<![0-9)])\(([0-9.]{1,})\)/g, "$1");
                     }
+                    if (x == -150.5) console.log(equation);
                     if (/\([0-9.+\-/*]{1,}\)/.test(equation)) {
                         equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
                         for (let i = 0; i < equate.length; i++) {
                             if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                         }
                     }
+                    if (x == -150.5) console.log(equation);
                     if (/\([0-9.\(\)+\-\/\*]{1,}\)/.test(equation)) {
                         equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
                         for (let i = 0; i < equate.length; i++) {
                             if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                         }
                     }
+                    if (x == -150.5) console.log(equation);
                     for (let i = 0; i < methods.length; i++) {
                         equation = equation.replace(methods[i][0], methods[i][1]);
                     }
+                    if (x == -150.5) console.log(equation);
                     if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation)) {
                         equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g);
                         for (let i = 0; i < equate.length; i++) {
                             equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                         }
                     }
+                    if (x == -150.5) console.log(equation);
                     if (equation != lastEquation) i--;
                 }
     
