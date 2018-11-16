@@ -1,4 +1,4 @@
-var version = "2.30.3.1";
+var version = "2.30.3.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -905,7 +905,7 @@ var commands = {
                         if (err) return sqlError(message, err, `UPDATE profiles
                             SET color = '${(args[1].startsWith('#') ? '' : '#') + args[1]}'
                             WHERE id = '${message.author.id}'`);
-                        let canvas = new Canvas(100, 40);
+                        let canvas = new Canvas.createCanvas(100, 40);
                         let ctx = canvas.getContext('2d');
                         ctx.fillStyle = (args[1].startsWith('#') ? '' : '#') + args[1];
                         ctx.fillRect(0, 0, 100, 40);
@@ -1502,7 +1502,7 @@ var commands = {
         }
    
         // Draw blank graph
-        canvas = new Canvas(301, 301);
+        canvas = new Canvas.createCanvas(301, 301);
         ctx = canvas.getContext('2d');
         ctx.translate(150.5, 150.5);
         ctx.fillStyle = '#fff';

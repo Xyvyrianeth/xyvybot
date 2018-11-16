@@ -44,7 +44,7 @@ exports.startGame = function(channel, player2) {
 }
   
 exports.drawBoard = function(game, end, quit) {
-    let canvas = new Canvas(230, 250);
+    let canvas = new Canvas.createCanvas(230, 250);
     let ctx = canvas.getContext('2d');
       
     // Function will vary with game

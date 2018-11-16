@@ -12,7 +12,7 @@ function newResolution(width, height) {
 exports.card = function(username, profile, background, avatar) {
     // Set the picture
     res = newResolution(background.width, background.height);
-    canvas = new Canvas(res[0], res[1]);
+    canvas = new Canvas.createCanvas(res[0], res[1]);
     ctx = canvas.getContext('2d');
     ctx.drawImage(background, 0, 0, res[0], res[1]);
   
