@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const {createCanvas} = require("canvas");
+const Canvas = require("canvas");
 const { channels } = require("/app/games/channels.js");
 var gamename = "3D Tic Tac Toe";
 var shortname = "3dttt";
@@ -60,7 +60,7 @@ exports.startGame = function(channel, player2) {
 }
  
 exports.drawBoard = function(game, end) {
-    let canvas = new createCanvas(w, h);
+    let canvas = new Canvas(w, h);
     let ctx = canvas.getContext('2d');
      
     // Function will vary with game
