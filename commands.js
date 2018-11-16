@@ -1,4 +1,4 @@
-var version = "2.30.3.0";
+var version = "2.30.3.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1542,7 +1542,6 @@ var commands = {
         ctx.moveTo(-150, 0);
         ctx.lineTo(150, 0);
         ctx.stroke();
-        let input = document.getElementById("input").value;
         e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
         input = input.split('\n');
         colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
