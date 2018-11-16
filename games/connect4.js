@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const Canvas = require("canvas");
+const {createCanvas} = require("canvas");
 const { channels } = require("/app/games/channels.js");
 var gamename = "Connect Four";
 var shortname = "connect4";
@@ -35,7 +35,7 @@ exports.startGame = function(channel, player2) {
 }
  
 exports.drawBoard = function(game, end, highlight) {
-    let canvas = new Canvas(220, 225);
+    let canvas = new createCanvas(220, 225);
     let ctx = canvas.getContext("2d");
      
     // Function will vary with game

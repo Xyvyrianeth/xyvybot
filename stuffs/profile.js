@@ -1,4 +1,4 @@
-const Canvas = require('canvas');
+const {createCanvas} = require('canvas');
 var { Color } = require('/app/stuffs/color.js');
 var titles = require('/app/stuffs/titles.json');
 
@@ -12,7 +12,7 @@ function newResolution(width, height) {
 exports.card = function(username, profile, background, avatar) {
     // Set the picture
     res = newResolution(background.width, background.height);
-    canvas = new Canvas(res[0], res[1]);
+    canvas = new createCanvas(res[0], res[1]);
     ctx = canvas.getContext('2d');
     ctx.drawImage(background, 0, 0, res[0], res[1]);
   

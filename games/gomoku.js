@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const Canvas = require("canvas");
+const {createCanvas} = require("canvas");
 const { channels } = require("/app/games/channels.js");
 var gamename = "Gomoku";
 var shortname = "gomoku";
@@ -40,7 +40,7 @@ exports.startGame = function(channel, player2) {
 }
  
 exports.drawBoard = function(game, end, highlight, row) {
-    let canvas = new Canvas(30 + (25 * 19), 50 + (25 * 19));
+    let canvas = new createCanvas(30 + (25 * 19), 50 + (25 * 19));
     let ctx = canvas.getContext("2d");
      
     // Function will vary with game
