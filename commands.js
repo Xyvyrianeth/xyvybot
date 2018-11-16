@@ -1,4 +1,4 @@
-var version = "2.30.3.3";
+var version = "2.30.3.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1383,11 +1383,11 @@ var commands = {
             embed.addField("Other Sub-Commands", "`x!" + cmd + "`  `syntax`");
         }
         else
-        if (["help", "syntax", "rules"].includes(args[0])) {
+        if (["help", "syntax", "rules"].includes(args[0]) || !args[0]) {
             let embed = new Discord.RichEmbed();
             embed.setTitle("How to Graphic Calculator, Xyvybot Style");
             embed.setAuthor("by Xyvyrianeth");
-            embed.setDescription("[[Click this link, it totally isn't spoopy]](");
+            embed.setDescription("[Click this link, it totally isn't spoopy](https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph)");
 
         }
         else
