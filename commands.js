@@ -1,4 +1,4 @@
-var version = "2.30.2.8";
+var version = "2.30.3.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -414,7 +414,7 @@ var commands = {
                         let los = top[i].los;
                         let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
 
-                        users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) | <@" + id + ">");
+                        users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) | <@" + id + '>');
                     }
                     if (res[1].rows.length != 0) {
                         users.push('');
@@ -427,7 +427,7 @@ var commands = {
                         let los = user.los;
                         let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
 
-                        users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) | <@" + id + ">");
+                        users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) | <@" + id + '>');
                     }
                     let embed = new Discord.RichEmbed();
                     embed.setTitle("Leaderboard for " + game);
@@ -493,7 +493,7 @@ var commands = {
                             let elo = user["elo" + (i + 1)];
                             let win = user["win" + (i + 1)];
                             let los = user["los" + (i + 1)];
-                            let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + "%" : "\u034f \u034f N/A \u034f \u034f";
+                            let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
                             ok.push('`' + game + ' \u034f'.repeat(17 - game.length) + '` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + '\u034f '.repeat(3 - String(los).length) + los + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`)");
                         }
                         embed.setDescription("__`\u034f \u034f \u034f \u034f Game Name \u034f \u034f \u034f \u034f`__ | __`\u034f ELO \u034f`__ | __`\u034f W \u034f`__ / __`\u034f L \u034f`__ (__`\u034f WIN % \u034f`__)\n" + ok.join("\n"));
@@ -739,7 +739,7 @@ var commands = {
                 else
                 profile = res.rows[0];
   
-                Jimp.read("./img/backgrounds/" + profile.background.substring(0, 7) + (profile.background.substring(7) == "j" ? ".jpg" : ".png")).then(function(image1) {
+                Jimp.read("./img/backgrounds/" + profile.background.substring(0, 7) + (profile.background.substring(7) == 'j' ? ".jpg" : ".png")).then(function(image1) {
                     image1.getBuffer("image/png", function(err, src) {
                         let { Image } = require("canvas");
                         background = new Image;
@@ -776,8 +776,8 @@ var commands = {
                 return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
                     if (err) return sendChat("```" + err + "```");
                     if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you do not yet have a background. If you want to change that fact, do `x!profile` right now!");
-                    if (res.rows[0].backgrounds.length == 1) return sendChat("This is your current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 20 Xuvys.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == "j" ? ".jpg" : ".png")));
-                    return sendChat("This is your current background, $user$! New backgrounds are still 20 Xuvys.\nDo `x!profile backgrounds` to view the other backgrounds you own.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == "j" ? ".jpg" : ".png")));
+                    if (res.rows[0].backgrounds.length == 1) return sendChat("This is your current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 20 Xuvys.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+                    return sendChat("This is your current background, $user$! New backgrounds are still 20 Xuvys.\nDo `x!profile backgrounds` to view the other backgrounds you own.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
                 });
             }
             else
@@ -813,10 +813,10 @@ var commands = {
                         SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "'")}, money = '${res.rows[0].money - 20}'
                         WHERE id = '${message.author.id}'`, function(err) {
                             if (err) sqlError(message, err, `UPDATE profiles
-                                SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "'")}, money = '${res.rows[0].money - 20}'
+                                SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "''")}, money = '${res.rows[0].money - 20}'
                                 WHERE id = '${message.author.id}'`);
                             else
-                            return sendChat("Successfully purchased a new background! To equip it, do `x!profile background [background ID]`. New background ID: `" + newbg + '`', new Discord.Attachment("./img/backgrounds/" + newbg.substring(0, 7) + (newbg.substring(7) == "j" ? ".jpg" : ".png")));
+                            return sendChat("Successfully purchased a new background! To equip it, do `x!profile background [background ID]`. New background ID: `" + newbg + '`', new Discord.Attachment("./img/backgrounds/" + newbg.substring(0, 7) + (newbg.substring(7) == 'j' ? ".jpg" : ".png")));
                     });
                 });
             }
@@ -1103,7 +1103,7 @@ var commands = {
             if (aliases.guild[i].includes(input)) {
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Aliases for " + i);
-                embed.setDescription("`" + aliases.guild.join("`  `") + "`");
+                embed.setDescription('`' + aliases.guild.join("`  `") + '`');
                 embed.setColor(new Color().random());
                 return sendChat(embed);
             }
@@ -1118,7 +1118,7 @@ var commands = {
                 if (!input) return sendChat("Here is how to format a bug report:\n\n```\nx!reportbug [command that's bugged]\n[description of bug (less than 1000 characters, please)]```\nPlease take note that if you submit a fake bug report, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
                 let com = input.split("\n")[0];
                 console.log('"' + com + '"');
-                if (com.startsWith("[")) return sendChat("With***out*** the brackets, you twit.");
+                if (com.startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
                 let aliases = message.channel.type == "dm" ? aliases.user : aliases.guild;
                 let a = false;
                 for (let i in aliases) 
@@ -1131,7 +1131,7 @@ var commands = {
                 if (desc.length > 1000) return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Bug Report");
-                embed.setAuthor(message.author.username + "#" + message.author.discriminator + " (" + message.author.id + ")");
+                embed.setAuthor(message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')');
                 embed.setDescription("**Command**: " + com + "\n\n" + desc);
                 client.guilds.get("399327996076621825").channels.get("467853697528102912").send(embed);
                 bugTimers[message.author.id] = 100 * 60 * 60 * 2;
@@ -1151,7 +1151,7 @@ var commands = {
                 if (input.length > 1000) return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("User Request");
-                embed.setAuthor(message.author.username + "#" + message.author.discriminator + " (" + message.author.id + ")");
+                embed.setAuthor(message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')');
                 embed.setDescription("**Suggestion**:\n" + input);
                 client.guilds.get("399327996076621825").channels.get("468245442388295691").send(embed);
                 requestTimers[message.author.id] = 100 * 60 * 60 * 2;
@@ -1206,7 +1206,7 @@ var commands = {
         if (!RE.ping.test(args[0]) || !RE.id2.test(args[0])) return sendChat("Invalid user mention, try again.");
         else
         {
-            message.channel.guild.members.get(args[0].match(RE.id1)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => sendChat("kicked user <@" + args[0].match(RE.id1)[0] + ">")).catch((err) => sendChat("Failed to kick user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"))
+            message.channel.guild.members.get(args[0].match(RE.id1)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => sendChat("kicked user <@" + args[0].match(RE.id1)[0] + '>')).catch((err) => sendChat("Failed to kick user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"))
         }
 
     },
@@ -1218,7 +1218,7 @@ var commands = {
         if (!RE.ping.test(args[0]) || !RE.id2.test(args[0])) return sendChat("Invalid user mention, try again.");
         else
         {
-            message.channel.guild.members.get(args[0].match(RE.id1)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => sendChat("baned user <@" + args[0].match(RE.id1)[0] + ">")).catch((err) => sendChat("Failed to ban user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"))
+            message.channel.guild.members.get(args[0].match(RE.id1)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => sendChat("baned user <@" + args[0].match(RE.id1)[0] + '>')).catch((err) => sendChat("Failed to ban user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"))
         }
 
     },
@@ -1309,7 +1309,7 @@ var commands = {
                 let chart1 = "V O W E L S\n_A　_I　_U　_E　_O\n------------------\nあ  い  う  え  お|__ C\nか  き  く  け  こ|K_ O\nさ  し  す  せ  そ|S_ N\nた  ち  つ  て  と|T_ S\nな  に  ぬ  ね  の|N_ O\nは  ひ  ふ  へ  ほ|H_ N\nま  み  む  め  も|M_ A\nや  　  ゆ  　  よ|Y_ N\nら  り  る  れ  ろ|R_ T\nわ  　  　  　  を|W_ S\nん  　  　  　  　|NN ";
                 embed.addField("Hiragana Chart:", "```" + chart1 + "```");
                 embed.addField("Exceptions", "し (shi)\nち (chi)\nつ (tsu)\nふ (fu)\nを (o)");
-                embed.addField("The ん", "The ん is a rather special character, since it does not have a vowel sound. It can make both the sound of the letter 'n' and the letter 'm', depending on the character succeeding it. For characters with the consonants 'm', 'b', and 'p', it makes the 'm' sound, and it makes an 'n' sound for everything else. Common mistake in pronunciation is the word 先輩 (せんぱい), which is often pronounced as \"senpai\" by non-Japanese speakers when it should be pronounced \"sempai\".");
+                embed.addField("The ん", "The ん is a rather special character, since it does not have a vowel sound. It can make both the sound of the letter 'n' and the letter 'm', depending on the character succeeding it. For characters with the consonants 'm', 'b', and 'p', it makes the 'm' sound, and it makes an 'n' sound for everything else. Common mistake in pronunciation is the word 先輩 (せんぱい), which is often pronounced as \"senpai\" by non-Japanese speakers when it should be pronounced \"sempai\'.");
                 embed.addField("\u200b", "After you've learned this, there are still some additional sounds to learn. Some Kana can make new sounds by adding either a *dakuten*, which kind of looks like double quatation marks, or a *handakuten*, which looks like a small circle. In Japanese, this is called \"muddying\" the consonant sound.");
                 let chart2 = "_A　_I　_E　_O　_U\n------------------\nが  ぎ  ぐ  げ  ご|G_\nざ  じ  ず  ぜ  ぞ|Z_\nだ  ぢ  づ  で  ど|D_\nば  び  ぶ  べ  ぼ|B_\nぱ  ぴ  ぷ  ぺ  ぽ|P_";
                 embed.addField("Dakuten and Handakuten Chart:", "```" + chart2 + "```");
@@ -1317,7 +1317,7 @@ var commands = {
                 embed.addField("\u200b", "Now that you know all of the characters, it's time to start pushing some of them together. You can combine a consonant with a \"ya\", \"yu\", or \"yo\" sound by putting a small や, ゆ, or よ after the 'i' vowel character of each consonant.");
                 let chart3 = "_YA　　_YU　　_YO\n------------------\nきゃ   きゅ   きょ|K__\nにゃ   にゅ   にょ|N__\nしゃ   しゅ   しょ|SH__\nちゃ   ちゅ   ちょ|CH__\nひゃ   ひゅ   ひょ|H__\nみゃ   みゅ   みょ|M__\nりゃ   りゅ   りょ|R__\nぎゃ   ぎゅ   ぎょ|G__\nじゃ   じゅ   じょ|J__\nびゃ   びゅ   びょ|B__\nぴゃ   ぴゅ   ぴょ|P__";
                 embed.addField("Combinations Chart:", "```" + chart3 + "```");
-                embed.addField("The small つ", "The small つ is often inserted between two characters. This takes the consonant sound of the second character and adds it to the end of the first. For example, if you put a small つ between び and く, you would get びっく, which is pronounced as \"bikku\", not \"biku\" or \"bitsuku\".");
+                embed.addField("The small つ", "The small つ is often inserted between two characters. This takes the consonant sound of the second character and adds it to the end of the first. For example, if you put a small つ between び and く, you would get びっく, which is pronounced as \"bikku\", not \"biku\" or \"bitsuku\'.");
                 embed.addField("\u200b", "That's the basics of Hiragana! Hope this was helpful, I wrote all this shit myself!");
    
                 embed.setFooter("Source: Tai Kim's Japanese Guide");
@@ -1392,92 +1392,113 @@ var commands = {
         }
         else
         function equ(equation, x) {
-            if (x !== undefined) equation = equation.replace(/x/g, x);
+            if (x !== undefined) equation = equation.replace(/x/g, '(' + x + ')');
             let terms = [ [
                     /(pi|π)/g,
                     "(Math.PI)"
                 ], [
                     /(infinity|∞)/g,
                     "(Math.Infinity)"
-                ], [
-                    /([0-9\.])\(/g,
-                    "$1*("
-                ], [
-                    /\)([0-9\.])/,
-                    ")*$1"
-                ], [
-                    /([0-9\.])M/g,
-                    "$1*M"
-                ], [
-                    /\)\(/g,
-                    ")*("
             ] ];
             for (let i = 0; i < terms.length; i++) {
                 equation = equation.replace(terms[i][0], terms[i][1]);
             }
             let methods = [ [
-                    /\\(sin|cos|tan|csc|sec|cot|log)(\-?[0-9\.]{1,}|\(\-?[0-9\.]{1,}\))/g,
+                    /\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
                     "Math.$1($2)"
                 ], [
-                    /\\(a(?:sin|cos|tan|csc|sec|cot))(\-?[0-9\.]{1,}|\(\-?[0-9\.]{1,}\))/g,
-                    "Math.$1($2)"
+                    /\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+                    "Math.a$1($2)"
                 ], [
-                    /(?:\\sqrt|√)\[(\-?[0-9\.]{1,})\]\((\-?[0-9\.]{1,})\)/g,
-                    "Math.pow($2,(1/$1))"
+                    /\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+                    "Math.$1h($2)"
                 ], [
-                    /(?:\\sqrt|√)\((\-?[0-9\.]{1,})\)/g,
+                    /\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+                    "Math.a$1h($2)"
+                ], [
+                    /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g,
                     "Math.sqrt($1)"
+                ], [ // If the radicand is positive
+                    /(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g,
+                    "Math.pow($2,(1/Math.round($1)))"
+                ], [ // If the radicand is negative and the radical is odd
+                    /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1,})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
+                    "-Math.pow($2$3,(1/Math.round($1)))"
+                ], [ // If the radicand is negative and the radical is even
+                    /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1,}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
+                    "NaN"
                 ], [
-                    /((?:\(\-?[0-9.]{1,}\)|-?[0-9.]{1,}))\^((?:\(\-?[0-9.]{1,}\)|-?[0-9.]{1,}))/g,
-                    "Math.pow($1,$2)"
-                ],/*  [
-                    /(?:\\sum|∑)\[n=([0-9\.]{1,})\]^\(([0-9\.]{1,})\)/g,
-                    "Math.sum($1, 2)"
-                ],[  // Soon^TM
-                    /(?:\\prod|∏)\[n=([0-9\.]{1,})\]^\(([0-9\.]{1,})\)/g,
-                    "Math.prod($1, 2)"
-                ], */ [
-                    /\|([0-9\.]{1,})\|/g,
+                    /(\(-?[0-9.]{1,}\)|(?:(?<![0-9)])-|)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
+                    "(Math.pow($1,Math.round($2)))"
+                ], [
+                    /(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
+                    "Math.sum($1, $2, $3)"
+                ], [
+                    /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+                    "Math.prod($1, $2, $3)"
+                ], [
+                    /\|(-?[0-9.+\-/*()]{1,})\|/g,
                     "Math.abs($1)"
+                ], [
+                    /([0-9.])\(/g,
+                    "$1*("
+                ], [
+                    /\)([0-9.])/,
+                    ")*$1"
+                ], [
+                    /([0-9.])M/g,
+                    "$1*M"
+                ], [
+                    /\)\(/g,
+                    ")*("
             ] ];
             let lastEquation;
             for (let i = 0; i < 1; i++) {
                 lastEquation = equation;
-                if (/\([0-9.+\-\/\*]{1,}\)/.test(equation)) {
-                    equate = equation.match(/\([0-9.+\-\/\*]{1,}\)/g);
+                if (/\(Math.(PI|Infinity)\)/g.test(equation)) {
+                    equation = equation.replace(/\(Math.PI\)/g, Math.PI);
+                    equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+                }
+                if (/(?<![0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
+                    equation = equation.replace(/(?<![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
+                }
+                if (/(?<=[0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
+                    equation = equation.replace(/(?<=[0-9)])-\(-([0-9.]{1,})\)/g, "$1");
+                }
+                if (/\(-?[0-9.]{1,}\)/g.test(equation)) {
+                    equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
+                }
+                if (/\([0-9.+\-/*]{1,}\)/.test(equation)) {
+                    equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
                     for (let i = 0; i < equate.length; i++) {
                         if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                     }
                 }
                 if (/\([0-9.\(\)+\-\/\*]{1,}\)/.test(equation)) {
-                    equate = equation.match(/\([0-9.\(\)+\-\/\*]{1,}\)/g);
+                    equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
                     for (let i = 0; i < equate.length; i++) {
                         if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                     }
                 }
-                do {
-                    equation = equation.replace(/\(\((\-?[0-9.]{1,})\)\)/, "($1)");
-                }
-                while (/\(\((\-?[0-9.]{1,})\)\)/.test(equation));
                 for (let i = 0; i < methods.length; i++) {
                     equation = equation.replace(methods[i][0], methods[i][1]);
                 }
-                if (/Math\.(a?sin|a?cos|a?tan|a?csc|a?sec|a?cot|log|sqrt|pow|abs|sum|prod)\((\(\-?[0-9\.]{1,}\)|-?[0-9\.]{1,})(,(\(\-?[0-9\.]{1,}\)|\-?[0-9\.]{1,}))?\)/g.test(equation)) {
-                    equate = equation.match(/Math\.(a?sin|a?cos|a?tan|a?csc|a?sec|a?cot|log|sqrt|pow|abs|sum|prod)\((\(\-?[0-9\.]{1,}\)|-?[0-9\.]{1,})(,(\(\-?[0-9\.]{1,}\)|\-?[0-9\.]{1,}))?\)/g);
+                if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation)) {
+                    equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g);
                     for (let i = 0; i < equate.length; i++) {
                         equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                     }
                 }
                 if (equation != lastEquation) i--;
             }
-   
+
             try {
                 return ["equated", eval(equation)];
             }
             catch (err) {
                 return ["error", err];
             }
-   
+
         }
    
         // Draw blank graph
@@ -1486,16 +1507,34 @@ var commands = {
         ctx.translate(150.5, 150.5);
         ctx.fillStyle = '#fff';
         ctx.fillRect(-150, -150, 300, 300);
-        ctx.strokeStyle = "#aaa";
         for (let i = 80; i--;) {
+            ctx.beginPath();
+            ctx.strokeStyle = "#ddd";
             ctx.moveTo(-150, i * 10 - 150);
             ctx.lineTo(150, i * 10 - 150);
+            ctx.stroke();
         }
         for (let i = 80; i--;) {
+            ctx.beginPath();
+            ctx.strokeStyle = "#ddd";
             ctx.moveTo(i * 10 - 150, -150);
             ctx.lineTo(i * 10 - 150, 150);
+            ctx.stroke();
         }
-        ctx.stroke();
+        for (let i = 5; i--;) {
+            ctx.beginPath();
+            ctx.strokeStyle = "#bbb";
+            ctx.moveTo(-150, i * 50 - 100);
+            ctx.lineTo(150, i * 50 - 100);
+            ctx.stroke();
+        }
+        for (let i = 5; i--;) {
+            ctx.beginPath();
+            ctx.strokeStyle = "#bbb";
+            ctx.moveTo(i * 50 - 100, -150);
+            ctx.lineTo(i * 50 - 100, 150);
+            ctx.stroke();
+        }
         ctx.beginPath();
         ctx.strokeStyle = "#000";
         ctx.moveTo(0, -150);
@@ -1503,11 +1542,12 @@ var commands = {
         ctx.moveTo(-150, 0);
         ctx.lineTo(150, 0);
         ctx.stroke();
-        e = input.toLowerCase().replace(/ /g, "").split('\n');
+        let input = document.getElementById("input").value;
+        e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
         input = input.split('\n');
-        colors = ["#f00", "#f80", "#ff0", "#0f0", "#080", "#08f", "#00f", "#909", "#840", "#f8f"];
+        colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
         if (/;$/.test(input)) e.pop();
-        if (e.length > colors.length) return sendChat("`Too many equations!`");
+        if (e.length > colors.length) console.log("`Too many equations!`");
         let display = [];
 
         for (let i = 0; i < e.length; i++) {
@@ -1517,22 +1557,36 @@ var commands = {
             let color = colors[i];
             let y = ic[0];
             if (ic.length == 2) {
-                if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[0].toLowerCase())) {
-                    color = ic[0].toLowerCase();
-                    y = ic[1];
-                }
-                if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase())) {
-                    color = ic[1].toLowerCase();
-                    y = ic[0];
+                if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase())) color = ic[1].toLowerCase();
+                if (/^(red|orange|yellow|(?:light||blue)green|blue|purple|brown|pink)$/i.test(ic[1])) {
+                    color = {
+                        "red": "#ff0000",
+                        "orange": "#ff7F00",
+                        "yellow": "#fefe33",
+                        "lightgreen": "00ff00",
+                        "green": "#008000",
+                        "bluegreen": "#0d98ba",
+                        "blue": "#0000ff",
+                        "purple": "#a020f0",
+                        "brown": "#964b00",
+                        "pink": "#ffc0cb"
+                    }[ic[1].toLowerCase()];
                 }
             }
-            y = y.replace(/^y ?= ?/, '');
+            Y = y.match(/^y(=|(>=?|≥)|(<=?|≤))/);
+            if (Y != null) {
+                y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
+                egl = Y[0].substring(1);
+                if (egl == '≤') egl = "<=";
+                if (egl == '≥') egl = ">=";
+            }
+            else egl = '=';
 
             // start graphing
             let canEquate = true;
             let result;
-            
-            if (y.includes('y')) {
+
+            if (y.includes('y') && !y.includes("infinity")) {
                 canEquate = false;
                 result = "Output (*y*) must remain isolated in all equations.";
             }
@@ -1540,36 +1594,107 @@ var commands = {
             {
                 result = [];
                 for (let x = -150; x < 151; x++) {
-                    let ans = equ(y, x);
-                    if (ans[0] == "error") {
-                        result = ans[1];
+                    let ans1 = equ(y, x - 0.5);
+                    let ans2 = equ(y, x + 0.5);
+                    let ans3 = equ(y, x);
+                    if (ans1[0] == "error") {
+                        result = ans1[1];
                         canEquate = false;
                         break;
                     }
-                    result.push([x, ans[1]]);
+                    if (ans2[0] == "error") {
+                        result = ans2[1];
+                        canEquate = false;
+                        break;
+                    }
+                    if (ans3[0] == "error") {
+                        result = ans3[1];
+                        canEquate = false;
+                        break;
+                    }
+                    if ([isNaN(ans1[1]), isNaN(ans2[1]), isNaN(ans3[1])].filter(x => x).length < 2) {
+                        if (isNaN(ans1[1]) && !isNaN(ans2[1])) {
+                            result.push([egl, x, -ans3[1], -ans2[1], 0]);
+                        }
+                        else
+                        if (!isNaN(ans1[1]) && isNaN(ans2[1])) {
+                            result.push([egl, x, -ans1[1], -ans3[1], 1]);
+                        }
+                        else
+                        {
+                            result.push([egl, x, -ans1[1], -ans2[1], 2]);
+                        }
+                    }
+                    else result.push([false]);
                 }
             }
 
             let result_;
             if (canEquate) {
                 ctx.strokeStyle = color;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
+                ctx.lineJoin = "round";
+                ctx.lineCap = "round";
                 for (let i = 0; i < result.length; i++) {
-                    if (i == 0) ctx.moveTo(result[i][0], -result[i][1]);
-                    else
-                    ctx.lineTo(result[i][0], -result[i][1]);
+                    //display.push(result[i]);
+                    if (result[i][0]) {
+                        if (result[i][0] == '=') {
+                            ctx.beginPath();
+                            ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                            ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                            ctx.stroke();
+                        }
+                        else
+                        console.log(result[i]);
+                        if (result[i][0].startsWith('>')) {
+                            let c = new Color(color);
+                            ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
+                            ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
+                            ctx.beginPath();
+                            ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], -151);
+                            ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                            ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                            ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], -151);
+                            ctx.fill();
+                            
+                            if (result[i][0].endsWith('=')) {
+                                ctx.strokeStyle = color;
+                                ctx.beginPath();
+                                ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                ctx.stroke();
+                            }
+                        }
+                        else
+                        if (result[i][0].startsWith('<')) {
+                            let c = new Color(color);
+                            ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
+                            ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
+                            ctx.beginPath();
+                            ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], 151);
+                            ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                            ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                            ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], 151);
+                            ctx.fill();
+                            
+                            if (result[i][0].endsWith('=')) {
+                                ctx.strokeStyle = color;
+                                ctx.beginPath();
+                                ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                ctx.stroke();
+                            }
+                        }
+                    }
                 }
-                ctx.stroke();
                 result_ = new Color(color).getName();
             }
             else
             {
                 result_ = result;
             }
-            display.push("y = " + input[i] + " - " + result_);
+            display.push(input[i].split(';')[0] + " - " + result_);
         }
-   
+
         ctx.beginPath();
         ctx.strokeStyle = "#000000";
         ctx.lineWidth = 1;
@@ -1577,7 +1702,8 @@ var commands = {
         ctx.font = "11px Calibri";
         ctx.fillStyle = "#000000"
         ctx.fillText("= 10 units\u00b2", -126, -132);
-        sendChat("```Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n') + "```", new Discord.Attachment(canvas.toBuffer()));
+        let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
+        sendChat("```\n" + text + "```", new Discord.Attachment(canvas.toBuffer()));
    
     },
    
@@ -1634,7 +1760,7 @@ var commands = {
                 for (let i = 1; i < a; i++) {
                     Err.push(stack[i]);
                     if (/<anonymous>:[0-9]{1,}:[0-9]{1,}/.test(stack[i])) {
-                        let c = stack[i].match(/<anonymous>:[0-9]{1,}:[0-9]{1,}/)[0].split(":");
+                        let c = stack[i].match(/<anonymous>:[0-9]{1,}:[0-9]{1,}/)[0].split(':');
                         b = [execute.split('\n')[Number(c[1]) - 1], Number(c[2]) - 1];
                     }
                 }

@@ -21,21 +21,6 @@
                     ], [
                         /(infinity|∞)/g,
                         "(Math.Infinity)"
-                    ], [
-                        /([0-9.])\(/g,
-                        "$1*("
-                    ], [
-                        /\)([0-9.])/,
-                        ")*$1"
-                    ], [
-                        /([0-9.])M/g,
-                        "$1*M"
-                    ], [
-                        /\)\(/g,
-                        ")*("
-                    ], [
-                    	/-\(/g,
-                        "(-1)*("
                 ] ];
                 for (let i = 0; i < terms.length; i++) {
                     equation = equation.replace(terms[i][0], terms[i][1]);
@@ -65,8 +50,8 @@
                         /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1,}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
                         "NaN"
                     ], [
-                        /(\(-?[0-9.]{1,}\)|-?[0-9.]{1,})(!:sin|cos|tan)\^(!:-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
-                        "Math.pow($1,Math.round($2))"
+                        /(\(-?[0-9.]{1,}\)|(?:(?<![0-9)])-|)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
+                        "(Math.pow($1,Math.round($2)))"
                     ], [
                     	/(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
                         "Math.sum($1, $2, $3)"
@@ -76,6 +61,18 @@
                     ], [
                         /\|(-?[0-9.+\-/*()]{1,})\|/g,
                         "Math.abs($1)"
+                    ], [
+                        /([0-9.])\(/g,
+                        "$1*("
+                    ], [
+                        /\)([0-9.])/,
+                        ")*$1"
+                    ], [
+                        /([0-9.])M/g,
+                        "$1*M"
+                    ], [
+                        /\)\(/g,
+                        ")*("
                 ] ];
                 let lastEquation;
                 for (let i = 0; i < 1; i++) {
@@ -83,6 +80,12 @@
                     if (/\(Math.(PI|Infinity)\)/g.test(equation)) {
                         equation = equation.replace(/\(Math.PI\)/g, Math.PI);
                         equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+                    }
+                    if (/(?<![0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
+                        equation = equation.replace(/(?<![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
+                    }
+                    if (/(?<=[0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
+                        equation = equation.replace(/(?<=[0-9)])-\(-([0-9.]{1,})\)/g, "$1");
                     }
                     if (/\(-?[0-9.]{1,}\)/g.test(equation)) {
                         equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
@@ -194,11 +197,10 @@
                     if (Y != null) {
                     	y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
                         egl = Y[0].substring(1);
-                        if (egl == "≤") egl = "<=";
-                        if (egl == "≥") egl = ">=";
+                        if (egl == '≤') egl = "<=";
+                        if (egl == '≥') egl = ">=";
                     }
-                    else
-                    egl = '=';
+                    else egl = '=';
 
                     // start graphing
                     let canEquate = true;
@@ -230,9 +232,20 @@
                                 canEquate = false;
                                 break;
                             }
-                            if (ans3 == NaN) result.push([false]);
-                            else
-                            result.push([egl, x, -ans1[1], -ans2[1]]);
+                            if ([isNaN(ans1[1]), isNaN(ans2[1]), isNaN(ans3[1])].filter(x => x).length < 2) {
+                                if (isNaN(ans1[1]) && !isNaN(ans2[1])) {
+                                    result.push([egl, x, -ans3[1], -ans2[1], 0]);
+                                }
+                                else
+                                if (!isNaN(ans1[1]) && isNaN(ans2[1])) {
+                                    result.push([egl, x, -ans1[1], -ans3[1], 1]);
+                                }
+                                else
+                                {
+                                    result.push([egl, x, -ans1[1], -ans2[1], 2]);
+                                }
+                            }
+                            else result.push([false]);
                         }
                     }
 
@@ -243,50 +256,53 @@
                         ctx.lineCap = "round";
                         for (let i = 0; i < result.length; i++) {
                         	//display.push(result[i]);
-                            if (result[i][0] == "=") {
-                                ctx.beginPath();
-                                ctx.moveTo(result[i][1] - 0.5, result[i][2]);
-                                ctx.lineTo(result[i][1] + 0.5, result[i][3]);
-                                ctx.stroke();
-                            }
-                            else
-                            if (result[i][0].startsWith(">")) {
-                                let c = new Color(color);
-                                ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
-                                ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
-                            	ctx.beginPath();
-                                ctx.moveTo(result[i][1] - 0.5, -151);
-                                ctx.lineTo(result[i][1] - 0.5, result[i][2]);
-                                ctx.lineTo(result[i][1] + 0.5, result[i][3]);
-                                ctx.lineTo(result[i][1] + 0.5, -151);
-                                ctx.fill();
-                                
-                            	if (result[i][0].endsWith('=')) {
-                                    ctx.strokeStyle = color;
+                            if (result[i][0]) {
+                                if (result[i][0] == '=') {
                                     ctx.beginPath();
-                                    ctx.moveTo(result[i][1] - 0.5, result[i][2]);
-                                    ctx.lineTo(result[i][1] + 0.5, result[i][3]);
+                                    ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                    ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
                                     ctx.stroke();
                                 }
-                            }
-                            else
-                            if (result[i][0].startsWith("<")) {
-                                let c = new Color(color);
-                                ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
-                                ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
-                                ctx.beginPath();
-                                ctx.moveTo(result[i][1] - 0.5, 151);
-                                ctx.lineTo(result[i][1] - 0.5, result[i][2]);
-                                ctx.lineTo(result[i][1] + 0.5, result[i][3]);
-                                ctx.lineTo(result[i][1] + 0.5, 151);
-                                ctx.fill();
-                                
-                                if (result[i][0].endsWith("=")) {
-                                    ctx.strokeStyle = color;
+                                else
+                                console.log(result[i]);
+                                if (result[i][0].startsWith('>')) {
+                                    let c = new Color(color);
+                                    ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
+                                    ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
                                     ctx.beginPath();
-                                    ctx.moveTo(result[i][1] - 0.5, result[i][2]);
-                                    ctx.lineTo(result[i][1] + 0.5, result[i][3]);
-                                    ctx.stroke();
+                                    ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], -151);
+                                    ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                    ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                    ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], -151);
+                                    ctx.fill();
+                                    
+                                    if (result[i][0].endsWith('=')) {
+                                        ctx.strokeStyle = color;
+                                        ctx.beginPath();
+                                        ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                        ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                        ctx.stroke();
+                                    }
+                                }
+                                else
+                                if (result[i][0].startsWith('<')) {
+                                    let c = new Color(color);
+                                    ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
+                                    ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
+                                    ctx.beginPath();
+                                    ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], 151);
+                                    ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                    ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                    ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], 151);
+                                    ctx.fill();
+                                    
+                                    if (result[i][0].endsWith('=')) {
+                                        ctx.strokeStyle = color;
+                                        ctx.beginPath();
+                                        ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                        ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                        ctx.stroke();
+                                    }
                                 }
                             }
                         }
