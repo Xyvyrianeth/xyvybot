@@ -11,6 +11,6 @@ var timer = setInterval(function() {
             delete channels[i];
         }
     }
-}, 10);
+}, 100);
 
 exports.channels = channels;

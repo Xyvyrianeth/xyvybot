@@ -22,7 +22,7 @@ client.on("ready", () => {
                 url: "https://twitch.tv/Xyvyrianeth"
             }
         });
-        if (i == 3) i = 0;
+        if (i == ii.length - 1) i = 0;
         else i += 1;
     }, 15000);
 });
