@@ -1,4 +1,4 @@
-var version = "2.30.3.13";
+var version = "2.30.3.14";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1717,7 +1717,7 @@ var commands = {
             embed.setColor(new Color().random());
             return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
         }
-        if (input.startsWith('[')) sendChat("With***out*** the brackets. How is that ***not*** obvious? You're probably too young to look at porn, go play violent video games, instead.");
+        if (input.startsWith('[')) return sendChat("With***out*** the brackets. How is that ***not*** obvious? You're probably too young to look at porn, go play violent video games, instead.");
         if (["tags", "help"].includes(input)) {
             let embed = new Discord.RichEmbed();
             embed.setTitle("NSFW Tags");
