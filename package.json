@@ -10,16 +10,11 @@
 		"npm": "5.5.1"
 	},
 	"dependencies": {
-		"canvas": "latest",
-		"discord.js": "latest",
-		"ffmpeg-binaries": "latest",
-		"gifencoder": "latest",
-		"jimp": "latest",
+		"canvas": "2.3.0",
+		"discord.js": "1.4.2",
+		"jimp": "0.6.0",
 		"nekos.life": "2.0.2",
-		"paladins-api": "latest",
-		"pg": "latest",
-		"stream-buffers": "latest",
-		"unofficial-jisho-api": "latest",
-		"ytdl-core": "latest"
+		"pg": "7.8.0",
+		"unofficial-jisho-api": "1.1.3"
 	}
 }
