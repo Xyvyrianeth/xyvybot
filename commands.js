@@ -1,4 +1,4 @@
-var version = "2.30.3.12";
+var version = "2.30.3.13";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1717,6 +1717,7 @@ var commands = {
             embed.setColor(new Color().random());
             return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
         }
+        if (input.startsWith('[')) sendChat("With***out*** the brackets. How is that ***not*** obvious? You're probably too young to look at porn, go play violent video games, instead.");
         if (["tags", "help"].includes(input)) {
             let embed = new Discord.RichEmbed();
             embed.setTitle("NSFW Tags");
@@ -1727,9 +1728,9 @@ var commands = {
             embed.setColor(new Color().random());
             return Nekos.nsfw.eroNeko().then(help => sendChat(embed.setImage(help.url)));
         }
-        if (!tags.join(' ').toLowerCase().split(' ').includes(input.toLowerCase())) return sendChat("Sorry, I don't have that");
+        let type = tags.filter(x => x.toLowerCase() == input.toLowerCase())[0];
+        if (!type) return sendChat("Sorry, I don't have that");
         
-        let type = tags[tags.join(' ').toLowerCase().split(' ').indexOf(input.toLowerCase())];
         let embed = new Discord.RichEmbed();
         embed.setDescription(`Tag: \`${type}\``);
         embed.setFooter("Powered by Nekos.Life");
