@@ -1,11 +1,8 @@
-var version = "2.30.3.11";
+var version = "2.30.3.12";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const Jimp = require("jimp");
-const GIFEncoder = require("gifencoder");
-const streamBuffers = require("stream-buffers");
-const ytdl = require("ytdl-core");
 
 var { client,config } = require("/app/Xyvy.js");
 var Profile = require("/app/stuffs/profile.js");
