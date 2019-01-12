@@ -171,6 +171,7 @@
                 ctx.moveTo(-150, 0);
                 ctx.lineTo(150, 0);
                 ctx.stroke();
+                ctx.scale(5, 5);
                 let input = document.getElementById("input").value;
                 e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
                 input = input.split('\n');
@@ -261,7 +262,7 @@
                     let result_;
                     if (canEquate) {
                         ctx.strokeStyle = color;
-                        ctx.lineJoin = "round";
+                        ctx.lineJoin = "bevel";
                         ctx.lineCap = "round";
                         for (let i = 0; i < result.length; i++) {
                         	//display.push(result[i]);

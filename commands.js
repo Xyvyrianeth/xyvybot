@@ -1,4 +1,4 @@
-var version = "2.30.3.5";
+var version = "2.30.3.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -198,13 +198,15 @@ function bot(message) {
                         lose = res.rows[0];
                         wins = newUser(result.winner);
                     }
-                    let booty = Math.ceil(lose["elo" + result.game] / 10);
-                    let query = `UPDATE profiles
-                        SET elo${result.game} = ${wins["elo" + result.game] + booty}, win${result.game} = ${wins["win" + result.game] + 1}
-                        WHERE id = '${wins.id}';
-                        UPDATE profiles
-                        SET elo${result.game} = ${lose["elo" + result.game] - booty}, los${result.game} = ${lose["los" + result.game] + 1}
-                        WHERE id = '${lose.id}';`
+                    let query = [
+                        `UPDATE profiles`,
+                        `SET win${result.game} = ${wins["win" + result.game] + 1}`,
+                        `WHERE id = '${wins.id}';`,
+                        ``,
+                        `UPDATE profiles`,
+                        `SET los${result.game} = ${lose["los" + result.game] + 1}`,
+                        `WHERE id = '${lose.id}';`
+                    ];
                     return db.query(query, function(err) {
                         if (err) sqlError(message, err, query);
                     });
@@ -229,11 +231,13 @@ function bot(message) {
    
 function newUser(id) {
     let image = backgrounds.ids.random();
-    let query = `INSERT INTO profiles (
-            id,       color,   title,      titles,             background,  backgrounds,         lorr,     money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7
-        ) VALUES (
-            '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,      1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0
-        )`;
+    let query = [
+        `INSERT INTO profiles (`,
+        `    id,       color,   title,      titles,             background,  backgrounds,         lorr,     win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
+        `) VALUES (`,
+        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
+        `)`
+    ];
     db.query(query, function(err) {
         if (err) return sqlError(message, err, query);
     });
@@ -350,21 +354,18 @@ var commands = {
             let query = [
                 `SELECT`,
                 `    id,`,
-                `    elos AS elo,`,
                 `    wins AS win,`,
                 `    loss AS los,`,
                 `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound`,
                 `FROM profiles`,
                 `WHERE wins + loss > 0`,
                 `ORDER BY`,
-                `    elo DESC,`,
                 `    ci_lower_bound DESC,`,
                 `    id ASC`,
                 `LIMIT 10;`,
                 ``,
                 `SELECT`,
                 `    id,`,
-                `    elos AS elo,`,
                 `    wins AS win,`,
                 `    loss AS los,`,
                 `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound`,
@@ -382,8 +383,6 @@ var commands = {
                 `    id != '${message.author.id}'`,
                 `    AND`,
                 `    wins + loss > 0`,
-                `    AND`,
-                `    elos >= ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}')`,
                 `    AND`,
                 `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) > ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) FROM profiles WHERE id = '${message.author.id}');`
             ].join('\n').replace(/elos/g, elos).replace(/wins/g, wins).replace(/loss/g, loss);
@@ -437,7 +436,10 @@ var commands = {
                 }
                 else
                 {
-                    sendChat("Nobody has played this game, yet, so I can't yet give a scoreboard.");
+                    if (!args[1])
+                    return sendChat("There are no scores. Nobody has played any game, yet.");
+                    else
+                    return sendChat("There are no scores fo rhtis game. Nobody has played it, yet."); 
                 }
             });
         }
@@ -1708,7 +1710,7 @@ var commands = {
    
     // NSFW
     "nsfw": function(cmd, args, input, message, sendChat) {
-        let tags = Object.keys(Nekos).filter(x => x.startsWith("getNSFW")).join(' ').replace(/getNSFW/g, '').split(' ').sort();
+        let tags = Object.keys(Nekos.nsfw).sort();
         if (message.channel.type != "dm" && !message.channel.nsfw) return;
         if (!input) {
             let type = tags.random();
@@ -1716,7 +1718,7 @@ var commands = {
             embed.setDescription(`Have some random NSFW~\nTag: \`${type}\` | Do \`x!nsfw [tag]\` to see more like this\nDo \`x!nsfw tags\` to see all tags`);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random());
-            return Nekos["getNSFW" + type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+            return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
         }
         if (["tags", "help"].includes(input)) {
             let embed = new Discord.RichEmbed();
@@ -1726,7 +1728,7 @@ var commands = {
             embed.setDescription('```\n' + joined.trim() + '```\n**Usage**: `x!nsfw [tag]`');
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random());
-            return Nekos.getNSFWNeko().then(help => sendChat(embed.setImage(help.url)));
+            return Nekos.nsfw.eroNeko().then(help => sendChat(embed.setImage(help.url)));
         }
         if (!tags.join(' ').toLowerCase().split(' ').includes(input.toLowerCase())) return sendChat("Sorry, I don't have that");
         
@@ -1735,7 +1737,7 @@ var commands = {
         embed.setDescription(`Tag: \`${type}\``);
         embed.setFooter("Powered by Nekos.Life");
         embed.setColor(new Color().random())
-        return Nekos["getNSFW" + type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+        return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
     },
    
     // Admin-only
