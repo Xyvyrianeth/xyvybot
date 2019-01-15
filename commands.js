@@ -1,4 +1,4 @@
-var version = "2.30.3.14";
+var version = "2.30.3.15";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1402,52 +1402,84 @@ var commands = {
             for (let i = 0; i < terms.length; i++) {
                 equation = equation.replace(terms[i][0], terms[i][1]);
             }
-            let methods = [ [
+            let methods = [
+                   [// Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
+                    // \sin(5)
                     /\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
                     "Math.$1($2)"
-                ], [
+
+                ], [// Asin, Acos, or Atan of a number
+                    // \asin(5)
                     /\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
                     "Math.a$1($2)"
-                ], [
+
+                ], [// Sinh, Cosh, or Tanh of a number
+                    // \sinh(5)
                     /\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
                     "Math.$1h($2)"
-                ], [
+
+                ], [// Asinh, Acosh, or Atanh of a number
+                    // \asinh(5)
                     /\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
                     "Math.a$1h($2)"
-                ], [
+
+                ], [// Root of a number, if the radicand is a real number and the radical is 2
+                    // \sqrt(5)
                     /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g,
                     "Math.sqrt($1)"
-                ], [ // If the radicand is positive
+
+                ], [// If the radicand is positive
+                    // \rt[2](5)
                     /(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g,
                     "Math.pow($2,(1/Math.round($1)))"
-                ], [ // If the radicand is negative and the radical is odd
-                    /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1,})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
+
+                ], [// If the radicand is negative and the radical is odd
+                    // \rt[3](-5)
+                    /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
                     "-Math.pow($2$3,(1/Math.round($1)))"
-                ], [ // If the radicand is negative and the radical is even
-                    /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1,}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
+
+                ], [// If the radicand is negative and the radical is even
+                    // \rt[2](-5)
+                    /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
                     "NaN"
-                ], [
-                    /(\(-?[0-9.]{1,}\)|(?:(?<![0-9)])-|)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
+
+                ], [// A number number to the power of another number
+                    // 5^7
+                    /(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
                     "(Math.pow($1,Math.round($2)))"
-                ], [
+
+                ], [// Summation function
+                    // \sum[n=0](5)5
                     /(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
                     "Math.sum($1, $2, $3)"
-                ], [
+
+                ], [// Product function
+                    // \prod[n=0](5)5
                     /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
                     "Math.prod($1, $2, $3)"
-                ], [
+
+                ], [// The absolute value of a number
+                    // |-5|
                     /\|(-?[0-9.+\-/*()]{1,})\|/g,
                     "Math.abs($1)"
-                ], [
+
+                ], [// A number against a parentheses sequence
+                    // 5(7)
                     /([0-9.])\(/g,
                     "$1*("
-                ], [
+
+                ], [// Same but reversed
+                    // (7)5
                     /\)([0-9.])/,
                     ")*$1"
-                ], [
+
+                ], [// A number against a Javascript Math function
+                    // 5Math.sin(7)
                     /([0-9.])M/g,
                     "$1*M"
-                ], [
+
+                ], [// Parentheses sequence against parentheses sequence
+                    // (5)(7)
                     /\)\(/g,
                     ")*("
             ] ];
