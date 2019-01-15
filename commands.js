@@ -1,4 +1,4 @@
-var version = "2.30.3.15";
+var version = "2.30.3.16";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1490,11 +1490,11 @@ var commands = {
                     equation = equation.replace(/\(Math.PI\)/g, Math.PI);
                     equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
                 }
-                if (/(?<![0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
-                    equation = equation.replace(/(?<![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
+                if (/(?![0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
+                    equation = equation.replace(/(?![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
                 }
-                if (/(?<=[0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
-                    equation = equation.replace(/(?<=[0-9)])-\(-([0-9.]{1,})\)/g, "$1");
+                if (/([0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
+                    equation = equation.replace(/([0-9)])-\(-([0-9.]{1,})\)/g, "$1+$2");
                 }
                 if (/\(-?[0-9.]{1,}\)/g.test(equation)) {
                     equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
@@ -1505,7 +1505,7 @@ var commands = {
                         if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                     }
                 }
-                if (/\([0-9.\(\)+\-\/\*]{1,}\)/.test(equation)) {
+                if (/\([0-9.()+\-/*]{1,}\)/.test(equation)) {
                     equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
                     for (let i = 0; i < equate.length; i++) {
                         if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
