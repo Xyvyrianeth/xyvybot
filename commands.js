@@ -1,4 +1,4 @@
-var version = "2.30.3.16";
+var version = "2.30.3.17";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -21,7 +21,7 @@ var RE = {
 
 const pg = require("pg");
 var db = new pg.Client(config.DATABASE_URL);
-db.connect().then(() => console.log("Connected to Database!")).catch(() => console.error("Could not connect to Database."));
+db.connect().then(() => client.guilds.get("399327996076621825").channels.get("534567279891972097").send("Connected to database!"));
    
 const jishoApi = require("unofficial-jisho-api");
 const jisho = new jishoApi();

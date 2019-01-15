@@ -5,7 +5,7 @@ const client = new Discord.Client();
 
 client.login(process.env.TOKEN);
 client.on("ready", () => {
-    console.log("Xyvybot Successfully launched~! Launching version " + commands.version);
+    client.guilds.get("399327996076621825").channels.get("534567279891972097").send("Version " + commands.version + " published successfully!");
     let i = 0;
     setInterval(function() {
         let ii = [
