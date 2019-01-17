@@ -1,4 +1,4 @@
-var version = "2.30.3.18";
+var version = "2.30.3.19";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -276,7 +276,7 @@ var aliases = {
         "jisho": ["jisho", "kanji", "japanese", "jp"],
         "jshelp": ["jshelp", "javascript"],
         "nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
-        "cats": ["cats", "cat", "meow"],
+        //"cats": ["cats", "cat", "meow"],
         "calc": ["calc", "calculate", "domath"],
         "graph": ["graph"],
        
@@ -307,7 +307,7 @@ var aliases = {
         "jisho": ["jisho", "kanji", "japanese", "jp"],
         "jshelp": ["jshelp", "javascript"],
         "nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
-        "cats": ["cats", "cat", "meow"],
+        //"cats": ["cats", "cat", "meow"],
         "calc": ["calc"],
         "graph": ["graph"],
        
@@ -1040,7 +1040,7 @@ var commands = {
                             "jisho": "Get translations to and from Japanese. Ultra-weeb shit.",
                             "jshelp": "Get help with JavaScript, the easiest programming language besides Malbolge.",
                             "nekos": "Get a picture of a catgirl, the thing everyone wants to exist but science can't provide.",
-                            "cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
+                            //"cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
                             "js": "Usable by Xyvyrianeth only. You probably don't even know how to use it.",
                             "pg": "Usable by Xyvyrianeth only. How did you even know this existed?",
                             "aliases": "Get all existing aliases for any given command. All of them.",
@@ -1071,7 +1071,7 @@ var commands = {
                             "jisho": "Get translations to and from Japanese. Ultra-weeb shit.",
                             "jshelp": "Get help with JavaScript, the easiest programming language besides Malbolge.",
                             "nekos": "Get a picture of a catgirl, the thing everyone wants to exist but science can't provide.",
-                            "cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
+                            //"cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
                             "js": "Usable by Xyvyrianeth only. You probably don't even know how to use it.",
                             "pg": "Usable by Xyvyrianeth only. How did you even know this existed?",
                             "aliases": "Get all existing aliases for any given command. All of them.",
@@ -1331,12 +1331,13 @@ var commands = {
     },
    
     "nekos": function(cmd, args, input, message, sendChat) {
-        Nekos.getSFWNeko().then(neko => sendChat(new Discord.RichEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
+        Nekos.sfw.neko().then(neko => sendChat(new Discord.RichEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
     },
-   
+    /*
     "cats": function(cmd, args, input, message, sendChat) {
-        Nekos.getSFWCat().then(cat => sendChat(new Discord.RichEmbed().setImage(cat.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
+        Nekos.sfw.Cat().then(cat => sendChat(new Discord.RichEmbed().setImage(cat.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
     },
+    */
 
     "calc": function(cmd, args, input, message, sendChat) {
         if (!input) return sendChat(`**Syntax**: \`${a.prefix}calc\` \`[equation]\``);
