@@ -1341,7 +1341,7 @@ var commands = {
     
     /*
     "cats": function(cmd, args, input, message, sendChat) {
-        Nekos.getSFWCat().then(cat => sendChat(new Discord.RichEmbed().setImage(cat.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
+        Nekos.sfw.Cat().then(cat => sendChat(new Discord.RichEmbed().setImage(cat.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
     },
     */
 
