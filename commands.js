@@ -1,4 +1,4 @@
-var version = "2.30.4.1";
+var version = "2.30.4.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1795,7 +1795,7 @@ var commands = {
             }
         
             let embed = new Discord.RichEmbed();
-            embed.setDescription(`Tag: \`${type}\`\nSelected randomly from: [\`${types.join('`, `')}\`]\`${nopes.length > 0 ? `Queried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
+            embed.setDescription(`Tag: \`${type}\`\nSelected randomly from: [\`${types.join('`, `')}\`]\n${nopes.length > 0 ? `Queried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random())
             return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
@@ -1829,7 +1829,7 @@ var commands = {
             }
         
             let embed = new Discord.RichEmbed();
-            embed.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]\`${nopes.length > 0 ? `Queried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
+            embed.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]\n${nopes.length > 0 ? `Queried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random())
             return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
