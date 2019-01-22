@@ -1,4 +1,4 @@
-var version = "2.30.4.3";
+var version = "2.30.4.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1780,10 +1780,18 @@ var commands = {
             else
             {
                 for (let i = 1; i < args.length; i++) {
-                    let tag = tags.filter(type => type.toLowerCase() == args[i].toLowerCase());
-                    if (!tag) nopes.push(tag);
+                    let tag = tags.filter(tag => {
+                        if (
+                            !types.includes(tag) &&
+                            (
+                                tag.toLowerCase() == args[i].toLowerCase() ||
+                                tag.toLowerCase().includes(args[i].toLowerCase())
+                            )                
+                        ) return true;
+                    });
+                    if (tag.length == 0) nopes.push(args[i]);
                     else
-                    if (!types.includes(tag)) types.push(tag);
+                    types = types.concat(tag);
                 }
                 if (types.length + nopes.length > tags.length) return sendChat("There's not even that many tags, try again.");
                 else
@@ -1808,10 +1816,18 @@ var commands = {
             else
             {
                 for (let i = 1; i < args.length; i++) {
-                    let tag = tags.filter(tag => tag.toLowerCase() == args[i].toLowerCase())[0].toLowerCase();
-                    if (!tag) nopes.push(tag);
+                    let tag = tags.filter(tag => {
+                        if (
+                            !types.includes(tag) &&
+                            (
+                                tag.toLowerCase() == args[i].toLowerCase() ||
+                                tag.toLowerCase().includes(args[i].toLowerCase())
+                            )                
+                        ) return true;
+                    });
+                    if (tag.length == 0) nopes.push(args[i]);
                     else
-                    if (!types.includes(tag)) types.push(tag); 
+                    types = types.concat(tag); 
                 }
 
                 if (types.length + nopes.length > tags.length) return sendChat("There's not even that many tags, try again.");
@@ -1821,7 +1837,7 @@ var commands = {
                 if (types.length > 0) {
                     let Types = [];
                     for (let i = 0; i < tags.length; i++) {
-                        if (!types.includes(tags[i].toLowerCase())) Types.push(tags[i]);
+                        if (!types.includes(tags[i])) Types.push(tags[i]);
                     }
                     type = Types.random();
                 }
@@ -1837,8 +1853,17 @@ var commands = {
         }
         else
         {
-            let type = tags.filter(x => x.toLowerCase() == input.toLowerCase())[0];
-            if (!type) return sendChat("Sorry, I don't have that");
+            let tag = tags.filter(tag => {
+                if (
+                    !types.includes(tag) &&
+                    (
+                        tag.toLowerCase() == args[i].toLowerCase() ||
+                        tag.toLowerCase().includes(args[i].toLowerCase())
+                    )                
+                ) return true;
+            });
+            if (tag.length == 0) return sendChat("Sorry, I don't have that");
+            else type = tag.random();
         
             let embed = new Discord.RichEmbed();
             embed.setDescription(`Tag: \`${type}\``);
