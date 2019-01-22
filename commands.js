@@ -1,4 +1,4 @@
-var version = "2.30.4.2";
+var version = "2.30.4.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1808,19 +1808,20 @@ var commands = {
             else
             {
                 for (let i = 1; i < args.length; i++) {
-                    let tag = tags.filter(type => type.toLowerCase() == args[i].toLowerCase());
+                    let tag = tags.filter(tag => tag.toLowerCase() == args[i].toLowerCase())[0].toLowerCase();
                     if (!tag) nopes.push(tag);
                     else
                     if (!types.includes(tag)) types.push(tag); 
                 }
+
                 if (types.length + nopes.length > tags.length) return sendChat("There's not even that many tags, try again.");
                 else
                 if (types.length == tags.length) return sendChat("That removes literally every tag, try again.");
-                else
+
                 if (types.length > 0) {
                     let Types = [];
                     for (let i = 0; i < tags.length; i++) {
-                        if (!types.includes(tags[i])) Types.push(tags[i]);
+                        if (!types.includes(tags[i].toLowerCase())) Types.push(tags[i]);
                     }
                     type = Types.random();
                 }
