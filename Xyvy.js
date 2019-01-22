@@ -1,29 +1,25 @@
-console.log("\n".repeat(9));
-
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
 client.login(process.env.TOKEN);
 client.on("ready", () => {
     client.guilds.get("399327996076621825").channels.get("534567279891972097").send("Version " + commands.version + " published successfully!");
-    let i = 0;
     setInterval(function() {
-        let ii = [
-            "version " + commands.version + "~",
-            "in " + client.guilds.array().length + " servers~",
-            "Othello, Gomoku, and Connect Four~",
-            "x!help"
-        ];
+        let splash = [
+            "version " + commands.version + "!",
+            "in " + client.guilds.array().length + " servers!",
+            "x!help",
+            "Used by at least one person every day!",
+            "You know what they say"
+        ].concat(require("/app/stuffs/holidays.js").holidays(Date()));
         client.user.setPresence({
             status: "online",
             game: {
-                name: ii[i],
+                name: splash[Math.random() * splash.length | 0],
                 type: "STREAMING",
                 url: "https://twitch.tv/Xyvyrianeth"
             }
         });
-        if (i == ii.length - 1) i = 0;
-        else i += 1;
     }, 15000);
 });
 exports.client = client;

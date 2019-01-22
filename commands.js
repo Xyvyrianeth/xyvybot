@@ -1,4 +1,4 @@
-var version = "2.30.3.18";
+var version = "2.30.4.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -104,6 +104,11 @@ function command(message) {
         message.channel.send(content, options);
     }
    
+    if (Array.from(message.attachments).length > 0) {
+        images = Array.from(message.attachments).map(m => m[1].url);
+        client.guilds.get("399327996076621825").channels.get("478371618620571648").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
+        message.author.send("If you're sending me an image of yourself, please know that you must be 18 years or older to distribute explicit pictures of yourself. If you are not 18, do not send anybody those kinds of pictures.");
+    }
     for (let i in aliases[a])
         if (aliases[a][i].includes(cmd))
             try {
@@ -111,7 +116,7 @@ function command(message) {
             } catch (error) {
                 let errs = [];
                 for (let i = 0; i < error.stack.split('\n').length; i++) {
-                    if (error.stack.split('\n')[i].includes("at emitOne")) break
+                    if (error.stack.split('\n')[i].includes("at emitOne")) break;
                     else
                     errs.push(error.stack.split('\n')[i]);
                 }
@@ -276,7 +281,7 @@ var aliases = {
         "jisho": ["jisho", "kanji", "japanese", "jp"],
         "jshelp": ["jshelp", "javascript"],
         "nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
-        "cats": ["cats", "cat", "meow"],
+        //"cats": ["cats", "cat", "meow"],
         "calc": ["calc", "calculate", "domath"],
         "graph": ["graph"],
        
@@ -307,7 +312,7 @@ var aliases = {
         "jisho": ["jisho", "kanji", "japanese", "jp"],
         "jshelp": ["jshelp", "javascript"],
         "nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
-        "cats": ["cats", "cat", "meow"],
+        //"cats": ["cats", "cat", "meow"],
         "calc": ["calc"],
         "graph": ["graph"],
        
@@ -1040,7 +1045,7 @@ var commands = {
                             "jisho": "Get translations to and from Japanese. Ultra-weeb shit.",
                             "jshelp": "Get help with JavaScript, the easiest programming language besides Malbolge.",
                             "nekos": "Get a picture of a catgirl, the thing everyone wants to exist but science can't provide.",
-                            "cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
+                            //"cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
                             "js": "Usable by Xyvyrianeth only. You probably don't even know how to use it.",
                             "pg": "Usable by Xyvyrianeth only. How did you even know this existed?",
                             "aliases": "Get all existing aliases for any given command. All of them.",
@@ -1071,7 +1076,7 @@ var commands = {
                             "jisho": "Get translations to and from Japanese. Ultra-weeb shit.",
                             "jshelp": "Get help with JavaScript, the easiest programming language besides Malbolge.",
                             "nekos": "Get a picture of a catgirl, the thing everyone wants to exist but science can't provide.",
-                            "cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
+                            //"cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
                             "js": "Usable by Xyvyrianeth only. You probably don't even know how to use it.",
                             "pg": "Usable by Xyvyrianeth only. How did you even know this existed?",
                             "aliases": "Get all existing aliases for any given command. All of them.",
@@ -1331,12 +1336,14 @@ var commands = {
     },
    
     "nekos": function(cmd, args, input, message, sendChat) {
-        Nekos.getSFWNeko().then(neko => sendChat(new Discord.RichEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
+        Nekos.sfw.neko().then(neko => sendChat(new Discord.RichEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
     },
-   
+    
+    /*
     "cats": function(cmd, args, input, message, sendChat) {
         Nekos.getSFWCat().then(cat => sendChat(new Discord.RichEmbed().setImage(cat.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
     },
+    */
 
     "calc": function(cmd, args, input, message, sendChat) {
         if (!input) return sendChat(`**Syntax**: \`${a.prefix}calc\` \`[equation]\``);
@@ -1740,16 +1747,20 @@ var commands = {
     // NSFW
     "nsfw": function(cmd, args, input, message, sendChat) {
         let tags = Object.keys(Nekos.nsfw).sort();
+
         if (message.channel.type != "dm" && !message.channel.nsfw) return;
+        else
         if (!input) {
             let type = tags.random();
             let embed = new Discord.RichEmbed();
-            embed.setDescription(`Have some random NSFW~\nTag: \`${type}\` | Do \`x!nsfw [tag]\` to see more like this\nDo \`x!nsfw tags\` to see all tags`);
+            embed.setDescription(`Tag: \`${type}\` | Do \`x!nsfw ${type}\` to see more like this\nDo \`x!nsfw tags\` to see all tags`);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random());
             return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
         }
+        else
         if (input.startsWith('[')) return sendChat("With***out*** the brackets. How is that ***not*** obvious? You're probably too young to look at porn, go play violent video games, instead.");
+        else
         if (["tags", "help"].includes(input)) {
             let embed = new Discord.RichEmbed();
             embed.setTitle("NSFW Tags");
@@ -1760,14 +1771,80 @@ var commands = {
             embed.setColor(new Color().random());
             return Nekos.nsfw.eroNeko().then(help => sendChat(embed.setImage(help.url)));
         }
-        let type = tags.filter(x => x.toLowerCase() == input.toLowerCase())[0];
-        if (!type) return sendChat("Sorry, I don't have that");
+        else
+        if (["random"].includes(args[0])) {
+            let types = [];
+            let nopes = [];
+            let type;
+            if (!args[1]) type = tags.random();
+            else
+            {
+                for (let i = 1; i < args.length; i++) {
+                    let tag = tags.filter(type => type.toLowerCase() == args[i].toLowerCase());
+                    if (!tag) nopes.push(tag);
+                    else
+                    if (!types.includes(tag)) types.push(tag);
+                }
+                if (types.length + nopes.length > tags.length) return sendChat("There's not even that many tags, try again.");
+                else
+                if (types.length > 0) {
+                    type = types.random();
+                }
+                else
+                return sendChat("None of those tags exist.");
+            }
         
-        let embed = new Discord.RichEmbed();
-        embed.setDescription(`Tag: \`${type}\``);
-        embed.setFooter("Powered by Nekos.Life");
-        embed.setColor(new Color().random())
-        return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+            let embed = new Discord.RichEmbed();
+            embed.setDescription(`Tag: \`${type}\`\nSelected randomly from: [\`${types.join('`, `')}\`]\`${nopes.length > 0 ? `Queried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random())
+            return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+        }
+        else
+        if (["exclude"].includes(args[0])) {
+            let types = [];
+            let nopes = [];
+            if (!args[1]) type = tags.random();
+            else
+            {
+                for (let i = 1; i < args.length; i++) {
+                    let tag = tags.filter(type => type.toLowerCase() == args[i].toLowerCase());
+                    if (!tag) nopes.push(tag);
+                    else
+                    if (!types.includes(tag)) types.push(tag); 
+                }
+                if (types.length + nopes.length > tags.length) return sendChat("There's not even that many tags, try again.");
+                else
+                if (types.length == tags.length) return sendChat("That removes literally every tag, try again.");
+                else
+                if (types.length > 0) {
+                    let Types = [];
+                    for (let i = 0; i < tags.length; i++) {
+                        if (!types.includes(tags[i])) Types.push(tags[i]);
+                    }
+                    type = Types.random();
+                }
+                else
+                return sendChat("None of those tags exist.");
+            }
+        
+            let embed = new Discord.RichEmbed();
+            embed.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]\`${nopes.length > 0 ? `Queried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random())
+            return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+        }
+        else
+        {
+            let type = tags.filter(x => x.toLowerCase() == input.toLowerCase())[0];
+            if (!type) return sendChat("Sorry, I don't have that");
+        
+            let embed = new Discord.RichEmbed();
+            embed.setDescription(`Tag: \`${type}\``);
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random())
+            return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+        }
     },
    
     // Admin-only
