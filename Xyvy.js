@@ -11,7 +11,7 @@ client.on("ready", () => {
             "x!help",
             "Used by at least one person every day!",
             "You know what they say"
-        ].concat(require("/app/stuffs/holidays.js").holidays(Date()));
+        ].concat(require("/app/stuffs/holidays.js").holidays(new Date()));
         client.user.setPresence({
             status: "online",
             game: {
