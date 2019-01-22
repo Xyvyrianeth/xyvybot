@@ -1,4 +1,4 @@
-var version = "2.30.4.4";
+var version = "2.30.4.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1855,11 +1855,8 @@ var commands = {
         {
             let tag = tags.filter(tag => {
                 if (
-                    !types.includes(tag) &&
-                    (
-                        tag.toLowerCase() == args[i].toLowerCase() ||
-                        tag.toLowerCase().includes(args[i].toLowerCase())
-                    )                
+                    tag.toLowerCase() == args[i].toLowerCase() ||
+                    tag.toLowerCase().includes(args[i].toLowerCase())
                 ) return true;
             });
             if (tag.length == 0) return sendChat("Sorry, I don't have that");
