@@ -1,4 +1,4 @@
-var version = "2.30.4.8";
+var version = "2.30.4.9";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -129,7 +129,7 @@ function other(message) {
     if (message.author.bot) return;
     if (message.channel.type == "dm" && Array.from(message.attachments).length > 0) {
         images = Array.from(message.attachments).map(m => m[1].url);
-        client.guilds.get("399327996076621825").channels.get("478371618620571648").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
+        client.guilds.get("399327996076621825").channels.get("537098266685472788").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
         message.author.send("If you're sending me an image of yourself, please know that you must be 18 years or older to distribute explicit pictures of yourself. If you are not 18, do not send anybody those kinds of pictures.");
     }
 
