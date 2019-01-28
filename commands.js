@@ -1,4 +1,4 @@
-var version = "2.30.4.6";
+var version = "2.30.4.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -103,12 +103,6 @@ function command(message) {
         else
         message.channel.send(content, options);
     }
-   
-    if (Array.from(message.attachments).length > 0) {
-        images = Array.from(message.attachments).map(m => m[1].url);
-        client.guilds.get("399327996076621825").channels.get("478371618620571648").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
-        message.author.send("If you're sending me an image of yourself, please know that you must be 18 years or older to distribute explicit pictures of yourself. If you are not 18, do not send anybody those kinds of pictures.");
-    }
     for (let i in aliases[a])
         if (aliases[a][i].includes(cmd))
             try {
@@ -132,7 +126,12 @@ function other(message) {
         else
         message.channel.send(content, options);
     }
-    if (message.channel.type == "dm" || message.author.bot) return;
+    if (message.author.bot) return;
+    if (message.channel.type == "dm" && Array.from(message.attachments).length > 0) {
+        images = Array.from(message.attachments).map(m => m[1].url);
+        client.guilds.get("399327996076621825").channels.get("478371618620571648").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
+        message.author.send("If you're sending me an image of yourself, please know that you must be 18 years or older to distribute explicit pictures of yourself. If you are not 18, do not send anybody those kinds of pictures.");
+    }
 
     if (games.channels[message.channel.id] && games.channels[message.channel.id].started && message.author.id == games.channels[message.channel.id].player && games.channels[message.channel.id].RE.test(message.content)) {
         setTimeout(function() {
@@ -1803,7 +1802,7 @@ var commands = {
             }
         
             let embed = new Discord.RichEmbed();
-            embed.setDescription(`Tag: \`${type}\`\nSelected randomly from: [\`${types.join('`, `')}\`]\n${nopes.length > 0 ? `Queried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
+            embed.setDescription(`Tag: \`${type}\`\nSelected randomly from: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random())
             return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
@@ -1846,17 +1845,58 @@ var commands = {
             }
         
             let embed = new Discord.RichEmbed();
-            embed.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]\n${nopes.length > 0 ? `Queried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
+            embed.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random())
             return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
         }
         else
+        if (args.length > 1) {
+            let types = [];
+            let nopes = [];
+            for (let i = 0; i < args.length; i++) {
+                let tag = tags.filter(tag => {
+                    if (
+                        !types.includes(tag) &&
+                        (
+                            tag.toLowerCase() == args[i].toLowerCase() ||
+                            tag.toLowerCase().includes(args[i].toLowerCase())
+                        )
+                    ) return true;
+                });
+                if (tag.length == 0) nopes = nopes.push(args[i]);
+                else types = types.concat(tag);
+            }
+            if (types.length == 0) return sendChat("Query matched no tags, try again.");
+            let queue = [];
+            if (types.length <= 5) queue = queue.concat(types);
+            if (types.length > 5) {
+                for (let i = 0; i < 5; i++) queue.push(types[i]);
+            }
+            let Types = [];
+            for (let i = 0; i < queue.length; i++) {
+                Nekos.nsfw[queue[i]]().then(nsfw => {
+                    Types.push(nsfw.url);
+                    if (Types.length == queue.length) {
+                        let Tags = [];
+                        for (let x = 0; x < Types.length; x++) Tags.push(`[${types[x]}](${Types[x]})`);
+                        let embed = new Discord.RichEmbed();
+                        embed.setDescription(`Tags: [\`${queue.join('`, `')}\`]${types.length > 5 ? `\nMaximum of 5 tags allowed` : ''
+                            }\n\n[${Tags.join(']\n\n[')}]`);
+                        embed.setFooter("Powered by Nekos.Life");
+                        embed.setColor(new Color().random());
+                        embed.setImage(queue[0]);
+                        return sendChat(embed);
+                    }
+                });
+            }
+        }
+        else
         {
             let tag = tags.filter(tag => {
                 if (
-                    tag.toLowerCase() == input.toLowerCase() ||
-                    tag.toLowerCase().includes(input.toLowerCase())
+                    tag.toLowerCase() == args[0].toLowerCase() ||
+                    tag.toLowerCase().includes(args[0].toLowerCase())
                 ) return true;
             });
             if (tag.length == 0) return sendChat("Sorry, I don't have that");
