@@ -939,53 +939,52 @@ var commands = {
         }
         else
         {
-            w = Number(args[0]) == null ? 10 : Number(args[0]) > 20 ? 10 : Number(args[1]);
-            h = Number(args[1]) == null ? 10 : Number(args[1]) > 15 ? 10 : Number(args[1]); let wh = w * h;
-            d = Number(args[2]) == null ? 10 : Number(args[2]) > wh ? 10 : Number(args[2]);
+            w = Number(args[0]) == null ? 10 : Number(args[0]) > 15 ? 15 : Number(args[0]);
+            h = Number(args[1]) == null ? 10 : Number(args[1]) > 13 ? 13 : Number(args[1]); let wh = w * h;
+            d = Number(args[2]) == null ? 10 : Number(args[2]) > wh ? wh : Number(args[2]);
         }
         a = [];
-        for (let x = w; x--;) {
+        for (let y = h; y--;) {
             let b = [];
-            for (let y = h; y--;) b.push(0);
+            for (let x = w; x--;) b.push(0);
             a.push(b);
         }
         k = [];
         do {
             let x = Math.random() * w | 0;
             let y = Math.random() * h | 0;
-            if (typeof a[x][y] == "number") {
-                a[x][y] = "☠";
-                k.push([x, y]);
+            if (typeof a[y][x] == "number") {
+                a[y][x] = "☠";
+                k.push([y, x]);
             }
         } while (k.length < d);
         for (let b = d; b--;) {
-            x = k[b][0];
-            y = k[b][1];
+            y = k[b][0];
+            x = k[b][1];
             z = [true, true, true, true, true, true, true, true];
-            if (x == 0) z[0] = z[1] = z[2] = false;
-            if (x == 9) z[4] = z[5] = z[6] = false;
-            if (y == 0) z[0] = z[7] = z[6] = false;
-            if (y == 9) z[2] = z[3] = z[4] = false;
+            if (y == 0) z[0] = z[1] = z[2] = false;
+            if (y == h - 1) z[4] = z[5] = z[6] = false;
+            if (x == 0) z[0] = z[7] = z[6] = false;
+            if (x == w - 1) z[2] = z[3] = z[4] = false;
             for (let xy = 8; xy--;) {
                 if (z[xy]) {
-                    X = x + [-1, -1, -1, 0, 1, 1, 1, 0][xy];
-                    Y = y + [-1, 0, 1, 1, 1, 0, -1, -1][xy];
-                    if (typeof a[X][Y] == "number") a[X][Y] += 1;
+                    Y = y + [-1, -1, -1, 0, 1, 1,  1,  0][xy];
+                    X = x + [-1,  0,  1, 1, 1, 0, -1, -1][xy];
+                    if (typeof a[Y][X] == "number") a[Y][X] += 1;
                 }
             }
         }
-        for (let x = w; x--;) {
-            for (let y = h; y--;) {
-                if (typeof a[x][y] == "number") a[x][y] = "0⃣ 1⃣ 2⃣ 3⃣ 4⃣ 5⃣ 6⃣ 7⃣ 8⃣".split(' ')[a[x][y]];
+        for (let y = h; y--;) {
+            for (let x = w; x--;) {
+                if (typeof a[y][x] == "number") a[y][x] = "0⃣ 1⃣ 2⃣ 3⃣ 4⃣ 5⃣ 6⃣ 7⃣ 8⃣".split(' ')[a[y][x]];
             }
         }
-        for (let x = w; x--;) a[x] = a[x].join("||||");
+        for (let y = h; y--;) a[y] = a[y].join("||||");
         let embed = new Discord.RichEmbed();
         embed.setDescription("||" + a.join("||\n||") + "||");
         embed.setTitle("MineSweeper");
-        embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
+        embed.setFooter("Width: " + w + " | Height: " + h + " | Bombs: " + d);
         sendChat(embed);
-        message.delete();
     },
 
     "math": function(cmd, args, input, message, sendChat) {
