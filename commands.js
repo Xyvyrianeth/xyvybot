@@ -1,4 +1,4 @@
-var version = "2.30.4.9";
+var version = "2.31.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -247,7 +247,7 @@ function newUser(id) {
 
 var aliases = {
     guild: {
-        // Games
+        // Competitive Games
         "games": ["games"],
         "othello": ["othello"],
         "squares": ["squares"],
@@ -258,12 +258,13 @@ var aliases = {
         "ninemen": ["ninemen", "morris", "ninemensmorris", "ninemenmorris"],
         "profile": ["profile", "scorecard", "prof"],
 
-        // Small Games
+        // Other Games
         "hangman": ["hangman", "hm"],
         "math": ["math", "quickmath", "quickmaffs", "maffs"],
         "iq": ["iq", "fakeiqtest", "fakeiqquiz", "fakeiq"],
         "sequence": ["sequence", "pattern"],
         "shuffle": ["shuffle", "scramble"],
+        "minesweeper": ["minesweeper", "ms", "mines"],
        
         // Utility
         "about": ["about", "info", "bot"],
@@ -296,6 +297,7 @@ var aliases = {
         "profile": ["profile", "scorecard", "prof"],
     
         // Small Games
+        "minesweeper": ["minesweeper", "ms", "mines"],
        
         // Utility
         "about": ["about", "info", "bot"],
@@ -928,6 +930,64 @@ var commands = {
         return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
     },
 
+    "minesweeper": function(cmd, args, input, message, sendChat) {
+        let w, h, d;
+        if (!input || args.length != 3) {
+            w = 10;
+            h = 10;
+            d = 10;
+        }
+        else
+        {
+            w = Number(args[0]) == null ? 10 : Number(args[0]) > 20 ? 10 : Number(args[1]);
+            h = Number(args[1]) == null ? 10 : Number(args[1]) > 15 ? 10 : Number(args[1]); let wh = w * h;
+            d = Number(args[2]) == null ? 10 : Number(args[2]) > wh ? 10 : Number(args[2]);
+        }
+        a = [];
+        for (let x = w; x--;) {
+            let b = [];
+            for (let y = h; y--;) b.push(0);
+            a.push(b);
+        }
+        k = [];
+        do {
+            let x = Math.random() * w | 0;
+            let y = Math.random() * h | 0;
+            if (typeof a[x][y] == "number") {
+                a[x][y] = "☠";
+                k.push([x, y]);
+            }
+        } while (k.length < d);
+        for (let b = d; b--;) {
+            x = k[b][0];
+            y = k[b][1];
+            z = [true, true, true, true, true, true, true, true];
+            if (x == 0) z[0] = z[1] = z[2] = false;
+            if (x == 9) z[4] = z[5] = z[6] = false;
+            if (y == 0) z[0] = z[7] = z[6] = false;
+            if (y == 9) z[2] = z[3] = z[4] = false;
+            for (let xy = 8; xy--;) {
+                if (z[xy]) {
+                    X = x + [-1, -1, -1, 0, 1, 1, 1, 0][xy];
+                    Y = y + [-1, 0, 1, 1, 1, 0, -1, -1][xy];
+                    if (typeof a[X][Y] == "number") a[X][Y] += 1;
+                }
+            }
+        }
+        for (let x = w; x--;) {
+            for (let y = h; y--;) {
+                if (typeof a[x][y] == "number") a[x][y] = "0⃣ 1⃣ 2⃣ 3⃣ 4⃣ 5⃣ 6⃣ 7⃣ 8⃣".split(' ')[a[x][y]];
+            }
+        }
+        for (let x = w; x--;) a[x] = a[x].join("||||");
+        let embed = new Discord.RichEmbed();
+        embed.setDescription("||" + a.join("||\n||") + "||");
+        embed.setTitle("MineSweeper");
+        embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
+        sendChat(embed);
+        message.delete();
+    },
+
     "math": function(cmd, args, input, message, sendChat) {
         return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
     },
@@ -977,14 +1037,14 @@ var commands = {
             let helps;
             if (message.channel.type == "dm") helps = [
                     ["`I apologize, but none of my larger games can work in DMs. When I get bigger and more people are playing my games regularly, I'll make it where you can play against strangers through DMs.`"],
-                    ["\\*`hangman", "\\*`quickmaffs", "\\*`iq", "\\*`sequence", "\\*`shuffle"],
+                    ["\\*`hangman", "`minesweeper", "\\*`quickmaffs", "\\*`iq", "\\*`sequence", "\\*`shuffle"],
                     ["\\*`about", "`help", "`avatar",, "`aliases", "`bugreport", "`request"],
                     ["\\*`anime", "\\*`manga", "`jisho", "\\*`jshelp", "`nekos", "`calculate", "`graph"]
                 ];
             else
             helps = [
                     ["`games", "`othello", "`squares", "`gomoku", "\\*`3dtictactoe", "`connect4", "\\*`pente", "\\*`ninemen", "`profile"],
-                    ["\\*`hangman", "\\*`quickmaffs", "\\*`iq", "\\*`sequence", "\\*`shuffle"],
+                    ["\\*`hangman", "`minesweeper", "\\*`quickmaffs", "\\*`iq", "\\*`sequence", "\\*`shuffle"],
                     ["\\*`about", "`help", "`avatar", "`aliases", "`server", "`kick", "`ban"],
                     ["\\*`anime", "\\*`manga", "`jisho", "\\*`jshelp", "`nekos", "`calculate", "`graph"]
                 ];
@@ -1034,6 +1094,7 @@ var commands = {
                             "pente": "Play a game of Pente with someone else! It's like Tic Tac Toe, but violent!",
                             "ninemen": "Play a game of Nine Men's Morris with someone else! It's not like Tic Tac Toe. Well, it kinda is, but in the same sense, not really.",
                             "hangman": "Play a game of Hangman with other people!",
+                            "minesweeper": "Play a small game of classic minesweeper! Easy for multiple people to play at once!",
                             "math": "Compete with other people to see who can do math the fastest!",
                             "iq": "Simple things you might find on a fake IQ test!",
                             "sequence": "Find the next item in the pattern!",
