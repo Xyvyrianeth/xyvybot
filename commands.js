@@ -1,4 +1,4 @@
-var version = "2.31.0.0";
+var version = "2.31.0.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -939,9 +939,9 @@ var commands = {
         }
         else
         {
-            w = Number(args[0]) == null ? 10 : Number(args[0]) > 15 ? 15 : Number(args[0]);
-            h = Number(args[1]) == null ? 10 : Number(args[1]) > 13 ? 13 : Number(args[1]); let wh = w * h;
-            d = Number(args[2]) == null ? 10 : Number(args[2]) > wh ? wh : Number(args[2]);
+            w = Number(args[0]) == null ? 10 : Number(args[0]) != Math.round(Number(args[0])) ? 10 : Number(args[0]) <= 0 ? 10 : Number(args[0]) > 15 ? 15 : Number(args[0]);
+            h = Number(args[1]) == null ? 10 : Number(args[1]) != Math.round(Number(args[1])) ? 10 : Number(args[1]) <= 0 ? 10 : Number(args[1]) > 13 ? 13 : Number(args[1]); let wh = w * h;
+            d = Number(args[2]) == null ? 10 : Number(args[2]) != Math.round(Number(args[2])) ? 10 : Number(args[2]) <= 0 ? 10 : Number(args[2]) > wh ? wh : Number(args[2]);
         }
         a = [];
         for (let y = h; y--;) {
