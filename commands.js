@@ -1,4 +1,4 @@
-var version = "2.31.0.3";
+var version = "2.31.0.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -941,8 +941,45 @@ var commands = {
         {
             w = Number(args[0]) == null ? 10 : Number(args[0]) != Math.round(Number(args[0])) ? 10 : Number(args[0]) <= 0 ? 10 : Number(args[0]) > 15 ? 15 : Number(args[0]);
             h = Number(args[1]) == null ? 10 : Number(args[1]) != Math.round(Number(args[1])) ? 10 : Number(args[1]) <= 0 ? 10 : Number(args[1]) > 13 ? 13 : Number(args[1]); let wh = w * h;
-            client.guilds.get("399327996076621825").channels.get("540749591084269568").send(args.join('\n'));
-            d = Number(args[2]) == null ? args[2] == "easy" ? Math.ceil(wh * 0.1) : args[2] == "medium" ? Math.ceil(wh * 0.15) : args[2] == "hard" ? Math.ceil(wh * 0.2) : Math.ceil(wh * 0.1) : Number(args[2]) != Math.round(Number(args[2])) ? Math.ceil(wh * 0.1) : Number(args[2]) <= 0 ? Math.ceil(wh * 0.1) : Number(args[2]) > wh ? wh : Number(args[2]);
+            /*/
+            d = Number(args[2]) == null ?
+                args[2] == "easy" ?
+                    Math.ceil(wh * 0.1) :
+                args[2] == "medium" ?
+                    Math.ceil(wh * 0.15) :
+                args[2] == "hard" ?
+                    Math.ceil(wh * 0.2) :
+                Math.ceil(wh * 0.1) :
+            Number(args[2]) != Math.round(Number(args[2])) ?
+                Math.ceil(wh * 0.1) :
+            Number(args[2]) <= 0 ?
+                Math.ceil(wh * 0.1) :
+            Number(args[2]) > wh ?
+                wh :
+            Number(args[2]);
+            /*/
+            d = (function() {
+                if (Number(args[2]) == null) {
+                    if (args[2] == "easy") {
+                        return Math.ceil(wh * 0.1);
+                    } else if (args[2] == "medium") {
+                        return Math.ceil(wh * 0.15);
+                    } else if (args[2] == "hard") {
+                        return Math.ceil(wh * 0.2);
+                    } else {
+                        return Math.ceil(wh * 0.1);
+                    }
+                } else if (Number(args[2]) != Math.round(Number(args[2]))) {
+                    return Math.ceil(wh * 0.1);
+                } else if (Number(args[2]) <= 0) {
+                    return Math.ceil(wh * 0.1);
+                } else if (Number(args[2]) > wh) {
+                    return wh;
+                } else {
+                    return Number(args[2]);
+                }
+            })();
+            //*/
         }
         a = [];
         for (let y = h; y--;) {
