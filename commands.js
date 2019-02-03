@@ -1,4 +1,4 @@
-var version = "2.31.0.2";
+var version = "2.31.0.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -941,7 +941,7 @@ var commands = {
         {
             w = Number(args[0]) == null ? 10 : Number(args[0]) != Math.round(Number(args[0])) ? 10 : Number(args[0]) <= 0 ? 10 : Number(args[0]) > 15 ? 15 : Number(args[0]);
             h = Number(args[1]) == null ? 10 : Number(args[1]) != Math.round(Number(args[1])) ? 10 : Number(args[1]) <= 0 ? 10 : Number(args[1]) > 13 ? 13 : Number(args[1]); let wh = w * h;
-            d = Number(args[2]) == null ? 10 : Number(args[2]) != Math.round(Number(args[2])) ? 10 : Number(args[2]) <= 0 ? 10 : Number(args[2]) > wh ? wh : Number(args[2]);
+            d = Number(args[2]) == null ? args[2] == "easy" ? Math.ceil(wh * 0.1) : args[2] == "medium" ? Math.ceil(wh * 0.15) : args[2] == "hard" ? Math.ceil(wh * 0.2) : Math.ceil(wh * 0.1) : Number(args[2]) != Math.round(Number(args[2])) ? Math.ceil(wh * 0.1) : Number(args[2]) <= 0 ? Math.ceil(wh * 0.1) : Number(args[2]) > wh ? wh : Number(args[2]);
         }
         a = [];
         for (let y = h; y--;) {
@@ -962,9 +962,9 @@ var commands = {
             y = k[b][0];
             x = k[b][1];
             z = [true, true, true, true, true, true, true, true];
-            if (y == 0) z[0] = z[1] = z[2] = false;
+            if (y == 0)     z[0] = z[1] = z[2] = false;
             if (y == h - 1) z[4] = z[5] = z[6] = false;
-            if (x == 0) z[0] = z[7] = z[6] = false;
+            if (x == 0)     z[0] = z[7] = z[6] = false;
             if (x == w - 1) z[2] = z[3] = z[4] = false;
             for (let xy = 8; xy--;) {
                 if (z[xy]) {
