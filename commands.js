@@ -1,4 +1,4 @@
-var version = "2.31.0.6";
+var version = "2.31.0.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1018,7 +1018,7 @@ var commands = {
         let embed = new Discord.RichEmbed();
         embed.setDescription("||" + a.join("||\n||") + "||");
         embed.setTitle("MineSweeper");
-        embed.setFooter("Width: " + w + " | Height: " + h + " | Bombs: " + d);
+        embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
         sendChat(embed);
     },
 
