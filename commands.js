@@ -1,4 +1,4 @@
-var version = "2.31.0.9";
+var version = "2.31.0.10";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -939,28 +939,28 @@ var commands = {
         }
         else
         {
-            h = isNaN(args[1]) ?
+            h = isNaN(args[0]) ?
                     10 :
-                Number(args[1]) != Math.round(Number(args[1])) ?
-                    10 :
-                Number(args[1]) <= 0 ?
-                    10 :
-                Number(args[1]) > 20 ?
-                    20 :
-                Number(args[1]);
-            w = isNaN(args[0]) ?
-                    10 :
-                Number(args[0]) != Math.round(Number(args[0])) ?
+                Number(args[0]) != Math.round(Number(args[1])) ?
                     10 :
                 Number(args[0]) <= 0 ?
                     10 :
-                Number(args[0]) * h > 198 ?
+                Number(args[0]) > 20 ?
+                    20 :
+                Number(args[0]);
+            w = isNaN(args[1]) ?
+                    10 :
+                Number(args[1]) != Math.round(Number(args[0])) ?
+                    10 :
+                Number(args[1]) <= 0 ?
+                    10 :
+                Number(args[1]) * h > 198 ?
                     Math.floor(198 / h) > 16 ?
                         16 :
                     Math.floor(198 / h) :
-                Number(args[0]) > 16 ?
+                Number(args[1]) > 16 ?
                     16 :
-                Number(args[0]);
+                Number(args[1]);
             wh = w * h;
             d = args.length == 2 ?
                     Math.ceil(wh * 0.1) :
