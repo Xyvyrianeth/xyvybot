@@ -1,4 +1,4 @@
-var version = "2.31.0.8";
+var version = "2.31.0.9";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -932,7 +932,7 @@ var commands = {
 
     "minesweeper": function(cmd, args, input, message, sendChat) {
         let w, h, d;
-        if (args.length != 2 || args.length != 3) {
+        if (args.length != 2 && args.length != 3) {
             w = 10;
             h = 10;
             d = 10;
