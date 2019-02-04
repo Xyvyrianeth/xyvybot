@@ -1,4 +1,4 @@
-var version = "2.31.0.10";
+var version = "2.31.0.11";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -932,6 +932,10 @@ var commands = {
 
     "minesweeper": function(cmd, args, input, message, sendChat) {
         let w, h, d;
+        if (["help"].includes(input)) {
+            sendChat("How to use:\nx!minesweeper `height` `width` `bombs/difficulty (optional)`\nMax height: 20\nMax width: 16 **OR** 198 divided by height");
+        }
+        else
         if (args.length != 2 && args.length != 3) {
             w = 10;
             h = 10;
@@ -941,7 +945,7 @@ var commands = {
         {
             h = isNaN(args[0]) ?
                     10 :
-                Number(args[0]) != Math.round(Number(args[1])) ?
+                Number(args[0]) != Math.round(Number(args[0])) ?
                     10 :
                 Number(args[0]) <= 0 ?
                     10 :
@@ -950,7 +954,7 @@ var commands = {
                 Number(args[0]);
             w = isNaN(args[1]) ?
                     10 :
-                Number(args[1]) != Math.round(Number(args[0])) ?
+                Number(args[1]) != Math.round(Number(args[1])) ?
                     10 :
                 Number(args[1]) <= 0 ?
                     10 :
