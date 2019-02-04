@@ -1,4 +1,4 @@
-var version = "2.31.0.5";
+var version = "2.31.0.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -939,47 +939,44 @@ var commands = {
         }
         else
         {
-            w = isNaN(args[0]) ? 10 : Number(args[0]) != Math.round(Number(args[0])) ? 10 : Number(args[0]) <= 0 ? 10 : Number(args[0]) > 15 ? 15 : Number(args[0]);
-            h = isNaN(args[1]) ? 10 : Number(args[1]) != Math.round(Number(args[1])) ? 10 : Number(args[1]) <= 0 ? 10 : Number(args[1]) > 13 ? 13 : Number(args[1]); let wh = w * h;
-            /*/
-            d = Number(args[2]) == null ?
-                args[2] == "easy" ?
+            h = isNaN(args[1]) ?
+                    10 :
+                Number(args[1]) != Math.round(Number(args[1])) ?
+                    10 :
+                Number(args[1]) <= 0 ?
+                    10 :
+                Number(args[1]) > 20 ?
+                    20 :
+                Number(args[1]);
+            w = isNaN(args[0]) ?
+                    10 :
+                Number(args[0]) != Math.round(Number(args[0])) ?
+                    10 :
+                Number(args[0]) <= 0 ?
+                    10 :
+                Number(args[0]) * h > 198 ?
+                    Math.floor(198 / h) > 16 ?
+                        16 :
+                    Math.floor(198 / h) :
+                Number(args[0]) > 16 ?
+                    16 :
+                Number(args[0]);
+            wh = w * h;
+            d = isNaN(args[2]) ?
+                    args[2] == "easy" ?
+                        Math.ceil(wh * 0.1) :
+                    args[2] == "medium" ?
+                        Math.ceil(wh * 0.15) :
+                    args[2] == "hard" ?
+                        Math.ceil(wh * 0.2) :
                     Math.ceil(wh * 0.1) :
-                args[2] == "medium" ?
-                    Math.ceil(wh * 0.15) :
-                args[2] == "hard" ?
-                    Math.ceil(wh * 0.2) :
-                Math.ceil(wh * 0.1) :
-            Number(args[2]) != Math.round(Number(args[2])) ?
-                Math.ceil(wh * 0.1) :
-            Number(args[2]) <= 0 ?
-                Math.ceil(wh * 0.1) :
-            Number(args[2]) > wh ?
-                wh :
-            Number(args[2]);
-            /*/
-            d = (function() {
-                if (isNaN(args[2])) {
-                    if (args[2] == "easy") {
-                        return Math.ceil(wh * 0.1);
-                    } else if (args[2] == "medium") {
-                        return Math.ceil(wh * 0.15);
-                    } else if (args[2] == "hard") {
-                        return Math.ceil(wh * 0.2);
-                    } else {
-                        return Math.ceil(wh * 0.1);
-                    }
-                } else if (Number(args[2]) != Math.round(Number(args[2]))) {
-                    return Math.ceil(wh * 0.1);
-                } else if (Number(args[2]) <= 0) {
-                    return Math.ceil(wh * 0.1);
-                } else if (Number(args[2]) > wh) {
-                    return wh;
-                } else {
-                    return Number(args[2]);
-                }
-            })();
-            //*/
+                Number(args[2]) != Math.round(Number(args[2])) ?
+                    Math.ceil(wh * 0.1) :
+                Number(args[2]) <= 0 ?
+                    Math.ceil(wh * 0.1) :
+                Number(args[2]) > wh ?
+                    wh :
+                Number(args[2]);
         }
         a = [];
         for (let y = h; y--;) {
