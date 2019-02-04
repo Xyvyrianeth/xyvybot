@@ -1,4 +1,4 @@
-var version = "2.31.0.7";
+var version = "2.31.0.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -932,7 +932,7 @@ var commands = {
 
     "minesweeper": function(cmd, args, input, message, sendChat) {
         let w, h, d;
-        if (!input || args.length != 3) {
+        if (args.length != 2 || args.length != 3) {
             w = 10;
             h = 10;
             d = 10;
@@ -962,7 +962,9 @@ var commands = {
                     16 :
                 Number(args[0]);
             wh = w * h;
-            d = isNaN(args[2]) ?
+            d = args.length == 2 ?
+                    Math.ceil(wh * 0.1) :
+                isNaN(args[2]) ?
                     args[2] == "easy" ?
                         Math.ceil(wh * 0.1) :
                     args[2] == "medium" ?
