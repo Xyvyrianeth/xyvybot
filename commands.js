@@ -1,4 +1,4 @@
-var version = "2.31.0.11";
+var version = "2.31.0.12";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -936,14 +936,16 @@ var commands = {
             sendChat("How to use:\nx!minesweeper `height` `width` `bombs/difficulty (optional)`\nMax height: 20\nMax width: 16 **OR** 198 divided by height");
         }
         else
-        if (args.length != 2 && args.length != 3) {
+        if (!input || args.length > 3) {
             w = 10;
             h = 10;
             d = 10;
         }
         else
         {
-            h = isNaN(args[0]) ?
+            h = !input || args.length == 1 ?
+                    10 :
+                isNaN(args[0]) ?
                     10 :
                 Number(args[0]) != Math.round(Number(args[0])) ?
                     10 :
@@ -952,7 +954,9 @@ var commands = {
                 Number(args[0]) > 20 ?
                     20 :
                 Number(args[0]);
-            w = isNaN(args[1]) ?
+            w = !input || args.length == 1 ?
+                    10 :
+                isNaN(args[1]) ?
                     10 :
                 Number(args[1]) != Math.round(Number(args[1])) ?
                     10 :
@@ -966,23 +970,30 @@ var commands = {
                     16 :
                 Number(args[1]);
             wh = w * h;
-            d = args.length == 2 ?
+            D = args.length == 1 ?
+                    args[0] :
+                args.length == 3 ?
+                    args[2] :
+                "easy";
+            d = !input ?
+                    10 :
+                args.length == 2 ?
                     Math.ceil(wh * 0.1) :
-                isNaN(args[2]) ?
-                    args[2] == "easy" ?
+                isNaN(D) ?
+                    D == "easy" ?
                         Math.ceil(wh * 0.1) :
-                    args[2] == "medium" ?
+                    D == "medium" ?
                         Math.ceil(wh * 0.15) :
-                    args[2] == "hard" ?
+                    D == "hard" ?
                         Math.ceil(wh * 0.2) :
                     Math.ceil(wh * 0.1) :
-                Number(args[2]) != Math.round(Number(args[2])) ?
+                Number(D) != Math.round(Number(D)) ?
                     Math.ceil(wh * 0.1) :
-                Number(args[2]) <= 0 ?
+                Number(D) <= 0 ?
                     Math.ceil(wh * 0.1) :
-                Number(args[2]) > wh ?
+                Number(D) > wh ?
                     wh :
-                Number(args[2]);
+                Number(D);
         }
         a = [];
         for (let y = h; y--;) {
