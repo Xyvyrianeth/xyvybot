@@ -1,4 +1,4 @@
-var version = "2.31.0.12";
+var version = "2.31.0.13";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -975,25 +975,33 @@ var commands = {
                 args.length == 3 ?
                     args[2] :
                 "easy";
-            d = !input ?
+            d = !input ? 
                     10 :
                 args.length == 2 ?
-                    Math.ceil(wh * 0.1) :
-                isNaN(D) ?
-                    D == "easy" ?
-                        Math.ceil(wh * 0.1) :
-                    D == "medium" ?
-                        Math.ceil(wh * 0.15) :
-                    D == "hard" ?
-                        Math.ceil(wh * 0.2) :
-                    Math.ceil(wh * 0.1) :
-                Number(D) != Math.round(Number(D)) ?
-                    Math.ceil(wh * 0.1) :
-                Number(D) <= 0 ?
-                    Math.ceil(wh * 0.1) :
-                Number(D) > wh ?
-                    wh :
-                Number(D);
+                    Math.round(wh * 0.1) :
+                /^[0-9]{1,}%?$/.test(D) ?
+                    /%/.test(D) ?
+                        Number(D.substring(0, D.length - 1)) > 100 ?
+                            wh :
+                        Math.round(wh * (Number(D.substring(0, D.length - 1)) / 100)) :
+                    Number(D) > wh ?
+                        wh :
+                    Number(D) :
+                ["novice beginner easy apprentice medium normal adept hard expert legendary master"].split(' ').includes(D) ?
+                    Math.round(wh * {
+                        "novice": 0.05,
+                        "beginner": 0.05,
+                        "easy": 0.1,
+                        "apprentice": 0.1,
+                        "medium": 0.15,
+                        "normal": 0.15,
+                        "adept": 0.15,
+                        "hard": 0.2,
+                        "expert": 0.2,
+                        "legendary": 0.25,
+                        "master": 0.25
+                    }[D]) :
+                Math.round(wh * 0.1);
         }
         a = [];
         for (let y = h; y--;) {
