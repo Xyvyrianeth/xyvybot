@@ -945,22 +945,14 @@ var commands = {
         {
             h = !input || args.length == 1 ?
                     10 :
-                isNaN(args[0]) ?
-                    10 :
-                Number(args[0]) != Math.round(Number(args[0])) ?
-                    10 :
-                Number(args[0]) <= 0 ?
+                /^[1-9][0-9]{0,}$/.test(args[0]) ?
                     10 :
                 Number(args[0]) > 20 ?
                     20 :
                 Number(args[0]);
             w = !input || args.length == 1 ?
                     10 :
-                isNaN(args[1]) ?
-                    10 :
-                Number(args[1]) != Math.round(Number(args[1])) ?
-                    10 :
-                Number(args[1]) <= 0 ?
+                /^[1-9][0-9]{0,}$/.test(args[0]) ?
                     10 :
                 Number(args[1]) * h > 198 ?
                     Math.floor(198 / h) > 16 ?
@@ -975,11 +967,11 @@ var commands = {
                 args.length == 3 ?
                     args[2] :
                 "easy";
-            d = !input ? 
+            d = !input ?
                     10 :
                 args.length == 2 ?
                     Math.round(wh * 0.1) :
-                /^[0-9]{1,}%?$/.test(D) ?
+                /^[1-9][0-9]{0,}%?$/.test(D) ?
                     /%/.test(D) ?
                         Number(D.substring(0, D.length - 1)) > 100 ?
                             wh :
