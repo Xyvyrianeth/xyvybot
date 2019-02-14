@@ -1,4 +1,4 @@
-var version = "2.31.0.13";
+var version = "2.31.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -759,7 +759,7 @@ var commands = {
                                 });
                         }).catch(err => sendChat("```" + err + "```"));
                         else
-                            Jimp.read("./img/defaultAvatar.png").then(function(image2) {
+                            Jimp.read("https://cdn.discordapp.com/embed/avatars/0.png").then(function(image2) {
                                 image2.getBuffer("image/png", function(err, src) {
                                     let { Image } = require("canvas");
                                     avatar = new Image;
@@ -933,7 +933,30 @@ var commands = {
     "minesweeper": function(cmd, args, input, message, sendChat) {
         let w, h, d;
         if (["help"].includes(input)) {
-            sendChat("How to use:\nx!minesweeper `height` `width` `bombs/difficulty (optional)`\nMax height: 20\nMax width: 16 **OR** 198 divided by height");
+            let embed = new Discord.RichEmbed();
+            embed.setAuthor({
+                name: "MineSweeper",
+                icon: "https://cdn.discordapp.com/attachments/434783815047577610/543961408442990592/2000px-Minesweeper_flag.png"
+            });
+            embed.setDescription(
+                "You can control 3 aspects of a game: height, width, and the number of bombs:\n" +
+                "  x!minesweeper `height` `width` `bombs`\n" +
+                "  x!minesweeper `height` `width`\n" +
+                "  x!minesweeper `bombs` (You can also set the number of bombs with a % instead of an exact number)\n\n" +
+                "The maximum height you can set a game to is 20.\n" +
+                "The maximum width you can set a game to is 16, but may have to be lower depending on the height (max number of total tiles is 198).\n" +
+                "The maximum number of bombs depends on the number of tiles total (height * width).\n"
+            );
+            embed.addField(
+                "Examples",
+                "`x!minesweeper 18 11 50`  18x11 board with 50 bombs\n" +
+                "`x!minesweeper 30`        10x10 board with 30 bombs\n" +
+                "`x!minesweeper 12 12`     12x12 board with 14 bombs\n" +
+                "`x!minesweeper 15 10 30%` 15x10 board with 45 bombs"
+            )
+            embed.setTitle("Help");
+            embed.setColor(new Color().random());
+            sendChat(embed);
         }
         else
         if (!input || args.length > 3) {
@@ -952,7 +975,7 @@ var commands = {
                 Number(args[0]);
             w = !input || args.length == 1 ?
                     10 :
-                /^[1-9][0-9]{0,}$/.test(args[0]) ?
+                /^[1-9][0-9]{0,}$/.test(args[1]) ?
                     10 :
                 Number(args[1]) * h > 198 ?
                     Math.floor(198 / h) > 16 ?
@@ -979,7 +1002,7 @@ var commands = {
                     Number(D) > wh ?
                         wh :
                     Number(D) :
-                ["novice beginner easy apprentice medium normal adept hard expert legendary master"].split(' ').includes(D) ?
+                "novice beginner easy apprentice medium normal adept hard expert legendary master".split(' ').includes(D) ?
                     Math.round(wh * {
                         "novice": 0.05,
                         "beginner": 0.05,
@@ -1033,9 +1056,13 @@ var commands = {
         }
         for (let y = h; y--;) a[y] = a[y].join("||||");
         let embed = new Discord.RichEmbed();
+        embed.setAuthor({
+            name: "MineSweeper",
+            icon: "https://cdn.discordapp.com/attachments/434783815047577610/543961408442990592/2000px-Minesweeper_flag.png"
+        });
         embed.setDescription("||" + a.join("||\n||") + "||");
-        embed.setTitle("MineSweeper");
         embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
+        embed.setColor(new Color().random());
         sendChat(embed);
     },
 
