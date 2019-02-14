@@ -1,4 +1,4 @@
-var version = "2.31.1.1";
+var version = "2.31.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -968,14 +968,14 @@ var commands = {
         {
             h = !input || args.length == 1 ?
                     10 :
-                /^[1-9][0-9]{0,}$/.test(args[0]) ?
+                !/^[1-9][0-9]{0,}$/.test(args[0]) ?
                     10 :
                 Number(args[0]) > 20 ?
                     20 :
                 Number(args[0]);
             w = !input || args.length == 1 ?
                     10 :
-                /^[1-9][0-9]{0,}$/.test(args[1]) ?
+                !/^[1-9][0-9]{0,}$/.test(args[1]) ?
                     10 :
                 Number(args[1]) * h > 198 ?
                     Math.floor(198 / h) > 16 ?
