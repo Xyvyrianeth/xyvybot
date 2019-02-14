@@ -1,4 +1,4 @@
-var version = "2.31.1.0";
+var version = "2.31.1.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -934,10 +934,10 @@ var commands = {
         let w, h, d;
         if (["help"].includes(input)) {
             let embed = new Discord.RichEmbed();
-            embed.setAuthor({
-                name: "MineSweeper",
-                icon: "https://cdn.discordapp.com/attachments/434783815047577610/543961408442990592/2000px-Minesweeper_flag.png"
-            });
+            embed.setAuthor(
+                "MineSweeper",
+                "https://cdn.discordapp.com/attachments/434783815047577610/543961408442990592/2000px-Minesweeper_flag.png"
+            );
             embed.setDescription(
                 "You can control 3 aspects of a game: height, width, and the number of bombs:\n" +
                 "  x!minesweeper `height` `width` `bombs`\n" +
@@ -1056,10 +1056,10 @@ var commands = {
         }
         for (let y = h; y--;) a[y] = a[y].join("||||");
         let embed = new Discord.RichEmbed();
-        embed.setAuthor({
-            name: "MineSweeper",
-            icon: "https://cdn.discordapp.com/attachments/434783815047577610/543961408442990592/2000px-Minesweeper_flag.png"
-        });
+        embed.setAuthor(
+            "MineSweeper",
+            "https://cdn.discordapp.com/attachments/434783815047577610/543961408442990592/2000px-Minesweeper_flag.png"
+        );
         embed.setDescription("||" + a.join("||\n||") + "||");
         embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
         embed.setColor(new Color().random());
