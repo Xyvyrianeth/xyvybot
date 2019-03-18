@@ -1,4 +1,4 @@
-var version = "2.31.1.4";
+var version = "2.31.1.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -181,8 +181,8 @@ function bot(message) {
                     let wins;
                     let lose;
                     if (res.rows.length == 0) {
-                        wins = newUser(result.winner);
-                        lose = newUser(result.loser);
+                        wins = newUser(result.winner, message);
+                        lose = newUser(result.loser, message);
                     }
                     else
                     if (res.rows.length == 2) {
@@ -191,13 +191,13 @@ function bot(message) {
                     }
                     else
                     if (res.rows[0].id == result.winner) {
-                        lose = newUser(result.loser);
+                        lose = newUser(result.loser, message);
                         wins = res.rows[0];
                     }
                     else
                     if (res.rows[0].id == result.loser) {
                         lose = res.rows[0];
-                        wins = newUser(result.winner);
+                        wins = newUser(result.winner, message);
                     }
                     let query = [
                         `UPDATE profiles`,
@@ -230,7 +230,7 @@ function bot(message) {
     }
 }
    
-function newUser(id) {
+function newUser(id, message) {
     let image = images.ids.random();
     let query = [
         `INSERT INTO profiles (`,
@@ -485,7 +485,7 @@ var commands = {
                 return db.query(query, function(err, res) {
                     if (err) sqlError(message, err, query);
                     let user;
-                    if (res.rows.length == 0) user = newUser(message.author.id);
+                    if (res.rows.length == 0) user = newUser(message.author.id, message);
                     else
                     user = res.rows[0];
 
@@ -738,7 +738,7 @@ var commands = {
                 if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
   
                 let profile;
-                if (res.rows.length == 0 && !input) profile = newUser(message.author.id, message.channel);
+                if (res.rows.length == 0 && !input) profile = newUser(message.author.id, message);
                 else
                 if (res.rows.length == 0) return sendChat("No user with that ID currently has a profile.");
                 else
