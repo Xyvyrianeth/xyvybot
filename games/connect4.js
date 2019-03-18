@@ -4,7 +4,7 @@ const { channels } = require("/app/games/channels.js");
 var gamename = "Connect Four";
 var shortname = "connect4";
  
-exports.newGame = function(channel, player1, cmd) {
+exports.newGame = function(channel, player1, cmd, mode) {
     channels[channel.id] = {game:shortname,channel:channel,turn:0,players:[],started:false,lastmove:'',player:false,RE:/^[1-7]$/,casual:mode};
     let game = channels[channel.id];
     game.board = [[],[],[],[],[],[],[]];
