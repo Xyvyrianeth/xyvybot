@@ -1,4 +1,4 @@
-var version = "2.31.1.3";
+var version = "2.31.1.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -231,7 +231,7 @@ function bot(message) {
 }
    
 function newUser(id) {
-    let image = backgrounds.ids.random();
+    let image = images.ids.random();
     let query = [
         `INSERT INTO profiles (`,
         `    id,       color,   title,      titles,             background,  backgrounds,         lorr,     win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
