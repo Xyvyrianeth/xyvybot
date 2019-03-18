@@ -1,4 +1,4 @@
-var version = "2.32.0.0";
+var version = "2.32.0.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -234,9 +234,9 @@ function newUser(id, message) {
     let image = images.ids.random();
     let query = [
         `INSERT INTO profiles (`,
-        `    id,       color,   title,      titles,             background,  backgrounds,         lorr,     elo1, elo2, elo3, elo4, elo5, elo6, elo7, win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
+        `    id,       color,   title,      titles,             background,  backgrounds,         lefty , elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
         `) VALUES (`,
-        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  1000, 1000, 1000, 1000, 1000, 1000, 1000, 0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
+        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  false,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
         `)`
     ].join('\n');
     db.query(query, function(err) {
@@ -854,15 +854,15 @@ var commands = {
             return sendChat("Unknown request.");
         }
         else
-        if (["lorr", "sidedisplay", "displayside", "displaylorr", "leftorright", "rightorleft"].includes(args[0])) {
+        if (["lefty", "sidedisplay", "displayside", "displaylorr", "leftorright", "rightorleft"].includes(args[0])) {
             return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
                 if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
                 if (res.rows.length == 0) return sendChat("You have not yet created a profile, so your information is displayed on neither the left nor the right. If you want to change that fact, do `x!profile` right now!");
                 return db.query(`UPDATE profiles
-                    SET lorr = '${res.rows[0].lorr == "left" ? "right" : "left"}'
+                    SET lefty = '${res.rows[0].lorr == true ? false : true}'
                     WHERE id = '${message.author.id}'`, function(err) {
                         if (err) sqlError(message, err, `UPDATE profiles
-                            SET lorr = '${res.rows[0].lorr == "left" ? "right" : "left"}'
+                            SET lefty = '${res.rows[0].lorr == true ? false : true}'
                             WHERE id = '${message.author.id}'`);
                         else
                         return sendChat("Successfully updated your information display to the " + (res.rows[0].lorr == "left" ? "right" : "left") + " side!");
