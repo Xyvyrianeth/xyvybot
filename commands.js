@@ -1,4 +1,4 @@
-var version = "2.31.1.6";
+var version = "2.32.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -201,11 +201,11 @@ function bot(message) {
                     }
                     let query = [
                         `UPDATE profiles`,
-                        `SET win${result.game} = ${wins["win" + result.game] + 1}`,
+                        `SET elo${result.game} = ${wins["elo" + result.game] + booty}, win${result.game} = ${wins["win" + result.game] + 1}`,
                         `WHERE id = '${wins.id}';`,
                         ``,
                         `UPDATE profiles`,
-                        `SET los${result.game} = ${lose["los" + result.game] + 1}`,
+                        `SET elo${result.game} = ${lose["elo" + result.game] - booty}, los${result.game} = ${lose["los" + result.game] + 1}`,
                         `WHERE id = '${lose.id}';`
                     ].join('\n');
                     return db.query(query, function(err) {
@@ -234,9 +234,9 @@ function newUser(id, message) {
     let image = images.ids.random();
     let query = [
         `INSERT INTO profiles (`,
-        `    id,       color,   title,      titles,             background,  backgrounds,         lorr,     win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
+        `    id,       color,   title,      titles,             background,  backgrounds,         lorr,     elo1, elo2, elo3, elo4, elo5, elo6, elo7, win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
         `) VALUES (`,
-        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
+        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  1000, 1000, 1000, 1000, 1000, 1000, 1000, 0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
         `)`
     ].join('\n');
     db.query(query, function(err) {
@@ -338,7 +338,7 @@ var commands = {
             embed.addField("info", "A detailed information about how the ELO system works and the entire ranking system in general.");
             embed.addField("games", "A list of all the games that are a part of the ranking system and a few details about them.");
             embed.setColor(new Color().random());
-            sendChat(embed);
+            sendChat({embed});
         }
         if (["leaderboard", "top"].includes(args[0])) {
             let elos = false;
@@ -357,18 +357,21 @@ var commands = {
             let query = [
                 `SELECT`,
                 `    id,`,
+                `    elos AS elo,`,
                 `    wins AS win,`,
                 `    loss AS los,`,
                 `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound`,
                 `FROM profiles`,
                 `WHERE wins + loss > 0`,
                 `ORDER BY`,
+                `    elo DESC,`,
                 `    ci_lower_bound DESC,`,
                 `    id ASC`,
                 `LIMIT 10;`,
                 ``,
                 `SELECT`,
                 `    id,`,
+                `    elos AS elo,`,
                 `    wins AS win,`,
                 `    loss AS los,`,
                 `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound`,
@@ -386,6 +389,8 @@ var commands = {
                 `    id != '${message.author.id}'`,
                 `    AND`,
                 `    wins + loss > 0`,
+                `    AND`,
+                `    elos >= ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}')`,
                 `    AND`,
                 `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) > ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) FROM profiles WHERE id = '${message.author.id}');`
             ].join('\n').replace(/elos/g, elos).replace(/wins/g, wins).replace(/loss/g, loss);
@@ -435,7 +440,7 @@ var commands = {
                     embed.setTitle("Leaderboard for " + game);
                     embed.setDescription("__`\u034f RANK \u034f` | `\u034f ELO \u034f` | `\u034f W \u034f` / `\u034f L \u034f` (`WINRATE`) | <@USER>__\n" + users.join('\n'));
                     embed.setColor(new Color().random());
-                    sendChat(embed);
+                    sendChat({embed});
                 }
                 else
                 {
@@ -507,7 +512,7 @@ var commands = {
                     embed.setDescription("**__Game__: " + ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][Gm - 1] + "\n__ELO__: " + user["elo" + Gm] + "\n__W/L(%)__:" + user["win" + Gm] + " / " + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) : "N/A") + ")**");
 
                     embed.setColor(new Color().random());
-                    return sendChat(embed);
+                    return sendChat({embed});
                 });
             }
             else
@@ -526,14 +531,14 @@ var commands = {
             embed.addField("\u034f", "ELOs can be sorted either by game or totally, which is average ELO for all games (some people might only care about Othello). Everyone has their own ELO, but those numbers can sometimes end up being the same for multiple users, so instead of sorting by alphabetical order next, we'll use the [Lower bound of Wilson score confidence interval for a Bernoulli parameter](https://www.evanmiller.org/how-not-to-sort-by-average-rating.html): A user with 500 wins and 500 losses will score above someone with 5 wins and 1 loss, and the user with 5 wins and 1 loss will score above someone with 500 wins and 1000 losses. It's the perfect balance between net positive results (`wins - losses`) and average results (`wins / (wins + losses)`).\nIf two users have the same ELO *and* the same number of wins and losses, *then* we'll sort them by ID, I guess.");
             embed.addField("\u034f", "For now, these scores and such won't mean anything other than a way to sort out the best. Until I think enough people are playing games on my bot, I won't be forming any sort of tournaments, and ELOs will never be reset. Get more people using this bot and I might change that.");
             embed.setColor(new Color().random());
-            return sendChat(embed);
+            return sendChat({embed});
         }
         else
         if (["games"].includes(args[0])) {
             let embed = new Discord.RichEmbed();
             embed.setDescription("I have 4 games currently and 3 planned.\n\n**Games**: Othello, Squares, Gomoku, Connect Four\n**Planned**: 3D Tic Tac Toe, Pente, Nine Men's Morris\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).");
             embed.setColor(new Color().random());
-            sendChat(embed);
+            sendChat({embed});
         }
     },
 
@@ -575,7 +580,7 @@ var commands = {
             new Discord.RichEmbed();
             embed.setDescription("If you don't know how to play this game, you had a shitty childhood.");
             embed.setColor(new Color().random());
-            return sendChat(embed);
+            return sendChat({embed});
         }
     },
    
@@ -618,7 +623,7 @@ var commands = {
             new Discord.RichEmbed();
             embed.setDescription("This game was created by Xyvy himself because he was bored and didn't want to work on Gomoku win logic one night. It's played almost exactly like Gomoku, except for the objective of the game and the limitless board size. The board size is always 10x10, and the object of the game is to have created more squares than your opponent before the end. You make a square by placing 4 of your stones in a square pattern. Stones can be a part of multiple squares, and squares can range in size from 2x2 to 10x10 (if you put a stone in all 4 corners of the map, that's a point to you!).\n\nTaking turns is the same as in Gomoku: 2 stones per turn, but whoever goes first only places 1 stone on their very first turn. This eliminates \"first player advantage\" where player 1 is the only one that can have more stones on the board than their opponent.\n\nThe game ends when there are no more empty spaces on the board. After that, the squares are counted for each player and the player with more squares is declared the winner.");
             embed.setColor(new Color().random());
-            return sendChat(embed);
+            return sendChat({embed});
         }
     },
    
@@ -662,7 +667,7 @@ var commands = {
             new Discord.RichEmbed();
             embed.setDescription("[Click here to learn how to play Othello!](https://www.wikipedia.org/wiki/Reversi#Rules)\nI don't really know how to explain it without pictures.");
             embed.setColor(new Color().random());
-            return sendChat(embed);
+            return sendChat({embed});
         }
     },
 
@@ -705,7 +710,7 @@ var commands = {
             new Discord.RichEmbed();
             embed.setDescription("Gomoku, also called Go Bang or Renju, in the simplest terms, is a very large game of Tic Tac Toe. The board is 19x19 instead of 3x3, and instead of a 3-in-a-row, you want a 5-in-a-row.\n\nTaking turns differs from traditional 1v1 board games like checkers in that each player does not get 1 move per turn. In Gomoku, both players get 2 moves per turn, but player 1 only gets one move on their very first turn. This removes what's known as \"player 1 advantage,\" which is very prevalent in Tic Tac Toe, where player 1 is able to have more pieces on the board than player 2, but player 2 can never have more pieces on the board than player 1.\n\nTo win, you must have 5 of your stones in a line. No more, no less. That's right: if you have 6 or more in a line, you cannot win.");
             embed.setColor(new Color().random());
-            return sendChat(embed);
+            return sendChat({embed});
         }
     },
 
@@ -956,7 +961,7 @@ var commands = {
             )
             embed.setTitle("Help");
             embed.setColor(new Color().random());
-            sendChat(embed);
+            sendChat({embed});
         }
         else
         if (!input || args.length > 3) {
@@ -1063,7 +1068,7 @@ var commands = {
         embed.setDescription("||" + a.join("||\n||") + "||");
         embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
         embed.setColor(new Color().random());
-        sendChat(embed);
+        sendChat({embed});
     },
 
     "math": function(cmd, args, input, message, sendChat) {
@@ -1101,7 +1106,7 @@ var commands = {
             embed.setDescription(`Avatar for <@${member.id}>`);
             embed.setImage(`https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png?size=2048`);
             embed.setColor(new Color().random());
-            return sendChat(embed);
+            return sendChat({embed});
         }
         else
         return sendChat("Unknown request.");
@@ -1111,41 +1116,40 @@ var commands = {
         if (!input) {
             let embed = new Discord.RichEmbed();
             embed.setTitle("Help");
-            embed.setDescription("A list of all commands supported by Bakeneko~\n`\*command either dysfunctional or not yet available`\n`" + (message.channel.type == "dm" ? "Some of these commands do not work in servers" : "Some of these commands do not work in DMs") + "`\nFor more help about any specific command, do \"`x![command]` `help`\"");
+            embed.setDescription("A list of all commands supported by Bakeneko~\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "`\nFor more help about any specific command, do \"`x![command]` `help`\"");
             let helps;
             if (message.channel.type == "dm") helps = [
-                    ["`I apologize, but none of my larger games can work in DMs. When I get bigger and more people are playing my games regularly, I'll make it where you can play against strangers through DMs.`"],
-                    ["\\*`hangman", "`minesweeper", "\\*`quickmaffs", "\\*`iq", "\\*`sequence", "\\*`shuffle"],
-                    ["\\*`about", "`help", "`avatar",, "`aliases", "`bugreport", "`request"],
-                    ["\\*`anime", "\\*`manga", "`jisho", "\\*`jshelp", "`nekos", "`calculate", "`graph"]
+                    "`I apologize, but none of my larger games can work in DMs. When I get bigger and more people are playing my games regularly, I'll make it where you can play against strangers through DMs.`",
+                    "`minesweeper`\nUnimplemented:\n\\*`hangman` \\*`quickmaffs` \\*`iq` \\*`sequence` \\*`shuffle`",
+                    "`help `about `avatar `aliases `bugreport `request",
+                    "`jisho `nekos `calculate `graph\n__Unimplemented__:\n\\*`anime \\*`manga \\*`jshelp "
                 ];
             else
             helps = [
-                    ["`games", "`othello", "`squares", "`gomoku", "\\*`3dtictactoe", "`connect4", "\\*`pente", "\\*`ninemen", "`profile"],
-                    ["\\*`hangman", "`minesweeper", "\\*`quickmaffs", "\\*`iq", "\\*`sequence", "\\*`shuffle"],
-                    ["\\*`about", "`help", "`avatar", "`aliases", "`server", "`kick", "`ban"],
-                    ["\\*`anime", "\\*`manga", "`jisho", "\\*`jshelp", "`nekos", "`calculate", "`graph"]
+                    "`othello `squares `gomoku `connect4\n__Related Commands__:\n`games `profile\n__Unimplemented__:\n\\*`3dtictactoe \\*`pente \\*`ninemen",
+                    "`minesweeper`\nUnimplemented:\n\\*`hangman` \\*`quickmaffs` \\*`iq` \\*`sequence` \\*`shuffle`",
+                    "`about `help `avatar `aliases `server `kick `ban",
+                    "`jisho `nekos `calculate `graph\n__Unimplemented__:\n\\*`anime \\*`manga \\*`jshelp "
                 ];
             if (message.channel.type == "dm") helps[2] = helps[2].concat(["`bugreport", "`request"]);
-            embed.addField("Games", `${helps[0].join("\`  ")}\``, true);
-            embed.addField("Smaller Games", `${helps[1].join("\`  ")}\``, true);
-            embed.addField("Utility", `${helps[2].join("\`  ")}\``, true);
-            embed.addField("Miscellaneous", `${helps[3].join("\`  ")}\``);
+            embed.addField("Games", `${helps[0]}\``, true);
+            embed.addField("Smaller Games", `${helps[1]}\``, true);
+            embed.addField("Utility", `${helps[2]}\``, true);
+            embed.addField("Miscellaneous", `${helps[3]}\``);
             if (message.channel.type == "dm" || message.channel.nsfw) {
                 embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \`x!nsfw help\` for a list of all the lewds I'm capable of.`);
             }
             embed.setColor(new Color().random());
             embed.setFooter("Xyvybot version " + version);
-            return sendChat(embed);
+            return sendChat({embed});
         }
         else
-        if (["games", "utility", "profile", "miscellaneous", "misc", "nsfw"].includes(input)) {
+        if (["games", "utility", "miscellaneous", "misc", "nsfw"].includes(input)) {
             let embed = new Discord.RichEmbed();
             embed.setTitle(input.toUpperCase());
             embed.setDescription({
-                "games": "Just a few board games. I'm not gonna add chess. No.",
+                "games": "Just a few board games, specifically [Abstract Strategy Games](https://en.wikipedia.org/wiki/Abstract_strategy_game). I'm not gonna add chess. No.",
                 "utility": "Random stuffs that relate to the bot or users or servers.",
-                "profile": "Not sure what I'm gonna do for this, yet.",
                 "miscellaneous": "Other stuffs. Things that don't fit well in other categories.",
                 "misc": "Other stuffs. Things that don't fit well in other categories.",
                 "nsfw": "Lewd stuffs. Not available in server channels that aren't marked NSFW. It's stupid that some bots have created their own permission system to enable NSFW stuff in specific channels, like, just check if the channel is marked NSFW and you're good to go. It's 354% easier for the server owners than your stupid \"Sorry, NSFW commands are disabled here. Do `/bot commands enable nsfw` to enable them here!\" shit. Learn what's easy."
@@ -1172,7 +1176,7 @@ var commands = {
                             "pente": "Play a game of Pente with someone else! It's like Tic Tac Toe, but violent!",
                             "ninemen": "Play a game of Nine Men's Morris with someone else! It's not like Tic Tac Toe. Well, it kinda is, but in the same sense, not really.",
                             "hangman": "Play a game of Hangman with other people!",
-                            "minesweeper": "Play a small game of classic minesweeper! Easy for multiple people to play at once!",
+                            "minesweeper": "Play a small game of classic minesweeper! Easy for multiple people to play at once without interference!",
                             "math": "Compete with other people to see who can do math the fastest!",
                             "iq": "Simple things you might find on a fake IQ test!",
                             "sequence": "Find the next item in the pattern!",
@@ -1183,7 +1187,7 @@ var commands = {
                             "jisho": "Get translations to and from Japanese. Ultra-weeb shit.",
                             "jshelp": "Get help with JavaScript, the easiest programming language besides Malbolge.",
                             "nekos": "Get a picture of a catgirl, the thing everyone wants to exist but science can't provide.",
-                            //"cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. These exist.",
+                            //"cats": "Get a picture of a cat. Not a catgirl, a cat. A feline. Like a dog, but kinda better. Not human in the slightest. They exist, really.",
                             "js": "Usable by Xyvyrianeth only. You probably don't even know how to use it.",
                             "pg": "Usable by Xyvyrianeth only. How did you even know this existed?",
                             "aliases": "Get all existing aliases for any given command. All of them.",
@@ -1192,7 +1196,7 @@ var commands = {
                         embed.addField("Aliases", '`' + aliases.guild[i].join("`\n`") + '`');
                         embed.setFooter("Xyvybot version " + version);
                         embed.setColor(new Color().random());
-                        return sendChat(embed);
+                        return sendChat({embed});
                     }
                 }
                 return sendChat("Unknown request.");
@@ -1223,7 +1227,7 @@ var commands = {
                         embed.addField("Aliases", '`' + aliases.user[i].join("`\n`") + '`');
                         embed.setFooter("Xyvybot version " + version);
                         embed.setColor(new Color().random());
-                        return sendChat(embed);
+                        return sendChat({embed});
                     }
                 }
                 return sendChat("Unknown request.");
@@ -1235,6 +1239,8 @@ var commands = {
         let embed = new Discord.RichEmbed();
         embed.setTitle("About me");
         embed.addDescription("Let's start off by saying that the only reason this bot exists is because someone else told me I should make it. Not for any reason in particular, they were just testing me to see if I could do it.\nWell, I did it, and then I found I enjoyed making it, so I kept building on it. It's still a piece of crap, but it works, and that's all that matters, right?\n\nFast-forward 2 years and I find myself interested in abstract strategy games, like Go and Othello. It's not easy using a completely different application or software to play simple games with my friends on Discord, so I made this bot able to do what those other apps did, and we had fun.\n*Then*, someone suggested I make this bot go public so *other people* won't have the same problem. Thank that person (I forgot who, honestly) for telling me to solve that problem for you if you had it as well.");
+        embed.setThumbnail("https://cdn.discordapp.com/avatars/398606274721480725/773bffc6d905ce79e8e9ab950d1d1e23.png?size=2048");
+        sendChat({embed});
     },
 
     "aliases": function(cmd, args, input, message, sendChat) {
@@ -1247,7 +1253,7 @@ var commands = {
                 embed.setTitle("Aliases for " + i);
                 embed.setDescription('`' + aliases.guild.join("`  `") + '`');
                 embed.setColor(new Color().random());
-                return sendChat(embed);
+                return sendChat({embed});
             }
         }
     },
@@ -1336,7 +1342,7 @@ var commands = {
             embed.addField("Humans", humans - bots, true);
             embed.addField("Bots", bots, true);
    
-            return sendChat(embed);
+            return sendChat({embed});
    
         }
     },
@@ -1407,7 +1413,7 @@ var commands = {
                 embed.setImage(result.strokeOrderDiagramUri);
                 embed.setURL(result.uri);
                
-                sendChat(embed);
+                sendChat({embed});
             });
         }
    
@@ -1423,7 +1429,7 @@ var commands = {
                 for (let i = 0; i < examples.length; i++) {
                     embed.addField((i + 1) + ") " + examples[i].kanji, `${examples[i].kana}\n${examples[i].english}`);
                 }
-                return sendChat(embed);
+                return sendChat({embed});
             });
         }
    
@@ -1438,7 +1444,7 @@ var commands = {
                 let definition = result.data[0];
                 embed.addField("Definition", definition.senses[0].english_definitions);
                 embed.addField("Reading", definition.japanese[0].reading);
-                sendChat(embed);
+                sendChat({embed});
             });
         }
    
@@ -1464,7 +1470,7 @@ var commands = {
    
                 embed.setFooter("Source: Tai Kim's Japanese Guide");
    
-                return sendChat(embed);
+                return sendChat({embed});
             }
             else
             if (["charts", "chart"].includes(args[1])) {
@@ -2025,7 +2031,7 @@ var commands = {
                         embed.setFooter("Powered by Nekos.Life");
                         embed.setColor(new Color().random());
                         embed.setImage(queue[0]);
-                        return sendChat(embed);
+                        return sendChat({embed});
                     }
                 });
             }
