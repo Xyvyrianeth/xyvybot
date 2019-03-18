@@ -1,4 +1,4 @@
-var version = "2.32.0.1";
+var version = "2.32.0.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -199,6 +199,7 @@ function bot(message) {
                         lose = res.rows[0];
                         wins = newUser(result.winner, message);
                     }
+                    let booty = Math.ceil(lose["elo" + result.game] / 10);
                     let query = [
                         `UPDATE profiles`,
                         `SET elo${result.game} = ${wins["elo" + result.game] + booty}, win${result.game} = ${wins["win" + result.game] + 1}`,
