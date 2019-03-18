@@ -1,4 +1,4 @@
-var version = "2.31.1.5";
+var version = "2.31.1.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -207,7 +207,7 @@ function bot(message) {
                         `UPDATE profiles`,
                         `SET los${result.game} = ${lose["los" + result.game] + 1}`,
                         `WHERE id = '${lose.id}';`
-                    ];
+                    ].join('\n');
                     return db.query(query, function(err) {
                         if (err) sqlError(message, err, query);
                     });
@@ -238,7 +238,7 @@ function newUser(id, message) {
         `) VALUES (`,
         `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
         `)`
-    ];
+    ].join('\n');
     db.query(query, function(err) {
         if (err) return sqlError(message, err, query);
     });
