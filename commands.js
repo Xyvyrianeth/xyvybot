@@ -1,4 +1,4 @@
-var version = "2.32.0.2";
+var version = "2.32.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -138,7 +138,8 @@ function other(message) {
             message.delete();
         }, 5000);
         try {
-            return sendChat(games[games.channels[message.channel.id].game].takeTurn(message.channel, message.content));
+            let response = games[games.channels[message.channel.id].game].takeTurn(message.channel, message.content);
+            return sendChat(response[0], response[1]);
         } catch (error) {
             delete games.channels[message.channel.id];
             sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");

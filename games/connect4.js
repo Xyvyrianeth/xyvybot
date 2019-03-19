@@ -194,5 +194,5 @@ exports.nextTurn = function(channel, end, highlight) {
     game.buffer = exports.drawBoard(game, end, highlight);
     board = new Discord.Attachment(game.buffer, end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
     if (channels[channel.id].lastDisplay) channels[channel.id].lastDisplay.delete();
-    return board;
+    return [end == 0 ? "It is <@" + game.player + ">'s turn" : end == 1 ? "<@" + game.player + "> has won!" : "Tie game, everyone loses!", board];
 }
