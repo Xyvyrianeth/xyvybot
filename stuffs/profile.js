@@ -38,7 +38,7 @@ exports.card = function(username, profile, background, avatar) {
     text.tt = Math.floor(ctx.measureText(titles[profile.title]).width > text.un ? text.un : ctx.measureText(titles[profile.title]).width < 96 ? 96 : ctx.measureText(titles[profile.title]).width);
     // Title
       
-    if (profile.lefty == "right") {
+    if (!profile.lefty) {
         // Draws avatar box
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
@@ -192,7 +192,7 @@ exports.card = function(username, profile, background, avatar) {
             ctx.fillText(profile["elo" + (i + 1)], res[0] - 48, 94 + (15 * i));
         }
 
-    } else if (profile.lefty == "left") {
+    } else if (profile.lefty) {
         // Draws avatar box
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;

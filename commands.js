@@ -1,4 +1,4 @@
-var version = "2.32.2.3";
+var version = "2.32.3.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -200,6 +200,8 @@ function bot(message) {
                         lose = res.rows[0];
                         wins = newUser(result.winner, message);
                     }
+                    if (wins["win" + result.game] + wins["los" + result.game] == 0) wins["elo" + result.game] = 1000;
+                    if (lose["win" + result.game] + lose["los" + result.game] == 0) lose["elo" + result.game] = 1000;
                     let booty = Math.ceil(lose["elo" + result.game] / 10);
                     let query = [
                         `UPDATE profiles`,
@@ -238,7 +240,7 @@ function newUser(id, message) {
         `INSERT INTO profiles (`,
         `    id,       color,   title,      titles,             background,  backgrounds,         lefty , elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
         `) VALUES (`,
-        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  false,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
+        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  false,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
         `)`
     ].join('\n');
     db.query(query, function(err) {
