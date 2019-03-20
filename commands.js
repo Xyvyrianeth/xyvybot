@@ -1,4 +1,4 @@
-var version = "2.32.3.4";
+var version = "2.32.3.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -125,7 +125,7 @@ function command(message) {
     }
     try
     {
-        return commands[i](cmd, args, input, message, sendChat);
+        return commands[cmd](cmd, args, input, message, sendChat);
     }
     catch (error)
     {
