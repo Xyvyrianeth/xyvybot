@@ -1,4 +1,4 @@
-var version = "2.32.3.3";
+var version = "2.32.3.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -106,8 +106,8 @@ function command(message) {
     let a = message.channel.type == "dm" ? "user" : "guild";
     let args = message.content.split(/ {1,}/);
     let cmd = Object.keys(aliases[a]).filter(alias => {
-        return aliases[a][alias].includes(args.shift().replace("x!", '').toLowerCase());
-    });
+        return aliases[a][alias].includes(args[0].replace("x!", '').toLowerCase());
+    })[0];
     let input = args.join(' ');
     let sendChat = function(content, options) {
         if (typeof content == "string")
