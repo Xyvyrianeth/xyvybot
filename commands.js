@@ -1,4 +1,4 @@
-var version = "2.32.3.6";
+var version = "2.32.3.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1302,9 +1302,11 @@ var commands = {
                     }
   
                     newbg = images.ids.random();
-                    while (res.rows[0].backgrounds.includes(newbg)) {
+                    do
+                    {
                         newbg = images.ids.random();
-                    };
+                    }
+                    while (res.rows[0].backgrounds.includes(newbg));
                     res.rows[0].backgrounds.push(newbg);
                     return db.query([
                         `UPDATE profiles`,
@@ -1676,7 +1678,7 @@ var commands = {
             a.push(b);
         }
         k = [];
-        while (k.length < d)
+        do
         {
             let x = Math.random() * w | 0;
             let y = Math.random() * h | 0;
@@ -1685,7 +1687,8 @@ var commands = {
                 a[y][x] = "☠";
                 k.push([y, x]);
             }
-        };
+        }
+        while (k.length < d);
         for (let b = d; b--;)
         {
             y = k[b][0];

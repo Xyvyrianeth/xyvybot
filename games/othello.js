@@ -100,7 +100,7 @@ exports.drawBoard = function(game, end, quit) {
                                 if (game.board[y1][x1] === a)
                                 {
                                     let yx = true;
-                                    while (yx) {
+                                    do {
                                         y1 += d[i][0];
                                         x1 += d[i][1];
                                         p1 += 1;
@@ -121,7 +121,7 @@ exports.drawBoard = function(game, end, quit) {
                                         {
                                             yx = false;
                                         }
-                                    };
+                                    } while (yx);
                                 }
                             }
                         }
