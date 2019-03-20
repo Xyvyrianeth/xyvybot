@@ -3,10 +3,22 @@ var { Color } = require('/app/stuffs/color.js');
 var titles = require('/app/stuffs/titles.json');
 
 function newResolution(width, height) {
-    if (height <= 300 && width <= 400) return [width, height];
-    if (height / width == 0.75)        return [400, 300];
-    if (height / width <  0.75)        return [400, Math.round(height / width * 400)];
-    if (height / width >  0.75)        return [Math.round(width / height * 300), 300];
+    if (height <= 300 && width <= 400)
+    {
+        return [width, height];
+    }
+    if (height / width == 0.75)
+    {
+        return [400, 300];
+    }
+    if (height / width <  0.75)
+    {
+        return [400, Math.round(height / width * 400)];
+    }
+    if (height / width >  0.75)
+    {
+        return [Math.round(width / height * 300), 300];
+    }
 }
 
 exports.card = function(username, profile, background, avatar) {
@@ -38,7 +50,8 @@ exports.card = function(username, profile, background, avatar) {
     text.tt = Math.floor(ctx.measureText(titles[profile.title]).width > text.un ? text.un : ctx.measureText(titles[profile.title]).width < 96 ? 96 : ctx.measureText(titles[profile.title]).width);
     // Title
       
-    if (!profile.lefty) {
+    if (!profile.lefty)
+    {
         // Draws avatar box
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
@@ -186,13 +199,17 @@ exports.card = function(username, profile, background, avatar) {
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game Name", res[0] - 148, 77, 85);
         ctx.fillText("ELO", res[0] - 48, 77, 31);
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 7; i++)
+        {
             let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][i];
             ctx.fillText(game, res[0] - 148, 94 + (15 * i), 95);
             ctx.fillText(profile["elo" + (i + 1)], res[0] - 48, 94 + (15 * i));
         }
 
-    } else if (profile.lefty) {
+    }
+    else
+    if (profile.lefty)
+    {
         // Draws avatar box
         ctx.beginPath();
         ctx.strokeStyle = colors.ed;
@@ -338,7 +355,8 @@ exports.card = function(username, profile, background, avatar) {
         ctx.fillStyle = colors.tx;
         ctx.fillText("Game Name", 1, 77, 85);
         ctx.fillText("ELO", 101, 77, 31);
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 7; i++)
+        {
             let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][i];
             ctx.fillText(game, 1, 94 + (15 * i), 95);
             ctx.fillText(profile["elo" + (i + 1)], 101, 94 + (15 * i));

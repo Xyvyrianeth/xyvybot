@@ -1,4 +1,4 @@
-var version = "2.32.3.0";
+var version = "2.32.3.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -41,17 +41,25 @@ paladins.connect("PC", (err, res) => {
 
 var bugTimers = {};
 var bugTimer = setInterval(function() {
-    for (let i in bugTimers) {
+    for (let i in bugTimers)
+    {
         bugTimers[i] -= 1;
-        if (bugTimers[i] == 0) delete bugTimers[i];
+        if (bugTimers[i] == 0)
+        {
+            delete bugTimers[i];
+        }
     }
 }, 10);
 
 var requestTimers = {};
 var requestTimer = setInterval(function() {
-    for (let i in requestTimers) {
+    for (let i in requestTimers)
+    {
         requestTimers[i] -= 1;
-        if (requestTimers[i] == 0) delete requestTimers[i];
+        if (requestTimers[i] == 0)
+        {
+            delete requestTimers[i];
+        }
     }
 }, 10);
 var games = {
@@ -59,36 +67,38 @@ var games = {
     squares: require("/app/games/squares.js"),
     othello: require("/app/games/othello.js"),
     gomoku: require("/app/games/gomoku.js"),
-
     channels: require("/app/games/channels.js").channels
 }
 
 function botError(message, err) {
     message.channel.send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
-    return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(
-        `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
-        `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
-        `\`\`\`User errored on:\`\`\`<@${message.author.id}>\n\n` +
-        `\`\`\`\n` +
-        `Message sent:\`\`\`\`\`\`\n` +
-        `${message.content.replace(/`/g, "\\\`")}\`\`\`\n` +
-        `\`\`\`\n` +
+    return client.guilds.get("399327996076621825").channels.get("467902250128506880").send([
+        `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})`,
+        `Channel: ${message.channel.name} (${message.channel.id})\`\`\``,
+        `\`\`\`User errored on:\`\`\`<@${message.author.id}>\n`,
+        `\`\`\``,
+        `Message sent:\`\`\`\`\`\``,
+        `${message.content.replace(/`/g, "\\\`")}\`\`\``,
+        `\`\`\``,
         `${err.join("\n")}\`\`\``
-    );
+    ].join('\n'));
 }
 function sqlError(message, err, res) {
     message.channel.send("```\nWhoops! It appears there was some sort of error with the database! Not sure if it's my fault or not, but Xyvy will look into it!```");
     let query = res.replace(/`/g, "\\`").length > 1500 ? "Check console" : res.replace(/`/g, "\\`");
-    if (query == "Check console") console.log(res);
-    return client.guilds.get("399327996076621825").channels.get("478371618620571648").send(
-        `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
-        `Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
-        `\`\`\`\n` +
-        `Query:\`\`\`\`\`\`sql\n` +
-        `${query}\`\`\`\n` +
-        `\`\`\`\n` +
+    if (query == "Check console")
+    {
+        console.log(res);
+    }
+    return client.guilds.get("399327996076621825").channels.get("478371618620571648").send([
+        `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})`,
+        `Channel: ${message.channel.name} (${message.channel.id})\`\`\``,
+        `\`\`\``,
+        `Query:\`\`\`\`\`\`sql`,
+        `${query}\`\`\``,
+        `\`\`\``,
         `${err}\`\`\``
-    );
+    ].join('\n'));
 }
 
 function command(message) {
@@ -98,56 +108,97 @@ function command(message) {
     let cmd = args.shift().replace("x!", '').toLowerCase();
     let input = args.join(' ');
     let sendChat = function(content, options) {
-        if (typeof content == "string") content = content.replace(/\$user\$/g, `<@${message.author.id}>`);
-        if (options == undefined) message.channel.send(content);
+        if (typeof content == "string")
+        {
+            content = content.replace(/\$user\$/g, `<@${message.author.id}>`);
+        }
+        if (options == undefined)
+        {
+            message.channel.send(content);
+        }
         else
-        message.channel.send(content, options);
+        {
+            message.channel.send(content, options);
+        }
     }
     for (let i in aliases[a])
+    {
         if (aliases[a][i].includes(cmd))
-            try {
+        {
+            try
+            {
                 return commands[i](cmd, args, input, message, sendChat);
-            } catch (error) {
+            }
+            catch (error)
+            {
                 let errs = [];
                 for (let i = 0; i < error.stack.split('\n').length; i++) {
-                    if (error.stack.split('\n')[i].includes("at emitOne")) break;
+                    if (error.stack.split('\n')[i].includes("at emitOne"))
+                    {
+                        break;
+                    }
                     else
-                    errs.push(error.stack.split('\n')[i]);
+                    {
+                        errs.push(error.stack.split('\n')[i]);
+                    }
                 }
                 botError(message, errs);
             }
-   
+        }
+    }
 }
    
 function other(message) {
     let sendChat = function(content, options) {
-        if (typeof content == "string") content = content.replace(/\$user\$/g, `<@${message.author.id}>`);
-        if (options == undefined) message.channel.send(content);
+        if (typeof content == "string")
+        {
+            content = content.replace(/\$user\$/g, `<@${message.author.id}>`);
+        }
+        if (options == undefined)
+        {
+            message.channel.send(content);
+        }
         else
-        message.channel.send(content, options);
+        {
+            message.channel.send(content, options);
+        }
     }
-    if (message.author.bot) return;
-    if (message.channel.type == "dm" && Array.from(message.attachments).length > 0) {
+    if (message.author.bot)
+    {
+        return;
+    }
+    if (message.channel.type == "dm" && Array.from(message.attachments).length > 0)
+    {
         images = Array.from(message.attachments).map(m => m[1].url);
         client.guilds.get("399327996076621825").channels.get("537098266685472788").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
         message.author.send("If you're sending me an image of yourself, please know that you must be 18 years or older to distribute explicit pictures of yourself. If you are not 18, do not send anybody those kinds of pictures.");
     }
 
-    if (games.channels[message.channel.id] && games.channels[message.channel.id].started && message.author.id == games.channels[message.channel.id].player && games.channels[message.channel.id].RE.test(message.content)) {
+    if (games.channels[message.channel.id] && games.channels[message.channel.id].started && message.author.id == games.channels[message.channel.id].player && games.channels[message.channel.id].RE.test(message.content))
+    {
         setTimeout(function() {
             message.delete();
         }, 5000);
-        try {
+        try
+        {
             let response = games[games.channels[message.channel.id].game].takeTurn(message.channel, message.content);
             return sendChat(response[0], response[1]);
-        } catch (error) {
+        }
+        catch (error)
+        {
             delete games.channels[message.channel.id];
             sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
             let errs = [];
-            for (let i = 0; i < error.stack.split('\n').length; i++) {
-                if (error.stack.split('\n')[i].includes("at emitOne")) break
+            for (let i = 0; i < error.stack.split('\n').length; i++)
+            {
+                if (error.stack.split('\n')[i].includes("at emitOne"))
+                {
+                    break;
+                }
                 else
-                errs.push(error.stack.split('\n')[i]);
+                {
+                    errs.push(error.stack.split('\n')[i]);
+                }
             }
             return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(botError(message, errs));
         }
@@ -155,17 +206,24 @@ function other(message) {
 }
    
 function bot(message) {
-    if (message.attachments.array().length != 0) {
+    if (message.attachments.array().length != 0)
+    {
         let img = message.attachments.first().filename;
-        if (/^(connect4|squares|othello|gomoku)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img)) {
-            if (!games.channels.hasOwnProperty(message.channel.id)) return client.guilds.get("399327996076621825").channels.get("467902250128506880").send("Bot is sending images when it shouldn't @`function bot`.");
-
+        if (/^(connect4|squares|othello|gomoku)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return client.guilds.get("399327996076621825").channels.get("467902250128506880").send("Bot is sending images when it shouldn't @`function bot`.");
+            }
             let game = games.channels[message.channel.id];
             let end = img.match(/_[0-2]_/)[0].substring(1, 2);
-            if (end === '0') return game.lastDisplay = message;
-
+            if (end === '0')
+            {
+                return game.lastDisplay = message;
+            }
             let result = false;
-            if (end === '1') {
+            if (end === '1')
+            {
                 result = {
                     winner: game.players[game.winner],
                     loser: game.players[game.winner == 0 ? 1 : 0],
@@ -176,61 +234,94 @@ function bot(message) {
             }
             delete games.channels[message.channel.id];
 
-            if (result) db.query(`SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`, function(err, res) {
-                if (err) sqlError(message, err, `SELECT * FROM profiles WHERE id = '${result.winner}' OR id = '${result.loser}'`);
-                if (!result.casual) {
-                    let wins;
-                    let lose;
-                    if (res.rows.length == 0) {
-                        wins = newUser(result.winner, message);
-                        lose = newUser(result.loser, message);
+            if (result)
+            {
+                db.query([
+                    `SELECT *`,
+                    `FROM profiles`,
+                    `WHERE id = '${result.winner}' OR id = '${result.loser}'`
+                ].join('\n'), function(err, res) {
+                    if (err)
+                    {
+                        sqlError(message, err, [
+                            `SELECT *`,
+                            `FROM profiles`,
+                            `WHERE id = '${result.winner}' OR id = '${result.loser}'`
+                        ].join('\n'));
                     }
-                    else
-                    if (res.rows.length == 2) {
-                        wins = res.rows[0].id == result.winner ? res.rows[0] : res.rows[1];
-                        lose = res.rows[0].id == result.loser ? res.rows[0] : res.rows[1];
+                    if (!result.casual)
+                    {
+                        let wins;
+                        let lose;
+                        if (res.rows.length == 0)
+                        {
+                            wins = newUser(result.winner, message);
+                            lose = newUser(result.loser, message);
+                        }
+                        else
+                        if (res.rows.length == 2)
+                        {
+                            wins = res.rows[0].id == result.winner ? res.rows[0] : res.rows[1];
+                            lose = res.rows[0].id == result.loser ? res.rows[0] : res.rows[1];
+                        }
+                        else
+                        if (res.rows[0].id == result.winner)
+                        {
+                            lose = newUser(result.loser, message);
+                            wins = res.rows[0];
+                        }
+                        else
+                        if (res.rows[0].id == result.loser)
+                        {
+                            lose = res.rows[0];
+                            wins = newUser(result.winner, message);
+                        }
+                        if (wins["win" + result.game] + wins["los" + result.game] == 0)
+                        {
+                            wins["elo" + result.game] = 1000;
+                        }
+                        if (lose["win" + result.game] + lose["los" + result.game] == 0)
+                        {
+                            lose["elo" + result.game] = 1000;
+                        }
+                        let booty = Math.ceil(lose["elo" + result.game] / 10);
+                        let query = [
+                            `UPDATE profiles`,
+                            `SET elo${result.game} = ${wins["elo" + result.game] + booty}, win${result.game} = ${wins["win" + result.game] + 1}`,
+                            `WHERE id = '${wins.id}';`,
+                            ``,
+                            `UPDATE profiles`,
+                            `SET elo${result.game} = ${lose["elo" + result.game] - booty}, los${result.game} = ${lose["los" + result.game] + 1}`,
+                            `WHERE id = '${lose.id}';`
+                        ].join('\n');
+                        return db.query(query, function(err) {
+                            if (err)
+                            {
+                                return sqlError(message, err, query);
+                            }
+                        });
                     }
-                    else
-                    if (res.rows[0].id == result.winner) {
-                        lose = newUser(result.loser, message);
-                        wins = res.rows[0];
-                    }
-                    else
-                    if (res.rows[0].id == result.loser) {
-                        lose = res.rows[0];
-                        wins = newUser(result.winner, message);
-                    }
-                    if (wins["win" + result.game] + wins["los" + result.game] == 0) wins["elo" + result.game] = 1000;
-                    if (lose["win" + result.game] + lose["los" + result.game] == 0) lose["elo" + result.game] = 1000;
-                    let booty = Math.ceil(lose["elo" + result.game] / 10);
-                    let query = [
-                        `UPDATE profiles`,
-                        `SET elo${result.game} = ${wins["elo" + result.game] + booty}, win${result.game} = ${wins["win" + result.game] + 1}`,
-                        `WHERE id = '${wins.id}';`,
-                        ``,
-                        `UPDATE profiles`,
-                        `SET elo${result.game} = ${lose["elo" + result.game] - booty}, los${result.game} = ${lose["los" + result.game] + 1}`,
-                        `WHERE id = '${lose.id}';`
-                    ].join('\n');
-                    return db.query(query, function(err) {
-                        if (err) sqlError(message, err, query);
-                    });
-                }
-                
-            }); 
+                    
+                });
+            }
         }
     }
     else
     {
-        if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Gomoku), say `x![3a-z]{1,} start` to play against them!/.test(message.content)) return games.channels[message.channel.id].lastDisplay = message;
+        if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Gomoku), say `x![3a-z]{1,} start` to play against them!/.test(message.content))
+        {
+            return games.channels[message.channel.id].lastDisplay = message;
+        }
         if ([
             "Column is full, please pick another.",
             "There's already a stone there, pick another spot!",
             "You cannot place there."
-        ].includes(message.content)) 
+        ].includes(message.content))
+        {
             return setTimeout(function() {
                 message.delete();
             }, 10000);
+        }
     }
 }
    
@@ -244,9 +335,42 @@ function newUser(id, message) {
         `)`
     ].join('\n');
     db.query(query, function(err) {
-        if (err) return sqlError(message, err, query);
+        if (err)
+        {
+            return sqlError(message, err, query);
+        }
     });
-    return { id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lorr: "right", money: 0, elo1: 1000, elo2: 1000, elo3: 1000, elo4: 1000, elo5: 1000, elo6: 1000, elo7: 1000, win1: 0, win2: 0, win3: 0, win4: 0, win5: 0, win6: 0, win7: 0, los1: 0, los2: 0, los3: 0, los4: 0, los5: 0, los6: 0, los7: 0 };
+    return {
+        id: id,
+        color: "#aaa",
+        title: "default",
+        titles: ["default"],
+        background: image,
+        backgrounds: [image],
+        lorr: "right",
+        money: 0,
+        elo1: 1000,
+        elo2: 1000,
+        elo3: 1000,
+        elo4: 1000,
+        elo5: 1000,
+        elo6: 1000,
+        elo7: 1000,
+        win1: 0,
+        win2: 0,
+        win3: 0,
+        win4: 0,
+        win5: 0,
+        win6: 0,
+        win7: 0,
+        los1: 0,
+        los2: 0,
+        los3: 0,
+        los4: 0,
+        los5: 0,
+        los6: 0,
+        los7: 0
+    };
 }
 
 var aliases = {
@@ -334,7 +458,8 @@ var commands = {
    
     // Games
     "games": function(cmd, args, input, message, sendChat) {
-        if (!args[0]) {
+        if (!args[0])
+        {
             let embed = new Discord.RichEmbed();
             embed.setDescription("Input tree for command x!games\n`x!games [input]`");
             embed.addField("leaderboard", "View the players with the 10 highest ELOs for every game or the players with the 10 highest combined ELOs.\n`x!games leaderboard [game]`\nLeave `[game]` blank for general top 10 players.");
@@ -344,17 +469,45 @@ var commands = {
             embed.setColor(new Color().random());
             sendChat({embed});
         }
-        if (["leaderboard", "top"].includes(args[0])) {
+        if (["leaderboard", "top"].includes(args[0]))
+        {
             let elos = false;
-            if (!args[1])                                 elos = "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7";
-            if (aliases.guild.othello.includes(args[1]))  elos = "elo1";
-            if (aliases.guild.squares.includes(args[1]))  elos = "elo2";
-            if (aliases.guild.gomoku.includes(args[1]))   elos = "elo3";
-            if (aliases.guild.ttt3d.includes(args[1]))    elos = "elo4";
-            if (aliases.guild.connect4.includes(args[1])) elos = "elo5";
-            if (aliases.guild.pente.includes(args[1]))    elos = "elo6";
-            if (aliases.guild.ninemen.includes(args[1]))  elos = "elo7";
-            if (!elos) return sendChat("Unknown game.");
+            if (!args[1])
+            {
+                elos = "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7";
+            }
+            if (aliases.guild.othello.includes(args[1]))
+            {
+                elos = "elo1";
+            }
+            if (aliases.guild.squares.includes(args[1]))
+            {
+                elos = "elo2";
+            }
+            if (aliases.guild.gomoku.includes(args[1]))
+            {
+                elos = "elo3";
+            }
+            if (aliases.guild.ttt3d.includes(args[1]))
+            {
+                elos = "elo4";
+            }
+            if (aliases.guild.connect4.includes(args[1]))
+            {
+                elos = "elo5";
+            }
+            if (aliases.guild.pente.includes(args[1]))
+            {
+                elos = "elo6";
+            }
+            if (aliases.guild.ninemen.includes(args[1]))
+            {
+                elos = "elo7";
+            }
+            if (!elos)
+            {
+                return sendChat("Unknown game.");
+            }
             
             let wins = elos.replace(/elo/g, "win");
             let loss = elos.replace(/elo/g, "los");
@@ -399,24 +552,46 @@ var commands = {
                 `    ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) > ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) FROM profiles WHERE id = '${message.author.id}');`
             ].join('\n').replace(/elos/g, elos).replace(/wins/g, wins).replace(/loss/g, loss);
             return db.query(query, function(err, res) {
-                if (err) return sqlError(message, err, query);
-                if (!res || res.length !== 3) return sqlError(message, "No res", query);
-                if (res[0].rows.length > 0) {
+                if (err)
+                {
+                    return sqlError(message, err, query);
+                }
+                if (!res || res.length !== 3)
+                {
+                    return sqlError(message, "No res", query);
+                }
+                if (res[0].rows.length > 0)
+                {
                     let top = [];
-                    for (let i = 0; i < res[0].rows.length; i++) top.push(res[0].rows[i]);
-
+                    for (let i = 0; i < res[0].rows.length; i++)
+                    {
+                        top.push(res[0].rows[i]);
+                    }
                     let game;
-                    if (!args[1]) game = "All Games"
+                    if (!args[1])
+                    {
+                        game = "All Games"
+                    }
                     else
-                    game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][elos[3] - 1];
+                    {
+                        game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][elos[3] - 1];
+                    }
 
                     let users = [];
                     for (let i = 0; i < top.length; i++) {
-                        if (i == 0) top[i].place = i + 1;
+                        if (i == 0)
+                        {
+                            top[i].place = i + 1;
+                        }
                         else
-                        if (top[i].elo == top[i - 1].elo && top[i].ci_lower_bound == top[i - 1].ci_lower_bound) top[i].place = top[i - 1].place;
+                        if (top[i].elo == top[i - 1].elo && top[i].ci_lower_bound == top[i - 1].ci_lower_bound)
+                        {
+                            top[i].place = top[i - 1].place;
+                        }
                         else
-                        top[i].place = i + 1;
+                        {
+                            top[i].place = i + 1;
+                        }
 
                         let place = top[i].place;
                         let id = top[i].id;
@@ -427,7 +602,8 @@ var commands = {
 
                         users.push('`' + '\u034f '.repeat(5 - String(place).length) + place + ')` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + los + ' \u034f'.repeat(3 - String(los).length) + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`) | <@" + id + '>');
                     }
-                    if (res[1].rows.length != 0) {
+                    if (res[1].rows.length != 0)
+                    {
                         users.push('');
                         users.push("Your rank:")
                         let user = res[1].rows[0];
@@ -449,9 +625,13 @@ var commands = {
                 else
                 {
                     if (!args[1])
-                    return sendChat("There are no scores. Nobody has played any game, yet.");
+                    {
+                        return sendChat("There are no scores. Nobody has played any game, yet.");
+                    }
                     else
-                    return sendChat("There are no scores fo rhtis game. Nobody has played it, yet."); 
+                    {
+                        return sendChat("There are no scores fo rhtis game. Nobody has played it, yet."); 
+                    }
                 }
             });
         }
@@ -459,50 +639,97 @@ var commands = {
             let id = message.author.id;
             let gm = "all";
             let games = [].concat(aliases.guild.othello, aliases.guild.squares, aliases.guild.gomoku, aliases.guild.ttt3d, aliases.guild.connect4, aliases.guild.pente, aliases.guild.ninemen);
-            if (!args[1]) {}
-            else
-            if (args[1] && !args[2]) {
-                if (RegExp.id1.test(args[1])) id = args[1];
-                else
-                if (games.includes(args[1])) gm = args[1];
-                else
-                return sendChat("I can't do that.");
+            if (!args[1])
+            {
+
             }
             else
-            if (args[2]) {
-                if (RegExp.id1.test(args[1]) && games.includes(args[2])) {
+            if (args[1] && !args[2])
+            {
+                if (RegExp.id1.test(args[1]))
+                {
+                    id = args[1];
+                }
+                else
+                if (games.includes(args[1]))
+                {
+                    gm = args[1];
+                }
+                else
+                {
+                    return sendChat("I can't do that.");
+                }
+            }
+            else
+            if (args[2])
+            {
+                if (RegExp.id1.test(args[1]) && games.includes(args[2]))
+                {
                     id = args[1];
                     gm = args[2]
                 }
                 else
-                if (RegExp.id1.test(args[2]) && games.includes(args[1])) {
+                if (RegExp.id1.test(args[2]) && games.includes(args[1]))
+                {
                     id = args[2];
                     gm = args[1];
                 }
                 else
-                return sendChat("I can't do that.");
+                {
+                    return sendChat("I can't do that.");
+                }
             }
             else
-            return sendChat("I can't do that.");
+            {
+                return sendChat("I can't do that.");
+            }
 
             let Gm = false;
-            if (gm == "all") Gm = "all";
+
+            if (gm == "all")
+            {
+                Gm = "all";
+            }
             else
-            for (let i of aliases.guild) if (aliases.guild[i].includes(gm)) Gm = Number(["othello", "squares", "gomoku", "ttt3d", "connect4", "pente", "ninemen"].indexOf(i) + 1);
-            if (Gm) {
-                let query = `SELECT * FROM profiles WHERE id = '${id}'; `;
+            {
+                for (let i of aliases.guild)
+                {
+                    if (aliases.guild[i].includes(gm))
+                    {
+                        Gm = Number(["othello", "squares", "gomoku", "ttt3d", "connect4", "pente", "ninemen"].indexOf(i) + 1);
+                    }
+                }
+            }
+            if (Gm)
+            {
+                let query = [
+                    `SELECT *`,
+                    `FROM profiles`,
+                    `WHERE id = '${id}';`
+                ].join('\n');
                 return db.query(query, function(err, res) {
-                    if (err) sqlError(message, err, query);
+                    if (err)
+                    {
+                        sqlError(message, err, query);
+                    }
                     let user;
-                    if (res.rows.length == 0) user = newUser(message.author.id, message);
+                    if (res.rows.length == 0)
+                    {
+                        user = newUser(message.author.id, message);
+                    }
                     else
-                    user = res.rows[0];
+                    {
+                        user = res.rows[0];
+                    }
 
                     let embed = new Discord.RichEmbed();
                     embed.setTitle("User Statistics for " + (Gm == "all" ? "all games" : ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][Gm - 1]));
-                    if (Gm == "all") {
+
+                    if (Gm == "all")
+                    {
                         let ok = [];
-                        for (let i = 0; i < 7; i++) {
+                        for (let i = 0; i < 7; i++)
+                        {
                             let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][Gm - 1];
                             let elo = user["elo" + (i + 1)];
                             let win = user["win" + (i + 1)];
@@ -513,7 +740,9 @@ var commands = {
                         embed.setDescription("__`\u034f \u034f \u034f \u034f Game Name \u034f \u034f \u034f \u034f`__ | __`\u034f ELO \u034f`__ | __`\u034f W \u034f`__ / __`\u034f L \u034f`__ (__`\u034f WIN % \u034f`__)\n" + ok.join("\n"));
                     }
                     else
-                    embed.setDescription("**__Game__: " + ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][Gm - 1] + "\n__ELO__: " + user["elo" + Gm] + "\n__W/L(%)__:" + user["win" + Gm] + " / " + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) : "N/A") + ")**");
+                    {
+                        embed.setDescription("**__Game__: " + ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][Gm - 1] + "\n__ELO__: " + user["elo" + Gm] + "\n__W/L(%)__:" + user["win" + Gm] + " / " + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) : "N/A") + ")**");
+                    }
 
                     embed.setColor(new Color().random());
                     return sendChat({embed});
@@ -526,7 +755,8 @@ var commands = {
             }
         }
         else
-        if (["info", "about"].includes(args[0])) {
+        if (["info", "about"].includes(args[0]))
+        {
             let embed = new Discord.RichEmbed();
             embed.setTitle("Information");
             embed.setDescription("I, Xyvyrianeth (I'm speaking through this bot), am a big fan of [abstract strategy games](https://en.wikipedia.org/wiki/Abstract_strategy_game). I like them so much I tried to create my own competetive social network in Discord that revolves around a select few of these types of games.");
@@ -538,7 +768,8 @@ var commands = {
             return sendChat({embed});
         }
         else
-        if (["games"].includes(args[0])) {
+        if (["games"].includes(args[0]))
+        {
             let embed = new Discord.RichEmbed();
             embed.setDescription("I have 4 games currently and 3 planned.\n\n**Games**: Othello, Squares, Gomoku, Connect Four\n**Planned**: 3D Tic Tac Toe, Pente, Nine Men's Morris\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).");
             embed.setColor(new Color().random());
@@ -547,40 +778,81 @@ var commands = {
     },
 
     "connect4": function(cmd, args, input, message, sendChat) {
-        if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
-        if (!input) return sendChat(`__**Connect Four**__\nTo start a game, type \`x!${cmd} start\`!`);
-        if (["start"].includes(args[0])) {
+        if (message.channel.type == "dm")
+        {
+            return sendChat("This command is not available through DMs!");
+        }
+        if (!input)
+        {
+            return sendChat(`__**Connect Four**__\nTo start a game, type \`x!${cmd} start\`!`);
+        }
+        if (["start"].includes(args[0]))
+        {
             message.delete();
-            if (!games.channels.hasOwnProperty(message.channel.id)) {
-                if (!args[1]) return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, false));
-                if (["causal", "fun"].includes(args[1])) return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, true));
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                if (!args[1])
+                {
+                    return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, false));
+                }
+                if (["causal", "fun"].includes(args[1]))
+                {
+                    return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, true));
+                }
             }
-            if (!games.channels[message.channel.id].started) {
-                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+            if (!games.channels[message.channel.id].started)
+            {
+                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194")
+                {
                     k = games.connect4.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 }
                 else
-                return sendChat("You cannot play yourself!");
+                {
+                    return sendChat("You cannot play yourself!");
+                }
             }
         }
         else
-        if (["board", "showboard"].includes(input)) {
-            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is no active Connect Four game in this channel, $user$!");
-            if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
-            return sendChat(new Discord.Attachment(games.connect4.drawBoard(games.channels[message.channel.id], 0)))
+        if (["board", "showboard"].includes(input))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return sendChat("There is no active Connect Four game in this channel, $user$!");
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                return sendChat("The game has not yet started, $user$!");
+            }
+
+            let game = games.channels[message.channel.id];
+            return sendChat(new Discord.Attachment(game.buffer, `connect4_0_${game.players[0]}vs${game.players[1]}.png`))
         }
         else
-        if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is not a game in this channel for you to quit!");
-            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
-            if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+        if (["quit", "forfeit", "leave"].includes(input))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return sendChat("There is not a game in this channel for you to quit!");
+            }
+            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1])
+            {
+                return sendChat("You are not a participant of this game, $user$!");
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                sendChat("$user$ has cancelled the pending game.");
+            }
             else
-            sendChat("$user$ has forfeit the game.");
+            {
+                sendChat("$user$ has forfeit the game.");
+            }
+
             delete games.channels[message.channel.id];
         }
         else
-        if (["rules", "howtoplay"].includes(args[0])) {
+        if (["rules", "howtoplay"].includes(args[0]))
+        {
             new Discord.RichEmbed();
             embed.setDescription("If you don't know how to play this game, you had a shitty childhood.");
             embed.setColor(new Color().random());
@@ -589,85 +861,164 @@ var commands = {
     },
    
     "squares": function(cmd, args, input, message, sendChat) {
-        if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
-        if (!input) return sendChat(`__**Squares**__\nTo start a game, type \`x!${cmd} start\`!`);
-        if (["start"].includes(args[0])) {
+        if (message.channel.type == "dm")
+        {
+            return sendChat("This command is not available through DMs!");
+        }
+        if (!input)
+        {
+            return sendChat(`__**Squares**__\nTo start a game, type \`x!${cmd} start\`!`);
+        }
+        if (["start"].includes(args[0]))
+        {
             message.delete();
-            if (!games.channels.hasOwnProperty(message.channel.id)) {
-                if (!args[1]) return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, false));
-                if (["causal", "fun"].includes(args[1])) return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, true));
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                if (!args[1])
+                {
+                    return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, false));
+                }
+                if (["causal", "fun"].includes(args[1]))
+                {
+                    return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, true));
+                }
             }
-            if (!games.channels[message.channel.id].started) {
-                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+            if (!games.channels[message.channel.id].started)
+            {
+                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194")
+                {
                     k = games.squares.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 }
                 else
-                return sendChat("You cannot play yourself!");
+                {
+                    return sendChat("You cannot play yourself!");
+                }
             }
         }
         else
-        if (["board", "showboard"].includes(input)) {
-            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is no active Squares game in this channel, $user$!");
-            if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+        if (["board", "showboard"].includes(input))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return sendChat("There is no active Squares game in this channel, $user$!");
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                return sendChat("The game has not yet started, $user$!");
+            }
+
             let game = games.channels[message.channel.id];
             return sendChat(new Discord.Attachment(game.buffer, `squares_0_${game.players[0]}vs${game.players[1]}.png`));
         }
         else
-        if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is not a game in this channel for you to quit!");
-            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
-            if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+        if (["quit", "forfeit", "leave"].includes(input))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return sendChat("There is not a game in this channel for you to quit!");
+            }
+            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1])
+            {
+                return sendChat("You are not a participant of this game, $user$!");
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                sendChat("$user$ has cancelled the pending game.");
+            }
             else
-            sendChat("$user$ has forfeit the game.");
+            {
+                sendChat("$user$ has forfeit the game.");
+            }
+
             delete games.channels[message.channel.id];
         }
         else
-        if (["rules", "howtoplay"].includes(args[0])) {
+        if (["rules", "howtoplay"].includes(args[0]))
+        {
             new Discord.RichEmbed();
             embed.setDescription("This game was created by Xyvy himself because he was bored and didn't want to work on Gomoku win logic one night. It's played almost exactly like Gomoku, except for the objective of the game and the limitless board size. The board size is always 10x10, and the object of the game is to have created more squares than your opponent before the end. You make a square by placing 4 of your stones in a square pattern. Stones can be a part of multiple squares, and squares can range in size from 2x2 to 10x10 (if you put a stone in all 4 corners of the map, that's a point to you!).\n\nTaking turns is the same as in Gomoku: 2 stones per turn, but whoever goes first only places 1 stone on their very first turn. This eliminates \"first player advantage\" where player 1 is the only one that can have more stones on the board than their opponent.\n\nThe game ends when there are no more empty spaces on the board. After that, the squares are counted for each player and the player with more squares is declared the winner.");
             embed.setColor(new Color().random());
             return sendChat({embed});
         }
     },
-   
+
     "othello": function(cmd, args, input, message, sendChat) {
-        if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
-        if (!input) return sendChat(`__**Othello**__\nTo start a game, type \`x!${cmd} start\`!`);
-        if (["start"].includes(args[0])) {
+        if (message.channel.type == "dm")
+        {
+            return sendChat("This command is not available through DMs!");
+        }
+        if (!input)
+        {
+            return sendChat(`__**Othello**__\nTo start a game, type \`x!${cmd} start\`!`);
+        }
+        if (["start"].includes(args[0]))
+        {
             message.delete();
-            if (!games.channels.hasOwnProperty(message.channel.id)) {
-                if (!args[1]) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, false));
-                if (["causal", "fun"].includes(args[1])) return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, true));
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                if (!args[1])
+                {
+                    return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, false));
+                }
+                if (["causal", "fun"].includes(args[1]))
+                {
+                    return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, true));
+                }
             }
-            if (!games.channels[message.channel.id].started) {
-                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+            if (!games.channels[message.channel.id].started)
+            {
+                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194")
+                {
                     k = games.othello.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 }
                 else
-                return sendChat("You cannot play yourself!");
+                {
+                    return sendChat("You cannot play yourself!");
+                }
             }
         }
         else
-        if (["board", "showboard"].includes(input)) {
-            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is no active Othello game in this channel, $user$!");
-            if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+        if (["board", "showboard"].includes(input))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return sendChat("There is no active Othello game in this channel, $user$!");
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                return sendChat("The game has not yet started, $user$!");
+            }
+
             let game = games.channels[message.channel.id];
             return sendChat(new Discord.Attachment(game.buffer, `othello_0_${game.players[0]}vs${game.players[1]}.png`));
         }
         else
-        if (["quit", "forfeit", "leave"].includes(input)) {
-            message.delete();
-            if (games.channels[message.channel.id] && games.channels[message.channel.id].players.includes(message.author.id)) {
-                if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
-                else
-                return sendChat(games.othello.takeTurn(message.channel, "quit"));
-                delete games.channels[message.channel.id];
+        if (["quit", "forfeit", "leave"].includes(input))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return sendChat("There is not a game in this channel for you to quit!");
             }
+            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1])
+            {
+                return sendChat("You are not a participant of this game, $user$!");
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                sendChat("$user$ has cancelled the pending game.");
+            }
+            else
+            {
+                sendChat("$user$ has forfeit the game.");
+            }
+
+            delete games.channels[message.channel.id];
         }
         else
-        if (["rules", "howtoplay"].includes(args[0])) {
+        if (["rules", "howtoplay"].includes(args[0]))
+        {
             new Discord.RichEmbed();
             embed.setDescription("[Click here to learn how to play Othello!](https://www.wikipedia.org/wiki/Reversi#Rules)\nI don't really know how to explain it without pictures.");
             embed.setColor(new Color().random());
@@ -676,41 +1027,81 @@ var commands = {
     },
 
     "gomoku": function(cmd, args, input, message, sendChat) {
-        if (message.channel.type == "dm") return sendChat("This command is not available through DMs!");
-        if (!input) return sendChat(`__**Gomoku**__\nTo start a game, type \`x!${cmd} start\`!`);
-        if (["start"].includes(args[0])) {
+        if (message.channel.type == "dm")
+        {
+            return sendChat("This command is not available through DMs!");
+        }
+        if (!input)
+        {
+            return sendChat(`__**Gomoku**__\nTo start a game, type \`x!${cmd} start\`!`);
+        }
+        if (["start"].includes(args[0]))
+        {
             message.delete();
-            if (!games.channels.hasOwnProperty(message.channel.id)) {
-                if (!args[1]) return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, false));
-                if (["causal", "fun"].includes(args[1])) return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, true));
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                if (!args[1])
+                {
+                    return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, false));
+                }
+                if (["causal", "fun"].includes(args[1]))
+                {
+                    return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, true));
+                }
             }
-            if (!games.channels[message.channel.id].started) {
-                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194") {
+            if (!games.channels[message.channel.id].started)
+            {
+                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194")
+                {
                     k = games.gomoku.startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 }
                 else
-                return sendChat("You cannot play yourself!");
+                {
+                    return sendChat("You cannot play yourself!");
+                }
             }
         }
         else
-        if (["board", "showboard"].includes(input)) {
-            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is no active Gomoku game in this channel, $user$!");
-            if (!games.channels[message.channel.id].started) return sendChat("The game has not yet started, $user$!");
+        if (["board", "showboard"].includes(input))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return sendChat("There is no active Gomoku game in this channel, $user$!");
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                return sendChat("The game has not yet started, $user$!");
+            }
+
             let game = games.channels[message.channel.id];
             return sendChat(new Discord.Attachment(game.buffer, `gomoku_0_${game.players[0]}vs${game.players[1]}.png`));
         }
         else
-        if (["quit", "forfeit", "leave"].includes(input)) {
-            if (!games.channels.hasOwnProperty(message.channel.id)) return sendChat("There is not a game in this channel for you to quit!");
-            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1]) return sendChat("You are not a participant of this game, $user$!");
-            if (!games.channels[message.channel.id].started) sendChat("$user$ has cancelled the pending game.");
+        if (["quit", "forfeit", "leave"].includes(input))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return sendChat("There is not a game in this channel for you to quit!");
+            }
+            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1])
+            {
+                return sendChat("You are not a participant of this game, $user$!");
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                sendChat("$user$ has cancelled the pending game.");
+            }
             else
-            sendChat("$user$ has forfeit the game.");
+            {
+                sendChat("$user$ has forfeit the game.");
+            }
+
             delete games.channels[message.channel.id];
         }
         else
-        if (["rules", "howtoplay"].includes(args[0])) {
+        if (["rules", "howtoplay"].includes(args[0]))
+        {
             new Discord.RichEmbed();
             embed.setDescription("Gomoku, also called Go Bang or Renju, in the simplest terms, is a very large game of Tic Tac Toe. The board is 19x19 instead of 3x3, and instead of a 3-in-a-row, you want a 5-in-a-row.\n\nTaking turns differs from traditional 1v1 board games like checkers in that each player does not get 1 move per turn. In Gomoku, both players get 2 moves per turn, but player 1 only gets one move on their very first turn. This removes what's known as \"player 1 advantage,\" which is very prevalent in Tic Tac Toe, where player 1 is able to have more pieces on the board than player 2, but player 2 can never have more pieces on the board than player 1.\n\nTo win, you must have 5 of your stones in a line. No more, no less. That's right: if you have 6 or more in a line, you cannot win.");
             embed.setColor(new Color().random());
@@ -731,27 +1122,52 @@ var commands = {
     },
 
     "profile": function(cmd, args, input, message, sendChat) {
-        if (!input || RE.ping.test(input) || RE.id2.test(input)) {
+        if (!input || RE.ping.test(input) || RE.id2.test(input))
+        {
             let member;
-            if (!input) member = message.channel.guild.members.get(message.author.id);
+            if (!input)
+            {
+                member = message.channel.guild.members.get(message.author.id);
+            }
             else
-            if (message.channel.type !== "dm") member = message.channel.guild.members.get(input.match(RE.id1)[0]);
+            if (message.channel.type !== "dm")
+            {
+                member = message.channel.guild.members.get(input.match(RE.id1)[0]);
+            }
             else
-            return sendChat("Cannot display other users' profiles in DMs, yet, sorry~");
+            {
+                return sendChat("Cannot display other users' profiles in DMs, yet, sorry~");
+            }
   
-            if (member == null) return sendChat("User not found.");
+            if (member == null)
+            {
+                return sendChat("User not found.");
+            }
             else
-            member = member.user;
+            {
+                member = member.user;
+            }
    
             return db.query(`SELECT * FROM profiles WHERE id = '${member.id}'`, function(err, res) {
-                if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
+                if (err)
+                {
+                    return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
+                }
   
                 let profile;
-                if (res.rows.length == 0 && !input) profile = newUser(message.author.id, message);
+                if (res.rows.length == 0 && !input)
+                {
+                    profile = newUser(message.author.id, message);
+                }
                 else
-                if (res.rows.length == 0) return sendChat("No user with that ID currently has a profile.");
+                if (res.rows.length == 0)
+                {
+                    return sendChat("No user with that ID currently has a profile.");
+                }
                 else
-                profile = res.rows[0];
+                {
+                    profile = res.rows[0];
+                }
   
                 Jimp.read("./img/backgrounds/" + profile.background.substring(0, 7) + (profile.background.substring(7) == 'j' ? ".jpg" : ".png")).then(function(image1) {
                     image1.getBuffer("image/png", function(err, src) {
@@ -759,6 +1175,7 @@ var commands = {
                         background = new Image;
                         background.src = src;
                         if (member.avatar)
+                        {
                             Jimp.read(`https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png`).then(function(image2) {
                                 image2.getBuffer("image/png", function(err, src) {
                                     let { Image } = require("canvas");
@@ -766,8 +1183,10 @@ var commands = {
                                     avatar.src = src;
                                     return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile.card(member.username, profile, background, avatar), "profile.png"));
                                 });
-                        }).catch(err => sendChat("```" + err + "```"));
+                            }).catch(err => sendChat("```" + err + "```"));
+                        }
                         else
+                        {
                             Jimp.read("https://cdn.discordapp.com/embed/avatars/0.png").then(function(image2) {
                                 image2.getBuffer("image/png", function(err, src) {
                                     let { Image } = require("canvas");
@@ -775,162 +1194,377 @@ var commands = {
                                     avatar.src = src;
                                     return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile.card(member.username, profile, background, avatar), "profile.png"));
                                 });
-                        }).catch(err => sendChat("```" + err + "```"));
+                            }).catch(err => sendChat("```" + err + "```"));
+                        }
                     });
                 }).catch(err => sendChat("```" + err + "```"));
             });
         }
         
         else
-        if (input.startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
-        
+        if (input.startsWith('['))
+        {
+            return sendChat("With***out*** the brackets, you twit.");
+        }
         else
-        if (["background", "backgrounds", "bg", "bgs"].includes(args[0])) {
-            if (!args[1] && !["backgrounds", "bgs"].includes(args[0])) {
-                return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) return sendChat("```" + err + "```");
-                    if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you do not yet have a background. If you want to change that fact, do `x!profile` right now!");
-                    if (res.rows[0].backgrounds.length == 1) return sendChat("This is your current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 20 Xuvys.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+        if (["background", "backgrounds", "bg", "bgs"].includes(args[0]))
+        {
+            if (!args[1] && !["backgrounds", "bgs"].includes(args[0]))
+            {
+                return db.query([
+                    `SELECT *`,
+                    `FROM profiles`,
+                    `WHERE id = '${message.author.id}'`
+                ].join('\n'), function(err, res) {
+                    if (err)
+                    {
+                        return sendChat("```" + err + "```");
+                    }
+                    if (res.rows.length == 0)
+                    {
+                        return sendChat("You have not yet created a profile, so you do not yet have a background. If you want to change that fact, do `x!profile` right now!");
+                    }
+                    if (res.rows[0].backgrounds.length == 1)
+                    {
+                        return sendChat("This is your current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 20 Xuvys.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+                    }
+
                     return sendChat("This is your current background, $user$! New backgrounds are still 20 Xuvys.\nDo `x!profile backgrounds` to view the other backgrounds you own.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
                 });
             }
             else
-            if (["owned"].includes(args[1]) || (!args[1] && ["backgrounds", "bgs"].includes(args[0]))) {
-                return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
-                    if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot view the backgrounds you own. If you want to change that fact, do `x!profile` right now!");
-                    if (res.rows[0].backgrounds.length == 1) return sendChat("You only have 1 background, and it's the one you have equipped.");
+            if (["owned"].includes(args[1]) || (!args[1] && ["backgrounds", "bgs"].includes(args[0])))
+            {
+                return db.query([`SELECT *`,
+                    `FROM profiles`,
+                    `WHERE id = '${message.author.id}'`
+                ].join('\n'), function(err, res) {
+                    if (err)
+                    {
+                        return sqlError(message, err, [
+                            `SELECT *`,
+                            `FROM profiles`,
+                            `WHERE id = '${member.id}'`
+                        ].join('\n'));
+                    }
+                    if (res.rows.length == 0)
+                    {
+                        return sendChat("You have not yet created a profile, so you cannot view the backgrounds you own. If you want to change that fact, do `x!profile` right now!");
+                    }
+                    if (res.rows[0].backgrounds.length == 1)
+                    {
+                        return sendChat("You only have 1 background, and it's the one you have equipped.");
+                    }
                     let b1 = res.rows[0].backgrounds;
                     let b2 = [];
                     for (let i = 0; i < res.rows[0].backgrounds.length; i++) {
-                        if (b1[i] !== res.rows[0].background) b2.push('[' + images.titles[b1[i]] + "](" + b1[i] + ')');
+                        if (b1[i] !== res.rows[0].background)
+                        {
+                            b2.push('[' + images.titles[b1[i]] + "](" + b1[i] + ')');
+                        }
                         else
-                        b2.push('[' + images.titles[b1[i]] + "](" + b1[i] + ') (Equipped)');
+                        {
+                            b2.push('[' + images.titles[b1[i]] + "](" + b1[i] + ') (Equipped)');
+                        }
                     }
                     return sendChat(`\`\`\`md\n# All Backgrounds owned by user ${res.rows[0].id}:\n\n  [Background Title](background ID)\n\n  ${b2.join("\n  ")}\n\nIf you wish to equip any of these, do \`x!profiles background [title ID]\` (capitals are important!)\`\`\``);
                 });
             }
             else
-            if (["buy", "purchase"].includes(args[1])) {
-                return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
-                    if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot yet purchase a new background. If you want to change that fact, do `x!profile` right now!");
-                    if (res.rows[0].backgrounds.length == images.ids.length) return sendChat("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, okay~?");
-                    if (res.rows[0].money < 20) return sendChat("You do not have enough money to buy another background! Get more money by playing games (and winning)!");
+            if (["buy", "purchase"].includes(args[1]))
+            {
+                return db.query([
+                    `SELECT *`,
+                    `FROM profiles`,
+                    `WHERE id = '${message.author.id}'`
+                ].join('\n'), function(err, res) {
+                    if (err)
+                    {
+                        return sqlError(message, err, [
+                            `SELECT *`,
+                            `FROM profiles`,
+                            `WHERE id = '${member.id}'`
+                        ].join('\n'));
+                    }
+                    if (res.rows.length == 0)
+                    {
+                        return sendChat("You have not yet created a profile, so you cannot yet purchase a new background. If you want to change that fact, do `x!profile` right now!");
+                    }
+                    if (res.rows[0].backgrounds.length == images.ids.length)
+                    {
+                        return sendChat("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, okay~?");
+                    }
+                    if (res.rows[0].money < 20)
+                    {
+                        return sendChat("You do not have enough money to buy another background! Get more money by playing games (and winning)!");
+                    }
   
                     newbg = images.ids.random();
-                    do {
+                    while (res.rows[0].backgrounds.includes(newbg)) {
                         newbg = images.ids.random();
-                    } while (res.rows[0].backgrounds.includes(newbg));
+                    };
                     res.rows[0].backgrounds.push(newbg);
-                    return db.query(`UPDATE profiles
-                        SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "'")}, money = '${res.rows[0].money - 20}'
-                        WHERE id = '${message.author.id}'`, function(err) {
-                            if (err) sqlError(message, err, `UPDATE profiles
-                                SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "''")}, money = '${res.rows[0].money - 20}'
-                                WHERE id = '${message.author.id}'`);
-                            else
+                    return db.query([
+                        `UPDATE profiles`,
+                        `SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "'")}, money = '${res.rows[0].money - 20}'`,
+                        `WHERE id = '${message.author.id}'`
+                    ].join('\n'), function(err) {
+                        if (err)
+                        {
+                            sqlError(message, err, [
+                                `UPDATE profiles`,
+                                `SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "''")}, money = '${res.rows[0].money - 20}'`,
+                                `WHERE id = '${message.author.id}'`
+                            ].join('\n'));
+                        }
+                        else
+                        {
                             return sendChat("Successfully purchased a new background! To equip it, do `x!profile background [background ID]`. New background ID: `" + newbg + '`', new Discord.Attachment("./img/backgrounds/" + newbg.substring(0, 7) + (newbg.substring(7) == 'j' ? ".jpg" : ".png")));
+                        }
                     });
                 });
             }
             else
-            if (/^[a-zA-Z0-9]{7}[jp]$/.test(args[1])) {
-                if (!images.ids.includes(args[1])) return sendChat("That image ID does not exist. Did you make sure you capitalized the correct letters? That's important, you know.");
-                return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
-                    if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you cannot yet equip a new background. If you want to change that fact, do `x!profile` right now!");
-                    if (!res.rows[0].backgrounds.includes(args[1])) return sendChat("You do not own that background!");
-                    return db.query(`UPDATE profiles
-                        SET background = '${args[1]}'
-                        WHERE id = '${message.author.id}'`, function(err) {
-                            if (err) sqlError(message, err, `UPDATE profiles
-                                SET background = '${args[1]}'
-                                WHERE id = '${message.author.id}'`);
-                            else
+            if (/^[a-zA-Z0-9]{7}[jp]$/.test(args[1]))
+            {
+                if (!images.ids.includes(args[1]))
+                {
+                    return sendChat("That image ID does not exist. Did you make sure you capitalized the correct letters? That's important, you know.");
+                }
+                return db.query([
+                    `SELECT *`,
+                    `FROM profile`,
+                    `WHERE id = '${message.author.id}'`
+                ].join('\n'), function(err, res) {
+                    if (err)
+                    {
+                        return sqlError(message, err, [
+                            `SELECT *`,
+                            `FROM profile`,
+                            `WHERE id = '${member.id}'`
+                        ].join('\n'));
+                    }
+                    if (res.rows.length == 0)
+                    {
+                        return sendChat("You have not yet created a profile, so you cannot yet equip a new background. If you want to change that fact, do `x!profile` right now!");
+                    }
+                    if (!res.rows[0].backgrounds.includes(args[1]))
+                    {
+                        return sendChat("You do not own that background!");
+                    }
+                    return db.query([
+                        `UPDATE profiles`,
+                        `SET background = '${args[1]}'`,
+                        `WHERE id = '${message.author.id}'`
+                    ].join('\n'), function(err) {
+                        if (err)
+                        {
+                            sqlError(message, err, [
+                                `UPDATE profiles`,
+                                `SET background = '${args[1]}'`,
+                                `WHERE id = '${message.author.id}'`
+                            ].join('\n'));
+                        }
+                        else
+                        {
                             return sendChat("Successfully equipped the background `" + args[1] + "`!");
+                        }
                     });
                 });
             }
             else
-            if (args[1].startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
+            if (args[1].startsWith('['))
+            {
+                return sendChat("With***out*** the brackets, you twit.");
+            }
             else
-            return sendChat("Unknown request.");
+            {
+                return sendChat("Unknown request.");
+            }
         }
         else
-        if (["lefty", "sidedisplay", "displayside", "displaylorr", "leftorright", "rightorleft"].includes(args[0])) {
-            return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
-                if (res.rows.length == 0) return sendChat("You have not yet created a profile, so your information is displayed on neither the left nor the right. If you want to change that fact, do `x!profile` right now!");
-                return db.query(`UPDATE profiles
-                    SET lefty = '${res.rows[0].lorr == true ? false : true}'
-                    WHERE id = '${message.author.id}'`, function(err) {
-                        if (err) sqlError(message, err, `UPDATE profiles
-                            SET lefty = '${res.rows[0].lorr == true ? false : true}'
-                            WHERE id = '${message.author.id}'`);
-                        else
+        if (["lefty", "sidedisplay", "displayside", "displaylorr", "leftorright", "rightorleft"].includes(args[0]))
+        {
+            return db.query([
+                `SELECT *`,
+                `FROM profiles`,
+                `WHERE id = '${message.author.id}'`
+            ].join('\n'), function(err, res) {
+                if (err)
+                {
+                    return sqlError(message, err, [
+                        `SELECT *`,
+                        `FROM profiles`,
+                        `WHERE id = '${member.id}'`
+                    ].join('\n'));
+                }
+                if (res.rows.length == 0)
+                {
+                    return sendChat("You have not yet created a profile, so your information is displayed on neither the left nor the right. If you want to change that fact, do `x!profile` right now!");
+                }
+                return db.query([
+                    `UPDATE profiles`,
+                    `SET lefty = '${res.rows[0].lorr == true ? false : true}'`,
+                    `WHERE id = '${message.author.id}'`
+                ].join('\n'), function(err) {
+                    if (err)
+                    {
+                        sqlError(message, err, [
+                            `UPDATE profiles`,
+                            `SET lefty = '${res.rows[0].lorr == true ? false : true}'`,
+                            `WHERE id = '${message.author.id}'`
+                        ].join('\n'));
+                    }
+                    else
+                    {
                         return sendChat("Successfully updated your information display to the " + (res.rows[0].lorr == "left" ? "right" : "left") + " side!");
+                    }
                 });
             });
         }
         else
-        if (["title", "titles"].includes(args[0])) {
-            if (!args[1]) {
-                return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                    if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
-                    if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you do not yet have any titles. If you want to change that fact, do `x!profile` right now!");
-                    if (res.rows[0].titles.length == 1) return sendChat("The only title you own is the title you currently have equipped. Get some more and then check back with me, okay~?");
+        if (["title", "titles"].includes(args[0]))
+        {
+            if (!args[1])
+            {
+                return db.query([
+                    `SELECT *`,
+                    `FROM profiles`,
+                    `WHERE id = '${message.author.id}'`
+                ].join('\n'), function(err, res) {
+                    if (err)
+                    {
+                        return sqlError(message, err, [
+                            `SELECT *`,
+                            `FROM profiles`,
+                            `WHERE id = '${member.id}'`
+                        ].join('\n'));
+                    }
+                    if (res.rows.length == 0)
+                    {
+                        return sendChat("You have not yet created a profile, so you do not yet have any titles. If you want to change that fact, do `x!profile` right now!");
+                    }
+                    if (res.rows[0].titles.length == 1)
+                    {
+                        return sendChat("The only title you own is the title you currently have equipped. Get some more and then check back with me, okay~?");
+                    }
                     let t1 = res.rows[0].titles;
                     let t2 = [];
-                    for (let i = 0; i < res.rows[0].titles.length; i++) {
-                        if (t1[i] !== res.rows[0].title) t2.push('[' + titles[t1[i]] + "](" + t1[i] + ')');
+                    for (let i = 0; i < res.rows[0].titles.length; i++)
+                    {
+                        if (t1[i] !== res.rows[0].title)
+                        {
+                            t2.push('[' + titles[t1[i]] + "](" + t1[i] + ')');
+                        }
                         else
-                        t2.push('[' + titles[t1[i]] + "](" + t1[i] + ') (Equipped)');
+                        {
+                            t2.push('[' + titles[t1[i]] + "](" + t1[i] + ') (Equipped)');
+                        }
                     }
                     return sendChat("```md\n# All Titles owned by user:" + res.rows[0].id + ":\n\n  [Title Text](titleID)\n\n  " + t2.join("\n  ") + "\n\nIf you wish to equip any of these, do `x!profile title [titleID]` (capitals are important!)!```");
                 });
             }
-            if (args[1].startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
-            if (!Object.keys(titles).includes(args[1])) return sendChat("That title ID does not exist. Try again.");
-            return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
-                if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you do not yet have the ability to change your title. If you want to change that fact, do `x!profile` right now!");
-                return db.query(`UPDATE profiles
-                    SET title = '${args[1]}'
-                    WHERE id = '${message.author.id}'`, function(err) {
-                        if (err) return sqlError(message, err, `UPDATE profiles
-                            SET title = '${args[1]}'
-                            WHERE id = '${message.author.id}'`);
-                        return sendChat("Successfully updated your title to `" + titles[args[1]] + "`!");
+            if (args[1].startsWith('['))
+            {
+                return sendChat("With***out*** the brackets, you twit.");
+            }
+            if (!Object.keys(titles).includes(args[1]))
+            {
+                return sendChat("That title ID does not exist. Try again.");
+            }
+            return db.query([
+                `SELECT *`,
+                `FROM profiles`,
+                `WHERE id = '${message.author.id}'`
+            ].join('\n'), function(err, res) {
+                if (err)
+                {
+                    return sqlError(message, err, [
+                        `SELECT *`,
+                        `FROM profiles`,
+                        `WHERE id = '${member.id}'`
+                    ].join('\n'));
+                }
+                if (res.rows.length == 0)
+                {
+                    return sendChat("You have not yet created a profile, so you do not yet have the ability to change your title. If you want to change that fact, do `x!profile` right now!");
+                }
+                return db.query([
+                    `UPDATE profiles`,
+                    `SET title = '${args[1]}'`,
+                    `WHERE id = '${message.author.id}'`
+                ].join('\n'), function(err) {
+                    if (err)
+                    {
+                        return sqlError(message, err, [
+                            `UPDATE profiles`,
+                            `SET title = '${args[1]}'`,
+                            `WHERE id = '${message.author.id}'`
+                        ].join('\n'));
+                    }
+                    return sendChat("Successfully updated your title to `" + titles[args[1]] + "`!");
                 });
             });
         }
         else
-        if (["color", "colors"].includes(args[0])) {
-            if (!args[1]) return sendChat("Please include the color you wish to set your profile color to, and please make it a hexidecimal value ('#' followed by 3 or 6 digits and/or letters).");
+        if (["color", "colors"].includes(args[0]))
+        {
+            if (!args[1])
+            {
+                return sendChat("Please include the color you wish to set your profile color to, and please make it a hexidecimal value ('#' followed by 3 or 6 digits and/or letters).");
+            }
             else
-            if (!RE.color.test(args[1])) return sendChat("That is not a color hexidecimal. Try again.");
-            return db.query(`SELECT * FROM profiles WHERE id = '${message.author.id}'`, function(err, res) {
-                if (err) return sqlError(message, err, `SELECT * FROM profiles WHERE id = '${member.id}'`);
-                if (res.rows.length == 0) return sendChat("You have not yet created a profile, so you do not yet have the ability to change your profile's color. If you want to change that fact, do `x!profile` right now!");
-                return db.query(`UPDATE profiles
-                    SET color = '${(args[1].startsWith('#') ? '' : '#') + args[1]}'
-                    WHERE id = '${message.author.id}'`, function(err) {
-                        if (err) return sqlError(message, err, `UPDATE profiles
-                            SET color = '${(args[1].startsWith('#') ? '' : '#') + args[1]}'
-                            WHERE id = '${message.author.id}'`);
-                        let canvas = new Canvas.createCanvas(100, 40);
-                        let ctx = canvas.getContext('2d');
-                        ctx.fillStyle = (args[1].startsWith('#') ? '' : '#') + args[1];
-                        ctx.fillRect(0, 0, 100, 40);
-                        return sendChat("Successfully updated your color to `" + (args[1].startsWith('#') ? '' : '#') + args[1] + "`!", new Discord.Attachment(canvas.toBuffer()));
+            if (!RE.color.test(args[1]))
+            {
+                return sendChat("That is not a color hexidecimal. Try again.");
+            }
+            return db.query([
+                `SELECT *`,
+                `FROM profiles`,
+                `WHERE id = '${message.author.id}'`
+            ].join('\n'), function(err, res) {
+                if (err)
+                {
+                    return sqlError(message, err, [
+                        `SELECT *`,
+                        `FROM profiles`,
+                        `WHERE id = '${member.id}'`
+                    ].join('\n'));
+                }
+                if (res.rows.length == 0)
+                {
+                    return sendChat("You have not yet created a profile, so you do not yet have the ability to change your profile's color. If you want to change that fact, do `x!profile` right now!");
+                }
+                return db.query([
+                    `UPDATE profiles`,
+                    `SET color = '${(args[1].startsWith('#') ? '' : '#') + args[1]}'`,
+                    `WHERE id = '${message.author.id}'`
+                ].join('\n'), function(err) {
+                    if (err)
+                    {
+                        return sqlError(message, err, [
+                            `UPDATE profiles`,
+                            `SET color = '${(args[1].startsWith('#') ? '' : '#') + args[1]}'`,
+                            `WHERE id = '${message.author.id}'`
+                        ].join('\n'));
+                    }
+                    let canvas = new Canvas.createCanvas(100, 40);
+                    let ctx = canvas.getContext('2d');
+                    ctx.fillStyle = (args[1].startsWith('#') ? '' : '#') + args[1];
+                    ctx.fillRect(0, 0, 100, 40);
+                    return sendChat("Successfully updated your color to `" + (args[1].startsWith('#') ? '' : '#') + args[1] + "`!", new Discord.Attachment(canvas.toBuffer()));
                 });
             });
         }
         else
-        if (["help"].includes(input)) return sendChat("**Available sub-commands for `x!profile`** (do `x!profile [subcommand]`):\n\n**backgrounds** - opens the background menu for changing your profile's background\n**displaylorr** - allows you to change which side all the text n stuff is displayed on in your profile\n**title** - can display your currently equipped title, your currently owned titles, or allows you to change your currently equipped title (if you know the ID for it)\n**color** - allows you to change the color your profile uses to display text");
+        if (["help"].includes(input))
+        {
+            return sendChat("**Available sub-commands for `x!profile`** (do `x!profile [subcommand]`):\n\n**backgrounds** - opens the background menu for changing your profile's background\n**displaylorr** - allows you to change which side all the text n stuff is displayed on in your profile\n**title** - can display your currently equipped title, your currently owned titles, or allows you to change your currently equipped title (if you know the ID for it)\n**color** - allows you to change the color your profile uses to display text");
+        }
         else
-        return sendChat("Invalid syntax. Try `x!profile help` for more information on how to use this.");
+        {
+            return sendChat("Invalid syntax. Try `x!profile help` for more information on how to use this.");
+        }
     },
    
     // Smaller Games
@@ -941,34 +1575,36 @@ var commands = {
 
     "minesweeper": function(cmd, args, input, message, sendChat) {
         let w, h, d;
-        if (["help"].includes(input)) {
+        if (["help"].includes(input))
+        {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "MineSweeper",
                 "https://cdn.discordapp.com/attachments/434783815047577610/543961408442990592/2000px-Minesweeper_flag.png"
             );
-            embed.setDescription(
-                "You can control 3 aspects of a game: height, width, and the number of bombs:\n" +
-                "  x!minesweeper `height` `width` `bombs`\n" +
-                "  x!minesweeper `height` `width`\n" +
-                "  x!minesweeper `bombs` (You can also set the number of bombs with a % instead of an exact number)\n\n" +
-                "The maximum height you can set a game to is 20.\n" +
-                "The maximum width you can set a game to is 16, but may have to be lower depending on the height (max number of total tiles is 198).\n" +
-                "The maximum number of bombs depends on the number of tiles total (height * width).\n"
+            embed.setDescription([
+                "You can control 3 aspects of a game: height, width, and the number of bombs:",
+                "  x!minesweeper `height` `width` `bombs`",
+                "  x!minesweeper `height` `width`",
+                "  x!minesweeper `bombs` (You can also set the number of bombs with a % instead of an exact number)",
+                "The maximum height you can set a game to is 20.",
+                "The maximum width you can set a game to is 16, but may have to be lower depending on the height (max number of total tiles is 198).",
+                "The maximum number of bombs depends on the number of tiles total (height * width)."].join('\n')
             );
             embed.addField(
-                "Examples",
-                "`x!minesweeper 18 11 50`  18x11 board with 50 bombs\n" +
-                "`x!minesweeper 30`        10x10 board with 30 bombs\n" +
-                "`x!minesweeper 12 12`     12x12 board with 14 bombs\n" +
-                "`x!minesweeper 15 10 30%` 15x10 board with 45 bombs"
-            )
+                "Examples", [
+                "`x!minesweeper 18 11 50`  18x11 board with 50 bombs",
+                "`x!minesweeper 30`        10x10 board with 30 bombs",
+                "`x!minesweeper 12 12`     12x12 board with 14 bombs",
+                "`x!minesweeper 15 10 30%` 15x10 board with 45 bombs"].join('\n')
+            );
             embed.setTitle("Help");
             embed.setColor(new Color().random());
             sendChat({embed});
         }
         else
-        if (!input || args.length > 3) {
+        if (!input || args.length > 3)
+        {
             w = 10;
             h = 10;
             d = 10;
@@ -1028,42 +1664,74 @@ var commands = {
                 Math.round(wh * 0.1);
         }
         a = [];
-        for (let y = h; y--;) {
+        for (let y = h; y--;)
+        {
             let b = [];
-            for (let x = w; x--;) b.push(0);
+            for (let x = w; x--;)
+            {
+                b.push(0);
+            }
             a.push(b);
         }
         k = [];
-        do {
+        while (k.length < d)
+        {
             let x = Math.random() * w | 0;
             let y = Math.random() * h | 0;
-            if (typeof a[y][x] == "number") {
+            if (typeof a[y][x] == "number")
+            {
                 a[y][x] = "☠";
                 k.push([y, x]);
             }
-        } while (k.length < d);
-        for (let b = d; b--;) {
+        };
+        for (let b = d; b--;)
+        {
             y = k[b][0];
             x = k[b][1];
             z = [true, true, true, true, true, true, true, true];
-            if (y == 0)     z[0] = z[1] = z[2] = false;
-            if (y == h - 1) z[4] = z[5] = z[6] = false;
-            if (x == 0)     z[0] = z[7] = z[6] = false;
-            if (x == w - 1) z[2] = z[3] = z[4] = false;
-            for (let xy = 8; xy--;) {
-                if (z[xy]) {
+            if (y == 0)
+            {
+                z[0] = z[1] = z[2] = false;
+            }
+            if (y == h - 1)
+            {
+                z[4] = z[5] = z[6] = false;
+            }
+            if (x == 0)
+            {
+                z[0] = z[7] = z[6] = false;
+            }
+            if (x == w - 1)
+            {
+                z[2] = z[3] = z[4] = false;
+            }
+            for (let xy = 8; xy--;)
+            {
+                if (z[xy])
+                {
                     Y = y + [-1, -1, -1, 0, 1, 1,  1,  0][xy];
                     X = x + [-1,  0,  1, 1, 1, 0, -1, -1][xy];
-                    if (typeof a[Y][X] == "number") a[Y][X] += 1;
+                    if (typeof a[Y][X] == "number")
+                    {
+                        a[Y][X] += 1;
+                    }
                 }
             }
         }
-        for (let y = h; y--;) {
-            for (let x = w; x--;) {
-                if (typeof a[y][x] == "number") a[y][x] = "0⃣ 1⃣ 2⃣ 3⃣ 4⃣ 5⃣ 6⃣ 7⃣ 8⃣".split(' ')[a[y][x]];
+        for (let y = h; y--;)
+        {
+            for (let x = w; x--;)
+            {
+                if (typeof a[y][x] == "number")
+                {
+                    a[y][x] = "0⃣ 1⃣ 2⃣ 3⃣ 4⃣ 5⃣ 6⃣ 7⃣ 8⃣".split(' ')[a[y][x]];
+                }
             }
         }
-        for (let y = h; y--;) a[y] = a[y].join("||||");
+        for (let y = h; y--;)
+        {
+            a[y] = a[y].join("||||");
+        }
         let embed = new Discord.RichEmbed();
         embed.setAuthor(
             "MineSweeper",
@@ -1093,17 +1761,31 @@ var commands = {
 
     // Utility
     "avatar": function(cmd, args, input, message, sendChat) {
-        if (!input || RE.ping.test(input) || RE.id2.test(input)) {
+        if (!input || RE.ping.test(input) || RE.id2.test(input))
+        {
             let member;
-            if (!input) member = message.channel.guild.members.get(message.author.id);
+            if (!input)
+            {
+                member = message.channel.guild.members.get(message.author.id);
+            }
             else
-            if (message.channel.type !== "dm") member = message.channel.guild.members.get(input.match(RE.id1)[0]);
+            if (message.channel.type !== "dm")
+            {
+                member = message.channel.guild.members.get(input.match(RE.id1)[0]);
+            }
             else
-            return sendChat("Cannot display other users' avatars in DMs, yet, sorry~");
+            {
+                return sendChat("Cannot display other users' avatars in DMs, yet, sorry~");
+            }
   
-            if (member == null) return sendChat("User not found.");
+            if (member == null)
+            {
+                return sendChat("User not found.");
+            }
             else
-            member = member.user;
+            {
+                member = member.user;
+            }
 
             let embed = new Discord.RichEmbed();
             embed.setTitle("User Avatar");
@@ -1113,34 +1795,46 @@ var commands = {
             return sendChat({embed});
         }
         else
-        return sendChat("Unknown request.");
+        {
+            return sendChat("Unknown request.");
+        }
     },
 
     "help": function(cmd, args, input, message, sendChat) {
-        if (!input) {
+        if (!input)
+        {
             let embed = new Discord.RichEmbed();
             embed.setTitle("Help");
             embed.setDescription("A list of all commands supported by Bakeneko~\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "`\nFor more help about any specific command, do \"`x![command]` `help`\"");
             let helps;
-            if (message.channel.type == "dm") helps = [
+            if (message.channel.type == "dm")
+            {
+                helps = [
                     "`I apologize, but none of my larger games can work in DMs. When I get bigger and more people are playing my games regularly, I'll make it where you can play against strangers through DMs.`",
                     "`minesweeper`\nUnimplemented:\n\\*`hangman` \\*`quickmaffs` \\*`iq` \\*`sequence` \\*`shuffle`",
                     "`help `about `avatar `aliases `bugreport `request",
                     "`jisho `nekos `calculate `graph\n__Unimplemented__:\n\\*`anime \\*`manga \\*`jshelp "
                 ];
+            }
             else
-            helps = [
+            {
+                helps = [
                     "`othello `squares `gomoku `connect4\n__Related Commands__:\n`games `profile\n__Unimplemented__:\n\\*`3dtictactoe \\*`pente \\*`ninemen",
                     "`minesweeper`\nUnimplemented:\n\\*`hangman` \\*`quickmaffs` \\*`iq` \\*`sequence` \\*`shuffle`",
                     "`about `help `avatar `aliases `server `kick `ban",
                     "`jisho `nekos `calculate `graph\n__Unimplemented__:\n\\*`anime \\*`manga \\*`jshelp "
                 ];
-            if (message.channel.type == "dm") helps[2] = helps[2].concat(["`bugreport", "`request"]);
+            }
+            if (message.channel.type == "dm")
+            {
+                helps[2] = helps[2].concat(["`bugreport", "`request"]);
+            }
             embed.addField("Games", `${helps[0]}\``, true);
             embed.addField("Smaller Games", `${helps[1]}\``, true);
             embed.addField("Utility", `${helps[2]}\``, true);
             embed.addField("Miscellaneous", `${helps[3]}\``);
-            if (message.channel.type == "dm" || message.channel.nsfw) {
+            if (message.channel.type == "dm" || message.channel.nsfw)
+            {
                 embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \`x!nsfw help\` for a list of all the lewds I'm capable of.`);
             }
             embed.setColor(new Color().random());
@@ -1148,7 +1842,8 @@ var commands = {
             return sendChat({embed});
         }
         else
-        if (["games", "utility", "miscellaneous", "misc", "nsfw"].includes(input)) {
+        if (["games", "utility", "miscellaneous", "misc", "nsfw"].includes(input))
+        {
             let embed = new Discord.RichEmbed();
             embed.setTitle(input.toUpperCase());
             embed.setDescription({
@@ -1161,9 +1856,12 @@ var commands = {
         }
         else
         {
-            if (message.channel.type != "dm") {
-                for (let i in aliases.guild) {
-                    if (aliases.guild[i].includes(input)) {
+            if (message.channel.type != "dm")
+            {
+                for (let i in aliases.guild)
+                {
+                    if (aliases.guild[i].includes(input))
+                    {
                         let embed = new Discord.RichEmbed();
                         embed.setTitle("Command Info");
                         embed.setDescription({
@@ -1207,8 +1905,10 @@ var commands = {
             }
             else
             {
-                for (let i in aliases.user) {
-                    if (aliases.user[i].includes(input)) {
+                for (let i in aliases.user)
+                {
+                    if (aliases.user[i].includes(input))
+                    {
                         let embed = new Discord.RichEmbed()
                         embed.setTitle("Command Info");
                         embed.setDescription({
@@ -1248,11 +1948,19 @@ var commands = {
     },
 
     "aliases": function(cmd, args, input, message, sendChat) {
-        if (!input) return sendChat("To view all the aliases for a command, do `x!aliases` `[command name]`");
+        if (!input)
+        {
+            return sendChat("To view all the aliases for a command, do `x!aliases` `[command name]`");
+        }
         else
-        if (input.startsWith('[')) return sendChat("With***out*** the brackets.");
-        for (let i in aliases.guild) {
-            if (aliases.guild[i].includes(input)) {
+        if (input.startsWith('['))
+        {
+            return sendChat("With***out*** the brackets.");
+        }
+        for (let i in aliases.guild)
+        {
+            if (aliases.guild[i].includes(input))
+            {
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Aliases for " + i);
                 embed.setDescription('`' + aliases.guild.join("`  `") + '`');
@@ -1264,23 +1972,43 @@ var commands = {
 
     "bug": function(cmd, args, input, message, sendChat) {
         return db.query(`SELECT bug FROM bans`, function(err, res) {
-            if (err) return sendChat("```" + err + "```");
-            if (!rows.includes(message.author.id)) {
-                if (bugTimers[message.author.id]) return sendChat("You can submit 1 bug every 2 hours. Xyvy doesn't like being spammed, you know.");
-                if (!input) return sendChat("Here is how to format a bug report:\n\n```\nx!reportbug [command that's bugged]\n[description of bug (less than 1000 characters, please)]```\nPlease take note that if you submit a fake bug report, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
+            if (err)
+            {
+                return sendChat("```" + err + "```");
+            }
+            if (!rows.includes(message.author.id))
+            {
+                if (bugTimers[message.author.id])
+                {
+                    return sendChat("You can submit 1 bug every 2 hours. Xyvy doesn't like being spammed, you know.");
+                }
+                if (!input)
+                {
+                    return sendChat("Here is how to format a bug report:\n\n```\nx!reportbug [command that's bugged]\n[description of bug (less than 1000 characters, please)]```\nPlease take note that if you submit a fake bug report, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
+                }
                 let com = input.split("\n")[0];
                 console.log('"' + com + '"');
-                if (com.startsWith('[')) return sendChat("With***out*** the brackets, you twit.");
+                if (com.startsWith('['))
+                {
+                    return sendChat("With***out*** the brackets, you twit.");
+                }
                 let aliases = message.channel.type == "dm" ? aliases.user : aliases.guild;
                 let a = false;
                 for (let i in aliases) 
-                    if (aliases[i].includes(com)) {
+                    if (aliases[i].includes(com))
+                    {
                         a = true;
                         break;
                     }
-                if (!a) return sendChat("That command does not exist!");
+                if (!a)
+                {
+                    return sendChat("That command does not exist!");
+                }
                 let desc = input.substring(com.length).trim();
-                if (desc.length > 1000) return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
+                if (desc.length > 1000)
+                {
+                    return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
+                }
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Bug Report");
                 embed.setAuthor(message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')');
@@ -1290,17 +2018,32 @@ var commands = {
                 return sendChat("Bug report sent! Thanks for helping out!");
             }
             else
-            sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
-        })
+            {
+                sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
+            }
+        });
     },
 
     "request": function(cmd, args, input, message, sendChat) {
         return db.query(`SELECT request FROM bans`, function(err, res) {
-            if (err) return sendChat("```" + err + "```");
-            if (!rows.includes(message.author.id)) {
-                if (requestTimers[message.author.id]) return sendChat("You can submit 1 request every 2 hours. Xyvy doesn't like being spammed, you know.");
-                if (!input) return sendChat("Here is how to format a request:\n\n```\nx!request [description of suggestion (less than 1000 characters, please)]```\nPlease take note that if you submit a fake request, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
-                if (input.length > 1000) return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
+            if (err)
+            {
+                return sendChat("```" + err + "```");
+            }
+            if (!rows.includes(message.author.id))
+            {
+                if (requestTimers[message.author.id])
+                {
+                    return sendChat("You can submit 1 request every 2 hours. Xyvy doesn't like being spammed, you know.");
+                }
+                if (!input)
+                {
+                    return sendChat("Here is how to format a request:\n\n```\nx!request [description of suggestion (less than 1000 characters, please)]```\nPlease take note that if you submit a fake request, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
+                }
+                if (input.length > 1000)
+                {
+                    return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
+                }
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("User Request");
                 embed.setAuthor(message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')');
@@ -1310,19 +2053,24 @@ var commands = {
                 return sendChat("Request sent! Thanks for the suggestion!");
             }
             else
-            sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
+            {
+                sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
+            }
         });
     },
    
     "guild": function(cmd, args, input, message, sendChat) {
-        if (!input) {
+        if (!input)
+        {
             let guild = message.channel.guild;
             embed = new Discord.RichEmbed();
             embed.setTitle("Guild ID: " + guild.id);
             embed.setAuthor(guild.name);
             embed.setColor(new Color().random());
-            if (guild.icon != null) embed.setThumbnail(guild.icon);
-   
+            if (guild.icon != null)
+            {
+                embed.setThumbnail(guild.icon);
+            }
             owner = guild.members.get(guild.ownerID).user;
             embed.addField("Owner", `${owner.username}#${owner.discriminator}\n<@${owner.id}>`);
             embed.addField("Region", guild.region, true);
@@ -1331,9 +2079,16 @@ var commands = {
             let channels = guild.channels.array();
             let text = 0;
             let voice = 0;
-            for (let i = 0; i < channels.length; i++) {
-                if (channels[i].type == "text") text += 1;
-                if (channels[i].type == "voice") voice += 1;
+            for (let i = 0; i < channels.length; i++)
+            {
+                if (channels[i].type == "text")
+                {
+                    text += 1;
+                }
+                if (channels[i].type == "voice")
+                {
+                    voice += 1;
+                }
             }
             embed.addField("Channels", guild.channels.array().length + " total", true);
             embed.addField("Text", text, true);
@@ -1341,7 +2096,13 @@ var commands = {
             let members = guild.members.array();
             let humans = guild.memberCount;
             let bots = 0;
-            for (let i = 0; i < members.length; i++) if (members[i].user.bot) bots += 1;
+            for (let i = 0; i < members.length; i++)
+            {
+                if (members[i].user.bot)
+                {
+                    bots += 1;
+                }
+            }
             embed.addField("Members", humans + " total", true);
             embed.addField("Humans", humans - bots, true);
             embed.addField("Bots", bots, true);
@@ -1353,24 +2114,42 @@ var commands = {
 
     "kick": function(cmd, args, input, message, sendChat) {
         let user = message.channel.guild.members.get(message.author.id);
-        if (!user.hasPermission("KICK_MEMBERS")) return;
-        if (!input) return sendChat("**Proper Usage**: `x!kick <@user>`");
-        if (!RE.ping.test(args[0]) || !RE.id2.test(args[0])) return sendChat("Invalid user mention, try again.");
+        if (!user.hasPermission("KICK_MEMBERS"))
+        {
+            return;
+        }
+        if (!input)
+        {
+            return sendChat("**Proper Usage**: `x!kick <@user>`");
+        }
+        if (!RE.ping.test(args[0]) || !RE.id2.test(args[0]))
+        {
+            return sendChat("Invalid user mention, try again.");
+        }
         else
         {
-            message.channel.guild.members.get(args[0].match(RE.id1)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => sendChat("kicked user <@" + args[0].match(RE.id1)[0] + '>')).catch((err) => sendChat("Failed to kick user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"))
+            message.channel.guild.members.get(args[0].match(RE.id1)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => sendChat("kicked user <@" + args[0].match(RE.id1)[0] + '>')).catch((err) => sendChat("Failed to kick user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"));
         }
 
     },
 
     "ban": function(cmd, args, input, message, sendChat) {
         let user = message.channel.guild.members.get(message.author.id);
-        if (user.hasPermission("BAN_MEMBERS")) return;
-        if (!input) return sendChat("**Proper Usage**: `x!ban <@user>`");
-        if (!RE.ping.test(args[0]) || !RE.id2.test(args[0])) return sendChat("Invalid user mention, try again.");
+        if (user.hasPermission("BAN_MEMBERS"))
+        {
+            return;
+        }
+        if (!input)
+        {
+            return sendChat("**Proper Usage**: `x!ban <@user>`");
+        }
+        if (!RE.ping.test(args[0]) || !RE.id2.test(args[0]))
+        {
+            return sendChat("Invalid user mention, try again.");
+        }
         else
         {
-            message.channel.guild.members.get(args[0].match(RE.id1)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => sendChat("baned user <@" + args[0].match(RE.id1)[0] + '>')).catch((err) => sendChat("Failed to ban user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"))
+            message.channel.guild.members.get(args[0].match(RE.id1)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => sendChat("baned user <@" + args[0].match(RE.id1)[0] + '>')).catch((err) => sendChat("Failed to ban user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"));
         }
 
     },
@@ -1385,10 +2164,14 @@ var commands = {
     },
        
     "jisho": function(cmd, args, input, message, sendChat) {
-        if (!input) return sendChat("Jisho, the Japanese Dictionary!\nSearch for Kanji definitions, radicals, examples, and more!\nFor more help, use the command `x!jisho help`!");
+        if (!input)
+        {
+            return sendChat("Jisho, the Japanese Dictionary!\nSearch for Kanji definitions, radicals, examples, and more!\nFor more help, use the command `x!jisho help`!");
+        }
            
         else
-        if (["help", "syntax"].includes(input)) {
+        if (["help", "syntax"].includes(input))
+        {
             let embed = new Discord.RichEmbed();
             embed.setTitle("Jisho Syntax");
             embed.addField("Kanji", "Returns all there is to know about a Kanji!\nExample: `x!jisho kanji 語`");
@@ -1398,11 +2181,18 @@ var commands = {
         }
    
         else
-        if (["kanji"].includes(args[0])) {
-            if (!args[1]) return sendChat("Please include a query");
+        if (["kanji"].includes(args[0]))
+        {
+            if (!args[1])
+            {
+                return sendChat("Please include a query");
+            }
             input = input.substring(args[0].length + 1);
             jisho.searchForKanji(input).then(result => {
-                if (!result.found) return sendChat(`"${input}" not found.`);
+                if (!result.found)
+                {
+                    return sendChat(`"${input}" not found.`);
+                }
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Kanji: " + input);
                 embed.setDescription(`${result.meaning}\nJLPT Level: ${result.jlptLevel}`);
@@ -1422,15 +2212,23 @@ var commands = {
         }
    
         else
-        if (["examples"].includes(args[0])) {
-            if (!args[1]) return sendChat("Please include a query");
+        if (["examples"].includes(args[0]))
+        {
+            if (!args[1])
+            {
+                return sendChat("Please include a query");
+            }
             input = input.substring(args[0].length + 1);
             jisho.searchForExamples(input).then(result => {
-                if (!result.found) return sendChat(`"${input}" not found.`);
+                if (!result.found)
+                {
+                    return sendChat(`"${input}" not found.`);
+                }
                 let embed = new Discord.RichEmbed();
                 embed.setTitle(`Examples sentences containing "${input}"`);
                 examples = result.results.random(5);
-                for (let i = 0; i < examples.length; i++) {
+                for (let i = 0; i < examples.length; i++)
+                {
                     embed.addField((i + 1) + ") " + examples[i].kanji, `${examples[i].kana}\n${examples[i].english}`);
                 }
                 return sendChat({embed});
@@ -1438,11 +2236,18 @@ var commands = {
         }
    
         else
-        if (["phrase", "word"].includes(args[0])) {
-            if (!args[1]) return sendChat("Please include a query");
+        if (["phrase", "word"].includes(args[0]))
+        {
+            if (!args[1])
+            {
+                return sendChat("Please include a query");
+            }
             input = input.substring(args[0].length + 1);
             jisho.searchForPhrase(input).then(result => {
-                if (result.data.length == 0) return sendChat("Nothing found.");
+                if (result.data.length == 0)
+                {
+                    return sendChat("Nothing found.");
+                }
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("Phrase: " + input);
                 let definition = result.data[0];
@@ -1453,8 +2258,10 @@ var commands = {
         }
    
         else
-        if (["kana"].includes(args[0])) {
-            if (!args[1]) {
+        if (["kana"].includes(args[0]))
+        {
+            if (!args[1])
+            {
                 let embed = new Discord.RichEmbed();
                 embed.setTitle("How to read Kana");
                 embed.setDescription("Kana can be thought of as the Japanese alphabet. Each Kana represents a single syllable spoken in the Japanese language. Kana usually include one of 9 consonant sounds followed by one of 5 vowel sounds (with a few exceptions)");
@@ -1477,7 +2284,8 @@ var commands = {
                 return sendChat({embed});
             }
             else
-            if (["charts", "chart"].includes(args[1])) {
+            if (["charts", "chart"].includes(args[1]))
+            {
                 let embed = new Discord.RichEmbed();
             }
         }
@@ -1494,26 +2302,42 @@ var commands = {
     */
 
     "calc": function(cmd, args, input, message, sendChat) {
-        if (!input) return sendChat(`**Syntax**: \`${a.prefix}calc\` \`[equation]\``);
+        if (!input)
+        {
+            return sendChat(`**Syntax**: \`${a.prefix}calc\` \`[equation]\``);
+        }
         let equation = input;
         equation = equation.replace(/([0-9.])\(/g, "$1*(");
         equation = equation.replace(/\)([0-9.])/g, ")*$1");
         equation = equation.replace(/(pi|π)/g, 'Math.PI');
         equation = equation.replace(/\)\(/g, ")*(");
         equation = equation.replace(/\^/g, '**');
-        if (/\|/.test(equation)) {
+        if (/\|/.test(equation))
+        {
             a = equation.match(/\|/g);
-            if (a.length % 2 == 1) return sendChat("`Unmatched |`");
-            for (let i = 0; i < a.length; i++) {
-                if (i % 2 == 0) equation = equation.replace('|', 'Math.abs(');
+            if (a.length % 2 == 1)
+            {
+                return sendChat("`Unmatched |`");
+            }
+            for (let i = 0; i < a.length; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    equation = equation.replace('|', 'Math.abs(');
+                }
                 else
-                equation = equation.replace('|', ')');
+                {
+                    equation = equation.replace('|', ')');
+                }
             }
         }
    
-        try {
+        try
+        {
             return sendChat("```Input: " + input + "``````Output: " + eval(equation) + "```");
-        } catch (err) {
+        }
+        catch (err)
+        {
             return sendChat("```Input: " + input + "``````Output: " + err + "```");
         }
     },
@@ -1523,21 +2347,23 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setTitle("Brief History of the Xyvyrianethian Graphic Calculator");
             embed.setAuthor("By Xyvyrianeth");
-            embed.setDescription("Okay, well, I made this simply because I had nothing better to do with my time. When I started, it was 100% text-drawn, "
-                                +"and it was really cool because I could add a lot of features to it when it didn't have to be accurate. Then I moved to "
-                                +"Node Canvas and had to start over. I'm still not anywhere near the level of Desmos, but I'm proud of myself with what "
-                                +"I have.\n"
-                                +"\n"
-                                +"In order to have a more advanced calculator, there needs to be a more strict syntax. I had to change a lot of things in "
-                                +"the old syntax just to enable something simple like square root, cube root, or n-root of x, and I'll have to change even "
-                                +"more if I want to add something like Π and ∑. I also had to change the method it uses to calculate almost entirely: instead "
-                                +"of it trying to do everything at once, it has to solve it step by step. It has its own order of operation it has to follow.\n"
-                                +"\n"
-                                +"I'm constantly refining it little by little, and soon it'll be something. Maybe not great, but something.");
+            embed.setDescription([
+                "Okay, well, I made this simply because I had nothing better to do with my time. When I started, it was 100% text-drawn, ",
+                "and it was really cool because I could add a lot of features to it when it didn't have to be accurate. Then I moved to ",
+                "Node Canvas and had to start over. I'm still not anywhere near the level of Desmos, but I'm proud of myself with what ",
+                "I have.\n",
+                "\n",
+                "In order to have a more advanced calculator, there needs to be a more strict syntax. I had to change a lot of things in ",
+                "the old syntax just to enable something simple like square root, cube root, or n-root of x, and I'll have to change even ",
+                "more if I want to add something like Π and ∑. I also had to change the method it uses to calculate almost entirely: instead ",
+                "of it trying to do everything at once, it has to solve it step by step. It has its own order of operation it has to follow.\n",
+                "\n",
+                "I'm constantly refining it little by little, and soon it'll be something. Maybe not great, but something."].join(''));
             embed.addField("Other Sub-Commands", "`x!" + cmd + "`  `syntax`");
         }
         else
-        if (["help", "syntax", "rules"].includes(args[0]) || !args[0]) {
+        if (["help", "syntax", "rules"].includes(args[0]) || !args[0])
+        {
             let embed = new Discord.RichEmbed();
             embed.setTitle("How to Graphic Calculator, Xyvybot Style");
             embed.setAuthor("by Xyvyrianeth");
@@ -1545,146 +2371,175 @@ var commands = {
 
         }
         else
-        function equ(equation, x) {
-            if (x !== undefined) equation = equation.replace(/x/g, '(' + x + ')');
-            let terms = [ [
-                    /(pi|π)/g,
-                    "(Math.PI)"
-                ], [
-                    /(infinity|∞)/g,
-                    "(Math.Infinity)"
-            ] ];
-            for (let i = 0; i < terms.length; i++) {
-                equation = equation.replace(terms[i][0], terms[i][1]);
-            }
-            let methods = [
-                   [// Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
-                    // \sin(5)
-                    /\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-                    "Math.$1($2)"
-
-                ], [// Asin, Acos, or Atan of a number
-                    // \asin(5)
-                    /\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-                    "Math.a$1($2)"
-
-                ], [// Sinh, Cosh, or Tanh of a number
-                    // \sinh(5)
-                    /\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-                    "Math.$1h($2)"
-
-                ], [// Asinh, Acosh, or Atanh of a number
-                    // \asinh(5)
-                    /\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-                    "Math.a$1h($2)"
-
-                ], [// Root of a number, if the radicand is a real number and the radical is 2
-                    // \sqrt(5)
-                    /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g,
-                    "Math.sqrt($1)"
-
-                ], [// If the radicand is positive
-                    // \rt[2](5)
-                    /(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g,
-                    "Math.pow($2,(1/Math.round($1)))"
-
-                ], [// If the radicand is negative and the radical is odd
-                    // \rt[3](-5)
-                    /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
-                    "-Math.pow($2$3,(1/Math.round($1)))"
-
-                ], [// If the radicand is negative and the radical is even
-                    // \rt[2](-5)
-                    /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
-                    "NaN"
-
-                ], [// A number number to the power of another number
-                    // 5^7
-                    /(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
-                    "(Math.pow($1,Math.round($2)))"
-
-                ], [// Summation function
-                    // \sum[n=0](5)5
-                    /(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
-                    "Math.sum($1, $2, $3)"
-
-                ], [// Product function
-                    // \prod[n=0](5)5
-                    /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-                    "Math.prod($1, $2, $3)"
-
-                ], [// The absolute value of a number
-                    // |-5|
-                    /\|(-?[0-9.+\-/*()]{1,})\|/g,
-                    "Math.abs($1)"
-
-                ], [// A number against a parentheses sequence
-                    // 5(7)
-                    /([0-9.])\(/g,
-                    "$1*("
-
-                ], [// Same but reversed
-                    // (7)5
-                    /\)([0-9.])/,
-                    ")*$1"
-
-                ], [// A number against a Javascript Math function
-                    // 5Math.sin(7)
-                    /([0-9.])M/g,
-                    "$1*M"
-
-                ], [// Parentheses sequence against parentheses sequence
-                    // (5)(7)
-                    /\)\(/g,
-                    ")*("
-            ] ];
-            let lastEquation;
-            for (let i = 0; i < 1; i++) {
-                lastEquation = equation;
-                if (/\(Math.(PI|Infinity)\)/g.test(equation)) {
-                    equation = equation.replace(/\(Math.PI\)/g, Math.PI);
-                    equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+        {
+            function equ(equation, x) {
+                if (x !== undefined)
+                {
+                    equation = equation.replace(/x/g, '(' + x + ')');
                 }
-                if (/(?![0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
-                    equation = equation.replace(/(?![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
+                let terms = [ [
+                        /(pi|π)/g,
+                        "(Math.PI)"
+                    ], [
+                        /(infinity|∞)/g,
+                        "(Math.Infinity)"
+                    ]
+                ];
+                for (let i = 0; i < terms.length; i++)
+                {
+                    equation = equation.replace(terms[i][0], terms[i][1]);
                 }
-                if (/([0-9)])-\(-[0-9.]{1,}\)/g.test(equation)) {
-                    equation = equation.replace(/([0-9)])-\(-([0-9.]{1,})\)/g, "$1+$2");
-                }
-                if (/\(-?[0-9.]{1,}\)/g.test(equation)) {
-                    equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
-                }
-                if (/\([0-9.+\-/*]{1,}\)/.test(equation)) {
-                    equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
-                    for (let i = 0; i < equate.length; i++) {
-                        if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                let methods = [
+                    [// Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
+                        // \sin(5)
+                        /\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+                        "Math.$1($2)"
+
+                    ], [// Asin, Acos, or Atan of a number
+                        // \asin(5)
+                        /\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+                        "Math.a$1($2)"
+
+                    ], [// Sinh, Cosh, or Tanh of a number
+                        // \sinh(5)
+                        /\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+                        "Math.$1h($2)"
+
+                    ], [// Asinh, Acosh, or Atanh of a number
+                        // \asinh(5)
+                        /\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+                        "Math.a$1h($2)"
+
+                    ], [// Root of a number, if the radicand is a real number and the radical is 2
+                        // \sqrt(5)
+                        /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g,
+                        "Math.sqrt($1)"
+
+                    ], [// If the radicand is positive
+                        // \rt[2](5)
+                        /(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g,
+                        "Math.pow($2,(1/Math.round($1)))"
+
+                    ], [// If the radicand is negative and the radical is odd
+                        // \rt[3](-5)
+                        /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
+                        "-Math.pow($2$3,(1/Math.round($1)))"
+
+                    ], [// If the radicand is negative and the radical is even
+                        // \rt[2](-5)
+                        /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
+                        "NaN"
+
+                    ], [// A number number to the power of another number
+                        // 5^7
+                        /(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
+                        "(Math.pow($1,Math.round($2)))"
+
+                    ], [// Summation function
+                        // \sum[n=0](5)5
+                        /(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
+                        "Math.sum($1, $2, $3)"
+
+                    ], [// Product function
+                        // \prod[n=0](5)5
+                        /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+                        "Math.prod($1, $2, $3)"
+
+                    ], [// The absolute value of a number
+                        // |-5|
+                        /\|(-?[0-9.+\-/*()]{1,})\|/g,
+                        "Math.abs($1)"
+
+                    ], [// A number against a parentheses sequence
+                        // 5(7)
+                        /([0-9.])\(/g,
+                        "$1*("
+
+                    ], [// Same but reversed
+                        // (7)5
+                        /\)([0-9.])/,
+                        ")*$1"
+
+                    ], [// A number against a Javascript Math function
+                        // 5Math.sin(7)
+                        /([0-9.])M/g,
+                        "$1*M"
+
+                    ], [// Parentheses sequence against parentheses sequence
+                        // (5)(7)
+                        /\)\(/g,
+                        ")*("
+                    ]
+                ];
+                let lastEquation;
+                for (let i = 0; i < 1; i++)
+                {
+                    lastEquation = equation;
+                    if (/\(Math.(PI|Infinity)\)/g.test(equation))
+                    {
+                        equation = equation.replace(/\(Math.PI\)/g, Math.PI);
+                        equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+                    }
+                    if (/(?![0-9)])-\(-[0-9.]{1,}\)/g.test(equation))
+                    {
+                        equation = equation.replace(/(?![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
+                    }
+                    if (/([0-9)])-\(-[0-9.]{1,}\)/g.test(equation))
+                    {
+                        equation = equation.replace(/([0-9)])-\(-([0-9.]{1,})\)/g, "$1+$2");
+                    }
+                    if (/\(-?[0-9.]{1,}\)/g.test(equation))
+                    {
+                        equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
+                    }
+                    if (/\([0-9.+\-/*]{1,}\)/.test(equation))
+                    {
+                        equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
+                        for (let i = 0; i < equate.length; i++)
+                        {
+                            if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
+                            {
+                                equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                            }
+                        }
+                    }
+                    if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
+                    {
+                        equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
+                        for (let i = 0; i < equate.length; i++)
+                        {
+                            if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
+                            {
+                                equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                            }
+                        }
+                    }
+                    for (let i = 0; i < methods.length; i++)
+                    {
+                        equation = equation.replace(methods[i][0], methods[i][1]);
+                    }
+                    if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation))
+                    {
+                        equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g);
+                        for (let i = 0; i < equate.length; i++)
+                        {
+                            equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                        }
+                    }
+                    if (equation != lastEquation)
+                    {
+                        i--;
                     }
                 }
-                if (/\([0-9.()+\-/*]{1,}\)/.test(equation)) {
-                    equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
-                    for (let i = 0; i < equate.length; i++) {
-                        if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length) equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-                    }
+                try
+                {
+                    return ["equated", eval(equation)];
                 }
-                for (let i = 0; i < methods.length; i++) {
-                    equation = equation.replace(methods[i][0], methods[i][1]);
+                catch (err)
+                {
+                    return ["error", err];
                 }
-                if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation)) {
-                    equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g);
-                    for (let i = 0; i < equate.length; i++) {
-                        equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-                    }
-                }
-                if (equation != lastEquation) i--;
             }
-
-            try {
-                return ["equated", eval(equation)];
-            }
-            catch (err) {
-                return ["error", err];
-            }
-
         }
    
         // Draw blank graph
@@ -1693,28 +2548,32 @@ var commands = {
         ctx.translate(150.5, 150.5);
         ctx.fillStyle = '#fff';
         ctx.fillRect(-150, -150, 300, 300);
-        for (let i = 80; i--;) {
+        for (let i = 80; i--;)
+        {
             ctx.beginPath();
             ctx.strokeStyle = "#ddd";
             ctx.moveTo(-150, i * 10 - 150);
             ctx.lineTo(150, i * 10 - 150);
             ctx.stroke();
         }
-        for (let i = 80; i--;) {
+        for (let i = 80; i--;)
+        {
             ctx.beginPath();
             ctx.strokeStyle = "#ddd";
             ctx.moveTo(i * 10 - 150, -150);
             ctx.lineTo(i * 10 - 150, 150);
             ctx.stroke();
         }
-        for (let i = 5; i--;) {
+        for (let i = 5; i--;)
+        {
             ctx.beginPath();
             ctx.strokeStyle = "#bbb";
             ctx.moveTo(-150, i * 50 - 100);
             ctx.lineTo(150, i * 50 - 100);
             ctx.stroke();
         }
-        for (let i = 5; i--;) {
+        for (let i = 5; i--;)
+        {
             ctx.beginPath();
             ctx.strokeStyle = "#bbb";
             ctx.moveTo(i * 50 - 100, -150);
@@ -1731,19 +2590,30 @@ var commands = {
         e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
         input = input.split('\n');
         colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
-        if (/;$/.test(input)) e.pop();
-        if (e.length > colors.length) console.log("`Too many equations!`");
+        if (/;$/.test(input))
+        {
+            e.pop();
+        }
+        if (e.length > colors.length)
+        {
+            console.log("`Too many equations!`");
+        }
         let display = [];
 
-        for (let i = 0; i < e.length; i++) {
-
+        for (let i = 0; i < e.length; i++)
+        {
             // decide color
             let ic = e[i].split(';');
             let color = colors[i];
             let y = ic[0];
-            if (ic.length == 2) {
-                if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase())) color = ic[1].toLowerCase();
-                if (/^(red|orange|yellow|(?:light||blue)green|blue|purple|brown|pink)$/i.test(ic[1])) {
+            if (ic.length == 2)
+            {
+                if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase()))
+                {
+                    color = ic[1].toLowerCase();
+                }
+                if (/^(red|orange|yellow|(?:light||blue)green|blue|purple|brown|pink)$/i.test(ic[1]))
+                {
                     color = {
                         "red": "#ff0000",
                         "orange": "#ff7F00",
@@ -1759,50 +2629,68 @@ var commands = {
                 }
             }
             Y = y.match(/^y(=|(>=?|≥)|(<=?|≤))/);
-            if (Y != null) {
+            if (Y != null)
+            {
                 y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
                 egl = Y[0].substring(1);
-                if (egl == '≤') egl = "<=";
-                if (egl == '≥') egl = ">=";
+                if (egl == '≤')
+                {
+                    egl = "<=";
+                }
+                if (egl == '≥')
+                {
+                    egl = ">=";
+                }
             }
-            else egl = '=';
+            else
+            {
+                egl = '=';
+            }
 
             // start graphing
             let canEquate = true;
             let result;
 
-            if (y.includes('y') && !y.includes("infinity")) {
+            if (y.includes('y') && !y.includes("infinity")) 
+            {
                 canEquate = false;
                 result = "Output (*y*) must remain isolated in all equations.";
             }
             else
             {
                 result = [];
-                for (let x = -150; x < 151; x++) {
+                for (let x = -150; x < 151; x++)
+                {
                     let ans1 = equ(y, x - 0.5);
                     let ans2 = equ(y, x + 0.5);
                     let ans3 = equ(y, x);
-                    if (ans1[0] == "error") {
+                    if (ans1[0] == "error")
+                    {
                         result = ans1[1];
                         canEquate = false;
                         break;
                     }
-                    if (ans2[0] == "error") {
+                    if (ans2[0] == "error")
+                    {
                         result = ans2[1];
                         canEquate = false;
                         break;
                     }
-                    if (ans3[0] == "error") {
+                    if (ans3[0] == "error")
+                    {
                         result = ans3[1];
                         canEquate = false;
                         break;
                     }
-                    if ([isNaN(ans1[1]), isNaN(ans2[1]), isNaN(ans3[1])].filter(x => x).length < 2) {
-                        if (isNaN(ans1[1]) && !isNaN(ans2[1])) {
+                    if ([isNaN(ans1[1]), isNaN(ans2[1]), isNaN(ans3[1])].filter(x => x).length < 2)
+                    {
+                        if (isNaN(ans1[1]) && !isNaN(ans2[1]))
+                        {
                             result.push([egl, x, -ans3[1], -ans2[1], 0]);
                         }
                         else
-                        if (!isNaN(ans1[1]) && isNaN(ans2[1])) {
+                        if (!isNaN(ans1[1]) && isNaN(ans2[1]))
+                        {
                             result.push([egl, x, -ans1[1], -ans3[1], 1]);
                         }
                         else
@@ -1810,27 +2698,37 @@ var commands = {
                             result.push([egl, x, -ans1[1], -ans2[1], 2]);
                         }
                     }
-                    else result.push([false]);
+                    else
+                    {
+                        result.push([false]);
+                    }
                 }
             }
 
             let result_;
-            if (canEquate) {
+            if (canEquate)
+            {
                 ctx.strokeStyle = color;
                 ctx.lineJoin = "round";
                 ctx.lineCap = "round";
-                for (let i = 0; i < result.length; i++) {
+                for (let i = 0; i < result.length; i++)
+                {
                     //display.push(result[i]);
-                    if (result[i][0]) {
-                        if (result[i][0] == '=') {
+                    if (result[i][0])
+                    {
+                        if (result[i][0] == '=')
+                        {
                             ctx.beginPath();
                             ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
                             ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
                             ctx.stroke();
                         }
                         else
-                        console.log(result[i]);
-                        if (result[i][0].startsWith('>')) {
+                        {
+                            console.log(result[i]);
+                        }
+                        if (result[i][0].startsWith('>'))
+                        {
                             let c = new Color(color);
                             ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
                             ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
@@ -1841,7 +2739,8 @@ var commands = {
                             ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], -151);
                             ctx.fill();
                             
-                            if (result[i][0].endsWith('=')) {
+                            if (result[i][0].endsWith('='))
+                            {
                                 ctx.strokeStyle = color;
                                 ctx.beginPath();
                                 ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
@@ -1850,7 +2749,8 @@ var commands = {
                             }
                         }
                         else
-                        if (result[i][0].startsWith('<')) {
+                        if (result[i][0].startsWith('<'))
+                        {
                             let c = new Color(color);
                             ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
                             ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
@@ -1861,7 +2761,8 @@ var commands = {
                             ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], 151);
                             ctx.fill();
                             
-                            if (result[i][0].endsWith('=')) {
+                            if (result[i][0].endsWith('='))
+                            {
                                 ctx.strokeStyle = color;
                                 ctx.beginPath();
                                 ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
@@ -1896,9 +2797,13 @@ var commands = {
     "nsfw": function(cmd, args, input, message, sendChat) {
         let tags = Object.keys(Nekos.nsfw).sort();
 
-        if (message.channel.type != "dm" && !message.channel.nsfw) return;
+        if (message.channel.type != "dm" && !message.channel.nsfw)
+        {
+            return;
+        }
         else
-        if (!input) {
+        if (!input)
+        {
             let type = tags.random();
             let embed = new Discord.RichEmbed();
             embed.setDescription(`Tag: \`${type}\` | Do \`x!nsfw ${type}\` to see more like this\nDo \`x!nsfw tags\` to see all tags`);
@@ -1907,47 +2812,67 @@ var commands = {
             return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
         }
         else
-        if (input.startsWith('[')) return sendChat("With***out*** the brackets. How is that ***not*** obvious? You're probably too young to look at porn, go play violent video games, instead.");
+        if (input.startsWith('['))
+        {
+            return sendChat("With***out*** the brackets. How is that ***not*** obvious? You're probably too young to look at porn, go play violent video games, instead.");
+        }
         else
-        if (["tags", "help"].includes(input)) {
+        if (["tags", "help"].includes(input))
+        {
             let embed = new Discord.RichEmbed();
             embed.setTitle("NSFW Tags");
             let joined = '';
-            for (let i = 0; i < tags.length; i++) joined += tags[i] + ' '.repeat(16 - (tags[i].length % 16));
+            for (let i = 0; i < tags.length; i++)
+            {
+                joined += tags[i] + ' '.repeat(16 - (tags[i].length % 16));
+            }
             embed.setDescription('```\n' + joined.trim() + '```\n**Usage**: `x!nsfw [tag]`');
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random());
             return Nekos.nsfw.eroNeko().then(help => sendChat(embed.setImage(help.url)));
         }
         else
-        if (["random"].includes(args[0])) {
+        if (["random"].includes(args[0]))
+        {
             let types = [];
             let nopes = [];
             let type;
-            if (!args[1]) type = tags.random();
+            if (!args[1])
+            {
+                type = tags.random();
+            }
             else
             {
-                for (let i = 1; i < args.length; i++) {
+                for (let i = 1; i < args.length; i++)
+                {
                     let tag = tags.filter(tag => {
-                        if (
-                            !types.includes(tag) &&
-                            (
-                                tag.toLowerCase() == args[i].toLowerCase() ||
-                                tag.toLowerCase().includes(args[i].toLowerCase())
-                            )                
-                        ) return true;
+                        if (!types.includes(tag) && (tag.toLowerCase() == args[i].toLowerCase() || tag.toLowerCase().includes(args[i].toLowerCase())))
+                        {
+                            return true;
+                        }
                     });
-                    if (tag.length == 0) nopes.push(args[i]);
+                    if (tag.length == 0)
+                    {
+                        nopes.push(args[i]);
+                    }
                     else
-                    types = types.concat(tag);
+                    {
+                        types = types.concat(tag);
+                    }
                 }
-                if (types.length + nopes.length > tags.length) return sendChat("There's not even that many tags, try again.");
+                if (types.length + nopes.length > tags.length)
+                {
+                    return sendChat("There's not even that many tags, try again.");
+                }
                 else
-                if (types.length > 0) {
+                if (types.length > 0)
+                {
                     type = types.random();
                 }
                 else
-                return sendChat("None of those tags exist.");
+                {
+                    return sendChat("None of those tags exist.");
+                }
             }
         
             let embed = new Discord.RichEmbed();
@@ -1957,42 +2882,60 @@ var commands = {
             return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
         }
         else
-        if (["exclude"].includes(args[0])) {
+        if (["exclude"].includes(args[0]))
+        {
             let types = [];
             let nopes = [];
-            if (!args[1]) type = tags.random();
+            if (!args[1])
+            {
+                type = tags.random();
+            }
             else
             {
-                for (let i = 1; i < args.length; i++) {
+                for (let i = 1; i < args.length; i++)
+                {
                     let tag = tags.filter(tag => {
-                        if (
-                            !types.includes(tag) &&
-                            (
-                                tag.toLowerCase() == args[i].toLowerCase() ||
-                                tag.toLowerCase().includes(args[i].toLowerCase())
-                            )                
-                        ) return true;
+                        if (!types.includes(tag) && (tag.toLowerCase() == args[i].toLowerCase() || tag.toLowerCase().includes(args[i].toLowerCase())))
+                        {
+                            return true;
+                        }
                     });
-                    if (tag.length == 0) nopes.push(args[i]);
+                    if (tag.length == 0)
+                    {
+                        nopes.push(args[i]);
+                    }
                     else
-                    types = types.concat(tag); 
+                    {
+                        types = types.concat(tag); 
+                    }
                 }
 
-                if (types.length + nopes.length > tags.length) return sendChat("There's not even that many tags, try again.");
+                if (types.length + nopes.length > tags.length)
+                {
+                    return sendChat("There's not even that many tags, try again.");
+                }
                 else
-                if (types.length == tags.length) return sendChat("That removes literally every tag, try again.");
-
-                if (types.length > 0) {
+                if (types.length == tags.length)
+                {
+                    return sendChat("That removes literally every tag, try again.");
+                }
+                if (types.length > 0)
+                {
                     let Types = [];
-                    for (let i = 0; i < tags.length; i++) {
-                        if (!types.includes(tags[i])) Types.push(tags[i]);
+                    for (let i = 0; i < tags.length; i++)
+                    {
+                        if (!types.includes(tags[i]))
+                        {
+                            Types.push(tags[i]);
+                        }
                     }
                     type = Types.random();
                 }
                 else
-                return sendChat("None of those tags exist.");
+                {
+                    return sendChat("None of those tags exist.");
+                }
             }
-        
             let embed = new Discord.RichEmbed();
             embed.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
             embed.setFooter("Powered by Nekos.Life");
@@ -2000,38 +2943,57 @@ var commands = {
             return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
         }
         else
-        if (args.length > 1) {
+        if (args.length > 1)
+        {
             let types = [];
             let nopes = [];
-            for (let i = 0; i < args.length; i++) {
+            for (let i = 0; i < args.length; i++)
+            {
                 let tag = tags.filter(tag => {
-                    if (
-                        !types.includes(tag) &&
-                        (
-                            tag.toLowerCase() == args[i].toLowerCase() ||
-                            tag.toLowerCase().includes(args[i].toLowerCase())
-                        )
-                    ) return true;
+                    if (!types.includes(tag) && (tag.toLowerCase() == args[i].toLowerCase() || tag.toLowerCase().includes(args[i].toLowerCase())))
+                    {
+                        return true;
+                    }
                 });
-                if (tag.length == 0) nopes = nopes.push(args[i]);
-                else types = types.concat(tag);
+                if (tag.length == 0)
+                {
+                    nopes = nopes.push(args[i]);
+                }
+                else
+                {
+                    types = types.concat(tag);
+                }
             }
-            if (types.length == 0) return sendChat("Query matched no tags, try again.");
+            if (types.length == 0)
+            {
+                return sendChat("Query matched no tags, try again.");
+            }
             let queue = [];
-            if (types.length <= 5) queue = queue.concat(types);
-            if (types.length > 5) {
-                for (let i = 0; i < 5; i++) queue.push(types[i]);
+            if (types.length <= 5)
+            {
+                queue = queue.concat(types);
+            }
+            if (types.length > 5)
+            {
+                for (let i = 0; i < 5; i++)
+                {
+                    queue.push(types[i]);
+                }
             }
             let Types = [];
-            for (let i = 0; i < queue.length; i++) {
+            for (let i = 0; i < queue.length; i++)
+            {
                 Nekos.nsfw[queue[i]]().then(nsfw => {
                     Types.push(nsfw.url);
-                    if (Types.length == queue.length) {
+                    if (Types.length == queue.length)
+                    {
                         let Tags = [];
-                        for (let x = 0; x < Types.length; x++) Tags.push(`[${types[x]}](${Types[x]})`);
+                        for (let x = 0; x < Types.length; x++)
+                        {
+                            Tags.push(`[${types[x]}](${Types[x]})`);
+                        }
                         let embed = new Discord.RichEmbed();
-                        embed.setDescription(`Tags: [\`${queue.join('`, `')}\`]${types.length > 5 ? `\nMaximum of 5 tags allowed` : ''
-                            }\n\n[${Tags.join(']\n\n[')}]`);
+                        embed.setDescription(`Tags: [\`${queue.join('`, `')}\`]${types.length > 5 ? `\nMaximum of 5 tags allowed` : ''}\n\n[${Tags.join(']\n\n[')}]`);
                         embed.setFooter("Powered by Nekos.Life");
                         embed.setColor(new Color().random());
                         embed.setImage(queue[0]);
@@ -2043,13 +3005,19 @@ var commands = {
         else
         {
             let tag = tags.filter(tag => {
-                if (
-                    tag.toLowerCase() == args[0].toLowerCase() ||
-                    tag.toLowerCase().includes(args[0].toLowerCase())
-                ) return true;
+                if (tag.toLowerCase() == args[0].toLowerCase() ||tag.toLowerCase().includes(args[0].toLowerCase()))
+                {
+                    return true;
+                }
             });
-            if (tag.length == 0) return sendChat("Sorry, I don't have that");
-            else type = tag.random();
+            if (tag.length == 0)
+            {
+                return sendChat("Sorry, I don't have that");
+            }
+            else
+            {
+                type = tag.random();
+            }
         
             let embed = new Discord.RichEmbed();
             embed.setDescription(`Tag: \`${type}\``);
@@ -2061,41 +3029,64 @@ var commands = {
    
     // Admin-only
     "js": function(cmd, args, input, message, sendChat) {
-        if (!admins.includes(message.author.id)) return;
-        if (input.startsWith("```js\n") && input.endsWith("```")) {
+        if (!admins.includes(message.author.id))
+        {
+            return;
+        }
+        if (input.startsWith("```js\n") && input.endsWith("```"))
+        {
             let execute = input.substring(6, input.length - 3);
-            try {
+            try
+            {
                 sendChat("```js\n" + JSON.stringify(eval(execute)) + "```");
-            } catch (err) {
+            }
+            catch (err)
+            {
                 let stack = err.stack.split('\n');
                 let a = stack.length;
-                for (let i = 0; i < stack.length; i++) {
-                    if (stack[i].includes("at emitOne")) {
+                for (let i = 0; i < stack.length; i++)
+                {
+                    if (stack[i].includes("at emitOne"))
+                    {
                         a = i;
                         break;
                     }
                 }
                 let Err = [];
                 let b = false;
-                for (let i = 1; i < a; i++) {
+                for (let i = 1; i < a; i++)
+                {
                     Err.push(stack[i]);
-                    if (/<anonymous>:[0-9]{1,}:[0-9]{1,}/.test(stack[i])) {
+                    if (/<anonymous>:[0-9]{1,}:[0-9]{1,}/.test(stack[i]))
+                    {
                         let c = stack[i].match(/<anonymous>:[0-9]{1,}:[0-9]{1,}/)[0].split(':');
                         b = [execute.split('\n')[Number(c[1]) - 1], Number(c[2]) - 1];
                     }
                 }
-                if (!b) sendChat("```" + err + "``````\n" + Err.join("\n") + "```");
+                if (!b)
+                {
+                    sendChat("```" + err + "``````\n" + Err.join("\n") + "```");
+                }
                 else
-                return sendChat("```" + err + "``````" + b[0] + '\n' + ' '.repeat(b[1]) + "^```");
+                {
+                    return sendChat("```" + err + "``````" + b[0] + '\n' + ' '.repeat(b[1]) + "^```");
+                }
             }
         }
     },
    
     "pg": function(cmd, args, input, message, sendChat) {
-        if (!admins.includes(message.author.id)) return;
-        if (input.startsWith("```sql\n") && input.endsWith("```")) {
+        if (!admins.includes(message.author.id))
+        {
+            return;
+        }
+        if (input.startsWith("```sql\n") && input.endsWith("```"))
+        {
             return db.query(input.substring(7, input.length - 3), function(err, res) {
-                if (err) return sendChat("```" + err + "```");
+                if (err)
+                {
+                    return sendChat("```" + err + "```");
+                }
                 return sendChat(table(res));
             });
         }
@@ -2110,19 +3101,34 @@ Object.defineProperty(Array.prototype, 'clone', {
 });
 Object.defineProperty(Array.prototype, 'random', {
     value: function(a) {
-        if (!a) return this[Math.random() * this.length | 0];
+        if (!a)
+        {
+            return this[Math.random() * this.length | 0];
+        }
         else
         {
             let b = [];
             let c = [];
-            if (this.length < a) a = this.length;
-            for (let i = a; i--;) {
-                let d = Math.random() * this.length | 0;
-                if (c.includes(d)) i++;
-                else
-                c.push(d);
+            if (this.length < a)
+            {
+                a = this.length;
             }
-            for (let i = a; i--;) b.push(this[c[i]]);
+            for (let i = a; i--;)
+            {
+                let d = Math.random() * this.length | 0;
+                if (c.includes(d))
+                {
+                    i++;
+                }
+                else
+                {
+                    c.push(d);
+                }
+            }
+            for (let i = a; i--;)
+            {
+                b.push(this[c[i]]);
+            }
             return b;
         }
     }
@@ -2131,7 +3137,8 @@ Object.defineProperty(Array.prototype, 'shuffle', {
     value: function() {
         let a = JSON.parse(JSON.stringify(this));
         let b = [];
-        for (let i = 0; i < this.length; i++) {
+        for (let i = 0; i < this.length; i++)
+        {
             let c = a[Math.random() * a.length | 0];
             b.push(c);
             a.splice(a.indexOf(c), 1);
@@ -2143,14 +3150,20 @@ Math.sum = function(n, a, b) {
     n = Math.round(n);
     a = Math.round(a);
     c = 0;
-    for (let i = n; i <= a; i++) c += b;
+    for (let i = n; i <= a; i++)
+    {
+        c += b;
+    }
     return c;
 }
 Math.prod = function(n, a, b) {
     n = Math.round(n);
     a = Math.round(a);
     c = 0;
-    for (let i = n; i <= a; i++) c *= b;
+    for (let i = n; i <= a; i++)
+    {
+        c *= b;
+    }
     return c;
 }
    
