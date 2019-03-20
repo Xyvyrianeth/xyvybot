@@ -348,7 +348,7 @@ exports.takeTurn = function(channel, Move) {
     game.highlight = [];
     if (game.board[move[0]][move[1]] !== true)
     {
-        return "You cannot place there.";
+        return ["You cannot place there.", new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
     }
     for (let i = 0; i < possible.length; i++)
     {
