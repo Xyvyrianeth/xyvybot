@@ -402,5 +402,5 @@ exports.nextTurn = function(channel) {
         channels[channel.id].lastDisplay.delete();
     }
 
-    return [end ? "It is <@" + game.player + ">'s turn" : game.score[0] !== game.score[1] ? "<@" + game.player + "> has won!" : "Tie game, everyone loses!", board];
+    return [!end ? "It is <@" + game.player + ">'s turn" : game.score[0] !== game.score[1] ? "<@" + game.player + "> has won!" : "Tie game, everyone loses!", board];
 }
