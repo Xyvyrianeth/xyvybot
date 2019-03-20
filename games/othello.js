@@ -344,41 +344,34 @@ exports.takeTurn = function(channel, Move) {
     let move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-h]/)[0])];
   
     // Function will vary with game
-    if (!quit)
+    possible = game.possible;
+    game.highlight = [];
+    if (game.board[move[0]][move[1]] !== true)
     {
-        possible = game.possible;
-        game.highlight = [];
-        if (game.board[move[0]][move[1]] !== true)
+        return "You cannot place there.";
+    }
+    for (let i = 0; i < possible.length; i++)
+    {
+        if (move[0] == possible[i][0] && move[1] == possible[i][1])
         {
-            return "You cannot place there.";
-        }
-        for (let i = 0; i < possible.length; i++)
-        {
-            if (move[0] == possible[i][0] && move[1] == possible[i][1])
+            game.board[move[0]][move[1]] = game.turn;
+            for (let x = 0; x < possible[i][2].length; x++)
             {
-                game.board[move[0]][move[1]] = game.turn;
-                for (let x = 0; x < possible[i][2].length; x++)
+                for (let y = 1; y < possible[i][2][x][2]; y++)
                 {
-                    for (let y = 1; y < possible[i][2][x][2]; y++)
-                    {
-                        game.board[move[0] + (possible[i][2][x][0] * y)][move[1] + (possible[i][2][x][1] * y)] = game.turn;
-                        game.highlight.push([move[0] + (possible[i][2][x][0] * y), move[1] + (possible[i][2][x][1] * y)]);
-                    }
+                    game.board[move[0] + (possible[i][2][x][0] * y)][move[1] + (possible[i][2][x][1] * y)] = game.turn;
+                    game.highlight.push([move[0] + (possible[i][2][x][0] * y), move[1] + (possible[i][2][x][1] * y)]);
                 }
             }
         }
- 
-        game.highlight.unshift(move);
     }
-  
+
+    game.highlight.unshift(move);
     //
-  
-    if (!quit)
-    {
-        game.timer = {
-            time: 100 * 60 * 5,
-            message: "Whoops, it looks like <@" + game.players[game.turn] + "> has run out of time, so the game is over!"
-        }
+
+    game.timer = {
+        time: 100 * 60 * 5,
+        message: "Whoops, it looks like <@" + game.players[game.turn] + "> has run out of time, so the game is over!"
     }
     return exports.nextTurn(channel);
 }
