@@ -1,4 +1,4 @@
-var version = "2.32.3.5";
+var version = "2.32.3.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -102,13 +102,17 @@ function sqlError(message, err, res) {
 }
 
 function command(message) {
-  
     let a = message.channel.type == "dm" ? "user" : "guild";
     let args = message.content.split(/ {1,}/);
+    let arg = args.shift().replace("x!", '').toLowerCase();
     let cmd = Object.keys(aliases[a]).filter(alias => {
-        return aliases[a][alias].includes(args[0].replace("x!", '').toLowerCase());
-    })[0];
+        return aliases[a][alias].includes(arg);
+    });
     let input = args.join(' ');
+    if (cmd.length == 0)
+    {
+        return;
+    }
     let sendChat = function(content, options) {
         if (typeof content == "string")
         {
@@ -123,9 +127,10 @@ function command(message) {
             message.channel.send(content, options);
         }
     }
+
     try
     {
-        return commands[cmd](cmd, args, input, message, sendChat);
+        return commands[cmd[0]](arg, args, input, message, sendChat);
     }
     catch (error)
     {
