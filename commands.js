@@ -1,4 +1,4 @@
-var version = "2.32.3.2";
+var version = "2.32.3.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -105,7 +105,9 @@ function command(message) {
   
     let a = message.channel.type == "dm" ? "user" : "guild";
     let args = message.content.split(/ {1,}/);
-    let cmd = args.shift().replace("x!", '').toLowerCase();
+    let cmd = Object.keys(aliases[a]).filter(alias => {
+        return aliases[a][alias].includes(args.shift().replace("x!", '').toLowerCase());
+    });
     let input = args.join(' ');
     let sendChat = function(content, options) {
         if (typeof content == "string")
@@ -121,30 +123,25 @@ function command(message) {
             message.channel.send(content, options);
         }
     }
-    for (let i in aliases[a])
+    try
     {
-        if (aliases[a][i].includes(cmd))
+        return commands[i](cmd, args, input, message, sendChat);
+    }
+    catch (error)
+    {
+        let errs = [];
+        for (let i = 0; i < error.stack.split('\n').length; i++)
         {
-            try
+            if (error.stack.split('\n')[i].includes("at emitOne"))
             {
-                return commands[i](cmd, args, input, message, sendChat);
+                break;
             }
-            catch (error)
+            else
             {
-                let errs = [];
-                for (let i = 0; i < error.stack.split('\n').length; i++) {
-                    if (error.stack.split('\n')[i].includes("at emitOne"))
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        errs.push(error.stack.split('\n')[i]);
-                    }
-                }
-                botError(message, errs);
+                errs.push(error.stack.split('\n')[i]);
             }
         }
+        botError(message, errs);
     }
 }
    
