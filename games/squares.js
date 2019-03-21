@@ -184,18 +184,6 @@ exports.drawBoard = function(game, end, highlight) {
   
 exports.takeTurn = function(channel, Move) {
     let game = channels[channel.id];
-    let end = true;
-    for (let i = 10; i--;)
-    {
-        for (let x = 10; x--;)
-        {
-            if (game.board[i][x] === false)
-            {
-                end = false;
-                break;
-            }
-        }
-    }
     let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
     let highlight = move;
       
@@ -208,6 +196,22 @@ exports.takeTurn = function(channel, Move) {
     {
         game.board[move[0]][move[1]] = Math.floor(game.turn);
     }
+
+    // Checks if board is full
+    let end = 1;
+    for (let y = 10; y--;)
+    {
+        for (let x = 10; x--;)
+        {
+            if (game.board[y][x] === false)
+            {
+                end = 0;
+                break;
+            }
+        }
+    }
+
+    // Counts the number of squares
     game.score = [0, 0];
     for (let i = 1; i < 10; i++)
     {
@@ -231,7 +235,7 @@ exports.takeTurn = function(channel, Move) {
     }
     //
   
-    if (!end)
+    if (end == 0)
     {
         game.timer = {
             time: 10 * 60 * 5,
@@ -248,7 +252,7 @@ exports.takeTurn = function(channel, Move) {
   
 exports.nextTurn = function(channel, end, highlight) {
     let game = channels[channel.id];
-    if (!end)
+    if (end == 0)
     {
         game.turn = game.turn == 1.5 ? 0 : game.turn + 0.5;
         game.player = game.players[Math.floor(game.turn)];
@@ -260,5 +264,5 @@ exports.nextTurn = function(channel, end, highlight) {
         channels[channel.id].lastDisplay.delete();
     }
 
-    return [!end ? `It is <@${game.player}>'s turn.` : game.score[0] !== game.score[1] ? `<@${game.player}> has won!` : "Tie game, everyone loses!", board];
+    return [end == 0 ? `It is <@${game.player}>'s turn.` : game.score[0] !== game.score[1] ? `<@${game.player}> has won!` : "Tie game, everyone loses!", board];
 }
