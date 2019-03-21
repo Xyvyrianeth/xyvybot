@@ -17,7 +17,7 @@ exports.newGame = function(channel, player1, cmd, mode) {
  
     game.timer = {
         time: 100 * 60 * 15,
-        message: "It appears nobody wants to play right now, <@" + player1 + ">."
+        message: `It appears nobody wants to play right now, <@${player1}>.`
     }
  
     game.players[0] = player1;
@@ -31,12 +31,13 @@ exports.startGame = function(channel, player2) {
  
     game.timer = {
         time: 100 * 60 * 5,
-        message: "Whoops, it looks like <@" + game.players[0] + "> has run out of time, so the game is over!"
+        message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
  
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
     game.player = game.players[0];
-    return ["The game has started! <@" + game.players[0] + "> will be player1, and <@" + game.players[1] + "> will be player2!\n\nTo place a piece, just say the number of the column you wish to place in, like \"f4\"", new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
+    game.buffer = exports.drawBoard(game, 0);
+    return [`The game has started! <@${game.players[0]}> will be player1, and <@${game.players[1]}> will be player2!\n\nTo place a piece, just say the number of the column you wish to place in, like "f4"`, new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
 }
  
 exports.drawBoard = function(game, end, highlight, row) {
@@ -298,24 +299,34 @@ exports.takeTurn = function(channel, Move) {
 
     //
  
-    if (end == 0) game.timer = {
-        time: 100 * 60 * 5,
-        message: "Whoops, it looks like <@" + game.players[Math.floor(game.turn)] + "> has run out of time, so the game is over!"
+    if (end == 0)
+    {
+        game.timer = {
+            time: 100 * 60 * 5,
+            message: `Whoops, it looks like <@${game.players[Math.floor(game.turn)]}> has run out of time, so the game is over!`
+        }
     }
 
-    if (end == 1) game.winner = game.players[Math.floor(game.turn)];
+    if (end == 1)
+    {
+        game.winner = game.players[Math.floor(game.turn)];
+    }
      
     return exports.nextTurn(channel, end, highlight, row);
 }
  
 exports.nextTurn = function(channel, end, highlight, row) {
     let game = channels[channel.id];
-    if (end == 0) {
+    if (end == 0)
+    {
         game.turn = game.turn == 1.5 ? 0 : game.turn += 0.5;
         game.player = game.players[Math.floor(game.turn)];
     }
     game.buffer = exports.drawBoard(game, end, highlight, row);
     board = new Discord.Attachment(game.buffer, end == 1 ? `${shortname}_${end}_${game.winner}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
-    if (channels[channel.id].lastDisplay) channels[channel.id].lastDisplay.delete();
-    return board;
+    if (channels[channel.id].lastDisplay)
+    {
+        channels[channel.id].lastDisplay.delete();
+    }
+    return [end == 0 ? `It is <@${game.player}>'s turn` : end == 1 ? `<@${game.player}> has won!` : `Tie game, everyone loses!`, board];;
 }

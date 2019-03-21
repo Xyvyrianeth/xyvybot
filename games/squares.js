@@ -21,8 +21,8 @@ exports.newGame = function(channel, player1, cmd, mode) {
     }
   
     game.timer = {
-        time: 600 * 15,
-        message: "It appears nobody wants to play right now, <@" + player1 + ">."
+        time: 100 * 60 * 15,
+        message: `It appears nobody wants to play right now, <@${player1}>.`
     }
   
     game.players[0] = player1;
@@ -35,17 +35,17 @@ exports.startGame = function(channel, player2) {
     game.started = true;
   
     game.timer = {
-        time: 600 * 5,
-        message: "Whoops, it looks like <@" + game.players[0] + "> has run out of time, so the game is over!"
+        time: 100 * 60 * 5,
+        message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
   
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
     game.player = game.players[0];
-
-    return ["The game has started! <@" + game.players[0] + "> will be black, and <@" + game.players[1] + "> will be white!\n\nTo place a stone, say the letter of the row and the number of the column, like \"f4\"", new Discord.Attachment(exports.drawBoard(game, 0, false, [0, 0]), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
+    game.buffer = exports.drawBoard(game, 0, false);
+    return [`The game has started! <@${game.players[0]}> will be black, and <@${game.players[1]}> will be white!\n\nTo place a stone, say the letter of the row and the number of the column, like "f4"`, new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
 }
   
-exports.drawBoard = function(game, end, highlight, score) {
+exports.drawBoard = function(game, end, highlight) {
     let canvas = new Canvas.createCanvas(280, 300);
     let ctx = canvas.getContext('2d');
       
@@ -131,7 +131,7 @@ exports.drawBoard = function(game, end, highlight, score) {
         k += ctx.measureText("'s turn.  ").width;
     }
     else
-    if (score[0] == score[1])
+    if (game.score[0] == game.score[1])
     {
         ctx.font = "20px calibri";
         ctx.fillStyle = "#888";
@@ -142,7 +142,7 @@ exports.drawBoard = function(game, end, highlight, score) {
     else
     {
         ctx.font = "bold 20px calibri";
-        let n = score[0] > score[1] ? "Black" : "White";
+        let n = game.score[0] > game.score[1] ? "Black" : "White";
         if (n == "Black") ctx.fillStyle = "#000";
         if (n == "White") ctx.fillStyle = "#fff";
         ctx.fillText(n, 5, 5);
@@ -173,7 +173,7 @@ exports.drawBoard = function(game, end, highlight, score) {
         ctx.strokeStyle = "#ff8";
         ctx.lineWidth = 2;
         ctx.beginPath();
-           ctx.moveTo(c + 10, r);
+        ctx.moveTo(c + 10, r);
         ctx.arc(c, r, 10, 0, 2 * Math.PI);
         ctx.stroke();
     }
@@ -183,33 +183,32 @@ exports.drawBoard = function(game, end, highlight, score) {
 }
   
 exports.takeTurn = function(channel, Move) {
-    let game = channels[channel.id];
-
-    let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
-      
-    // Function will vary with game
-    if (game.board[move[0]][move[1]] !== false)
-    {
-        return "There's already a stone there, pick another spot!";
-    }
-    else
-    {
-        game.board[move[0]][move[1]] = Math.floor(game.turn);
-    }
-    let end = 2;
-    let highlight = move;
+    let end = true;
     for (let i = 10; i--;)
     {
         for (let x = 10; x--;)
         {
             if (game.board[i][x] === false)
             {
-                end = 0;
+                end = false;
                 break;
             }
         }
     }
-    let score = [0, 0];
+    let game = channels[channel.id];
+    let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
+    let highlight = move;
+      
+    // Function will vary with game
+    if (game.board[move[0]][move[1]] !== false)
+    {
+        return ["There's already a stone there, pick another spot!", new Discord.MessageAttachment(game.buffer, `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`)];
+    }
+    else
+    {
+        game.board[move[0]][move[1]] = Math.floor(game.turn);
+    }
+    game.score = [0, 0];
     for (let i = 1; i < 10; i++)
     {
         for (let x = 0; x < 10 - i; x++)
@@ -220,11 +219,11 @@ exports.takeTurn = function(channel, Move) {
                 {
                     if (game.board[y][x] === 0)
                     {
-                        score[0] += 1;
+                        game.score[0] += 1;
                     }
                     else
                     {
-                        score[1] += 1;
+                        game.score[1] += 1;
                     }
                 }
             }
@@ -232,34 +231,34 @@ exports.takeTurn = function(channel, Move) {
     }
     //
   
-    if (end == 0)
+    if (!end)
     {
         game.timer = {
             time: 100 * 60 * 5,
-            message: "Whoops, it looks like <@" + game.players[Math.floor(game.turn)] + "> has run out of time, so the game is over!"
+            message: `Whoops, it looks like <@${game.players[Math.floor(game.turn)]}> has run out of time, so the game is over!`
         }
     }
-    if (end == 1)
+    else
     {
         game.winner = Math.floor(game.turn);
     }
       
-    return exports.nextTurn(channel, end, highlight, score);
+    return exports.nextTurn(channel, end, highlight);
 }
   
-exports.nextTurn = function(channel, end, highlight, score) {
+exports.nextTurn = function(channel, end, highlight) {
     let game = channels[channel.id];
-    if (end == 0)
+    if (!end)
     {
         game.turn = game.turn == 1.5 ? 0 : game.turn + 0.5;
         game.player = game.players[Math.floor(game.turn)];
     }
-    game.buffer = exports.drawBoard(game, end, highlight, score);
+    game.buffer = exports.drawBoard(game, end, highlight);
     board = new Discord.Attachment(game.buffer, end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
     if (channels[channel.id].lastDisplay)
     {
         channels[channel.id].lastDisplay.delete();
     }
 
-    return board;
+    return [!end ? `It is <@${game.player}>'s turn.` : game.score[0] !== game.score[1] ? `<@${game.player}> has won!` : "Tie game, everyone loses!", board];
 }

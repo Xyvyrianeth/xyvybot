@@ -1,4 +1,4 @@
-var version = "2.32.3.9";
+var version = "2.32.4.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -176,33 +176,41 @@ function other(message) {
         message.author.send("If you're sending me an image of yourself, please know that you must be 18 years or older to distribute explicit pictures of yourself. If you are not 18, do not send anybody those kinds of pictures.");
     }
 
-    if (games.channels[message.channel.id] && games.channels[message.channel.id].started && message.author.id == games.channels[message.channel.id].player && games.channels[message.channel.id].RE.test(message.content))
+    if (games.channels[message.channel.id] && games.channels[message.channel.id].started)
     {
-        setTimeout(function() {
-            message.delete();
-        }, 5000);
-        try
+        let game = games.channels[message.channel.id];
+        if (message.author.id == game.player && game.RE.test(message.content))
         {
-            let response = games[games.channels[message.channel.id].game].takeTurn(message.channel, message.content);
-            return sendChat(response[0], response[1]);
-        }
-        catch (error)
-        {
-            delete games.channels[message.channel.id];
-            sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
-            let errs = [];
-            for (let i = 0; i < error.stack.split('\n').length; i++)
+            setTimeout(function() {
+                message.delete();
+            }, 5000);
+            try
             {
-                if (error.stack.split('\n')[i].includes("at emitOne"))
-                {
-                    break;
-                }
-                else
-                {
-                    errs.push(error.stack.split('\n')[i]);
-                }
+                let response = games[game.game].takeTurn(message.channel, message.content);
+                return sendChat(response[0], response[1]);
             }
-            return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(botError(message, errs));
+            catch (error)
+            {
+                delete games.channels[message.channel.id];
+                sendChat("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
+                let errs = [];
+                for (let i = 0; i < error.stack.split('\n').length; i++)
+                {
+                    if (error.stack.split('\n')[i].includes("at emitOne"))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        errs.push(error.stack.split('\n')[i]);
+                    }
+                }
+                return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(botError(message, errs));
+            }
+        }
+        if (["board", "showboard"].includes(message.content))
+        {
+            return sendChat(`It is <@${game.player}>'s turn.`, new Discord.Attachment(game.buffer, `othello_0_${game.players[0]}vs${game.players[1]}.png`));
         }
     }
 }
