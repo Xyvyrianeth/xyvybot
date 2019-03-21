@@ -9,9 +9,13 @@ exports.newGame = function(channel, player1, cmd, mode) {
     let game = channels[channel.id];
     let _ = false;
     game.board = [];
-    for (let i = 19; i--;) {
+    for (let i = 19; i--;)
+    {
         let row = [];
-        for (let i = 19; i--;) row.push(_);
+        for (let i = 19; i--;)
+        {
+            row.push(_);
+        }
         game.board.push(row);
     }
  
@@ -47,23 +51,35 @@ exports.drawBoard = function(game, end, highlight, row) {
     // Function will vary with game
     
     ctx.textAlign = "center";
-    for (let i = 19; i--;) ctx.fillText("ABCDEFGHIJKLMNOPQRS"[i], (i + 1) * 25 + 7.5, 42 + (25 * 19));
-    for (let i = 19; i--;) ctx.fillText(i + 1, 13, (i + 1) * 25 + 21);
+    for (let i = 19; i--;)
+    {
+        ctx.fillText("ABCDEFGHIJKLMNOPQRS"[i], (i + 1) * 25 + 7.5, 42 + (25 * 19));
+    }
+    for (let i = 19; i--;)
+    {
+        ctx.fillText(i + 1, 13, (i + 1) * 25 + 21);
+    }
     ctx.textAlign = "start";
   
-    for (let y = 0; y < 19; y++) {
+    for (let y = 0; y < 19; y++)
+    {
         let r = 42.5 + (25 * y);
-        for (let x = 0; x < 19; x++) {
+        for (let x = 0; x < 19; x++)
+        {
             let c = (x + 1) * 25 + 7.5;
   
-            if (game.board[y][x] === false) { // Blank Spot
+            if (game.board[y][x] === false)
+            { // Blank Spot
                 ctx.beginPath();
                 ctx.strokeStyle = "rgba(200, 200, 200, 0.25)";
                 ctx.moveTo(c + 5, r);
                 ctx.arc(c, r, 5, 0, 2 * Math.PI);
                 ctx.stroke();
   
-            } else if (game.board[y][x] === 0) { // Black
+            }
+            else
+            if (game.board[y][x] === 0)
+            { // Black
                 ctx.beginPath();
                 ctx.strokeStyle = "#222";
                 ctx.fillStyle = "#000";
@@ -80,7 +96,10 @@ exports.drawBoard = function(game, end, highlight, row) {
                 ctx.arc(c, r, 8, 1 * Math.PI, 1.5 * Math.PI);
                 ctx.stroke();
   
-            } else if (game.board[y][x] === 1) { // White
+            }
+            else
+            if (game.board[y][x] === 1)
+            { // White
                 ctx.beginPath();
                 ctx.strokeStyle = "#ddd";
                 ctx.fillStyle = "#fff";
@@ -100,21 +119,36 @@ exports.drawBoard = function(game, end, highlight, row) {
         }
     }
     ctx.textBaseline = "hanging";
-    if (end == 0) {
+    if (end == 0)
+    {
         ctx.font = "bold 20px calibri";
         let n = Math.floor(game.turn) == 0 ? "Black" : "White";
         k = ctx.measureText(n).width;
-        if (n == "Black") ctx.fillStyle = "#000";
-        if (n == "White") ctx.fillStyle = "#fff";
+        if (n == "Black")
+        {
+            ctx.fillStyle = "#000";
+        }
+        if (n == "White")
+        {
+            ctx.fillStyle = "#fff";
+        }
         ctx.fillText(n, 5, 5);
         ctx.font = "20px calibri";
         ctx.fillStyle = "#888";
         ctx.fillText("'s turn.", k + 5, 5);
-    } else {
+    }
+    else
+    {
         ctx.font = "bold 20px calibri";
         let n = Math.floor(game.turn) == 0 ? "Black" : "White";
-        if (n == "Black") ctx.fillStyle = "#000";
-        if (n == "White") ctx.fillStyle = "#fff";
+        if (n == "Black")
+        {
+            ctx.fillStyle = "#000";
+        }
+        if (n == "White")
+        {
+            ctx.fillStyle = "#fff";
+        }
         ctx.fillText(n, 5, 5);
  
         k = ctx.measureText(n).width;
@@ -123,7 +157,8 @@ exports.drawBoard = function(game, end, highlight, row) {
         ctx.fillText(" has won!", k + 5, 5);
         ctx.strokeStyle = "#0f0";
         ctx.lineWidth = 3;
-        for (let i = 0; i < row.length; i++) {
+        for (let i = 0; i < row.length; i++)
+        {
             let r = 42.5 + (25 * row[i][0]);
             let c = (row[i][1] + 1) * 25 + 7.5;
             ctx.beginPath();
@@ -133,7 +168,8 @@ exports.drawBoard = function(game, end, highlight, row) {
         }
     }
  
-    if (highlight) {
+    if (highlight)
+    {
         let r = 42.5 + (25 * highlight[0]);
         let c = (highlight[1] + 1) * 25 + 7.5;
         ctx.strokeStyle = "#ff8";
@@ -154,140 +190,227 @@ exports.takeTurn = function(channel, Move) {
     let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghijklmnopqrs'.indexOf(Move.toLowerCase().match(/[a-z]/)[0])];
      
     // Function will vary with game
-    if (game.board[move[0]][move[1]] !== false) return "There's already a stone there, pick another spot!";
-    else game.board[move[0]][move[1]] = Math.floor(game.turn);
+    if (game.board[move[0]][move[1]] !== false)
+    {
+        return "There's already a stone there, pick another spot!";
+    }
+    else
+    {
+        game.board[move[0]][move[1]] = Math.floor(game.turn);
+    }
 
     let highlight = move;
     let row;
     let end = 2;
-    for (let y = 19; y--;) {
-        for (let x = 19; x--;) {
-            if (game.board[y][x] === false) {
+    for (let y = 19; y--;)
+    {
+        for (let x = 19; x--;)
+        {
+            if (game.board[y][x] === false)
+            {
                 end = 0;
                 break;
             }
         }
     }
 
-    for (let y = 0; y < 19; y++) {
-        for (let x = 0; x < 19; x++) {
+    for (let y = 0; y < 19; y++)
+    {
+        for (let x = 0; x < 19; x++)
+        {
             let a = game.board;
             let b = Math.floor(game.turn);
 
-            if (x == 0) {
-                if (a[y][x] === b && a[y][x + 1] === b && a[y][x + 2] === b && a[y][x + 3] === b && a[y][x + 4] === b && a[y][x + 5] !== b) {
+            if (x == 0)
+            {
+                if (a[y][x] === b && a[y][x + 1] === b && a[y][x + 2] === b && a[y][x + 3] === b && a[y][x + 4] === b && a[y][x + 5] !== b)
+                {
                     row = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3], [y, x + 4]];
                     end = 1;
                 }
-            } else if (x == 14) {
-                if (a[y][x] === b && a[y][x + 1] === b && a[y][x + 2] === b && a[y][x + 3] === b && a[y][x + 4] === b && a[y][x - 1] !== b) {
+            }
+            else
+            if (x == 14)
+            {
+                if (a[y][x] === b && a[y][x + 1] === b && a[y][x + 2] === b && a[y][x + 3] === b && a[y][x + 4] === b && a[y][x - 1] !== b)
+                {
                     row = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3], [y, x + 4]];
                     end = 1;
                 }
-            } else {
-                if (a[y][x] === b && a[y][x + 1] === b && a[y][x + 2] === b && a[y][x + 3] === b && a[y][x + 4] === b && a[y][x + 5] !== b && a[y][x - 1] !== b) {
+            }
+            else
+            {
+                if (a[y][x] === b && a[y][x + 1] === b && a[y][x + 2] === b && a[y][x + 3] === b && a[y][x + 4] === b && a[y][x + 5] !== b && a[y][x - 1] !== b)
+                {
                     row = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3], [y, x + 4]];
                     end = 1;
                 }
             }
             // vertical
-            if (y == 0) {
-                if (a[y][x] === b && a[y + 1][x] === b && a[y + 2][x] === b && a[y + 3][x] === b && a[y + 4][x] === b && a[y + 5][x] !== b) {
+            if (y == 0)
+            {
+                if (a[y][x] === b && a[y + 1][x] === b && a[y + 2][x] === b && a[y + 3][x] === b && a[y + 4][x] === b && a[y + 5][x] !== b)
+                {
                     row = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x], [y + 4, x]];
                     end = 1;
                 }
-            } else if (y == 14) {
-                if (a[y][x] === b && a[y + 1][x] === b && a[y + 2][x] === b && a[y + 3][x] === b && a[y + 4][x] === b && a[y - 1][x] !== b) {
+            }
+            else
+            if (y == 14)
+            {
+                if (a[y][x] === b && a[y + 1][x] === b && a[y + 2][x] === b && a[y + 3][x] === b && a[y + 4][x] === b && a[y - 1][x] !== b)
+                {
                     row = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x], [y + 4, x]];
                     end = 1;
                 }
-            } else if (y > 0 && y < 14) {
-                if (a[y][x] === b && a[y + 1][x] === b && a[y + 2][x] === b && a[y + 3][x] === b && a[y + 4][x] === b && a[y + 5][x] !== b && a[y - 1][x] !== b) {
+            }
+            else
+            if (y > 0 && y < 14)
+            {
+                if (a[y][x] === b && a[y + 1][x] === b && a[y + 2][x] === b && a[y + 3][x] === b && a[y + 4][x] === b && a[y + 5][x] !== b && a[y - 1][x] !== b)
+                {
                     row = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x], [y + 4, x]];
                     end = 1;
                 }
             }
             // up-slope
-            if (x == 0) {
-                if (y == 4) {
-                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b) {
-                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
-                        end = 1;
-                    }
-                } else if (y > 4 && y < 19) {
-                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y-5][x+5] !== b) {
-                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
-                        end = 1;
-                    }
-                }
-            } else if (x < 14) {
-                if (y == 4) {
-                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y+1][x-1] !== b) {
-                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
-                        end = 1;
-                    }
-                } else if (y > 4 && y < 14) {
-                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y+1][x-1] !== b && a[y-5][x+5] !== b) {
-                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
-                        end = 1;
-                    }
-                } else if (y == 18) {
-                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y-5][x+5] !== b) {
+            if (x == 0)
+            {
+                if (y == 4)
+                {
+                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b)
+                    {
                         row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
                         end = 1;
                     }
                 }
-            } else if (x == 14) {
-                if (y > 3 && y < 18) {
-                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y+1][x-1] !== b) {
+                else
+                if (y > 4 && y < 19)
+                {
+                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y-5][x+5] !== b)
+                    {
                         row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
                         end = 1;
                     }
-                } else if (y == 18) {
-                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b) {
+                }
+            }
+            else
+            if (x < 14)
+            {
+                if (y == 4) {
+                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y+1][x-1] !== b)
+                    {
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
+                        end = 1;
+                    }
+                }
+                else
+                if (y > 4 && y < 14)
+                {
+                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y+1][x-1] !== b && a[y-5][x+5] !== b)
+                    {
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
+                        end = 1;
+                    }
+                }
+                else
+                if (y == 18)
+                {
+                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y-5][x+5] !== b)
+                    {
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
+                        end = 1;
+                    }
+                }
+            }
+            else
+            if (x == 14)
+            {
+                if (y > 3 && y < 18)
+                {
+                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b && a[y+1][x-1] !== b)
+                    {
+                        row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
+                        end = 1;
+                    }
+                }
+                else
+                if (y == 18)
+                {
+                    if (a[y][x] === b && a[y-1][x+1] === b && a[y-2][x+2] === b && a[y-3][x+3] === b && a[y-4][x+4] === b)
+                    {
                         row = [[y, x], [y-1, x+1], [y-2, x+2], [y-3, x+3], [y-4, x+4]];
                         end = 1;
                     }
                 }
             }
             // down-slope
-            if (x == 0) {
-                if (y < 14) {
-                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y+5][x+5] !== b) {
-                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
-                        end = 1;
-                    }
-                } else if (y == 14) {
-                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b) {
-                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
-                        end = 1;
-                    }
-                }
-            } else if (x < 14) {
-                if (y == 0) {
-                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y+5][x+5] !== b) {
-                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
-                        end = 1;
-                    }
-                } else if (y > 0 && y < 14) {
-                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y-1][x-1] !== b && a[y+5][x+5] !== b) {
-                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
-                        end = 1;
-                    }
-                } else if (y == 14) {
-                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y-1][x-1] !== b) {
+            if (x == 0)
+            {
+                if (y < 14)
+                {
+                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y+5][x+5] !== b)
+                    {
                         row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
                         end = 1;
                     }
                 }
-            } else if (x == 14) {
-                if (y == 0) {
-                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b) {
+                else
+                if (y == 14)
+                {
+                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b)
+                    {
                         row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
                         end = 1;
                     }
-                } else if (y < 14) {
-                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y-1][x-1] !== b) {
+                }
+            }
+            else
+            if (x < 14)
+            {
+                if (y == 0)
+                {
+                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y+5][x+5] !== b)
+                    {
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
+                        end = 1;
+                    }
+                }
+                else
+                if (y > 0 && y < 14)
+                {
+                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y-1][x-1] !== b && a[y+5][x+5] !== b)
+                    {
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
+                        end = 1;
+                    }
+                }
+                else
+                if (y == 14)
+                {
+                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y-1][x-1] !== b)
+                    {
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
+                        end = 1;
+                    }
+                }
+            }
+            else
+            if (x == 14)
+            {
+                if (y == 0)
+                {
+                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b)
+                    {
+                        row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
+                        end = 1;
+                    }
+                }
+                else
+                if (y < 14)
+                {
+                    if (a[y][x] === b && a[y+1][x+1] === b && a[y+2][x+2] === b && a[y+3][x+3] === b && a[y+4][x+4] === b && a[y-1][x-1] !== b)
+                    {
                         row = [[y, x], [y+1, x+1], [y+2, x+2], [y+3, x+3], [y+4, x+4]];
                         end = 1;
                     }
