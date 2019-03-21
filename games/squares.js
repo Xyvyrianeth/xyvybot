@@ -183,6 +183,7 @@ exports.drawBoard = function(game, end, highlight) {
 }
   
 exports.takeTurn = function(channel, Move) {
+    let game = channels[channel.id];
     let end = true;
     for (let i = 10; i--;)
     {
@@ -195,7 +196,6 @@ exports.takeTurn = function(channel, Move) {
             }
         }
     }
-    let game = channels[channel.id];
     let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
     let highlight = move;
       
