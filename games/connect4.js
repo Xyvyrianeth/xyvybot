@@ -142,7 +142,7 @@ exports.takeTurn = function(channel, move) {
     let x = move - 1;
     if (game.board[x].length == 6)
     {
-        return ["Column is full, please pick another.", new Discord.MessageAttachment(game.buffer, `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`)];
+        return ["Column is full, please pick another.", new Discord.MessageAttachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
     }
 
     game.board[x].push(game.turn);
