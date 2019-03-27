@@ -1,4 +1,4 @@
-var version = "2.32.4.7";
+var version = "2.32.4.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2098,9 +2098,9 @@ var commands = {
             let voice = guild.channels.filterArray(channel => channel.type == "voice").length;
             let categories = guild.channels.filterArray(channel => channel.type == "category").length;
             embed.addField(`Channels (${text + voice})`, `${text} Text | ${voice} Voice\nSplit into ${categories} categories`, true);
-            let humans = guild.members.filterArray(member => !member.user.bot).length;
+            let members = guild.memberCount;
             let bots = guild.members.filterArray(member => member.user.bot).length;
-            embed.addField(`Members (${humans + bots})`, `${humans} Humans | ${bots} Bots`, true);
+            embed.addField(`Members (${members})`, `${members - bots} Humans | ${bots} Bots`, true);
             embed.addField("Roles", guild.roles.array().length, true);
             embed.addField("Emotes", guild.emojis.array().length, true);
             return sendChat({embed});
