@@ -1,4 +1,4 @@
-var version = "2.32.4.6";
+var version = "2.32.4.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1824,28 +1824,28 @@ var commands = {
             {
                 helps = [
                     "`I apologize, but none of my larger games can work in DMs. When I get bigger and more people are playing my games regularly, I'll make it where you can play against strangers through DMs.`",
-                    "`minesweeper`\nUnimplemented:\n\\*`hangman` \\*`quickmaffs` \\*`iq` \\*`sequence` \\*`shuffle`",
-                    "`help `about `avatar `aliases `bugreport `request",
-                    "`jisho `nekos `calculate `graph\n__Unimplemented__:\n\\*`anime \\*`manga \\*`jshelp "
+                    "`minesweeper`\nUnimplemented:\n`hangman`  `quickmaffs`  `iq`  `sequence`  `shuffle`",
+                    "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`",
+                    "`jisho`  `nekos`  `calculate`  `graph\n__Unimplemented__:\n`anime`  `manga`  `jshelp`"
                 ];
             }
             else
             {
                 helps = [
-                    "`othello `squares `gomoku `connect4\n__Related Commands__:\n`games `profile\n__Unimplemented__:\n\\*`3dtictactoe \\*`pente \\*`ninemen",
-                    "`minesweeper`\nUnimplemented:\n\\*`hangman` \\*`quickmaffs` \\*`iq` \\*`sequence` \\*`shuffle`",
-                    "`about `help `avatar `aliases `server `kick `ban",
-                    "`jisho `nekos `calculate `graph\n__Unimplemented__:\n\\*`anime \\*`manga \\*`jshelp "
+                    "`othello`  `squares`  `gomoku`  `connect4`\n__Related Commands__:\n`games`  `profile`\n__Unimplemented__:\n`3dtictactoe`  `pente`  `ninemen`",
+                    "`minesweeper`\n__Unimplemented__:\n`hangman`  `quickmaffs`  `iq`  `sequence`  `shuffle`",
+                    "`help`  `about`  `avatar`  `aliases`  `server`  `kick`  `ban`",
+                    "`jisho`  `nekos`  `calculate`  `graph`\n__Unimplemented__:\n`anime`  `manga`  `jshelp`"
                 ];
             }
             if (message.channel.type == "dm")
             {
                 helps[2] = helps[2].concat(["`bugreport", "`request"]);
             }
-            embed.addField("Games", `${helps[0]}\``, true);
-            embed.addField("Smaller Games", `${helps[1]}\``, true);
-            embed.addField("Utility", `${helps[2]}\``, true);
-            embed.addField("Miscellaneous", `${helps[3]}\``);
+            embed.addField("Games", helps[0]);
+            embed.addField("Smaller Games", helps[1]);
+            embed.addField("Utility", helps[2]);
+            embed.addField("Miscellaneous", helps[3]);
             if (message.channel.type == "dm" || message.channel.nsfw)
             {
                 embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \`x!nsfw help\` for a list of all the lewds I'm capable of.`);
@@ -2082,46 +2082,28 @@ var commands = {
             embed.setColor(new Color().random());
             if (guild.icon != null)
             {
-                embed.setThumbnail(guild.icon);
+                embed.setThumbnail(guild.iconURL);
             }
             owner = guild.members.get(guild.ownerID).user;
-            embed.addField("Owner", `${owner.username}#${owner.discriminator}\n<@${owner.id}>`);
+            embed.addField("Owner", `<@${owner.id}>`, true);
             embed.addField("Region", guild.region, true);
-            embed.addField("Verification Level", ["None", "Low", "Medium", "(╯°□°）╯︵ ┻━┻", "┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻"][guild.verificationLevel], true);
-            embed.addBlankField();
-            let channels = guild.channels.array();
-            let text = 0;
-            let voice = 0;
-            for (let i = 0; i < channels.length; i++)
-            {
-                if (channels[i].type == "text")
-                {
-                    text += 1;
-                }
-                if (channels[i].type == "voice")
-                {
-                    voice += 1;
-                }
-            }
-            embed.addField("Channels", guild.channels.array().length + " total", true);
-            embed.addField("Text", text, true);
-            embed.addField("Voice", voice, true);
-            let members = guild.members.array();
-            let humans = guild.memberCount;
-            let bots = 0;
-            for (let i = 0; i < members.length; i++)
-            {
-                if (members[i].user.bot)
-                {
-                    bots += 1;
-                }
-            }
-            embed.addField("Members", humans + " total", true);
-            embed.addField("Humans", humans - bots, true);
-            embed.addField("Bots", bots, true);
-   
+            embed.addField("Verification Level", [
+                "None\nNo restrictions", 
+                "Low\nAccount must be verified by email", 
+                "Medium\nAccount must be verified by email and be older than 5 minutes", 
+                "(╯°□°）╯︵ ┻━┻\nAccount must be verified by email, older than 5 minutes, and be a member of the server for at least 10 minutes", 
+                "┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻\nAccount must have a verified phone on it"
+            ][guild.verificationLevel]);
+            let text = guild.channels.filterArray(channel => channel.type == "text").length;
+            let voice = guild.channels.filterArray(channel => channel.type == "voice").length;
+            let categories = guild.channels.filterArray(channel => channel.type == "category").length;
+            embed.addField(`Channels (${text + voice})`, `${text} Text | ${voice} Voice\nSplit into ${categories} categories`, true);
+            let humans = guild.members.filterArray(member => !member.user.bot).length;
+            let bots = guild.members.filterArray(member => member.user.bot).length;
+            embed.addField(`Members (${humans + bots})`, `${humans} Humans | ${bots} Bots`, true);
+            embed.addField("Roles", guild.roles.array().length, true);
+            embed.addField("Emotes", guild.emojis.array().length, true);
             return sendChat({embed});
-   
         }
     },
 
