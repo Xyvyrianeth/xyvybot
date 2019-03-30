@@ -369,11 +369,7 @@ exports.takeTurn = function(channel, Move) {
 
     game.highlight.unshift(move);
     //
-
-    game.timer = {
-        time: 10 * 60 * 5,
-        message: `Whoops, it looks like <@${game.players[game.turn]}> has run out of time, so the game is over!`
-    }
+    
     return exports.nextTurn(channel);
 }
   
@@ -383,12 +379,20 @@ exports.nextTurn = function(channel) {
     let end = false;
     game.turn = game.turn == 0 ? 1 : 0;
     game.player = game.players[game.turn];
+    game.timer = {
+        time: 10 * 60 * 5,
+        message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
+    }
     game.buffer = exports.drawBoard(game, false);
     board = new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     if (game.possible.length == 0)
     {
         game.turn = game.turn == 0 ? 1 : 0;
         game.player = game.players[game.turn];
+        game.timer = {
+            time: 10 * 60 * 5,
+            message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
+        }
         game.buffer = exports.drawBoard(game, false);
         board = new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
         if (game.possible.length == 0)

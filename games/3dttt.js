@@ -76,11 +76,6 @@ exports.takeTurn = function(channel, move) {
     // Function will vary with game
     
     //
- 
-    if (end == 0) game.timer = {
-        time: 100 * 60 * 5,
-        message: "Whoops, it looks like <@" + game.players[game.turn] + "> has run out of time, so the game is over!"
-    }
      
     return exports.nextTurn(channel, end);
 }
@@ -90,6 +85,10 @@ exports.nextTurn = function(channel, end) {
     if (end == 0) {
         game.turn = game.turn == 0 ? 1 : 0;
         game.player = game.players[game.turn];
+        game.timer = {
+            time: 10 * 60 * 5,
+            message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
+        }
     }
     game.buffer = exports.drawBoard(game, end, highlight);
     board = new Discord.Attachment(game.buffer, `${shortname}_${end}.png`);

@@ -34,22 +34,16 @@ exports.config = config;
 var commands = require("/app/commands.js");
 
 client.on('message', message => {
-    if (message.author.bot)
+    if (message.author.bot && message.author.id == client.user.id)
     {
-        if (message.author.id == client.user.id)
-        {
-            return commands.bot(message);
-        }
-        else
-        {
-            return;
-        }
+        return commands.bot(message);
     }
     if (message.content.startsWith("x!"))
     {
         return commands.command(message);
     }
     else
+    if (message.author.id == "561578790837289002" || !message.author.bot)
     {
         return commands.other(message, false);
     }
