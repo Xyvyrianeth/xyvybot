@@ -192,7 +192,7 @@ exports.takeTurn = function(channel, Move) {
     // Function will vary with game
     if (game.board[move[0]][move[1]] !== false)
     {
-        return "There's already a stone there, pick another spot!";
+        return ["There's already a stone there, pick another spot!", new Discord.MessageAttachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
     }
     else
     {
