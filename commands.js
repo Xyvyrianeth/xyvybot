@@ -165,7 +165,7 @@ function other(message) {
             message.channel.send(content, options);
         }
     }
-    if (message.author.bot)
+    if (message.author.bot && message.author.id !== "561578790837289002")
     {
         return;
     }
