@@ -1,4 +1,4 @@
-var version = "2.33.0.0";
+var version = "2.33.0.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -387,7 +387,7 @@ var aliases = {
     guild: {
         // Competitive Games
         "games": ["games"],
-        "othello": ["othello"],
+        "othello": ["othello", "reversi"],
         "squares": ["squares"],
         "gomoku": ["gomoku", "gobang", "renju"],
         "ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
@@ -3025,6 +3025,10 @@ var commands = {
     // Admin-only
     "js": function(cmd, args, input, message, sendChat) {
         if (!admins.includes(message.author.id))
+        {
+            return;
+        }
+        if (!message.content.startsWith("x!js"))
         {
             return;
         }
