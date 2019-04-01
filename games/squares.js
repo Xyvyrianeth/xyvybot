@@ -21,7 +21,7 @@ exports.newGame = function(channel, player1, cmd, mode) {
     }
   
     game.timer = {
-        time: 10 * 60 * 15,
+        time: 9000,
         message: `It appears nobody wants to play right now, <@${player1}>.`
     }
   
@@ -35,7 +35,7 @@ exports.startGame = function(channel, player2) {
     game.started = true;
   
     game.timer = {
-        time: 10 * 60 * 5,
+        time: 6000,
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
   
@@ -250,7 +250,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.turn = game.turn == 1.5 ? 0 : game.turn + 0.5;
         game.player = game.players[Math.floor(game.turn)];
         game.timer = {
-            time: 10 * 60 * 5,
+            time: 6000,
             message: `Whoops, it looks like <@${game.players[Math.floor(game.turn)]}> has run out of time, so the game is over!`
         }
     }
@@ -261,5 +261,5 @@ exports.nextTurn = function(channel, end, highlight) {
         channels[channel.id].lastDisplay.delete();
     }
 
-    return [end == 0 ? `It is <@${game.player}>'s turn.` : game.score[0] !== game.score[1] ? `<@${game.player}> has won!` : "Tie game, everyone loses!", board];
+    return [end == 0 ? `It is <@${game.player}>'s turn.` : game.score[0] != game.score[1] ? `<@${game.players[game.score[0] > game.score[1] ? 0 : 1]}> has won!` : "Tie game, everyone loses!", board];
 }
