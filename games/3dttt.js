@@ -115,13 +115,14 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
 exports.takeTurn = function(channel, move) {
     let game = channels[channel.id];
     // Function will vary with game
-    let X = move.match(/[1-4]/)[0];
+    let X = move.match(/[1-4]/g)[0];
     let Y = move.match(/[a-d]/i)[0].toUpperCase();
-    let Z = move.match(/[1-4]/)[1] - 1;
+    let Z = move.match(/[1-4]/g)[1] - 1;
     let XO = ['X', 'O'][game.turn];
 
     if (game.board[X][Y][Z] !== false)
     {
+        game.lastDisplay.delete();
         return ["Someone has aleady played there, pick another spot!", new Discord.MessageAttachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
     }
     else

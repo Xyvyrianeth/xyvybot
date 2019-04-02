@@ -1,4 +1,4 @@
-var version = "2.33.6.1";
+var version = "2.33.6.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -326,12 +326,11 @@ function bot(message) {
         if ([
             "Column is full, please pick another.",
             "There's already a stone there, pick another spot!",
-            "You cannot place there."
+            "You cannot place there.",
+            "Someone has aleady played there, pick another spot!"
         ].includes(message.content))
         {
-            return setTimeout(function() {
-                message.delete();
-            }, 10000);
+            return games.channels[message.channel.id].lastDisplay = message
         }
     }
 }
