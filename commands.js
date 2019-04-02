@@ -1,4 +1,4 @@
-var version = "2.33.3.1";
+var version = "2.33.3.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -67,6 +67,7 @@ var games = {
     squares: require("/app/games/squares.js"),
     othello: require("/app/games/othello.js"),
     gomoku: require("/app/games/gomoku.js"),
+    ttt3d: require("/app/games/3dttt.js"),
     channels: require("/app/games/channels.js").channels
 }
 
@@ -1120,7 +1121,90 @@ var commands = {
     },
 
     "ttt3d": function(cmd, args, input, message, sendChat) {
-        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
+        if (!admins.includes(message.author.id))
+        {
+            return sendChat("This game is currently under maintenance, please try again at another time.");
+        }
+        if (message.channel.type == "dm")
+        {
+            return sendChat("This command is not available through DMs!");
+        }
+        if (!input)
+        {
+            return sendChat(`__**3D Tic Tac Toe**__\nTo start a game, type \`x!${cmd} start\`!`);
+        }
+        if (["start"].includes(args[0]))
+        {
+            message.delete();
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                if (!args[1])
+                {
+                    return sendChat(games.ttt3d.newGame(message.channel, message.author.id, cmd, false));
+                }
+                if (["causal", "fun"].includes(args[1]))
+                {
+                    return sendChat(games.ttt3d.newGame(message.channel, message.author.id, cmd, true));
+                }
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194")
+                {
+                    k = games.ttt3d.startGame(message.channel, message.author.id);
+                    return sendChat(k[0], k[1]);
+                }
+                else
+                {
+                    return sendChat("You cannot play yourself!");
+                }
+            }
+        }
+        else
+        if (["board", "showboard"].includes(input))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return sendChat("There is no active 3D Tic Tac Toe game in this channel, $user$!");
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                return sendChat("The game has not yet started, $user$!");
+            }
+
+            let game = games.channels[message.channel.id];
+            return sendChat(new Discord.Attachment(game.buffer, `gomoku_0_${game.players[0]}vs${game.players[1]}.png`));
+        }
+        else
+        if (["quit", "forfeit", "leave"].includes(input))
+        {
+            if (!games.channels.hasOwnProperty(message.channel.id))
+            {
+                return sendChat("There is not a game in this channel for you to quit!");
+            }
+            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1])
+            {
+                return sendChat("You are not a participant of this game, $user$!");
+            }
+            if (!games.channels[message.channel.id].started)
+            {
+                sendChat("$user$ has cancelled the pending game.");
+            }
+            else
+            {
+                sendChat("$user$ has forfeit the game.");
+            }
+
+            delete games.channels[message.channel.id];
+        }
+        else
+        if (["rules", "howtoplay"].includes(args[0]))
+        {
+            new Discord.RichEmbed();
+            embed.setDescription("This game plays exactly like the game Tic Tac Toe: get 3 in a row, but instead of 3 you want 4 in a row. Also, you have another dimension to work with.");
+            embed.setColor(new Color().random());
+            return sendChat({embed});
+        }
     },
 
     "pente": function(cmd, args, input, message, sendChat) {
