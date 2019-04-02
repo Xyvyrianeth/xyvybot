@@ -55,7 +55,7 @@ exports.startGame = function(channel, player2) {
  
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
     game.player = game.players[0];
-    game.buffer = exports.drawBoard(game, 0, highlight);
+    game.buffer = exports.drawBoard(game, 0, false);
     return ["The game has started!", new Discord.Attachment(game.buffer, `${shortname}_0.png`)];
 }
  
