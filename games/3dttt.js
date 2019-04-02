@@ -54,11 +54,11 @@ exports.startGame = function(channel, player2) {
  
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
     game.player = game.players[0];
-    game.buffer = exports.drawBoard(game, 0, false);
+    game.buffer = exports.drawBoard(game, 0, false, true);
     return [`The game has started! <@${game.players[0]}> will be **X**, and <@${game.players[1]}> will be **O**!`, new Discord.Attachment(game.buffer, `${shortname}_0.png`)];
 }
  
-exports.drawBoard = function(game, end, highlight) {
+exports.drawBoard = function(game, end, highlight, firstDisp) {
     let canvas = new Canvas.createCanvas(316, 230);
     let ctx = canvas.getContext('2d');
 
@@ -82,19 +82,32 @@ exports.drawBoard = function(game, end, highlight) {
                 if (game.board[x + 1][(y + 10).toString(14).toUpperCase()][z] !== false)
                 {
                     ctx.drawImage(Images[
-                        game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toLowerCase()
+                        game.board[x + 1][(y + 10).toString(14).toUpperCase()][z]
                     ], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 }
             }
         }
     }
 
-    ctx.fillStyle = "#000";
-    ctx.font = "bold 20px calibri";
-    let f = ctx.measureText("X").width;
-    ctx.fillText("X", 130, 30);
-    ctx.font = "20px calibri";
-    ctx.fillText("'s turn.", 130 + f, 30);
+    if (end === 0)
+    {
+        ctx.drawImage(Images["XO"[game.turn] + "turn"], 140, 10);
+    }
+    else
+    if (end === 1)
+    {
+        ctx.drawImage(Images["XO"[game.turn] + "win"], 140, 10);
+    }
+    else
+    if (end === 2)
+    {
+        ctx.drawImage(Images.tie, 140, 10);
+    }
+
+    if (firstDisp)
+    {
+        ctx.drawImage(Images.firstDisp, 72, 193);
+    }
 
     return canvas.toBuffer();
 }
@@ -102,9 +115,9 @@ exports.drawBoard = function(game, end, highlight) {
 exports.takeTurn = function(channel, move) {
     let game = channels[channel.id];
     // Function will vary with game
-    let X = move.split(' ')[0];
-    let Y = move.split(' ')[1].match(/[a-d]/i)[0].toUpperCase();
-    let Z = move.split(' ')[1].match(/[1-4]/)[0] - 1;
+    let X = move.match(/[1-4]/)[0];
+    let Y = move.match(/[a-d]/i)[0].toUpperCase();
+    let Z = move.match(/[1-4]/)[1] - 1;
     let XO = ['X', 'O'][game.turn];
 
     if (game.board[X][Y][Z] !== false)
@@ -267,15 +280,30 @@ Images = {};
 Canvas.loadImage("./img/gameAssets/3dttt/board.png").then(image => {
     Images.board = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/x.png").then(image => {
-    Images.x = image;
+Canvas.loadImage("./img/gameAssets/3dttt/X.png").then(image => {
+    Images.X = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/o.png").then(image => {
-    Images.o = image;
+Canvas.loadImage("./img/gameAssets/3dttt/O.png").then(image => {
+    Images.O = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/highlight.png").then(image => {
     Images.highlight = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/winHighlight.png").then(image => {
     Images.winHighlight = image;
-})
+});
+Canvas.loadImage("./img/gameAssets/3dttt/Xturn.png").then(image => {
+    Images.Xturn = image;
+});
+Canvas.loadImage("./img/gameAssets/3dttt/Oturn.png").then(image => {
+    Images.Oturn = image;
+});
+Canvas.loadImage("./img/gameAssets/3dttt/Xwin.png").then(image => {
+    Images.Xwin = image;
+});
+Canvas.loadImage("./img/gameAssets/3dttt/Owin.png").then(image => {
+    Images.Owin = image;
+});
+Canvas.loadImage("./img/gameAssets/3dttt/tie.png").then(image => {
+    Images.tie = image;
+});
