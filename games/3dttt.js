@@ -85,7 +85,7 @@ exports.drawBoard = function(game, end, highlight) {
             {
                 if (highlight !== false && (x + 1) + (y + 10).toString(14).toUpperCase() + (z + 1) == highlight)
                 {
-                    ctx.drawImage(img.highlight, [y, 145, 55, 193][x] + (y * 6) + (z * 20), [y, 55, 103, 151][x] + (y * 16));
+                    ctx.drawImage(img.highlight, [7, 145, 55, 193][x] + (y * 6) + (z * 20), [7, 54, 102, 150][x] + (y * 16));
                 }
                 if (game.board[x + 1][(y + 10).toString(14).toUpperCase()][z] !== false)
                 {
