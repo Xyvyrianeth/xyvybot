@@ -35,7 +35,7 @@ exports.newGame = function(channel, player1, cmd, mode) {
     };
  
     game.timer = {
-        time: 100 * 60 * 15,
+        time: 9000,
         message: "It appears nobody wants to play right now, <@" + player1 + ">."
     }
  
@@ -55,19 +55,12 @@ exports.startGame = function(channel, player2) {
  
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
     game.player = game.players[0];
- 
-    return ["The game has started!", new Discord.Attachment(exports.drawBoard(game), `${shortname}_0.png`)];
+    game.buffer = exports.drawBoard(game, 0, highlight);
+    return ["The game has started!", new Discord.Attachment(game.buffer, `${shortname}_0.png`)];
 }
  
-exports.drawBoard = function(game, end) {
-    let canvas = new Canvas.createCanvas(w, h);
-    let ctx = canvas.getContext('2d');
-     
-    // Function will vary with game
- 
-    //
-     
-    return new Discord.Attachment(canvas.toBuffer());
+exports.drawBoard = function(game, end, highlight) {
+    
 }
  
 exports.takeTurn = function(channel, move) {
