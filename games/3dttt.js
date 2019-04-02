@@ -9,28 +9,28 @@ exports.newGame = function(channel, player1, cmd, mode) {
     let game = channels[channel.id];
     game.board = {
         '1': {
-            'A': [],
-            'B': [],
-            'C': [],
-            'D': [],
+            'A': [false, false, false, false],
+            'B': [false, false, false, false],
+            'C': [false, false, false, false],
+            'D': [false, false, false, false],
         },
         '2': {
-            'A': [],
-            'B': [],
-            'C': [],
-            'D': [],
+            'A': [false, false, false, false],
+            'B': [false, false, false, false],
+            'C': [false, false, false, false],
+            'D': [false, false, false, false],
         },
         '3': {
-            'A': [],
-            'B': [],
-            'C': [],
-            'D': [],
+            'A': [false, false, false, false],
+            'B': [false, false, false, false],
+            'C': [false, false, false, false],
+            'D': [false, false, false, false],
         },
         '4': {
-            'A': [],
-            'B': [],
-            'C': [],
-            'D': [],
+            'A': [false, false, false, false],
+            'B': [false, false, false, false],
+            'C': [false, false, false, false],
+            'D': [false, false, false, false],
         }
     };
  
@@ -60,7 +60,51 @@ exports.startGame = function(channel, player2) {
 }
  
 exports.drawBoard = function(game, end, highlight) {
-    
+    let canvas = new Canvas.createCanvas(316, 230);
+    let ctx = canvas.getContext('2d');
+
+    let img = {
+        board: new Canvas.Image,
+        x: new Canvas.Image,
+        o: new Canvas.Image,
+        highlight: new Canvas.Image
+    };
+
+    img.board.src = game.imgBuffers.board;
+    img.x.src = game.imgBuffers.x;
+    img.o.src = game.imgBuffers.o;
+    img.highlight.src = game.imgBuffers.highlight;
+
+    ctx.drawImage(img.board, 0, 0);
+
+    for (let x = 0; x < 4; x++)
+    {
+        for (let y = 0; y < 4; y++)
+        {
+            for (let z = 0; z < 4; z++)
+            {
+                if ((x + 1) + (y + 10).toString(14).toUpperCase() + (z + 1) == highlight)
+                {
+                    ctx.drawImage(img.highlight, [y, 145, 55, 193][x] + (y * 6) + (z * 20), [y, 55, 103, 151][x] + (y * 16));
+                }
+                if (game.board[x + 1][(y + 10).toString(14)][z] !== false)
+                {
+                    ctx.drawImage(img[
+                        game.board[x + 1][(y + 10).toString(14)][z]
+                    ], [y, 145, 55, 193][x] + (y * 6) + (z * 20), [y, 55, 103, 151][x] + (y * 16));
+                }
+            }
+        }
+    }
+
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 20px calibri";
+    let f = ctx.measureText("X").width;
+    ctx.fillText("X", 130, 10);
+    ctx.font = "20px calibri";
+    ctx.fillText("'s turn.", 130 + f, 10);
+
+    return canvas.toBuffer();
 }
  
 exports.takeTurn = function(channel, move) {
@@ -91,3 +135,28 @@ exports.nextTurn = function(channel, end) {
     }
     return board;
 }
+
+// Images
+
+Buffers = {};
+
+Jimp.read("./img/gameAssets/3dttt/board.png").then(img => {
+    img.getBuffer("image/png", (err, src) => {
+        Buffers.board = src;
+    });
+});
+Jimp.read("./img/gameAssets/3dttt/x.png").then(img => {
+    img.getBuffer("image/png", (err, src) => {
+        Buffers.x = src;
+    });
+});
+Jimp.read("./img/gameAssets/3dttt/o.png").then(img => {
+    img.getBuffer("image/png", (err, src) => {
+        Buffers.o = src;
+    });
+});
+Jimp.read("./img/gameAssets/3dttt/highlight.png").then(img => {
+    img.getBuffer("image/png", (err, src) => {
+        Buffers.highlight = src;
+    });
+});
