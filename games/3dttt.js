@@ -1,7 +1,6 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const { channels } = require("/app/games/channels.js");
-const Jimp = require("jimp");
 var gamename = "3D Tic Tac Toe";
 var shortname = "ttt3d";
 
@@ -63,19 +62,7 @@ exports.drawBoard = function(game, end, highlight) {
     let canvas = new Canvas.createCanvas(316, 230);
     let ctx = canvas.getContext('2d');
 
-    let img = {
-        board: new Canvas.Image,
-        x: new Canvas.Image,
-        o: new Canvas.Image,
-        highlight: new Canvas.Image
-    };
-
-    img.board.src = Buffers.board;
-    img.x.src = Buffers.x;
-    img.o.src = Buffers.o;
-    img.highlight.src = Buffers.highlight;
-
-    ctx.drawImage(img.board, 0, 0);
+    ctx.drawImage(Images.board, 0, 0);
 
     for (let x = 0; x < 4; x++)
     {
@@ -83,18 +70,18 @@ exports.drawBoard = function(game, end, highlight) {
         {
             for (let z = 0; z < 4; z++)
             {
-                if (end === 0 && highlight !== false && (x + 1) + (y + 10).toString(14).toUpperCase() + (z + 1) == highlight)
+                if (end === 0 && highlight !== false && (x + 1) + (y + 10).toString(14).toUpperCase() + z == highlight)
                 {
-                    ctx.drawImage(img.highlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                    ctx.drawImage(Images.highlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 }
                 else
-                if (end === 1 && highlight.includes((x + 1) + (y + 10).toString(14).toUpperCase() + (z + 1)))
+                if (end === 1 && highlight.includes((x + 1) + (y + 10).toString(14).toUpperCase() + z))
                 {
-                    ctx.drawImage(img.highlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                    ctx.drawImage(Images.winHighlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 }
                 if (game.board[x + 1][(y + 10).toString(14).toUpperCase()][z] !== false)
                 {
-                    ctx.drawImage(img[
+                    ctx.drawImage(Images[
                         game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toLowerCase()
                     ], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 }
@@ -281,23 +268,18 @@ exports.nextTurn = function(channel, end, highlight) {
 
 Buffers = {};
 
-Jimp.read("./img/gameAssets/3dttt/board.png").then(img => {
-    img.getBuffer("image/png", (err, src) => {
-        Buffers.board = src;
-    });
+Canvas.loadImage("./img/gameAssets/3dttt/board.png").then(image => {
+    Images.board = image;
 });
-Jimp.read("./img/gameAssets/3dttt/x.png").then(img => {
-    img.getBuffer("image/png", (err, src) => {
-        Buffers.x = src;
-    });
+Canvas.loadImage("./img/gameAssets/3dttt/x.png").then(image => {
+    Images.x = image;
 });
-Jimp.read("./img/gameAssets/3dttt/o.png").then(img => {
-    img.getBuffer("image/png", (err, src) => {
-        Buffers.o = src;
-    });
+Canvas.loadImage("./img/gameAssets/3dttt/o.png").then(image => {
+    Images.o = image;
 });
-Jimp.read("./img/gameAssets/3dttt/highlight.png").then(img => {
-    img.getBuffer("image/png", (err, src) => {
-        Buffers.highlight = src;
-    });
+Canvas.loadImage("./img/gameAssets/3dttt/highlight.png").then(image => {
+    Images.highlight = image;
 });
+Canvas.loadImage("./img/gameAssets/3dttt/winHighlight.png").then(image => {
+    Images.winHighlight = image;
+})
