@@ -100,9 +100,9 @@ exports.drawBoard = function(game, end, highlight) {
     ctx.fillStyle = "#000";
     ctx.font = "bold 20px calibri";
     let f = ctx.measureText("X").width;
-    ctx.fillText("X", 130, 10);
+    ctx.fillText("X", 130, 30);
     ctx.font = "20px calibri";
-    ctx.fillText("'s turn.", 130 + f, 10);
+    ctx.fillText("'s turn.", 130 + f, 30);
 
     return canvas.toBuffer();
 }
