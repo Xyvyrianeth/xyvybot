@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const { channels } = require("/app/games/channels.js");
+const Jimp = require("jimp");
 var gamename = "3D Tic Tac Toe";
 var shortname = "3dttt";
 
