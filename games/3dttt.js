@@ -248,7 +248,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.player = game.players[game.turn];
         game.timer = {
             time: 6000,
-            message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
+            message: `Whoops, it looks like <@${game.players[game.player]}> has run out of time, so the game is over!`
         }
     }
     game.buffer = exports.drawBoard(game, end, highlight);
@@ -257,11 +257,7 @@ exports.nextTurn = function(channel, end, highlight) {
     {
         channels[channel.id].lastDisplay.delete();
     }
-    if (end != 0)
-    {
-        delete channels[channel.id];
-    }
-    return [end == 0 ? `It is <@${game.player}>'s turn.` : end == 1 ? `<@${game.winner}> has won!` : "Tie game, everyone loses!", board];
+    return [end == 0 ? `It is <@${game.players[game.turn]}>'s turn.` : end == 1 ? `<@${game.players[game.winner]}> has won!` : "Tie game, everyone loses!", board];
 }
 
 // Images
