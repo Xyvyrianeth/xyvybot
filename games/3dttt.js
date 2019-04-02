@@ -266,7 +266,7 @@ exports.nextTurn = function(channel, end, highlight) {
 
 // Images
 
-Buffers = {};
+Images = {};
 
 Canvas.loadImage("./img/gameAssets/3dttt/board.png").then(image => {
     Images.board = image;
