@@ -286,12 +286,6 @@ Canvas.loadImage("./img/gameAssets/3dttt/X.png").then(image => {
 Canvas.loadImage("./img/gameAssets/3dttt/O.png").then(image => {
     Images.O = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/highlight.png").then(image => {
-    Images.highlight = image;
-});
-Canvas.loadImage("./img/gameAssets/3dttt/winHighlight.png").then(image => {
-    Images.winHighlight = image;
-});
 Canvas.loadImage("./img/gameAssets/3dttt/Xturn.png").then(image => {
     Images.Xturn = image;
 });
@@ -304,6 +298,15 @@ Canvas.loadImage("./img/gameAssets/3dttt/Xwin.png").then(image => {
 Canvas.loadImage("./img/gameAssets/3dttt/Owin.png").then(image => {
     Images.Owin = image;
 });
+Canvas.loadImage("./img/gameAssets/3dttt/highlight.png").then(image => {
+    Images.highlight = image;
+});
+Canvas.loadImage("./img/gameAssets/3dttt/winHighlight.png").then(image => {
+    Images.winHighlight = image;
+});
 Canvas.loadImage("./img/gameAssets/3dttt/tie.png").then(image => {
     Images.tie = image;
 });
+Canvas.loadImage("./img/gameAssets/3dttt/firstDisp.png").then(image => {
+    Images.firstDisp = image;
+})
