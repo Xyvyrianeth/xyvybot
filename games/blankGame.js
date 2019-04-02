@@ -5,7 +5,7 @@ var gamename = "";
 var shortname = "";
 
 exports.newGame = function(channel, player1, cmd, mode) {
-    channels[channel.id] = {game:shortname,channel:channel,turn:0,players:[],started:false,lastmove:'',player:false,RE:/stuff/,casual:mode};
+    channels[channel.id] = {game:shortname,guild:channel.guild.id,turn:0,players:[],started:false,lastmove:'',player:false,RE:/stuff/,casual:mode};
     let game = channels[channel.id];
     game.board = [];
  

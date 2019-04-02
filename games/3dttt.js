@@ -6,8 +6,7 @@ var gamename = "3D Tic Tac Toe";
 var shortname = "3dttt";
 
 exports.newGame = function(channel, player1, cmd, mode) {
-    channels[channel.id] = {game:shortname,channel:channel,turn:0,players:[],started:false,lastmove:'',player:false,RE:/^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,casual:mode};
-    let game = channels[channel.id];
+    let game = channels[channel.id] = {game:shortname,guild:channel.guild.id,turn:0,players:[],started:false,lastmove:'',player:false,RE:/^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,casual:mode};
     game.board = {
         '1': {
             'A': [false, false, false, false],
@@ -71,10 +70,10 @@ exports.drawBoard = function(game, end, highlight) {
         highlight: new Canvas.Image
     };
 
-    img.board.src = game.imgBuffers.board;
-    img.x.src = game.imgBuffers.x;
-    img.o.src = game.imgBuffers.o;
-    img.highlight.src = game.imgBuffers.highlight;
+    img.board.src = Buffers.board;
+    img.x.src = Buffers.x;
+    img.o.src = Buffers.o;
+    img.highlight.src = Buffers.highlight;
 
     ctx.drawImage(img.board, 0, 0);
 
@@ -84,7 +83,7 @@ exports.drawBoard = function(game, end, highlight) {
         {
             for (let z = 0; z < 4; z++)
             {
-                if ((x + 1) + (y + 10).toString(14).toUpperCase() + (z + 1) == highlight)
+                if (highlight !== false && (x + 1) + (y + 10).toString(14).toUpperCase() + (z + 1) == highlight)
                 {
                     ctx.drawImage(img.highlight, [y, 145, 55, 193][x] + (y * 6) + (z * 20), [y, 55, 103, 151][x] + (y * 16));
                 }

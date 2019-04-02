@@ -5,7 +5,7 @@ var gamename = "Gomoku";
 var shortname = "gomoku";
  
 exports.newGame = function(channel, player1, cmd, mode) {
-    channels[channel.id] = {game:shortname,channel:channel,turn:0.5,players:[],started:false,lastmove:'',player:false,RE:/^([a-s] ?1?[0-9]{1,}|1?[0-9]{1,} ?[a-s])/i,casual:mode};
+    channels[channel.id] = {game:shortname,guild:channel.guild.id,turn:0.5,players:[],started:false,lastmove:'',player:false,RE:/^([a-s] ?1?[0-9]{1,}|1?[0-9]{1,} ?[a-s])/i,casual:mode};
     let game = channels[channel.id];
     let _ = false;
     game.board = [];
