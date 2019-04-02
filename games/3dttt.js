@@ -3,7 +3,7 @@ const Canvas = require("canvas");
 const { channels } = require("/app/games/channels.js");
 const Jimp = require("jimp");
 var gamename = "3D Tic Tac Toe";
-var shortname = "3dttt";
+var shortname = "ttt3d";
 
 exports.newGame = function(channel, player1, cmd, mode) {
     let game = channels[channel.id] = {game:shortname,guild:channel.guild.id,turn:0,players:[],started:false,lastmove:'',player:false,RE:/^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,casual:mode};
