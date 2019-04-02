@@ -25,7 +25,7 @@ exports.startGame = function(channel, player2) {
     game.started = true;
  
     game.timer = {
-        time: 10 * 60 * 5,
+        time: 6000,
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
  
@@ -222,7 +222,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.turn = game.turn == 0 ? 1 : 0;
         game.player = game.players[game.turn];
         game.timer = {
-            time: 10 * 60 * 5,
+            time: 6000,
             message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
         }
     }

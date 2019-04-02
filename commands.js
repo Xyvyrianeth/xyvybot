@@ -1,4 +1,4 @@
-var version = "2.33.4.5";
+var version = "2.33.5.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -177,7 +177,7 @@ function other(message) {
         message.author.send("If you're sending me an image of yourself, please know that you must be 18 years or older to distribute explicit pictures of yourself. If you are not 18, do not send anybody those kinds of pictures.");
     }
 
-    if (games.channels[message.channel.id] && games.channels[message.channel.id].started)
+    if (games.channels.hasOwnProperty(message.channel.id) && games.channels[message.channel.id].started)
     {
         let game = games.channels[message.channel.id];
         if (message.author.id == game.player && game.RE.test(message.content))
