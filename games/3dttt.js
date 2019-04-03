@@ -62,7 +62,7 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
     let canvas = new Canvas.createCanvas(316, 230);
     let ctx = canvas.getContext('2d');
 
-    ctx.drawImage(Images.board, 0, 0);
+    ctx.drawImage(exports.Images.board, 0, 0);
 
     for (let x = 0; x < 4; x++)
     {
@@ -72,16 +72,16 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
             {
                 if (end === 0 && highlight !== false && (x + 1) + (y + 10).toString(14).toUpperCase() + z == highlight)
                 {
-                    ctx.drawImage(Images.highlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                    ctx.drawImage(exports.Images.highlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 }
                 else
                 if (end === 1 && highlight.includes((x + 1) + (y + 10).toString(14).toUpperCase() + z))
                 {
-                    ctx.drawImage(Images.winHighlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                    ctx.drawImage(exports.Images.winHighlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 }
                 if (game.board[x + 1][(y + 10).toString(14).toUpperCase()][z] !== false)
                 {
-                    ctx.drawImage(Images[
+                    ctx.drawImage(exports.Images[
                         game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()
                     ], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 }
@@ -91,22 +91,22 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
 
     if (end === 0)
     {
-        ctx.drawImage(Images["XO"[game.turn] + "turn"], 140, 10);
+        ctx.drawImage(exports.Images["XO"[game.turn] + "turn"], 140, 10);
     }
     else
     if (end === 1)
     {
-        ctx.drawImage(Images["XO"[game.turn] + "win"], 140, 10);
+        ctx.drawImage(exports.Images["XO"[game.turn] + "win"], 140, 10);
     }
     else
     if (end === 2)
     {
-        ctx.drawImage(Images.tie, 140, 10);
+        ctx.drawImage(exports.Images.tie, 140, 10);
     }
 
     if (firstDisp)
     {
-        ctx.drawImage(Images.firstDisp, 72, 193);
+        ctx.drawImage(exports.Images.firstDisp, 72, 193);
     }
 
     return canvas.toBuffer();
@@ -276,38 +276,38 @@ exports.nextTurn = function(channel, end, highlight) {
 
 // Images
 
-Images = {};
+exports.Images = {};
 
 Canvas.loadImage("./img/gameAssets/3dttt/board.png").then(image => {
-    Images.board = image;
+    exports.Images.board = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/x.png").then(image => {
-    Images.X = image;
+    exports.Images.X = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/o.png").then(image => {
-    Images.O = image;
+    exports.Images.O = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/Xturn.png").then(image => {
-    Images.Xturn = image;
+    exports.Images.Xturn = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/Oturn.png").then(image => {
-    Images.Oturn = image;
+    exports.Images.Oturn = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/Xwin.png").then(image => {
-    Images.Xwin = image;
+    exports.Images.Xwin = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/Owin.png").then(image => {
-    Images.Owin = image;
+    exports.Images.Owin = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/highlight.png").then(image => {
-    Images.highlight = image;
+    exports.Images.highlight = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/winHighlight.png").then(image => {
-    Images.winHighlight = image;
+    exports.Images.winHighlight = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/tie.png").then(image => {
-    Images.tie = image;
+    exports.Images.tie = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/firstDisp.png").then(image => {
-    Images.firstDisp = image;
+    exports.Images.firstDisp = image;
 });

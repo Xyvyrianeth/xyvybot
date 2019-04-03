@@ -49,18 +49,18 @@ exports.drawBoard = function(game, end, highlight) {
     let canvas = new Canvas.createCanvas(280, 300);
     let ctx = canvas.getContext('2d');
       
-    ctx.drawImage(Images.board, 0, 0);
+    ctx.drawImage(exports.Images.board, 0, 0);
     for (let x = 0; x < 10; x++)
     {
         for (let y = 0; y < 10; y++)
         {
             if (end === 0 && highlight !== false && highlight[0] == x && highlight[1] == (y + 10).toString(20))
             {
-                ctx.drawImage(Images.highlight, 17 + (x * 25), 30 + (y * 25));
+                ctx.drawImage(exports.Images.highlight, 17 + (x * 25), 30 + (y * 25));
             }
             if (game.board[x][y] !== false)
             {
-                ctx.drawImage(Images[
+                ctx.drawImage(exports.Images[
                     ["black", "white"][game.board[x][y]]
                 ], 17 + (x * 25), 30 + (y * 25));
             }
@@ -69,41 +69,41 @@ exports.drawBoard = function(game, end, highlight) {
 
     if (end === 0)
     {
-        ctx.drawImage(Images[
+        ctx.drawImage(exports.Images[
             ["black", "white"][Math.floor(game.turn)] + "Text"
         ], 14, 4);
-        ctx.drawImage(Images.turn, 88, 4);
+        ctx.drawImage(exports.Images.turn, 88, 4);
     }
     else
     if (end === 1)
     {
-        ctx.drawImage(Images[
+        ctx.drawImage(exports.Images[
             ["black", "white"][game.winner]
         ], 14, 4);
-        ctx.drawImage(Images.win, 88, 4);
+        ctx.drawImage(exports.Images.win, 88, 4);
     }
     else
     if (end === 2)
     {
-        ctx.drawImage(Images.tie, 14, 4);
+        ctx.drawImage(exports.Images.tie, 14, 4);
     }
 
-    ctx.drawImage(Images.numbers[
+    ctx.drawImage(exports.Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]
     ], 186, 5);
-    ctx.drawImage(Images.numbers[
+    ctx.drawImage(exports.Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]
     ], 195, 5);
-    ctx.drawImage(Images.numbers[
+    ctx.drawImage(exports.Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[2]
     ], 204, 5);
-    ctx.drawImage(Images.numbers[
+    ctx.drawImage(exports.Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]
     ], 219, 5);
-    ctx.drawImage(Images.numbers[
+    ctx.drawImage(exports.Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]
     ], 228, 5);
-    ctx.drawImage(Images.numbers[
+    ctx.drawImage(exports.Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]
     ], 237, 5);
 }
@@ -198,64 +198,40 @@ exports.nextTurn = function(channel, end, highlight) {
 
 // Images
 
-Images = {};
+exports.Images = {};
 
 Canvas.loadImage("./img/gameAssets/squares/board.png").then(image => {
-    Images.board = image;
+    exports.Images.board = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/black.png").then(image => {
-    Images.black = image;
+    exports.Images.black = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/white.png").then(image => {
-    Images.white = image;
+    exports.Images.white = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/blackText.png").then(image => {
-    Images.blackText = image;
+    exports.Images.blackText = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/whiteText.png").then(image => {
-    Images.whiteText = image;
+    exports.Images.whiteText = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/turn.png").then(image => {
-    Images.turn = image;
+    exports.Images.turn = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/win.png").then(image => {
-    Images.win = image;
+    exports.Images.win = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/highlight.png").then(image => {
-    Images.highlight = image;
+    exports.Images.highlight = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/tie.png").then(image => {
-    Images.tie = image;
+    exports.Images.tie = image;
 });
 
-Images.numbers = new Array(10);
-Canvas.loadImage("./img/gameAssets/squares/numbers/0.png").then(image => {
-    Images.numbers[0] = image;
-});
-Canvas.loadImage("./img/gameAssets/squares/numbers/1.png").then(image => {
-    Images.numbers[1] = image;
-});
-Canvas.loadImage("./img/gameAssets/squares/numbers/2.png").then(image => {
-    Images.numbers[2] = image;
-});
-Canvas.loadImage("./img/gameAssets/squares/numbers/3.png").then(image => {
-    Images.numbers[3] = image;
-});
-Canvas.loadImage("./img/gameAssets/squares/numbers/4.png").then(image => {
-    Images.numbers[4] = image;
-});
-Canvas.loadImage("./img/gameAssets/squares/numbers/5.png").then(image => {
-    Images.numbers[5] = image;
-});
-Canvas.loadImage("./img/gameAssets/squares/numbers/6.png").then(image => {
-    Images.numbers[6] = image;
-});
-Canvas.loadImage("./img/gameAssets/squares/numbers/7.png").then(image => {
-    Images.numbers[7] = image;
-});
-Canvas.loadImage("./img/gameAssets/squares/numbers/8.png").then(image => {
-    Images.numbers[8] = image;
-});
-Canvas.loadImage("./img/gameAssets/squares/numbers/9.png").then(image => {
-    Images.numbers[9] = image;
-});
+exports.Images.numbers = new Array(10);
+for (let i = 0; i < 10; i++)
+{
+    Canvas.loadImage(`./img/gameAssets/squares/numbers/${i}.png`).then(image => {
+        exports.Images.numbers[i] = image;
+    });
+}
