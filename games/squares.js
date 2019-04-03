@@ -88,22 +88,22 @@ exports.drawBoard = function(game, end, highlight) {
         ctx.drawImage(Images.tie, 14, 4);
     }
 
-    ctx.drawImage(Images[
+    ctx.drawImage(Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]
     ], 186, 5);
-    ctx.drawImage(Images[
+    ctx.drawImage(Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]
     ], 195, 5);
-    ctx.drawImage(Images[
+    ctx.drawImage(Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[2]
     ], 204, 5);
-    ctx.drawImage(Images[
+    ctx.drawImage(Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]
     ], 219, 5);
-    ctx.drawImage(Images[
+    ctx.drawImage(Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]
     ], 228, 5);
-    ctx.drawImage(Images[
+    ctx.drawImage(Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]
     ], 237, 5);
 }
@@ -228,34 +228,34 @@ Canvas.loadImage("./img/gameAssets/squares/tie.png").then(image => {
     Images.tie = image;
 });
 
-Images.numbers = [];
+Images.numbers = new Array(10);
 Canvas.loadImage("./img/gameAssets/squares/numbers/0.png").then(image => {
-    Images.numbers.push(image);
+    Images.numbers[0] = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/numbers/1.png").then(image => {
-    Images.numbers.push(image);
+    Images.numbers[1] = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/numbers/2.png").then(image => {
-    Images.numbers.push(image);
+    Images.numbers[2] = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/numbers/3.png").then(image => {
-    Images.numbers.push(image);
+    Images.numbers[3] = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/numbers/4.png").then(image => {
-    Images.numbers.push(image);
+    Images.numbers[4] = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/numbers/5.png").then(image => {
-    Images.numbers.push(image);
+    Images.numbers[5] = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/numbers/6.png").then(image => {
-    Images.numbers.push(image);
+    Images.numbers[6] = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/numbers/7.png").then(image => {
-    Images.numbers.push(image);
+    Images.numbers[7] = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/numbers/8.png").then(image => {
-    Images.numbers.push(image);
+    Images.numbers[8] = image;
 });
 Canvas.loadImage("./img/gameAssets/squares/numbers/9.png").then(image => {
-    Images.numbers.push(image);
+    Images.numbers[9] = image;
 });
