@@ -82,12 +82,12 @@ exports.drawBoard = function(game, end, highlight) {
         ctx.drawImage(exports.Images.tie, 14, 4);
     }
 
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 186, 5);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 195, 5);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[2]], 204, 5);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 219, 5);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 228, 5);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]], 237, 5);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 186, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 195, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[2]], 204, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 219, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 228, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]], 237, 3);
 
     return canvas.toBuffer();
 }
