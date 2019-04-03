@@ -11,11 +11,11 @@ var timer = setInterval(function() {
         {
             if (channels[channel].buffer)
             {
-                client.guilds.get(channels[channel].guild).channels.get(channel).send(channels[i].timer.message, channels[i].buffer);
+                client.guilds.get(channels[channel].guild).channels.get(channel).send(channels[channel].timer.message, channels[channel].buffer);
             }
             else
             {
-                client.guilds.get(channels[channel].guild).channels.get(channel).send(channels[i].timer.message);
+                client.guilds.get(channels[channel].guild).channels.get(channel).send(channels[channel].timer.message);
             }
             delete channels[i];
         }
