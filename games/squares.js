@@ -56,30 +56,24 @@ exports.drawBoard = function(game, end, highlight) {
         {
             if (end === 0 && highlight !== false && highlight[0] == x && highlight[1] == (y + 10).toString(20))
             {
-                ctx.drawImage(exports.Images.highlight, 17 + (x * 25), 30 + (y * 25));
+                ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
             }
             if (game.board[x][y] !== false)
             {
-                ctx.drawImage(exports.Images[
-                    ["black", "white"][game.board[x][y]]
-                ], 17 + (x * 25), 30 + (y * 25));
+                ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
             }
         }
     }
 
     if (end === 0)
     {
-        ctx.drawImage(exports.Images[
-            ["black", "white"][Math.floor(game.turn)] + "Text"
-        ], 14, 4);
+        ctx.drawImage(exports.Images[["black", "white"][Math.floor(game.turn)] + "Text"], 14, 4);
         ctx.drawImage(exports.Images.turn, 88, 4);
     }
     else
     if (end === 1)
     {
-        ctx.drawImage(exports.Images[
-            ["black", "white"][game.winner]
-        ], 14, 4);
+        ctx.drawImage(exports.Images[["black", "white"][game.winner]], 14, 4);
         ctx.drawImage(exports.Images.win, 88, 4);
     }
     else
@@ -88,24 +82,12 @@ exports.drawBoard = function(game, end, highlight) {
         ctx.drawImage(exports.Images.tie, 14, 4);
     }
 
-    ctx.drawImage(exports.Images.numbers[
-        ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]
-    ], 186, 5);
-    ctx.drawImage(exports.Images.numbers[
-        ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]
-    ], 195, 5);
-    ctx.drawImage(exports.Images.numbers[
-        ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[2]
-    ], 204, 5);
-    ctx.drawImage(exports.Images.numbers[
-        ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]
-    ], 219, 5);
-    ctx.drawImage(exports.Images.numbers[
-        ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]
-    ], 228, 5);
-    ctx.drawImage(exports.Images.numbers[
-        ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]
-    ], 237, 5);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 186, 5);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 195, 5);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[2]], 204, 5);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 219, 5);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 228, 5);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]], 237, 5);
 
     return canvas.toBuffer();
 }
