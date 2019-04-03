@@ -1,4 +1,4 @@
-var version = "2.33.6.2";
+var version = "2.33.6.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -138,7 +138,7 @@ function command(message) {
         let errs = [];
         for (let i = 0; i < error.stack.split('\n').length; i++)
         {
-            if (error.stack.split('\n')[i].includes("at emitOne"))
+            if (error.stack.split('\n')[i].includes("at Client.emit"))
             {
                 break;
             }
@@ -197,7 +197,7 @@ function other(message) {
                 let errs = [];
                 for (let i = 0; i < error.stack.split('\n').length; i++)
                 {
-                    if (error.stack.split('\n')[i].includes("at emitOne"))
+                    if (error.stack.split('\n')[i].includes("at Client.emit"))
                     {
                         break;
                     }

@@ -82,7 +82,7 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
                 if (game.board[x + 1][(y + 10).toString(14).toUpperCase()][z] !== false)
                 {
                     ctx.drawImage(Images[
-                        game.board[x + 1][(y + 10).toString(14).toUpperCase()][z]
+                        game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()
                     ], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 }
             }
@@ -118,7 +118,7 @@ exports.takeTurn = function(channel, move) {
     let X = move.match(/[1-4]/g)[0];
     let Y = move.match(/[a-d]/i)[0].toUpperCase();
     let Z = move.match(/[1-4]/g)[1] - 1;
-    let XO = ['X', 'O'][game.turn];
+    let XO = 'XO'[game.turn];
 
     if (game.board[X][Y][Z] !== false)
     {
@@ -281,10 +281,10 @@ Images = {};
 Canvas.loadImage("./img/gameAssets/3dttt/board.png").then(image => {
     Images.board = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/X.png").then(image => {
+Canvas.loadImage("./img/gameAssets/3dttt/x.png").then(image => {
     Images.X = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/O.png").then(image => {
+Canvas.loadImage("./img/gameAssets/3dttt/o.png").then(image => {
     Images.O = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/Xturn.png").then(image => {
@@ -310,4 +310,4 @@ Canvas.loadImage("./img/gameAssets/3dttt/tie.png").then(image => {
 });
 Canvas.loadImage("./img/gameAssets/3dttt/firstDisp.png").then(image => {
     Images.firstDisp = image;
-})
+});
