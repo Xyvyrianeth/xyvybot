@@ -88,12 +88,24 @@ exports.drawBoard = function(game, end, highlight) {
         ctx.drawImage(Images.tie, 14, 4);
     }
 
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 186, 5);
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 195, 5);
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[2]], 204, 5);
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 219, 5);
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 228, 5);
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]], 237, 5);
+    ctx.drawImage(Images[
+        ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]
+    ], 186, 5);
+    ctx.drawImage(Images[
+        ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]
+    ], 195, 5);
+    ctx.drawImage(Images[
+        ('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[2]
+    ], 204, 5);
+    ctx.drawImage(Images[
+        ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]
+    ], 219, 5);
+    ctx.drawImage(Images[
+        ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]
+    ], 228, 5);
+    ctx.drawImage(Images[
+        ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]
+    ], 237, 5);
 }
   
 exports.takeTurn = function(channel, Move) {
@@ -217,33 +229,33 @@ Canvas.loadImage("./img/gameAssets/squares/tie.png").then(image => {
 });
 
 Images.numbers = [];
-Canvas.loadImage("./img/gameAssets/square/numbers/0.png").then(image => {
+Canvas.loadImage("./img/gameAssets/squares/numbers/0.png").then(image => {
     Images.numbers.push(image);
 });
-Canvas.loadImage("./img/gameAssets/square/numbers/1.png").then(image => {
+Canvas.loadImage("./img/gameAssets/squares/numbers/1.png").then(image => {
     Images.numbers.push(image);
 });
-Canvas.loadImage("./img/gameAssets/square/numbers/2.png").then(image => {
+Canvas.loadImage("./img/gameAssets/squares/numbers/2.png").then(image => {
     Images.numbers.push(image);
 });
-Canvas.loadImage("./img/gameAssets/square/numbers/3.png").then(image => {
+Canvas.loadImage("./img/gameAssets/squares/numbers/3.png").then(image => {
     Images.numbers.push(image);
 });
-Canvas.loadImage("./img/gameAssets/square/numbers/4.png").then(image => {
+Canvas.loadImage("./img/gameAssets/squares/numbers/4.png").then(image => {
     Images.numbers.push(image);
 });
-Canvas.loadImage("./img/gameAssets/square/numbers/5.png").then(image => {
+Canvas.loadImage("./img/gameAssets/squares/numbers/5.png").then(image => {
     Images.numbers.push(image);
 });
-Canvas.loadImage("./img/gameAssets/square/numbers/6.png").then(image => {
+Canvas.loadImage("./img/gameAssets/squares/numbers/6.png").then(image => {
     Images.numbers.push(image);
 });
-Canvas.loadImage("./img/gameAssets/square/numbers/7.png").then(image => {
+Canvas.loadImage("./img/gameAssets/squares/numbers/7.png").then(image => {
     Images.numbers.push(image);
 });
-Canvas.loadImage("./img/gameAssets/square/numbers/8.png").then(image => {
+Canvas.loadImage("./img/gameAssets/squares/numbers/8.png").then(image => {
     Images.numbers.push(image);
 });
-Canvas.loadImage("./img/gameAssets/square/numbers/9.png").then(image => {
+Canvas.loadImage("./img/gameAssets/squares/numbers/9.png").then(image => {
     Images.numbers.push(image);
 });
