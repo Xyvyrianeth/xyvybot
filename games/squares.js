@@ -106,6 +106,8 @@ exports.drawBoard = function(game, end, highlight) {
     ctx.drawImage(exports.Images.numbers[
         ('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]
     ], 237, 5);
+
+    return canvas.toBuffer();
 }
   
 exports.takeTurn = function(channel, Move) {
