@@ -1,4 +1,4 @@
-var version = "2.33.6.7";
+var version = "2.33.7.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1120,10 +1120,6 @@ var commands = {
     },
 
     "ttt3d": function(cmd, args, input, message, sendChat) {
-        if (!admins.includes(message.author.id))
-        {
-            return sendChat("This game is currently under maintenance, please try again at another time.");
-        }
         if (message.channel.type == "dm")
         {
             return sendChat("This command is not available through DMs!");

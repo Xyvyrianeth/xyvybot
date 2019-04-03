@@ -49,137 +49,51 @@ exports.drawBoard = function(game, end, highlight) {
     let canvas = new Canvas.createCanvas(280, 300);
     let ctx = canvas.getContext('2d');
       
-    // Function will vary with game
-    ctx.textAlign = "center";
-    for (let i = 10; i--;)
+    ctx.drawImage(Images.board, 0, 0);
+    for (let x = 0; x < 10; x++)
     {
-        ctx.fillText("ABCDEFGHIJ".split('')[i], (i + 1) * 25 + 7.5, 292);
-        ctx.fillText(i + 1, 13, (i + 1) * 25 + 21);
-    }
-    ctx.textAlign = "start";
-  
-    for (let y = 0; y < 10; y++)
-    {
-        let r = 42.5 + (25 * y);
-        for (let x = 0; x < 10; x++)
+        for (let y = 0; y < 10; y++)
         {
-            let c = (x + 1) * 25 + 7.5;
-  
-            if (game.board[y][x] === false)
-            { // Blank Spot
-                ctx.beginPath();
-                ctx.strokeStyle = "rgba(200, 200, 200, 0.25)";
-                ctx.moveTo(c + 5, r);
-                ctx.arc(c, r, 5, 0, 2 * Math.PI);
-                ctx.stroke();
-  
+            if (end === 0 && highlight !== false && highlight[0] == x && highlight[1] == (y + 10).toString(20))
+            {
+                ctx.drawImage(Images.highlight, 17 + (x * 25), 30 + (y * 25));
             }
-            else
-            if (game.board[y][x] === 0)
-            { // Black
-                ctx.beginPath();
-                ctx.strokeStyle = "#222";
-                ctx.fillStyle = "#000";
-                ctx.moveTo(c + 9, r);
-                ctx.arc(c, r, 9, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.stroke();
-  
-                ctx.beginPath();
-                ctx.strokeStyle = "rgba(200, 200, 200, 0.5)";
-                ctx.moveTo(c - 7, r + 3);
-                ctx.arc(c, r, 8, 0.875 * Math.PI, 1.625 * Math.PI);
-                ctx.moveTo(c - 8, r);
-                ctx.arc(c, r, 8, 1 * Math.PI, 1.5 * Math.PI);
-                ctx.stroke();
-  
-            }
-            else
-            if (game.board[y][x] === 1)
-            { // White
-                ctx.beginPath();
-                ctx.strokeStyle = "#ddd";
-                ctx.fillStyle = "#fff";
-                ctx.moveTo(c + 9, r);
-                ctx.arc(c, r, 9, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.stroke();
-  
-                ctx.beginPath();
-                ctx.strokeStyle = "rgba(150, 150, 150, 0.5)";
-                ctx.moveTo(c + 7, r - 3);
-                ctx.arc(c, r, 8, 1.875 * Math.PI, 0.625 * Math.PI);
-                ctx.moveTo(c + 8, r);
-                ctx.arc(c, r, 8, 0, 0.5 * Math.PI);
-                ctx.stroke();
+            if (game.board[x][y] !== false)
+            {
+                ctx.drawImage(Images[
+                    ["black", "white"][game.board[x][y]]
+                ], 17 + (x * 25), 30 + (y * 25));
             }
         }
     }
-    ctx.textBaseline = "hanging";
-    if (end == 0)
+
+    if (end === 0)
     {
-        ctx.font = "bold 20px calibri";
-        let n = Math.floor(game.turn) == 0 ? "Black" : "White";
-        k = ctx.measureText(n).width;
-        if (n == "Black") ctx.fillStyle = "#000";
-        if (n == "White") ctx.fillStyle = "#fff";
-        ctx.fillText(n, 5, 5);
-        ctx.font = "20px calibri";
-        ctx.fillStyle = "#888";
-        ctx.fillText("'s turn.", k + 5, 5);
- 
-        k += ctx.measureText("'s turn.  ").width;
+        ctx.drawImage(Images[
+            ["black", "white"][Math.floor(game.turn)] + "Text"
+        ], 14, 4);
+        ctx.drawImage(Images.turn, 88, 4);
     }
     else
-    if (game.score[0] == game.score[1])
+    if (end === 1)
     {
-        ctx.font = "20px calibri";
-        ctx.fillStyle = "#888";
-        ctx.fillText("Tie game!", 5, 5);
- 
-        k = ctx.measureText("Tie game!  ").width;
+        ctx.drawImage(Images[
+            ["black", "white"][game.winner]
+        ], 14, 4);
+        ctx.drawImage(Images.win, 88, 4);
     }
     else
+    if (end === 2)
     {
-        ctx.font = "bold 20px calibri";
-        let n = game.score[0] > game.score[1] ? "Black" : "White";
-        if (n == "Black") ctx.fillStyle = "#000";
-        if (n == "White") ctx.fillStyle = "#fff";
-        ctx.fillText(n, 5, 5);
- 
-        k = ctx.measureText(n).width;
-        ctx.font = "20px calibri";
-        ctx.fillStyle = "#888";
-        ctx.fillText(" has won!", k + 5, 5);
- 
-        k += ctx.measureText(" has won!  ").width;
+        ctx.drawImage(Images.tie, 14, 4);
     }
-    ctx.fillStyle = "#000";
-    ctx.fillText(String(game.score[0]), k + 5, 5);
- 
-    k += ctx.measureText(String(game.score[0])).width;
-    ctx.fillStyle = "#888";
-    ctx.fillText(' - ', k + 5, 5);
- 
-    k += ctx.measureText(' - ').width;
-    ctx.fillStyle = "#fff";
-    ctx.fillText(String(game.score[1]), k + 5, 5);
- 
- 
-    if (highlight)
-    {
-        let r = 42.5 + (25 * highlight[0]);
-        let c = (highlight[1] + 1) * 25 + 7.5;
-        ctx.strokeStyle = "#ff8";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(c + 10, r);
-        ctx.arc(c, r, 10, 0, 2 * Math.PI);
-        ctx.stroke();
-    }
-    //
-      
-    return canvas.toBuffer();
+
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0].length)) + game.score[0])[0]], 186, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0].length)) + game.score[0])[1]], 195, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0].length)) + game.score[0])[2]], 204, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1].length)) + game.score[1])[0]], 219, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1].length)) + game.score[1])[1]], 228, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1].length)) + game.score[1])[2]], 237, 5);
 }
   
 exports.takeTurn = function(channel, Move) {
@@ -233,11 +147,17 @@ exports.takeTurn = function(channel, Move) {
             }
         }
     }
-    //
     
     if (end !== 0)
     {
-        game.winner = Math.floor(game.turn);
+        if (game.score[0] == game.score[1])
+        {
+            end = 2;
+        }
+        else
+        {
+            game.winner = game.score[0] > game.score[1] ? 0 : 1;
+        }
     }
       
     return exports.nextTurn(channel, end, highlight);
@@ -261,5 +181,69 @@ exports.nextTurn = function(channel, end, highlight) {
         channels[channel.id].lastDisplay.delete();
     }
 
-    return [end == 0 ? `It is <@${game.player}>'s turn.` : game.score[0] != game.score[1] ? `<@${game.players[game.score[0] > game.score[1] ? 0 : 1]}> has won!` : "Tie game, everyone loses!", board];
+    return [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ?  "Tie game, everyone loses!" : `<@${game.players[game.score[0] > game.score[1] ? 0 : 1]}> has won!`, board];
 }
+
+// Images
+
+Images = {};
+
+Canvas.loadImage("./img/gameAssets/squares/board.png").then(image => {
+    Images.board = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/black.png").then(image => {
+    Images.black = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/white.png").then(image => {
+    Images.white = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/blackText.png").then(image => {
+    Images.blackText = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/whiteText.png").then(image => {
+    Images.whiteText = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/turn.png").then(image => {
+    Images.turn = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/win.png").then(image => {
+    Images.win = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/highlight.png").then(image => {
+    Images.highlight = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/tie.png").then(image => {
+    Images.tie = image;
+});
+
+Images.numbers = [];
+Canvas.loadImage("./img/gameAssets/square/numbers/0.png").then(image => {
+    Images.numbers.push(image);
+});
+Canvas.loadImage("./img/gameAssets/square/numbers/1.png").then(image => {
+    Images.numbers.push(image);
+});
+Canvas.loadImage("./img/gameAssets/square/numbers/2.png").then(image => {
+    Images.numbers.push(image);
+});
+Canvas.loadImage("./img/gameAssets/square/numbers/3.png").then(image => {
+    Images.numbers.push(image);
+});
+Canvas.loadImage("./img/gameAssets/square/numbers/4.png").then(image => {
+    Images.numbers.push(image);
+});
+Canvas.loadImage("./img/gameAssets/square/numbers/5.png").then(image => {
+    Images.numbers.push(image);
+});
+Canvas.loadImage("./img/gameAssets/square/numbers/6.png").then(image => {
+    Images.numbers.push(image);
+});
+Canvas.loadImage("./img/gameAssets/square/numbers/7.png").then(image => {
+    Images.numbers.push(image);
+});
+Canvas.loadImage("./img/gameAssets/square/numbers/8.png").then(image => {
+    Images.numbers.push(image);
+});
+Canvas.loadImage("./img/gameAssets/square/numbers/9.png").then(image => {
+    Images.numbers.push(image);
+});

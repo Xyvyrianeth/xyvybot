@@ -17,7 +17,7 @@ var timer = setInterval(function() {
             {
                 client.guilds.get(channels[channel].guild).channels.get(channel).send(channels[channel].timer.message);
             }
-            delete channels[i];
+            delete channels[channel];
         }
     }
 }, 100);
