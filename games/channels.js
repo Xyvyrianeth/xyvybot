@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const { client } = require("/app/Xyvy.js");
 
 var channels = {}; // Leave blank
 
