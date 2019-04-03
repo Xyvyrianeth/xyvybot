@@ -88,12 +88,12 @@ exports.drawBoard = function(game, end, highlight) {
         ctx.drawImage(Images.tie, 14, 4);
     }
 
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0].length)) + game.score[0])[0]], 186, 5);
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0].length)) + game.score[0])[1]], 195, 5);
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0].length)) + game.score[0])[2]], 204, 5);
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1].length)) + game.score[1])[0]], 219, 5);
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1].length)) + game.score[1])[1]], 228, 5);
-    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1].length)) + game.score[1])[2]], 237, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 186, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 195, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[2]], 204, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 219, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 228, 5);
+    ctx.drawImage(Images[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]], 237, 5);
 }
   
 exports.takeTurn = function(channel, Move) {
