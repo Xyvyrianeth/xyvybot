@@ -188,16 +188,16 @@ Canvas.loadImage("./img/gameAssets/connect4/board.png").then(image => {
     exports.Images.board = image;
 });
 Canvas.loadImage("./img/gameAssets/connect4/red.png").then(image => {
-    exports.Images.black = image;
+    exports.Images.red = image;
 });
 Canvas.loadImage("./img/gameAssets/connect4/blue.png").then(image => {
-    exports.Images.white = image;
+    exports.Images.blue = image;
 });
 Canvas.loadImage("./img/gameAssets/connect4/redText.png").then(image => {
-    exports.Images.blackText = image;
+    exports.Images.redText = image;
 });
 Canvas.loadImage("./img/gameAssets/connect4/blueText.png").then(image => {
-    exports.Images.whiteText = image;
+    exports.Images.blueText = image;
 });
 Canvas.loadImage("./img/gameAssets/connect4/turn.png").then(image => {
     exports.Images.turn = image;
@@ -209,7 +209,7 @@ Canvas.loadImage("./img/gameAssets/connect4/highlight.png").then(image => {
     exports.Images.highlight = image;
 });
 Canvas.loadImage("./img/gameAssets/connect4/winHighlight.png").then(image => {
-    exports.Images.highlight = image;
+    exports.Images.winHighlight = image;
 });
 Canvas.loadImage("./img/gameAssets/connect4/tie.png").then(image => {
     exports.Images.tie = image;
