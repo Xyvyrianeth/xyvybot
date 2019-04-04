@@ -50,20 +50,6 @@ exports.drawBoard = function(game, end, highlight) {
     let ctx = canvas.getContext('2d');
       
     ctx.drawImage(exports.Images.board, 0, 0);
-    for (let x = 0; x < 10; x++)
-    {
-        for (let y = 0; y < 10; y++)
-        {
-            if (end === 0 && highlight !== false && highlight[0] == x && highlight[1] == (y + 10).toString(20))
-            {
-                ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
-            }
-            if (game.board[x][y] !== false)
-            {
-                ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
-            }
-        }
-    }
 
     if (end === 0)
     {
@@ -80,6 +66,21 @@ exports.drawBoard = function(game, end, highlight) {
     if (end === 2)
     {
         ctx.drawImage(exports.Images.tie, 14, 4);
+    }
+    
+    for (let x = 0; x < 10; x++)
+    {
+        for (let y = 0; y < 10; y++)
+        {
+            if (end === 0 && highlight !== false && highlight[0] == x && highlight[1] == (y + 10).toString(20))
+            {
+                ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
+            }
+            if (game.board[x][y] !== false)
+            {
+                ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
+            }
+        }
     }
 
     ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 186, 3);

@@ -36,101 +36,45 @@ exports.startGame = function(channel, player2) {
 }
  
 exports.drawBoard = function(game, end, highlight) {
-    let canvas = new Canvas.createCanvas(220, 225);
+    let canvas = new Canvas.createCanvas(184, 195);
     let ctx = canvas.getContext("2d");
      
-    // Function will vary with game
-    ctx.textAlign = "center";
-    for (let i = 7; i--;)
+    ctx.drawImage(exports.Images.board, 0, 0);
+
+    if (end == 0)
     {
-        ctx.fillText(i + 1, (i + 1) * 30 - 10, 218);
-    }
-    ctx.textAlign = "start";
- 
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgba(200, 200, 200, 0.25)";
-    ctx.beginPath();
-    for (let i = 7; i--;)
-    {
-        k = i * 30 + 20;
-        for (let x = 6; x--;)
-        {
-            c = 220 - ((x + 1) * 30);
-            ctx.moveTo(k + 7, c);
-            ctx.arc(k, c, 7, 0, 2 * Math.PI);
-        }
-    }
-    ctx.stroke();
-    for (let i = game.board.length; i--;)
-    {
-        k = i * 30 + 20;
-        for (let x = 0; x < game.board[i].length; x++)
-        {
-            c = 220 - ((x + 1) * 30);
-            ctx.beginPath();
-            ctx.moveTo(k + 10, c);
-            ctx.strokeStyle = game.board[i][x] == 0 ? "#800" : "#008";
-            ctx.fillStyle = game.board[i][x] == 0 ? "#f00" : "#00f";
-            ctx.arc(k, c, 9, 0, 2 * Math.PI);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.moveTo(k - 7, c + 3);
-            ctx.strokeStyle = "rgba(200, 200, 200, 0.5)";
-            ctx.arc(k, c, 8, 0.875 * Math.PI, 1.625 * Math.PI);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(k - 8, c);
-            ctx.arc(k, c, 7, 1 * Math.PI, 1.5 * Math.PI);
-            ctx.stroke();
-        }
-        ctx.beginPath();
-        ctx.strokeStyle = game.board[i].length < 6 ? "#bb0" : "#a00";
-        ctx.rect(k - 11, 204, 22, 0);
-        ctx.stroke();
-    }
-    ctx.textBaseline = "hanging";
-    if (end < 2)
-    {
-        ctx.fillStyle = game.turn == 0 ? "#c00" : "#00c";
-        ctx.font = "bold 20px calibri";
-        n = game.turn == 0 ? "Red" : "Blue";
-        k = ctx.measureText(n).width;
-        ctx.fillText(n, 5, 5);
-        ctx.font = "20px calibri";
-        if (end == 0)
-        {
-            ctx.fillText("'s turn.", k + 5, 5);
-            if (highlight)
-            {
-                ctx.strokeStyle = "#ff8";
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(highlight[0] * 30 + 30, 220 - ((highlight[1] + 1) * 30));
-                ctx.arc(highlight[0] * 30 + 20, 220 - ((highlight[1] + 1) * 30), 10.5, 0, 2 * Math.PI);
-                ctx.stroke();
-            }
-        }
-        if (end == 1)
-        {
-            ctx.fillText(" has won!", k + 5, 5);
-            ctx.strokeStyle = "#8f8";
-            ctx.lineWidth = 2;
-            for (let i = 0; i < 4; i++)
-            {
-                ctx.beginPath();
-                ctx.moveTo(highlight[i][0] * 30 + 30, 220 - ((highlight[i][1] + 1) * 30));
-                ctx.arc(highlight[i][0] * 30 + 20, 220 - ((highlight[i][1] + 1) * 30), 11, 0, 2 * Math.PI);
-                ctx.stroke();
-            }
-        }
+        ctx.drawBoard(exports.Images[["red", "blue"][game.turn] + "Text"], 8, 4);
+        ctx.drawBoard(exports.Images.turn, 45 + (13 * game.turn), 5);
     }
     else
+    if (end == 1)
     {
-        ctx.fillStyle = "#222";
-        ctx.font = "20px calibri";
-        ctx.fillText("Tie game!", 5, 5);
+        ctx.drawBoard(exports.Images[["red", "blue"][game.turn] + "Text"], 8, 4);
+        ctx.drawBoard(exports.Images.win, 51 + (13 * game.turn), 5);
     }
-    //
+    else
+    if (end == 2)
+    {
+        ctx.drawBoard(exports.Images.tie, 8, 7);
+    }
+
+    for (let i = 0; i < 7; i++)
+    {
+        for (let ii = 0; ii < game.board[i].length; ii++)
+        {
+            ctx.drawBoard(exports.Images[["red", "blue"][game.board[i][ii]]], 30 + (25 * (5 - ii)), 6 + (25 * i));
+            
+            if (end === 1 && highlight.filter(x => { return x[0] == i && x[1] == ii; }).length == 1)
+            {
+                ctx.drawBoard(exports.Images.winHighlight, 30 + (25 * (5 - ii)), 6 + (25 * i));
+            }
+        }
+
+        if (end === 0 && highlight !== false && highlight == i)
+        {
+            ctx.drawBoard(exports.Images.highlight, 30 + (25 * (5 - game.board[i].length)), 6 + (25 * i))
+        }
+    }
      
     return canvas.toBuffer();
 }
@@ -146,7 +90,7 @@ exports.takeTurn = function(channel, move) {
     }
 
     game.board[x].push(game.turn);
-    let row = [x, game.board[x].length - 1];
+    let highlight = x;
  
     let end = 2;
     for (let i = 7; i--;)
@@ -165,19 +109,19 @@ exports.takeTurn = function(channel, move) {
             {
                 if (game.board[i][x] == game.turn && game.board[i + 1][x] == game.turn && game.board[i + 2][x] == game.turn && game.board[i + 3][x] == game.turn)
                 {
-                    row = [[i, x], [i + 1, x], [i + 2, x], [i + 3, x]];
+                    highlight = [[i, x], [i + 1, x], [i + 2, x], [i + 3, x]];
                     end = 1;
                     break;
                 }
                 if (game.board[i][x] == game.turn && game.board[i + 1][x + 1] == game.turn && game.board[i + 2][x + 2] == game.turn && game.board[i + 3][x + 3] == game.turn)
                 {
-                    row = [[i, x], [i + 1, x + 1], [i + 2, x + 2], [i + 3, x + 3]];
+                    highlight = [[i, x], [i + 1, x + 1], [i + 2, x + 2], [i + 3, x + 3]];
                     end = 1;
                     break;
                 }
                 if (game.board[i][x] == game.turn && game.board[i][x + 1] == game.turn && game.board[i][x + 2] == game.turn && game.board[i][x + 3] == game.turn)
                 {
-                    row = [[i, x], [i, x + 1], [i, x + 2], [i, x + 3]];
+                    highlight = [[i, x], [i, x + 1], [i, x + 2], [i, x + 3]];
                     end = 1;
                     break;
                 }
@@ -186,19 +130,19 @@ exports.takeTurn = function(channel, move) {
             {
                 if (game.board[i][x] == game.turn && game.board[i + 1][x] == game.turn && game.board[i + 2][x] == game.turn && game.board[i + 3][x] == game.turn)
                 {
-                    row = [[i, x], [i + 1, x], [i + 2, x], [i + 3, x]];
+                    highlight = [[i, x], [i + 1, x], [i + 2, x], [i + 3, x]];
                     end = 1;
                     break;
                 }
                 if (game.board[i][x] == game.turn && game.board[i + 1][x - 1] == game.turn && game.board[i + 2][x - 2] == game.turn && game.board[i + 3][x - 3] == game.turn)
                 {
-                    row = [[i, x], [i + 1, x - 1], [i + 2, x - 2], [i + 3, x - 3]];
+                    highlight = [[i, x], [i + 1, x - 1], [i + 2, x - 2], [i + 3, x - 3]];
                     end = 1;
                     break;
                 }
                 if (game.board[i][x] == game.turn && game.board[i][x - 1] == game.turn && game.board[i][x - 2] == game.turn && game.board[i][x - 3] == game.turn)
                 {
-                    row = [[i, x], [i, x - 1], [i, x - 2], [i, x - 3]];
+                    highlight = [[i, x], [i, x - 1], [i, x - 2], [i, x - 3]];
                     end = 1;
                     break;
                 }
@@ -212,7 +156,7 @@ exports.takeTurn = function(channel, move) {
         game.winner = game.turn;
     }
      
-    return exports.nextTurn(channel, end, row);
+    return exports.nextTurn(channel, end, highlight);
 }
  
 exports.nextTurn = function(channel, end, highlight) {
@@ -235,3 +179,38 @@ exports.nextTurn = function(channel, end, highlight) {
     
     return [end == 0 ? `It is <@${game.player}>'s turn` : end == 1 ? `<@${game.player}> has won!` : `Tie game, everyone loses!`, board];
 }
+
+// Images
+
+exports.Images = {};
+
+Canvas.loadImage("./img/gameAssets/connect4/board.png").then(image => {
+    exports.Images.board = image;
+});
+Canvas.loadImage("./img/gameAssets/connect4/red.png").then(image => {
+    exports.Images.black = image;
+});
+Canvas.loadImage("./img/gameAssets/connect4/blue.png").then(image => {
+    exports.Images.white = image;
+});
+Canvas.loadImage("./img/gameAssets/connect4/redText.png").then(image => {
+    exports.Images.blackText = image;
+});
+Canvas.loadImage("./img/gameAssets/connect4/blueText.png").then(image => {
+    exports.Images.whiteText = image;
+});
+Canvas.loadImage("./img/gameAssets/connect4/turn.png").then(image => {
+    exports.Images.turn = image;
+});
+Canvas.loadImage("./img/gameAssets/connect4/win.png").then(image => {
+    exports.Images.win = image;
+});
+Canvas.loadImage("./img/gameAssets/connect4/highlight.png").then(image => {
+    exports.Images.highlight = image;
+});
+Canvas.loadImage("./img/gameAssets/connect4/winHighlight.png").then(image => {
+    exports.Images.highlight = image;
+});
+Canvas.loadImage("./img/gameAssets/connect4/tie.png").then(image => {
+    exports.Images.tie = image;
+});

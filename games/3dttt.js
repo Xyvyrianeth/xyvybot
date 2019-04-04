@@ -64,31 +64,6 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
 
     ctx.drawImage(exports.Images.board, 0, 0);
 
-    for (let x = 0; x < 4; x++)
-    {
-        for (let y = 0; y < 4; y++)
-        {
-            for (let z = 0; z < 4; z++)
-            {
-                if (end === 0 && highlight !== false && (x + 1) + (y + 10).toString(14).toUpperCase() + z == highlight)
-                {
-                    ctx.drawImage(exports.Images.highlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
-                }
-                else
-                if (end === 1 && highlight.includes((x + 1) + (y + 10).toString(14).toUpperCase() + z))
-                {
-                    ctx.drawImage(exports.Images.winHighlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
-                }
-                if (game.board[x + 1][(y + 10).toString(14).toUpperCase()][z] !== false)
-                {
-                    ctx.drawImage(exports.Images[
-                        game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()
-                    ], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
-                }
-            }
-        }
-    }
-
     if (end === 0)
     {
         ctx.drawImage(exports.Images["XO"[game.turn] + "turn"], 140, 10);
@@ -107,6 +82,32 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
     if (firstDisp)
     {
         ctx.drawImage(exports.Images.firstDisp, 72, 193);
+    }
+
+    for (let x = 0; x < 4; x++)
+    {
+        for (let y = 0; y < 4; y++)
+        {
+            for (let z = 0; z < 4; z++)
+            {
+                if (game.board[x + 1][(y + 10).toString(14).toUpperCase()][z] !== false)
+                {
+                    ctx.drawImage(exports.Images[
+                        game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()
+                    ], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                }
+                
+                if (end === 0 && highlight !== false && (x + 1) + (y + 10).toString(14).toUpperCase() + z == highlight)
+                {
+                    ctx.drawImage(exports.Images.highlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                }
+                else
+                if (end === 1 && highlight.includes((x + 1) + (y + 10).toString(14).toUpperCase() + z))
+                {
+                    ctx.drawImage(exports.Images.winHighlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                }
+            }
+        }
     }
 
     return canvas.toBuffer();
