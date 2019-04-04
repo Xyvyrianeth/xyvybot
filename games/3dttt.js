@@ -67,7 +67,7 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
     if (end === 0 || end === 1)
     {
         ctx.drawImage(exports.Images["XO"[game.turn] + "text"], 140, 10);
-        ctx.drawImage(exports.Images[end === 0 ? "turn" : "win"], 167, 10);
+        ctx.drawImage(exports.Images[["turn", "win"][end]], 167 + (10 * end), 10 + (2 * end));
     }
     else
     if (end === 2)
