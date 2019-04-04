@@ -64,14 +64,10 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
 
     ctx.drawImage(exports.Images.board, 0, 0);
 
-    if (end === 0)
+    if (end === 0 || end === 1)
     {
-        ctx.drawImage(exports.Images["XO"[game.turn] + "turn"], 140, 10);
-    }
-    else
-    if (end === 1)
-    {
-        ctx.drawImage(exports.Images["XO"[game.turn] + "win"], 140, 10);
+        ctx.drawImage(exports.Images["XO"[game.turn] + "text"], 140, 10);
+        ctx.drawImage(exports.Images[end === 0 ? "turn" : "win"], 167, 10);
     }
     else
     if (end === 2)
@@ -288,17 +284,17 @@ Canvas.loadImage("./img/gameAssets/3dttt/x.png").then(image => {
 Canvas.loadImage("./img/gameAssets/3dttt/o.png").then(image => {
     exports.Images.O = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/Xturn.png").then(image => {
-    exports.Images.Xturn = image;
+Canvas.loadImage("./img/gameAssets/3dttt/Xtext.png").then(image => {
+    exports.Images.Xtext = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/Oturn.png").then(image => {
-    exports.Images.Oturn = image;
+Canvas.loadImage("./img/gameAssets/3dttt/Otext.png").then(image => {
+    exports.Images.Otext = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/Xwin.png").then(image => {
-    exports.Images.Xwin = image;
+Canvas.loadImage("./img/gameAssets/3dttt/turn.png").then(image => {
+    exports.Images.turn = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/Owin.png").then(image => {
-    exports.Images.Owin = image;
+Canvas.loadImage("./img/gameAssets/3dttt/win.png").then(image => {
+    exports.Images.win = image;
 });
 Canvas.loadImage("./img/gameAssets/3dttt/highlight.png").then(image => {
     exports.Images.highlight = image;
