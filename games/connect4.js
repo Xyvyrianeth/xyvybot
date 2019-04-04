@@ -43,36 +43,36 @@ exports.drawBoard = function(game, end, highlight) {
 
     if (end == 0)
     {
-        ctx.drawBoard(exports.Images[["red", "blue"][game.turn] + "Text"], 8, 4);
-        ctx.drawBoard(exports.Images.turn, 45 + (13 * game.turn), 5);
+        ctx.drawImage(exports.Images[["red", "blue"][game.turn] + "Text"], 8, 4);
+        ctx.drawImage(exports.Images.turn, 45 + (13 * game.turn), 5);
     }
     else
     if (end == 1)
     {
-        ctx.drawBoard(exports.Images[["red", "blue"][game.turn] + "Text"], 8, 4);
-        ctx.drawBoard(exports.Images.win, 51 + (13 * game.turn), 5);
+        ctx.drawImage(exports.Images[["red", "blue"][game.turn] + "Text"], 8, 4);
+        ctx.drawImage(exports.Images.win, 51 + (13 * game.turn), 5);
     }
     else
     if (end == 2)
     {
-        ctx.drawBoard(exports.Images.tie, 8, 7);
+        ctx.drawImage(exports.Images.tie, 8, 7);
     }
 
     for (let i = 0; i < 7; i++)
     {
         for (let ii = 0; ii < game.board[i].length; ii++)
         {
-            ctx.drawBoard(exports.Images[["red", "blue"][game.board[i][ii]]], 30 + (25 * (5 - ii)), 6 + (25 * i));
+            ctx.drawImage(exports.Images[["red", "blue"][game.board[i][ii]]], 30 + (25 * (5 - ii)), 6 + (25 * i));
             
             if (end === 1 && highlight.filter(x => { return x[0] == i && x[1] == ii; }).length == 1)
             {
-                ctx.drawBoard(exports.Images.winHighlight, 30 + (25 * (5 - ii)), 6 + (25 * i));
+                ctx.drawImage(exports.Images.winHighlight, 30 + (25 * (5 - ii)), 6 + (25 * i));
             }
         }
 
         if (end === 0 && highlight !== false && highlight == i)
         {
-            ctx.drawBoard(exports.Images.highlight, 30 + (25 * (5 - game.board[i].length)), 6 + (25 * i))
+            ctx.drawImage(exports.Images.highlight, 30 + (25 * (5 - game.board[i].length)), 6 + (25 * i))
         }
     }
      
