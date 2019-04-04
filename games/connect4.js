@@ -50,7 +50,7 @@ exports.drawBoard = function(game, end, highlight) {
     if (end == 1)
     {
         ctx.drawImage(exports.Images[["red", "blue"][game.turn] + "Text"], 8, 4);
-        ctx.drawImage(exports.Images.win, 51 + (13 * game.turn), 5);
+        ctx.drawImage(exports.Images.win, 51 + (13 * game.turn), 7);
     }
     else
     if (end == 2)
