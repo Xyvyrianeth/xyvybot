@@ -62,17 +62,17 @@ exports.drawBoard = function(game, end, highlight) {
     {
         for (let ii = 0; ii < game.board[i].length; ii++)
         {
-            ctx.drawImage(exports.Images[["red", "blue"][game.board[i][ii]]], 30 + (25 * i), 6 + (25 * (5 - ii)));
+            ctx.drawImage(exports.Images[["red", "blue"][game.board[i][ii]]], 29 + (25 * i), 7 + (25 * (5 - ii)));
             
             if (end === 1 && highlight.filter(x => { return x[0] == i && x[1] == ii; }).length == 1)
             {
-                ctx.drawImage(exports.Images.winHighlight, 30 + (25 * i), 6 + (25 * (5 - ii)));
+                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * i), 30 + (25 * (5 - ii)));
             }
         }
 
         if (end === 0 && highlight !== false && highlight == i)
         {
-            ctx.drawImage(exports.Images.highlight, 30 + (25 * i), 6 + (25 * (6 - game.board[i].length)))
+            ctx.drawImage(exports.Images.highlight, 6 + (25 * i), 30 + (25 * (6 - game.board[i].length)));
         }
     }
      
