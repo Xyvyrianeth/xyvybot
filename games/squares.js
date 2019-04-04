@@ -72,7 +72,10 @@ exports.drawBoard = function(game, end, highlight) {
     {
         for (let y = 0; y < 10; y++)
         {
-            if (end === 0 && highlight !== false && highlight[0] == x && highlight[1] == (y + 10).toString(20))
+            if (end === 0 && 
+                (highlight !== false && highlight[0] == x && highlight[1] == y) ||
+                (game.highlight !== false && game.highlight[0] == x && game.highlight[1] == y)
+            )
             {
                 ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
             }
@@ -143,6 +146,15 @@ exports.takeTurn = function(channel, Move) {
                 }
             }
         }
+    }
+
+    if (game.turn == Math.floor(game.turn))
+    {
+        game.highlight = highlight;
+    }
+    else
+    {
+        game.highlight = false;
     }
     
     if (end !== 0)
