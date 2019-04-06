@@ -66,9 +66,9 @@ exports.drawProfile = function(member, profile, avatar, background) {
         let data = tectx.getImageData(0, 0, text[1], 11);
         for (let x = 0; x < data.data.length; x += 4)
         {
-            data.data[x]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)
-            data.data[x + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)
-            data.data[x + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)
+            data.data[x]     = Math.round(color.r - ((color.r - val) / 2));
+            data.data[x + 1] = Math.round(color.g - ((color.g - val) / 2));
+            data.data[x + 2] = Math.round(color.b - ((color.b - val) / 2));
             data.data[x + 3] /= 2;
         }
         if (text[1] > [120, 105, 103][i] + h)
