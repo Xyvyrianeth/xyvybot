@@ -219,48 +219,48 @@ exports.Images = {};
 Canvas.loadImage("/app/img/profileAssets/alphabet.png").then(image => {
     let canvas = new Canvas.createCanvas();
     let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(image, 64, 132);
     exports.Images.alphabet = canvas;
 });
 Canvas.loadImage("/app/img/profileAssets/border.png").then(image => {
     let canvas = new Canvas.createCanvas();
     let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(image, 154, 132);
     exports.Images.border = ctx.getImageData(0, 0, 154, 132);
 });
 Canvas.loadImage("/app/img/profileAssets/borderback.png").then(image => {
     let canvas = new Canvas.createCanvas();
     let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(image, 154, 132);
     exports.Images.borderback = ctx.getImageData(0, 0, 154, 132);
 });
 Canvas.loadImage("/app/img/profileAssets/corner.png").then(image => {
     let canvas = new Canvas.createCanvas();
     let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(image, 33, 47);
     exports.Images.corner = ctx.getImageData(0, 0, 33, 47);
 });
 Canvas.loadImage("/app/img/profileAssets/cornerback.png").then(image => {
     let canvas = new Canvas.createCanvas();
     let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(image, 33, 47);
     exports.Images.cornerback = ctx.getImageData(0, 0, 33, 47);
 });
 Canvas.loadImage("/app/img/profileAssets/extend.png").then(image => {
     let canvas = new Canvas.createCanvas();
     let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(image, 1, 47);
     exports.Images.extend = ctx.getImageData(0, 0, 1, 47);
 });
 Canvas.loadImage("/app/img/profileAssets/extendback.png").then(image => {
     let canvas = new Canvas.createCanvas();
     let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(image, 1, 47);
     exports.Images.extendback = ctx.getImageData(0, 0, 1, 47);
 });
 Canvas.loadImage("/app/img/profileAssets/preText.png").then(image => {
     let canvas = new Canvas.createCanvas();
     let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(image, 134, 64);
     exports.Images.preText = ctx.getImageData(0, 0, 134, 64);
 });
