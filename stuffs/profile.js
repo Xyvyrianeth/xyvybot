@@ -25,7 +25,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
         [width, height] = [background.width, background.height];
     }
 
-    let canvas = new Canvas.createCanvas(width, height);
+    let canvas = new Canvas.createCanvas(parseInt(width), parseInt(height));
     let ctx = canvas.getContext('2d');
 
     let color = new Color(profile.color);        
