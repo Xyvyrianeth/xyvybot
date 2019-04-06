@@ -9,23 +9,26 @@ exports.drawProfile = function(member, profile, avatar, background) {
     {
         if (background.height / background.width == 0.75)
         {
-            [width, height] = [400, 300];
+            width = 400;
+            height = 300;
         }
         if (height / width <  0.75)
         {
-            [width, height] = [400, Math.round(background.height / background.width * 400)];
+            width = 400;
+            height = Math.round(background.height / background.width * 400);
         }
         if (height / width >  0.75)
         {
-            [width, height] = [Math.round(background.width / background.height * 300), 300];
+            width = Math.round(background.width / background.height * 300);
+            height = 300;
         }
     }
     else
     {
-        [width, height] = [background.width, background.height];
+        width = background.width;
+        height = background.height;
     }
 
-    console.log(width + ' ' + height);
     let canvas = new Canvas.createCanvas(width, height);
     let ctx = canvas.getContext('2d');
 
