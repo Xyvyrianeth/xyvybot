@@ -96,7 +96,7 @@ function getWidth(text) {
     let canvasA = new Canvas.createCanvas(64, 132)
     let Alphabet = canvasA.getContext("2d")
     Alphabet.drawImage(exports.Images.alphabet, 0, 0);
-    
+
     let canvasB = new Canvas.createCanvas(334, 11);
     let ctx = canvasB.getContext('2d');
     let h = 0;
@@ -207,9 +207,9 @@ function getWidth(text) {
         if (alphabet.hasOwnProperty(a))
         {
             let A = alphabet[a];
-            Alphabet.getImageData(A[0] * 8, A[1] * 11, A[2], 11);
+            let letter = Alphabet.getImageData(A[0] * 8, A[1] * 11, A[2], 11);
             if (A[3]) h -= 1;
-            ctx.putImageData(0, h, A[2], 11);
+            ctx.putImageData(letter, 0, h, A[2], 11);
             h += A[2];
         }
     }
