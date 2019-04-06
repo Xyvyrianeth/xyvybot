@@ -35,9 +35,13 @@ exports.drawProfile = function(member, profile, avatar, background) {
     let assets = [];
     for (let img = 0; img < 7; img++)
     {
-        let border = exports.Images[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
+        let w = [154, 154, 33, 33, 1, 1, 134][img];
+        let h = [132, 132, 47, 47, 47, 47, 64][img]
+        let image = exports.Images[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
+        let border = new Canvas.createCanvas(w, h);
         let bdrctx = border.getContext('2d');
-        let data = bdrctx.getImageData(0, 0, [154, 154, 33, 33, 1, 1, 134][img], [132, 132, 47, 47, 47, 47, 64][img]);
+        bdrctx.drawImage(image, 0, 0);
+        let data = bdrctx.getImageData(0, 0, w, h);
         for (let i = 0; i < data.data.length; i += 4)
         {
             if (img == 6)
@@ -70,8 +74,10 @@ exports.drawProfile = function(member, profile, avatar, background) {
     let texts = [];
     for (let i = 0; i < 3; i++)
     {
-        texts.push(getWidth([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]));
-        let tectx = texts[i][0].getContext('2d');
+        text = getWidth([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]);
+        let Text = new Canvas.createCanvas(text[1], 11);
+        let tectx = Text.getContext('2d');
+        tectx.drawImage(text[0], 0, 0);
         let data = tectx.getImageData(0, 0, texts[i][1], 11);
         for (let x = 0; x < data.data.length; x += 4)
         {
@@ -80,11 +86,12 @@ exports.drawProfile = function(member, profile, avatar, background) {
             data.data[x + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)
             data.data[x + 3] /= 2;
         }
-        if (texts[i][1] > [120, 105, 103][i] + h)
+        if (texts[1] > [120, 105, 103][i] + h)
         {
-            h = texts[i][1] - [120, 105, 103][i];
+            h = text[1] - [120, 105, 103][i];
         }
         tectx.putImageData(data, 0, 0);
+        texts.push(Text);
     }
 
     ctx.drawImage(background, 0, 0, width, height);
@@ -99,7 +106,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
     ctx.drawImage(assets[3], 152 + h, 0);
     for (let i = 0; i < 3; i++)
     {
-        ctx.drawImage(texts[i][0], 48, 3 + (15 * i));
+        ctx.drawImage(texts[i], 48, 3 + (15 * i));
     }
     ctx.drawImage(assets[6], 16, 49);
     ctx.drawImage(avatar, 2, 2, 43, 43);
@@ -233,50 +240,26 @@ function getWidth(text) {
 
 exports.Images = {};
 Canvas.loadImage("/app/img/profileAssets/alphabet.png").then(image => {
-    let canvas = new Canvas.createCanvas(64, 132);
-    let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 64, 132);
-    exports.Images.alphabet = canvas;
+    exports.Images.alphabet = image;
 });
 Canvas.loadImage("/app/img/profileAssets/border.png").then(image => {
-    let canvas = new Canvas.createCanvas(154, 132);
-    let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 154, 132);
-    exports.Images.border = canvas;
+    exports.Images.border = image;
 });
 Canvas.loadImage("/app/img/profileAssets/borderback.png").then(image => {
-    let canvas = new Canvas.createCanvas(154, 132);
-    let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 154, 132);
-    exports.Images.borderback = canvas;
+    exports.Images.borderback = image;
 });
 Canvas.loadImage("/app/img/profileAssets/corner.png").then(image => {
-    let canvas = new Canvas.createCanvas(33, 47);
-    let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 33, 47);
-    exports.Images.corner = canvas;
+    exports.Images.corner = image;
 });
 Canvas.loadImage("/app/img/profileAssets/cornerback.png").then(image => {
-    let canvas = new Canvas.createCanvas(33, 47);
-    let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 33, 47);
-    exports.Images.cornerback = canvas;
+    exports.Images.cornerback = image;
 });
 Canvas.loadImage("/app/img/profileAssets/extend.png").then(image => {
-    let canvas = new Canvas.createCanvas(1, 47);
-    let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 1, 47);
-    exports.Images.extend = canvas;
+    exports.Images.extend = image;
 });
 Canvas.loadImage("/app/img/profileAssets/extendback.png").then(image => {
-    let canvas = new Canvas.createCanvas(1, 47);
-    let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 1, 47);
-    exports.Images.extendback = canvas;
+    exports.Images.extendback = image;
 });
 Canvas.loadImage("/app/img/profileAssets/preText.png").then(image => {
-    let canvas = new Canvas.createCanvas(134, 64);
-    let ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 134, 64);
-    exports.Images.preText = canvas;
+    exports.Images.preText = image;
 });
