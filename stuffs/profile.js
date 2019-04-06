@@ -29,6 +29,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
         height = background.height;
     }
 
+    console.log(background.width + ' ' + background.height);
     console.log(width + ' ' + height);
     let canvas = new Canvas.createCanvas(width, height);
     let ctx = canvas.getContext('2d');
