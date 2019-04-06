@@ -199,7 +199,7 @@ function getWidth(text) {
         '`': [7, 11, 4, false],
     };
 
-    for (let i = 0; i < a.length; i++) {
+    for (let i = 0; i < text.length; i++) {
         let a = text.split('')[i];
         if (alphabet.hasOwnProperty(a))
         {
