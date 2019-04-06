@@ -8,24 +8,24 @@ exports.drawProfile = function(member, profile, avatar, background) {
     let ctx = canvas.getContext('2d');
 
     let width, height;
-    if (image.height > 300 || image.width > 400)
+    if (background.height > 300 || background.width > 400)
     {
-        if (image.height / image.width == 0.75)
+        if (background.height / background.width == 0.75)
         {
             [width, height] = [400, 300];
         }
         if (height / width <  0.75)
         {
-            [width, height] = [400, Math.round(image.height / image.width * 400)];
+            [width, height] = [400, Math.round(background.height / background.width * 400)];
         }
         if (height / width >  0.75)
         {
-            [width, height] = [Math.round(image.width / image.height * 300), 300];
+            [width, height] = [Math.round(background.width / background.height * 300), 300];
         }
     }
     else
     {
-        [width, height] = [image.width, image.height];
+        [width, height] = [background.width, background.height];
     }
 
     let color = new Color(profile.color);        
