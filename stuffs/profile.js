@@ -12,12 +12,12 @@ exports.drawProfile = function(member, profile, avatar, background) {
             width = 400;
             height = 300;
         }
-        if (height / width <  0.75)
+        if (background.height / background.width <  0.75)
         {
             width = 400;
             height = Math.round(background.height / background.width * 400);
         }
-        if (height / width >  0.75)
+        if (background.height / background.width >  0.75)
         {
             width = Math.round(background.width / background.height * 300);
             height = 300;
@@ -28,9 +28,6 @@ exports.drawProfile = function(member, profile, avatar, background) {
         width = background.width;
         height = background.height;
     }
-
-    console.log(background.width + ' ' + background.height);
-    console.log(width + ' ' + height);
     let canvas = new Canvas.createCanvas(width, height);
     let ctx = canvas.getContext('2d');
 
