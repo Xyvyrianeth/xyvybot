@@ -3,95 +3,93 @@ const {Color} = require('/app/stuffs/color.js');
 var titles = require('/app/stuffs/titles.json');
 
 
-exports.drawProfile = function(member, profile, avatar) {
-    Canvas.loadImage('/app/img/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then(image => {
-        let canvas = new Canvas.createCanvas();
-        let ctx = canvas.getContext('2d');
+exports.drawProfile = function(member, profile, avatar, background) {
+    let canvas = new Canvas.createCanvas();
+    let ctx = canvas.getContext('2d');
 
-        let width, height;
-        if (image.height > 300 || image.width > 400)
+    let width, height;
+    if (image.height > 300 || image.width > 400)
+    {
+        if (image.height / image.width == 0.75)
         {
-            if (image.height / image.width == 0.75)
-            {
-                [width, height] = [400, 300];
-            }
-            if (height / width <  0.75)
-            {
-                [width, height] = [400, Math.round(image.height / image.width * 400)];
-            }
-            if (height / width >  0.75)
-            {
-                [width, height] = [Math.round(image.width / image.height * 300), 300];
-            }
+            [width, height] = [400, 300];
         }
-        else
+        if (height / width <  0.75)
         {
-            [width, height] = [image.width, image.height];
+            [width, height] = [400, Math.round(image.height / image.width * 400)];
         }
-        ctx.drawImage(image, 0, 0, width, height);
+        if (height / width >  0.75)
+        {
+            [width, height] = [Math.round(image.width / image.height * 300), 300];
+        }
+    }
+    else
+    {
+        [width, height] = [image.width, image.height];
+    }
 
-        let color = new Color(profile.color);        
-        let assets = [];
-        for (let img = 0; img < 6; img++)
+    let color = new Color(profile.color);        
+    let assets = [];
+    for (let img = 0; img < 6; img++)
+    {
+        let border = exports.Images[["border", "borderback", "corner", "cornerback", "extend", "extendback"][img]];
+        for (let i = 0; i < border.data.length; i += 4)
         {
-            let border = exports.Images[["border", "borderback", "corner", "cornerback", "extend", "extendback"][img]];
-            for (let i = 0; i < border.data.length; i += 4)
+            if (img % 2 == 0)
             {
-                if (img % 2 == 0)
-                {
-                    border.data[i]     = Math.floor(color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r) - 20;
-                    border.data[i + 1] = Math.floor(color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g) - 20;
-                    border.data[i + 2] = Math.floor(color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b) - 20;
-                    border.data[i + 3] /= 2;
-                }
-                else
-                {
-                    border.data[i]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r);
-                    border.data[i + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g);
-                    border.data[i + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b);
-                    border.data[i + 3] /= 2;
-                }
+                border.data[i]     = Math.floor(color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r) - 20;
+                border.data[i + 1] = Math.floor(color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g) - 20;
+                border.data[i + 2] = Math.floor(color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b) - 20;
+                border.data[i + 3] /= 2;
             }
-            assets.push(border);
-        }
-
-        // Text
-        let h = 0;
-        let texts = [];
-        for (let i = 0; i < 3; i++)
-        {
-            texts.push(getWidth([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]));
-            for (let x = 0; x < texts[i][0].data.length; x += 4)
+            else
             {
-                texts[i][0].data[x]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)
-                texts[i][0].data[x + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)
-                texts[i][0].data[x + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)
-                texts[i][0].data[x + 3] /= 2;
-            }
-            if (texts[i][1] > [120, 105, 103][i] + h)
-            {
-                h = texts[i][1] - [120, 105, 103][i];
+                border.data[i]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r);
+                border.data[i + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g);
+                border.data[i + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b);
+                border.data[i + 3] /= 2;
             }
         }
+        assets.push(border);
+    }
 
-        ctx.putImageData(assets[0], 0, 0, 154, 132);
-        ctx.putImageData(assets[1], 0, 0, 154, 132);
-        for (let i = 0; i < h; i++)
+    // Text
+    let h = 0;
+    let texts = [];
+    for (let i = 0; i < 3; i++)
+    {
+        texts.push(getWidth([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]));
+        for (let x = 0; x < texts[i][0].data.length; x += 4)
         {
-            ctx.putImageData(assets[4], i, 0, 1, 47);
-            ctx.putImageData(assets[5], i, 0, 1, 47);
+            texts[i][0].data[x]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)
+            texts[i][0].data[x + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)
+            texts[i][0].data[x + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)
+            texts[i][0].data[x + 3] /= 2;
         }
-        ctx.putImageData(assets[2], 152 + h, 0, 33, 47);
-        ctx.putImageData(assets[3], 152 + h, 0, 33, 47);
-        for (let i = 0; i < 3; i++)
+        if (texts[i][1] > [120, 105, 103][i] + h)
         {
-            ctx.putImageData(texts[i][0], 48, 3 + (15 * i), texts[i][1], 11);
+            h = texts[i][1] - [120, 105, 103][i];
         }
-        ctx.putImageData(exports.Images.preText, 16, 49, 134, 64);
-        ctx.drawImage(avatar, 2, 2, 43, 43);
+    }
 
-        return canvas.toBuffer();
-    });
+    ctx.drawImage(background, 0, 0, width, height);
+    ctx.putImageData(assets[0], 0, 0, 154, 132);
+    ctx.putImageData(assets[1], 0, 0, 154, 132);
+    for (let i = 0; i < h; i++)
+    {
+        ctx.putImageData(assets[4], i, 0, 1, 47);
+        ctx.putImageData(assets[5], i, 0, 1, 47);
+    }
+    ctx.putImageData(assets[2], 152 + h, 0, 33, 47);
+    ctx.putImageData(assets[3], 152 + h, 0, 33, 47);
+    for (let i = 0; i < 3; i++)
+    {
+        ctx.putImageData(texts[i][0], 48, 3 + (15 * i), texts[i][1], 11);
+    }
+    ctx.putImageData(exports.Images.preText, 16, 49, 134, 64);
+    ctx.drawImage(avatar, 2, 2, 43, 43);
+
+    return canvas.toBuffer();
 }
 
 function getWidth(text) {
