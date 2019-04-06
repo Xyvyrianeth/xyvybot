@@ -73,20 +73,20 @@ exports.drawProfile = function(member, profile, avatar, background) {
     }
 
     ctx.drawImage(background, 0, 0, width, height);
-    ctx.putImageData(assets[0], 0, 0, 154, 132);
-    ctx.putImageData(assets[1], 0, 0, 154, 132);
+    ctx.putImageData(assets[0], 0, 0);
+    ctx.putImageData(assets[1], 0, 0);
     for (let i = 0; i < h; i++)
     {
-        ctx.putImageData(assets[4], i, 0, 1, 47);
-        ctx.putImageData(assets[5], i, 0, 1, 47);
+        ctx.putImageData(assets[4], i, 0);
+        ctx.putImageData(assets[5], i, 0);
     }
-    ctx.putImageData(assets[2], 152 + h, 0, 33, 47);
-    ctx.putImageData(assets[3], 152 + h, 0, 33, 47);
+    ctx.putImageData(assets[2], 152 + h, 0);
+    ctx.putImageData(assets[3], 152 + h, 0);
     for (let i = 0; i < 3; i++)
     {
         ctx.putImageData(texts[i][0], 48, 3 + (15 * i), texts[i][1], 11);
     }
-    ctx.putImageData(exports.Images.preText, 16, 49, 134, 64);
+    ctx.putImageData(exports.Images.preText, 16, 49);
     ctx.drawImage(avatar, 2, 2, 43, 43);
 
     return canvas.toBuffer();
@@ -97,9 +97,9 @@ function getWidth(text) {
     let Alphabet = canvasA.getContext("2d")
     Alphabet.drawImage(exports.Images.alphabet, 0, 0);
 
-    let canvasB = new Canvas.createCanvas(334, 11);
+    let canvasB = new Canvas.createCanvas(335, 11);
     let ctx = canvasB.getContext('2d');
-    let h = 0;
+    let h = 1;
 
     let alphabet = {
         'A': [0, 0, 7, false],
@@ -209,11 +209,11 @@ function getWidth(text) {
             let A = alphabet[a];
             let letter = Alphabet.getImageData(A[0] * 8, A[1] * 11, A[2], 11);
             if (A[3]) h -= 1;
-            ctx.putImageData(letter, 0, h, A[2], 11);
+            ctx.putImageData(letter, h, 0);
             h += A[2];
         }
     }
-    return [ctx.getImageData(0, 0, 11, 334), h];
+    return [ctx.getImageData(1, 0, 11, 334), h];
 }
 
 exports.Images = {};
