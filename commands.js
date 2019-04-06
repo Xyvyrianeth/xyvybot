@@ -1,4 +1,4 @@
-var version = "2.33.9.16";
+var version = "2.33.9.17";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2761,7 +2761,7 @@ var commands = {
                 let a = stack.length;
                 for (let i = 0; i < stack.length; i++)
                 {
-                    if (stack[i].includes("at emitOne"))
+                    if (stack[i].includes("at Client.emit"))
                     {
                         a = i;
                         break;
