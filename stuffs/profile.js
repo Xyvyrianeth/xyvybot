@@ -78,7 +78,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
         let Text = new Canvas.createCanvas(text[1], 11);
         let tectx = Text.getContext('2d');
         tectx.drawImage(text[0], 0, 0);
-        let data = tectx.getImageData(0, 0, texts[i][1], 11);
+        let data = tectx.getImageData(0, 0, text[1], 11);
         for (let x = 0; x < data.data.length; x += 4)
         {
             data.data[x]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)
