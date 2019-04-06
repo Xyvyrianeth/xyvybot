@@ -29,7 +29,8 @@ exports.drawProfile = function(member, profile, avatar) {
             [width, height] = [image.width, image.height];
         }
         ctx.drawImage(image, 0, 0, width, height);
-        
+
+        let color = new Color(profile.color);        
         let assets = [];
         for (let img = 0; img < 6; img++)
         {
