@@ -1,4 +1,4 @@
-var version = "2.33.8.10";
+var version = "2.33.9.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -339,9 +339,9 @@ function newUser(id, message) {
     let image = images.ids.random();
     let query = [
         `INSERT INTO profiles (`,
-        `    id,       color,   title,      titles,             background,  backgrounds,         lefty , elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
+        `    id,       color,   title,      titles,             background,  backgrounds,         lefty,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
         `) VALUES (`,
-        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  false,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
+        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
         `)`
     ].join('\n');
     db.query(query, function(err) {
@@ -387,11 +387,7 @@ var aliases = {
     guild: {
         // Competitive Games
         "games": ["games"],
-        "othello": ["othello", "reversi"],
-        "squares": ["squares"],
-        "gomoku": ["gomoku", "gobang", "renju"],
-        "ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
-        "connect4": ["connectfour", "connect4", "cfour", "c4"],
+        "game": ["othello", "reversi", "squares", "gomoku", "gobang", "renju", "3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe", "connectfour", "connect4", "cfour", "c4"],
         "pente": ["pente"],
         "ninemen": ["ninemen", "morris", "ninemensmorris", "ninemenmorris"],
         "profile": ["profile", "scorecard", "prof"],
@@ -787,14 +783,28 @@ var commands = {
         }
     },
 
-    "connect4": function(cmd, args, input, message, sendChat) {
+    "game": function(cmd, args, input, message, sendChat) {
         if (message.channel.type == "dm")
         {
-            return sendChat("This command is not available through DMs!");
+            return sendChat("These games cannot be played through DMs!");
         }
+        let game = [
+            ["othello", "reversi"],
+            ["squares"],
+            ["gomoku", "gobang", "renju"],
+            ["ttt3d", "3dttt", "3dtictactoe", "tictactoe3d", "ttt", "tictactoe"],
+            ["connect4", "connectfour", "cfour", "c4"],
+        ].filter(g => g.includes(cmd))[0][0];
+        let gameName = {
+            "othello": "Othello",
+            "squares": "Squares",
+            "gomoku": "Gomoku",
+            "ttt3d": "3D Tic Tac Toe",
+            "connect4": "Connect Four"
+        }[game];
         if (!input)
         {
-            return sendChat(`__**Connect Four**__\nTo start a game, type \`x!${cmd} start\`!`);
+            return sendChat(`__**${gameName}**__\nTo start a game, type \`x!${cmd} start\`!`);
         }
         if (["start"].includes(args[0]))
         {
@@ -803,18 +813,18 @@ var commands = {
             {
                 if (!args[1])
                 {
-                    return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, false));
+                    return sendChat(games[game].newGame(message.channel, message.author.id, cmd, false));
                 }
                 if (["causal", "fun"].includes(args[1]))
                 {
-                    return sendChat(games.connect4.newGame(message.channel, message.author.id, cmd, true));
+                    return sendChat(games[game].newGame(message.channel, message.author.id, cmd, true));
                 }
             }
             if (!games.channels[message.channel.id].started)
             {
                 if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194")
                 {
-                    k = games.connect4.startGame(message.channel, message.author.id);
+                    k = games[game].startGame(message.channel, message.author.id);
                     return sendChat(k[0], k[1]);
                 }
                 else
@@ -822,21 +832,6 @@ var commands = {
                     return sendChat("You cannot play yourself!");
                 }
             }
-        }
-        else
-        if (["board", "showboard"].includes(input))
-        {
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                return sendChat("There is no active Connect Four game in this channel, $user$!");
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                return sendChat("The game has not yet started, $user$!");
-            }
-
-            let game = games.channels[message.channel.id];
-            return sendChat(new Discord.Attachment(game.buffer, `connect4_0_${game.players[0]}vs${game.players[1]}.png`))
         }
         else
         if (["quit", "forfeit", "leave"].includes(input))
@@ -847,15 +842,15 @@ var commands = {
             }
             if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1])
             {
-                return sendChat("You are not a participant of this game, $user$!");
+                return sendChat(`You are not a participant of this game, <@${message.author.id}>!`);
             }
             if (!games.channels[message.channel.id].started)
             {
-                sendChat("$user$ has cancelled the pending game.");
+                sendChat(`<@${message.author.id}> has cancelled the pending game.`);
             }
             else
             {
-                sendChat("$user$ has forfeit the game.");
+                sendChat(`<@${message.author.id}> has forfeit the game.`);
             }
 
             delete games.channels[message.channel.id];
@@ -864,350 +859,16 @@ var commands = {
         if (["rules", "howtoplay"].includes(args[0]))
         {
             new Discord.RichEmbed();
-            embed.setDescription("If you don't know how to play this game, you had a shitty childhood.");
+            embed.setDescription({
+                "connect4": "If you don't know how to play this game, you must hawill everhad a shitty childhood. You drop pieces into each row and try to get a row of 4 before your opponent, very simple.",
+                "squares": "This game was created by Xyvy himself because he was bored and didn't want to work on Gomoku win logic one night. It's played almost exactly like Gomoku, except for the objective of the game and the limitless board size. The board size is always 10x10, and the object of the game is to have created more squares than your opponent before the end. You make a square by placing 4 of your stones in a square pattern. Stones can be a part of multiple squares, and squares can range in size from 2x2 to 10x10 (if you put a stone in all 4 corners of the map, that's a point to you!).\n\nTaking turns is the same as in Gomoku: 2 stones per turn, but whoever goes first only places 1 stone on their very first turn. This eliminates \"first player advantage\" where player 1 is the only one that will ever have more stones on the board than their opponent.\n\nThe game ends when there are no more empty spaces on the board. After that, the squares are counted for each player and the player with more squares is declared the winner.",
+                "othello": "[Click here to learn how to play Othello!](https://www.wikipedia.org/wiki/Reversi#Rules)\nI don't really know how to explain it without pictures.",
+                "gomoku": "Gomoku, also called Go Bang or Renju, in the simplest terms, is a very large game of Tic Tac Toe. The board is 19x19 instead of 3x3, and instead of a 3-in-a-row, you want a 5-in-a-row.\n\nTaking turns differs from traditional 1v1 board games like checkers in that each player does not get 1 move per turn. In Gomoku, both players get 2 moves per turn, but player 1 only gets one move on their very first turn. This removes what's known as \"player 1 advantage,\" which is very prevalent in Tic Tac Toe, where player 1 is able to have more pieces on the board than player 2, but player 2 can never have more pieces on the board than player 1.\n\nTo win, you must have 5 of your stones in a line. No more, no less. That's right: if you have 6 or more in a line, you do not win.",
+                "ttt3d": "This game plays exactly like the game Tic Tac Toe: get 3 in a row, but instead of 3 you want 4 in a row. Also, you have another dimension to work with."
+            }[game]);
             embed.setColor(new Color().random());
             return sendChat({embed});
         }
-    },
-   
-    "squares": function(cmd, args, input, message, sendChat) {
-        if (message.channel.type == "dm")
-        {
-            return sendChat("This command is not available through DMs!");
-        }
-        if (!input)
-        {
-            return sendChat(`__**Squares**__\nTo start a game, type \`x!${cmd} start\`!`);
-        }
-        if (["start"].includes(args[0]))
-        {
-            message.delete();
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                if (!args[1])
-                {
-                    return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, false));
-                }
-                if (["causal", "fun"].includes(args[1]))
-                {
-                    return sendChat(games.squares.newGame(message.channel, message.author.id, cmd, true));
-                }
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194")
-                {
-                    k = games.squares.startGame(message.channel, message.author.id);
-                    return sendChat(k[0], k[1]);
-                }
-                else
-                {
-                    return sendChat("You cannot play yourself!");
-                }
-            }
-        }
-        else
-        if (["board", "showboard"].includes(input))
-        {
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                return sendChat("There is no active Squares game in this channel, $user$!");
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                return sendChat("The game has not yet started, $user$!");
-            }
-
-            let game = games.channels[message.channel.id];
-            return sendChat(new Discord.Attachment(game.buffer, `squares_0_${game.players[0]}vs${game.players[1]}.png`));
-        }
-        else
-        if (["quit", "forfeit", "leave"].includes(input))
-        {
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                return sendChat("There is not a game in this channel for you to quit!");
-            }
-            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1])
-            {
-                return sendChat("You are not a participant of this game, $user$!");
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                sendChat("$user$ has cancelled the pending game.");
-            }
-            else
-            {
-                sendChat("$user$ has forfeit the game.");
-            }
-
-            delete games.channels[message.channel.id];
-        }
-        else
-        if (["rules", "howtoplay"].includes(args[0]))
-        {
-            new Discord.RichEmbed();
-            embed.setDescription("This game was created by Xyvy himself because he was bored and didn't want to work on Gomoku win logic one night. It's played almost exactly like Gomoku, except for the objective of the game and the limitless board size. The board size is always 10x10, and the object of the game is to have created more squares than your opponent before the end. You make a square by placing 4 of your stones in a square pattern. Stones can be a part of multiple squares, and squares can range in size from 2x2 to 10x10 (if you put a stone in all 4 corners of the map, that's a point to you!).\n\nTaking turns is the same as in Gomoku: 2 stones per turn, but whoever goes first only places 1 stone on their very first turn. This eliminates \"first player advantage\" where player 1 is the only one that can have more stones on the board than their opponent.\n\nThe game ends when there are no more empty spaces on the board. After that, the squares are counted for each player and the player with more squares is declared the winner.");
-            embed.setColor(new Color().random());
-            return sendChat({embed});
-        }
-    },
-
-    "othello": function(cmd, args, input, message, sendChat) {
-        if (message.channel.type == "dm")
-        {
-            return sendChat("This command is not available through DMs!");
-        }
-        if (!input)
-        {
-            return sendChat(`__**Othello**__\nTo start a game, type \`x!${cmd} start\`!`);
-        }
-        if (["start"].includes(args[0]))
-        {
-            message.delete();
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                if (!args[1])
-                {
-                    return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, false));
-                }
-                if (["causal", "fun"].includes(args[1]))
-                {
-                    return sendChat(games.othello.newGame(message.channel, message.author.id, cmd, true));
-                }
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194")
-                {
-                    k = games.othello.startGame(message.channel, message.author.id);
-                    return sendChat(k[0], k[1]);
-                }
-                else
-                {
-                    return sendChat("You cannot play yourself!");
-                }
-            }
-        }
-        else
-        if (["board", "showboard"].includes(input))
-        {
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                return sendChat("There is no active Othello game in this channel, $user$!");
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                return sendChat("The game has not yet started, $user$!");
-            }
-
-            let game = games.channels[message.channel.id];
-            return sendChat(new Discord.Attachment(game.buffer, `othello_0_${game.players[0]}vs${game.players[1]}.png`));
-        }
-        else
-        if (["quit", "forfeit", "leave"].includes(input))
-        {
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                return sendChat("There is not a game in this channel for you to quit!");
-            }
-            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1])
-            {
-                return sendChat("You are not a participant of this game, $user$!");
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                sendChat("$user$ has cancelled the pending game.");
-            }
-            else
-            {
-                sendChat("$user$ has forfeit the game.");
-            }
-
-            delete games.channels[message.channel.id];
-        }
-        else
-        if (["rules", "howtoplay"].includes(args[0]))
-        {
-            new Discord.RichEmbed();
-            embed.setDescription("[Click here to learn how to play Othello!](https://www.wikipedia.org/wiki/Reversi#Rules)\nI don't really know how to explain it without pictures.");
-            embed.setColor(new Color().random());
-            return sendChat({embed});
-        }
-    },
-
-    "gomoku": function(cmd, args, input, message, sendChat) {
-        if (message.channel.type == "dm")
-        {
-            return sendChat("This command is not available through DMs!");
-        }
-        if (!input)
-        {
-            return sendChat(`__**Gomoku**__\nTo start a game, type \`x!${cmd} start\`!`);
-        }
-        if (["start"].includes(args[0]))
-        {
-            message.delete();
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                if (!args[1])
-                {
-                    return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, false));
-                }
-                if (["causal", "fun"].includes(args[1]))
-                {
-                    return sendChat(games.gomoku.newGame(message.channel, message.author.id, cmd, true));
-                }
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194")
-                {
-                    k = games.gomoku.startGame(message.channel, message.author.id);
-                    return sendChat(k[0], k[1]);
-                }
-                else
-                {
-                    return sendChat("You cannot play yourself!");
-                }
-            }
-        }
-        else
-        if (["board", "showboard"].includes(input))
-        {
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                return sendChat("There is no active Gomoku game in this channel, $user$!");
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                return sendChat("The game has not yet started, $user$!");
-            }
-
-            let game = games.channels[message.channel.id];
-            return sendChat(new Discord.Attachment(game.buffer, `gomoku_0_${game.players[0]}vs${game.players[1]}.png`));
-        }
-        else
-        if (["quit", "forfeit", "leave"].includes(input))
-        {
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                return sendChat("There is not a game in this channel for you to quit!");
-            }
-            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1])
-            {
-                return sendChat("You are not a participant of this game, $user$!");
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                sendChat("$user$ has cancelled the pending game.");
-            }
-            else
-            {
-                sendChat("$user$ has forfeit the game.");
-            }
-
-            delete games.channels[message.channel.id];
-        }
-        else
-        if (["rules", "howtoplay"].includes(args[0]))
-        {
-            new Discord.RichEmbed();
-            embed.setDescription("Gomoku, also called Go Bang or Renju, in the simplest terms, is a very large game of Tic Tac Toe. The board is 19x19 instead of 3x3, and instead of a 3-in-a-row, you want a 5-in-a-row.\n\nTaking turns differs from traditional 1v1 board games like checkers in that each player does not get 1 move per turn. In Gomoku, both players get 2 moves per turn, but player 1 only gets one move on their very first turn. This removes what's known as \"player 1 advantage,\" which is very prevalent in Tic Tac Toe, where player 1 is able to have more pieces on the board than player 2, but player 2 can never have more pieces on the board than player 1.\n\nTo win, you must have 5 of your stones in a line. No more, no less. That's right: if you have 6 or more in a line, you cannot win.");
-            embed.setColor(new Color().random());
-            return sendChat({embed});
-        }
-    },
-
-    "ttt3d": function(cmd, args, input, message, sendChat) {
-        if (message.channel.type == "dm")
-        {
-            return sendChat("This command is not available through DMs!");
-        }
-        if (!input)
-        {
-            return sendChat(`__**3D Tic Tac Toe**__\nTo start a game, type \`x!${cmd} start\`!`);
-        }
-        if (["start"].includes(args[0]))
-        {
-            message.delete();
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                if (!args[1])
-                {
-                    return sendChat(games.ttt3d.newGame(message.channel, message.author.id, cmd, false));
-                }
-                if (["causal", "fun"].includes(args[1]))
-                {
-                    return sendChat(games.ttt3d.newGame(message.channel, message.author.id, cmd, true));
-                }
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                if (message.author.id != games.channels[message.channel.id].players[0] || message.author.id == "357700219825160194")
-                {
-                    k = games.ttt3d.startGame(message.channel, message.author.id);
-                    return sendChat(k[0], k[1]);
-                }
-                else
-                {
-                    return sendChat("You cannot play yourself!");
-                }
-            }
-        }
-        else
-        if (["board", "showboard"].includes(input))
-        {
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                return sendChat("There is no active 3D Tic Tac Toe game in this channel, $user$!");
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                return sendChat("The game has not yet started, $user$!");
-            }
-
-            let game = games.channels[message.channel.id];
-            return sendChat(new Discord.Attachment(game.buffer, `gomoku_0_${game.players[0]}vs${game.players[1]}.png`));
-        }
-        else
-        if (["quit", "forfeit", "leave"].includes(input))
-        {
-            if (!games.channels.hasOwnProperty(message.channel.id))
-            {
-                return sendChat("There is not a game in this channel for you to quit!");
-            }
-            if (message.author.id != games.channels[message.channel.id].players[0] && message.author.id != games.channels[message.channel.id].players[1])
-            {
-                return sendChat("You are not a participant of this game, $user$!");
-            }
-            if (!games.channels[message.channel.id].started)
-            {
-                sendChat("$user$ has cancelled the pending game.");
-            }
-            else
-            {
-                sendChat("$user$ has forfeit the game.");
-            }
-
-            delete games.channels[message.channel.id];
-        }
-        else
-        if (["rules", "howtoplay"].includes(args[0]))
-        {
-            new Discord.RichEmbed();
-            embed.setDescription("This game plays exactly like the game Tic Tac Toe: get 3 in a row, but instead of 3 you want 4 in a row. Also, you have another dimension to work with.");
-            embed.setColor(new Color().random());
-            return sendChat({embed});
-        }
-    },
-
-    "pente": function(cmd, args, input, message, sendChat) {
-        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
-    },
-
-    "ninemen": function(cmd, args, input, message, sendChat) {
-        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
     },
 
     "profile": function(cmd, args, input, message, sendChat) {
@@ -1257,35 +918,9 @@ var commands = {
                 {
                     profile = res.rows[0];
                 }
-  
-                Jimp.read("./img/backgrounds/" + profile.background.substring(0, 7) + (profile.background.substring(7) == 'j' ? ".jpg" : ".png")).then(function(image1) {
-                    image1.getBuffer("image/png", function(err, src) {
-                        let { Image } = require("canvas");
-                        background = new Image;
-                        background.src = src;
-                        if (member.avatar)
-                        {
-                            Jimp.read(`https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png`).then(function(image2) {
-                                image2.getBuffer("image/png", function(err, src) {
-                                    let { Image } = require("canvas");
-                                    avatar = new Image;
-                                    avatar.src = src;
-                                    return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile.card(member.username, profile, background, avatar), "profile.png"));
-                                });
-                            }).catch(err => sendChat("```" + err + "```"));
-                        }
-                        else
-                        {
-                            Jimp.read("https://cdn.discordapp.com/embed/avatars/0.png").then(function(image2) {
-                                image2.getBuffer("image/png", function(err, src) {
-                                    let { Image } = require("canvas");
-                                    avatar = new Image;
-                                    avatar.src = src;
-                                    return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile.card(member.username, profile, background, avatar), "profile.png"));
-                                });
-                            }).catch(err => sendChat("```" + err + "```"));
-                        }
-                    });
+
+                Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png` : "https://cdn.discordapp.com/embed/avatars/0.png").then(image => {
+                    return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile.drawProfile(member, profile, image), "profile.png"));
                 }).catch(err => sendChat("```" + err + "```"));
             });
         }

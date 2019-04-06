@@ -1,367 +1,267 @@
 const Canvas = require('canvas');
-var { Color } = require('/app/stuffs/color.js');
+const {Color} = require('/app/stuffs/color.js');
 var titles = require('/app/stuffs/titles.json');
 
-function newResolution(width, height) {
-    if (height <= 300 && width <= 400)
-    {
-        return [width, height];
-    }
-    if (height / width == 0.75)
-    {
-        return [400, 300];
-    }
-    if (height / width <  0.75)
-    {
-        return [400, Math.round(height / width * 400)];
-    }
-    if (height / width >  0.75)
-    {
-        return [Math.round(width / height * 300), 300];
-    }
-}
 
-exports.card = function(username, profile, background, avatar) {
-    // Set the picture
-    res = newResolution(background.width, background.height);
-    canvas = new Canvas.createCanvas(res[0], res[1]);
-    ctx = canvas.getContext('2d');
-    ctx.drawImage(background, 0, 0, res[0], res[1]);
-  
-    // Set important colors
-    color = new Color(profile.color);
-    colors = {
-        bg: `rgba(${Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r)}, ${Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g)}, ${Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b)}, 0.5)`,
-    //  Background
-        ed: `rgba(${Math.floor(color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r) - 20}, ${Math.floor(color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g) - 20}, ${Math.floor(color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b) - 20}, 0.5)`,
-    //  Edge Lines
-        tx: `rgba(${Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)}, ${Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)}, ${Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)}, 0.5)`,
-    //  Text
-        ii: `rgba(255, 255, 255, 0)`
-    //  Invisible Ink
-    };
-  
-    // Get important text sizes
-    text = {};
-    ctx.font = "20px calibri";
-    text.un = Math.floor(ctx.measureText(username).width > 193 ? 193 : ctx.measureText(username).width < 96 ? 96 : ctx.measureText(username).width);
-    // Username
-    ctx.font = "15px calibri";
-    text.tt = Math.floor(ctx.measureText(titles[profile.title]).width > text.un ? text.un : ctx.measureText(titles[profile.title]).width < 96 ? 96 : ctx.measureText(titles[profile.title]).width);
-    // Title
-      
-    if (!profile.lefty)
-    {
-        // Draws avatar box
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.lineWidth = 2;
-        ctx.moveTo(res[0] - 75, 0);
-        ctx.lineTo(res[0] - 75, 75);
-        ctx.lineTo(res[0] + 2, 75);
-        ctx.lineTo(res[0] + 2, 0);
-        ctx.stroke();
+exports.drawProfile = function(member, profile, avatar) {
+    Canvas.loadImage('/app/img/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then(image => {
+        let canvas = new Canvas.createCanvas();
+        let ctx = canvas.getContext('2d');
+
+        let width, height;
+        if (image.height > 300 || image.width > 400)
+        {
+            if (image.height / image.width == 0.75)
+            {
+                [width, height] = [400, 300];
+            }
+            if (height / width <  0.75)
+            {
+                [width, height] = [400, Math.round(image.height / image.width * 400)];
+            }
+            if (height / width >  0.75)
+            {
+                [width, height] = [Math.round(image.width / image.height * 300), 300];
+            }
+        }
+        else
+        {
+            [width, height] = [image.width, image.height];
+        }
+        ctx.drawImage(image, 0, 0, width, height);
         
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.lineWidth = 2;
-        ctx.moveTo(res[0] - 74, 0);
-        ctx.lineTo(res[0] - 74, 74);
-        ctx.lineTo(res[0] + 2, 74);
-        ctx.lineTo(res[0] + 2, 0);
-        ctx.fill();
-        ctx.stroke();
-        ctx.drawImage(avatar, res[0] - 72, 2, 70, 70);
-
-        // Username
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(res[0] - 76, 25);
-        ctx.lineTo(res[0] - 81 - text.un, 25);
-        ctx.lineTo(res[0] - 107 - text.un, -1);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(res[0] - 76, 24);
-        ctx.lineTo(res[0] - 80.62 - text.un, 24);
-        ctx.lineTo(res[0] - 105.62 - text.un, -1);
-        ctx.lineTo(res[0] - 76, -1);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.textBaseline = "hanging";
-        ctx.font = "20px";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText(username, res[0] - 78 - text.un, 2, text.un);
-
-        // Title
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(res[0] - 76, 42);
-        ctx.lineTo(res[0] - 80 - text.tt, 42);
-        ctx.lineTo(res[0] - 80 - text.tt, 26);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(res[0] - 76, 41);
-        ctx.lineTo(res[0] - 79 - text.tt, 41);
-        ctx.lineTo(res[0] - 79 - text.tt, 26);
-        ctx.lineTo(res[0] - 76, 26);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.textBaseline = "hanging";
-        ctx.font = "15px";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText(titles[profile.title], res[0] - 78 - text.tt, 26, text.tt);
-
-        // Money
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(res[0] - 76, 59);
-        ctx.lineTo(res[0] - 176, 59);
-        ctx.lineTo(res[0] - 176, 43);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(res[0] - 76, 58);
-        ctx.lineTo(res[0] - 175, 58);
-        ctx.lineTo(res[0] - 175, 43);
-        ctx.lineTo(res[0] - 76, 43);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Money:", res[0] - 174, 44, 40);
-        ctx.textAlign = "end";
-        mon1 = String(profile.money);
-        mon2 = mon1.length % 3;
-        mon3 = mon1.length < 4 ? mon1 : mon1.substring(0, mon2 > 0 ? mon2 : 3);
-        mon4 = mon1.length < 4 ? '' : mon2 > 0 ? '.' + mon1.substring(mon3.length, 4) : '';
-        mon5 = " K M B Tr Qu Pn".split(' ')[Math.floor((mon1.length - 1) / 3)];
-        mon = mon3 + mon4 + mon5;
-        ctx.fillText(mon, res[0] - 78, 44, 50);
-
-        // Outer Games ELOs Box
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(res[0] - 150, 60);
-        ctx.lineTo(res[0] - 150, 198);
-        ctx.lineTo(res[0] + 3, 198);
-        ctx.moveTo(res[0] - 150, 75);
-        ctx.lineTo(res[0] - 76, 75);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(res[0] - 76, 74);
-        ctx.lineTo(res[0] - 149, 74);
-        ctx.lineTo(res[0] - 149, 60);
-        ctx.lineTo(res[0] - 76, 60);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.font = "15px";
-        ctx.textAlign = "start";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Game ELOs:", res[0] - 147, 61, 70);
-
-        // Inner Games ELOs Box
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.fillRect(252, 77, 97, 13);
-        ctx.fillRect(351, 77, 48, 13);
-        ctx.fillRect(252, 92, 97, 104);
-        ctx.fillRect(351, 92, 48, 104);
-        ctx.beginPath();
-        ctx.strokeStyle = colors.bg;
-        ctx.lineWidth = 1;
-        ctx.rect(251.5, 76.5, 148, 120);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.lineWidth = 2;
-        ctx.moveTo(res[0] - 50, 77);
-        ctx.lineTo(res[0] - 50, 196);
-        ctx.moveTo(res[0] - 148, 91);
-        ctx.lineTo(res[0] - 1, 91);
-        ctx.stroke();
-
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Name", res[0] - 148, 77, 85);
-        ctx.fillText("ELO", res[0] - 48, 77, 31);
-        for (let i = 0; i < 7; i++)
+        let assets = [];
+        for (let img = 0; img < 6; img++)
         {
-            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][i];
-            ctx.fillText(game, res[0] - 148, 94 + (15 * i), 95);
-            ctx.fillText(profile["elo" + (i + 1)], res[0] - 48, 94 + (15 * i));
+            let border = exports.Images[["border", "borderback", "corner", "cornerback", "extend", "extendback"][img]];
+            for (let i = 0; i < border.data.length; i += 4)
+            {
+                if (img % 2 == 0)
+                {
+                    border.data[i]     = Math.floor(color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r) - 20;
+                    border.data[i + 1] = Math.floor(color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g) - 20;
+                    border.data[i + 2] = Math.floor(color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b) - 20;
+                    border.data[i + 3] /= 2;
+                }
+                else
+                {
+                    border.data[i]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r);
+                    border.data[i + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g);
+                    border.data[i + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b);
+                    border.data[i + 3] /= 2;
+                }
+            }
+            assets.push(border);
         }
 
-    }
-    else
-    if (profile.lefty)
-    {
-        // Draws avatar box
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.lineWidth = 2;
-        ctx.moveTo(75, 0);
-        ctx.lineTo(75, 75);
-        ctx.lineTo(-2, 75);
-        ctx.lineTo(-2, 0);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(74, 0);
-        ctx.lineTo(74, 74);
-        ctx.lineTo(-2, 74);
-        ctx.lineTo(-2, 0);
-        ctx.fill();
-        ctx.stroke();
-        ctx.drawImage(avatar, 2, 2, 70, 70);
-
-        // Username
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(76, 25);
-        ctx.lineTo(81 + text.un, 25);
-        ctx.lineTo(107 + text.un, -1);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(76, 24);
-        ctx.lineTo(80.62 + text.un, 24);
-        ctx.lineTo(105.62 + text.un, -1);
-        ctx.lineTo(76, -1);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.textBaseline = "hanging";
-        ctx.font = "20px";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText(username, 77, 2, text.un);
-
-        // Title
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(76, 42);
-        ctx.lineTo(80 + text.tt, 42);
-        ctx.lineTo(80 + text.tt, 26);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(76, 41);
-        ctx.lineTo(79 + text.tt, 41);
-        ctx.lineTo(79 + text.tt, 26);
-        ctx.lineTo(76, 26);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.font = "15px";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText(titles[profile.title], 77, 26, text.tt);
-
-        // Money
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(76, 59);
-        ctx.lineTo(176, 59);
-        ctx.lineTo(176, 43);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(76, 58);
-        ctx.lineTo(175, 58);
-        ctx.lineTo(175, 43);
-        ctx.lineTo(76, 43);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Money:", 77, 44, 40);
-        ctx.textAlign = "end";
-        mon1 = String(profile.money);
-        mon2 = mon1.length % 3;
-        mon3 = mon1.length < 4 ? mon1 : mon1.substring(0, mon2 > 0 ? mon2 : 3);
-        mon4 = mon1.length < 4 ? '' : mon2 > 0 ? '.' + mon1.substring(mon3.length, 4) : '';
-        mon5 = " K M B Tr Qu Pn".split(' ')[Math.floor((mon1.length - 1) / 3)];
-        mon = mon3 + mon4 + mon5;
-        ctx.fillText(mon, 173, 44, 50);
-
-        // Outer Games ELOs Box
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.moveTo(150, 60);
-        ctx.lineTo(150, 198);
-        ctx.lineTo(-2, 198);
-        ctx.moveTo(150, 75);
-        ctx.lineTo(76, 75);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.moveTo(76, 74);
-        ctx.lineTo(149, 74);
-        ctx.lineTo(149, 60);
-        ctx.lineTo(76, 60);
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.font = "15px";
-        ctx.textAlign = "start";
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Game ELOs:", 77, 61, 70);
-
-        // Inner Games ELOs Box
-        ctx.strokeStyle = colors.ii;
-        ctx.fillStyle = colors.bg;
-        ctx.fillRect(1, 77, 97, 13);
-        ctx.fillRect(100, 77, 48, 13);
-        ctx.fillRect(1, 92, 97, 104);
-        ctx.fillRect(100, 92, 48, 104);
-        ctx.beginPath();
-        ctx.strokeStyle = colors.bg;
-        ctx.lineWidth = 1;
-        ctx.rect(0.5, 76.5, 148, 120);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.strokeStyle = colors.ed;
-        ctx.lineWidth = 2;
-        ctx.moveTo(99, 77);
-        ctx.lineTo(99, 196);
-        ctx.moveTo(148, 91);
-        ctx.lineTo(1, 91);
-        ctx.stroke();
-
-        ctx.fillStyle = colors.tx;
-        ctx.fillText("Game Name", 1, 77, 85);
-        ctx.fillText("ELO", 101, 77, 31);
-        for (let i = 0; i < 7; i++)
+        // Text
+        let h = 0;
+        let texts = [];
+        for (let i = 0; i < 3; i++)
         {
-            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][i];
-            ctx.fillText(game, 1, 94 + (15 * i), 95);
-            ctx.fillText(profile["elo" + (i + 1)], 101, 94 + (15 * i));
+            texts.push(getWidth([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]));
+            for (let x = 0; x < texts[i][0].data.length; x += 4)
+            {
+                texts[i][0].data[x]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)
+                texts[i][0].data[x + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)
+                texts[i][0].data[x + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)
+                texts[i][0].data[x + 3] /= 2;
+            }
+            if (texts[i][1] > [120, 105, 103][i] + h)
+            {
+                h = texts[i][1] - [120, 105, 103][i];
+            }
         }
-    }
 
-    return canvas.toBuffer();
+        ctx.putImageData(assets[0], 0, 0, 154, 132);
+        ctx.putImageData(assets[1], 0, 0, 154, 132);
+        for (let i = 0; i < h; i++)
+        {
+            ctx.putImageData(assets[4], i, 0, 1, 47);
+            ctx.putImageData(assets[5], i, 0, 1, 47);
+        }
+        ctx.putImageData(assets[2], 152 + h, 0, 33, 47);
+        ctx.putImageData(assets[3], 152 + h, 0, 33, 47);
+        for (let i = 0; i < 3; i++)
+        {
+            ctx.putImageData(texts[i][0], 48, 3 + (15 * i), texts[i][1], 11);
+        }
+        ctx.putImageData(exports.Images.preText, 16, 49, 134, 64);
+        ctx.drawImage(avatar, 2, 2, 43, 43);
+
+        return canvas.toBuffer();
+    });
 }
+
+function getWidth(text) {
+    let Alphabet = document.createElement("canvas").getContext("2d").drawImage(document.getElementById("alphabet"), 0, 0);
+    let canvas = document.createElement("canvas");
+    canvas.width = 334;
+    canvas.height = 11;
+    let ctx = canvas.getContext('2d');
+    let h = 0;
+
+    let alphabet = {
+        'A': [0, 0, 7, false],
+        'B': [1, 0, 7, false],
+        'C': [2, 0, 7, false],
+        'D': [3, 0, 7, false],
+        'E': [4, 0, 7, false],
+        'F': [5, 0, 7, false],
+        'G': [6, 0, 7, false],
+        'H': [7, 0, 7, false],
+        'I': [0, 1, 4, false],
+        'J': [1, 1, 7, false],
+        'K': [2, 1, 7, false],
+        'L': [3, 1, 7, false],
+        'M': [4, 1, 8, false],
+        'N': [5, 1, 8, false],
+        'O': [6, 1, 7, false],
+        'P': [7, 1, 7, false],
+        'Q': [0, 2, 7, false],
+        'R': [1, 2, 7, false],
+        'S': [2, 2, 7, false],
+        'T': [3, 2, 6, false],
+        'U': [4, 2, 7, false],
+        'V': [5, 2, 7, false],
+        'W': [6, 2, 8, false],
+        'X': [7, 2, 7, false],
+        'Y': [0, 3, 6, false],
+        'Z': [1, 3, 7, false],
+        'a': [0, 4, 7, false],
+        'b': [1, 4, 7, false],
+        'c': [2, 4, 7, false],
+        'd': [3, 4, 7, false],
+        'e': [4, 4, 7, false],
+        'f': [5, 4, 5, false],
+        'g': [6, 4, 7, false],
+        'h': [7, 4, 7, false],
+        'i': [0, 5, 2, false],
+        'j': [1, 5, 3, true],
+        'k': [2, 5, 6, false],
+        'l': [3, 5, 2, false],
+        'm': [4, 5, 8, false],
+        'n': [5, 5, 7, false],
+        'o': [6, 5, 7, false],
+        'p': [7, 5, 7, false],
+        'q': [0, 6, 7, false],
+        'r': [1, 6, 6, false],
+        's': [2, 6, 7, false],
+        't': [3, 6, 4, false],
+        'u': [4, 6, 7, false],
+        'v': [5, 6, 7, false],
+        'w': [6, 6, 8, false],
+        'x': [7, 6, 7, false],
+        'y': [0, 7, 7, false],
+        'z': [1, 7, 7, false],
+        '0': [2, 3, 7, false],
+        '1': [3, 3, 4, false],
+        '2': [4, 3, 7, false],
+        '3': [5, 3, 7, false],
+        '4': [6, 3, 7, false],
+        '5': [2, 7, 7, false],
+        '6': [3, 7, 7, false],
+        '7': [4, 7, 7, false],
+        '8': [5, 7, 7, false],
+        '9': [6, 7, 7, false],
+        '—': [7, 3, 6, false],
+        '–': [7, 3, 5, false],
+        '-': [7, 3, 3, false],
+        '_': [7, 7, 6, false],
+        '!': [0, 8, 2, false],
+        '?': [1, 8, 6, false],
+        '.': [2, 8, 2, false],
+        ',': [3, 8, 3, true],
+        ':': [4, 8, 2, false],
+        ';': [5, 8, 3, true],
+        '/': [6, 8, 7, false],
+        '\\': [7, 8,74, false],
+        '(': [0, 9, 4, false],
+        ')': [1, 9, 4, false],
+        '[': [2, 9, 4, false],
+        ']': [3, 9, 4, false],
+        '{': [4, 9, 4, false],
+        '}': [5, 9, 4, false],
+        '|': [6, 9, 2, false],
+        '~': [7, 9, 7, false],
+        '+': [0, 10, 6, false],
+        '×': [1, 10, 6, false],
+        '@': [2, 10, 7, false],
+        '#': [3, 10, 7, false],
+        '$': [4, 10, 7, false],
+        '%': [5, 10, 8, false],
+        '^': [6, 10, 6, false],
+        '&': [7, 10, 8, false],
+        '*': [0, 11, 5, false],
+        '÷': [1, 11, 6, false],
+        '=': [2, 11, 4, false],
+        '\'': [3, 11, 1, false],
+        '"': [4, 11, 3, false],
+        '<': [5, 11, 4, false],
+        '>': [6, 11, 4, false],
+        '`': [7, 11, 4, false],
+    };
+
+    for (let i = 0; i < a.length; i++) {
+        let a = text.split('')[i];
+        if (alphabet.hasOwnProperty(a))
+        {
+            let A = alphabet[a];
+            Alphabet.getImageData(A[0] * 8, A[1] * 11, A[2], 11);
+            if (A[3]) h -= 1;
+            ctx.putImageData(0, h, A[2], 11);
+            h += A[2];
+        }
+    }
+    return [ctx.getImageData(0, 0, 11, 334), h];
+}
+
+exports.Images = {};
+Canvas.loadImage("/app/img/profileAssets/alphabet.png").then(image => {
+    let canvas = new Canvas.createCanvas();
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(image);
+    exports.Images.alphabet = canvas;
+});
+Canvas.loadImage("/app/img/profileAssets/border.png").then(image => {
+    let canvas = new Canvas.createCanvas();
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(image);
+    exports.Images.border = ctx.getImageData(0, 0, 154, 132);
+});
+Canvas.loadImage("/app/img/profileAssets/borderback.png").then(image => {
+    let canvas = new Canvas.createCanvas();
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(image);
+    exports.Images.borderback = ctx.getImageData(0, 0, 154, 132);
+});
+Canvas.loadImage("/app/img/profileAssets/corner.png").then(image => {
+    let canvas = new Canvas.createCanvas();
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(image);
+    exports.Images.corner = ctx.getImageData(0, 0, 33, 47);
+});
+Canvas.loadImage("/app/img/profileAssets/cornerback.png").then(image => {
+    let canvas = new Canvas.createCanvas();
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(image);
+    exports.Images.cornerback = ctx.getImageData(0, 0, 33, 47);
+});
+Canvas.loadImage("/app/img/profileAssets/extend.png").then(image => {
+    let canvas = new Canvas.createCanvas();
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(image);
+    exports.Images.extend = ctx.getImageData(0, 0, 1, 47);
+});
+Canvas.loadImage("/app/img/profileAssets/extendback.png").then(image => {
+    let canvas = new Canvas.createCanvas();
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(image);
+    exports.Images.extendback = ctx.getImageData(0, 0, 1, 47);
+});
+Canvas.loadImage("/app/img/profileAssets/preText.png").then(image => {
+    let canvas = new Canvas.createCanvas();
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(image);
+    exports.Images.preText = ctx.getImageData(0, 0);
+});
