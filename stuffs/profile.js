@@ -49,6 +49,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
                 data.data[i]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r);
                 data.data[i + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g);
                 data.data[i + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b);
+                data.data[i + 3] /= 2;
             }
             else
             if (img % 2 == 0)
@@ -56,14 +57,15 @@ exports.drawProfile = function(member, profile, avatar, background) {
                 data.data[i]     = Math.floor(color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r) - 20;
                 data.data[i + 1] = Math.floor(color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g) - 20;
                 data.data[i + 2] = Math.floor(color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b) - 20;
+                data.data[i + 3] *= 0.75;
             }
             else
             {
                 data.data[i]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r);
                 data.data[i + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g);
                 data.data[i + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b);
+                data.data[i + 3] *= 0.75;
             }
-            data.data[i + 3] /= 2;
         }
         bdrctx.putImageData(data, 0, 0);
         assets.push(border);
@@ -93,14 +95,38 @@ exports.drawProfile = function(member, profile, avatar, background) {
         tectx.putImageData(data, 0, 0);
         texts.push(Text);
     }
+    
+    let scores = [];
+    for (let i = 0; i < 5; i++)
+    {
+        score = getWidth(profile["elo" + (i + 1)]);
+        let Text = new Canvas.createCanvas(text[1], 11);
+        let tectx = Text.getContext('2d');
+        tectx.drawImage(text[0], 0, 0);
+        let data = tectx.getImageData(0, 0, text[1], 11);
+        for (let x = 0; x < data.data.length; x += 4)
+        {
+            data.data[x]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)
+            data.data[x + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)
+            data.data[x + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)
+            data.data[x + 3] /= 2;
+        }
+        if (text[1] > [120, 105, 103][i] + h)
+        {
+            h = text[1] - [120, 105, 103][i];
+        }
+        tectx.putImageData(data, 0, 0);
+        texts.push(Text);
+    }
 
     ctx.drawImage(background, 0, 0, width, height);
     ctx.drawImage(assets[0], 0, 0);
     ctx.drawImage(assets[1], 0, 0);
+    console.log(h);
     for (let i = 0; i < h; i++)
     {
-        ctx.drawImage(assets[4], i, 0);
-        ctx.drawImage(assets[5], i, 0);
+        ctx.drawImage(assets[4], 152 + i, 0);
+        ctx.drawImage(assets[5], 152 + i, 0);
     }
     ctx.drawImage(assets[2], 152 + h, 0);
     ctx.drawImage(assets[3], 152 + h, 0);
@@ -222,6 +248,14 @@ function getWidth(text) {
         '<': [5, 11, 4, false],
         '>': [6, 11, 4, false],
         '`': [7, 11, 4, false],
+        '¡': [0, 12, 2, false],
+        '¿': [1, 12, 6, false],
+        '€': [2, 12, 7, false],
+        '£': [3, 12, 7, false],
+        '¥': [4, 12, 6, false],
+        '°': [5, 12, 3, false],
+        '•': [6, 12, 5, false],
+        ' ': [7, 12, 6, false]
     };
 
     for (let i = 0; i < text.length; i++) {
