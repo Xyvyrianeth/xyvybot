@@ -36,7 +36,8 @@ exports.drawProfile = function(member, profile, avatar, background) {
     for (let img = 0; img < 7; img++)
     {
         let border = exports.Images[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
-        let data = border.getImageData(0, 0, [154, 154, 33, 33, 1, 1, 134][img], [132, 132, 47, 47, 47, 47, 64][img]);
+        let bdrctx = border.getContext('2d');
+        let data = borctx.getImageData(0, 0, [154, 154, 33, 33, 1, 1, 134][img], [132, 132, 47, 47, 47, 47, 64][img]);
         for (let i = 0; i < border.data.length; i += 4)
         {
             if (img % 2 == 0)
@@ -62,7 +63,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
                 data.data[x + 3] /= 2;
             }
         }
-        border.putImageData(data, 0, 0);
+        borctx.putImageData(data, 0, 0);
         assets.push(border);
     }
 
@@ -99,7 +100,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
     ctx.drawImage(assets[3], 152 + h, 0);
     for (let i = 0; i < 3; i++)
     {
-        ctx.putImageData(texts[i][0], 48, 3 + (15 * i));
+        ctx.drawImage(texts[i][0], 48, 3 + (15 * i));
     }
     ctx.drawImage(assets[6], 16, 49);
     ctx.drawImage(avatar, 2, 2, 43, 43);
