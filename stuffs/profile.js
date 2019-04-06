@@ -44,28 +44,11 @@ exports.drawProfile = function(member, profile, avatar, background) {
         let data = bdrctx.getImageData(0, 0, w, h);
         for (let i = 0; i < data.data.length; i += 4)
         {
-            if (img == 6)
-            {
-                data.data[i]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r);
-                data.data[i + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g);
-                data.data[i + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b);
-                data.data[i + 3] /= 2;
-            }
-            else
-            if (img % 2 == 0)
-            {
-                data.data[i]     = Math.floor(color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r) - 20;
-                data.data[i + 1] = Math.floor(color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g) - 20;
-                data.data[i + 2] = Math.floor(color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b) - 20;
-                data.data[i + 3] *= 0.75;
-            }
-            else
-            {
-                data.data[i]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r);
-                data.data[i + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g);
-                data.data[i + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b);
-                data.data[i + 3] *= 0.75;
-            }
+            let val = img == 6 ? 127 : img % 2 == 0 ? 63 : 191;
+            data.data[i]     = Math.round(color.r - ((color.r - val) / 2));
+            data.data[i + 1] = Math.round(color.g - ((color.g - val) / 2));
+            data.data[i + 2] = Math.round(color.b - ((color.b - val) / 2));
+            data.data[i + 3] /= 2;
         }
         bdrctx.putImageData(data, 0, 0);
         assets.push(border);
