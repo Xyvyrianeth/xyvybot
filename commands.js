@@ -1,4 +1,4 @@
-var version = "2.33.9.3";
+var version = "2.33.9.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");

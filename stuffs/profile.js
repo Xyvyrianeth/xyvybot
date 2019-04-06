@@ -93,10 +93,8 @@ exports.drawProfile = function(member, profile, avatar, background) {
 }
 
 function getWidth(text) {
-    let Alphabet = document.createElement("canvas").getContext("2d").drawImage(document.getElementById("alphabet"), 0, 0);
-    let canvas = document.createElement("canvas");
-    canvas.width = 334;
-    canvas.height = 11;
+    let Alphabet = new Canvas.createCanvas(64, 132).getContext("2d").drawImage(document.getElementById("alphabet"), 0, 0);
+    let canvas = new Canvas.createCanvas(334, 11);
     let ctx = canvas.getContext('2d');
     let h = 0;
 
