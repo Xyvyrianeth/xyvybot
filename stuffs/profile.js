@@ -73,8 +73,9 @@ exports.drawProfile = function(member, profile, avatar, background) {
     for (let i = 0; i < 3; i++)
     {
         texts.push(getWidth([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]));
-        let data = texts[i][0].getImageData(0, 0, texts[i][1], 11);
-        for (let x = 0; x < texts[i][0].data.length; x += 4)
+        let tectx = texts[i][0].getContext('2d');
+        let data = tectx.getImageData(0, 0, texts[i][1], 11);
+        for (let x = 0; x < data.data.length; x += 4)
         {
             data.data[x]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)
             data.data[x + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)
@@ -85,7 +86,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
         {
             h = texts[i][1] - [120, 105, 103][i];
         }
-        texts[i][0].putImageData(data, 0, 0);
+        tectx.putImageData(data, 0, 0);
     }
 
     ctx.drawImage(background, 0, 0, width, height);
