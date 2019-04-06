@@ -106,7 +106,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
     ctx.drawImage(assets[3], 152 + h, 0);
     for (let i = 0; i < 3; i++)
     {
-        ctx.drawImage(texts[i], 48, 3 + (15 * i));
+        ctx.drawImage(texts[i], 47, 3 + (15 * i));
     }
     ctx.drawImage(assets[6], 16, 49);
     ctx.drawImage(avatar, 2, 2, 43, 43);
@@ -232,7 +232,7 @@ function getWidth(text) {
             let letter = Alphabet.getImageData(A[0] * 8, A[1] * 11, A[2], 11);
             if (A[3]) h -= 1;
             ctx.putImageData(letter, h, 0);
-            h += A[2];
+            h += A[2] + 1;
         }
     }
     return [canvasB, h];
