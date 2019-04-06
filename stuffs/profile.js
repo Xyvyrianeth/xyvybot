@@ -38,7 +38,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
         let border = exports.Images[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
         let bdrctx = border.getContext('2d');
         let data = bdrctx.getImageData(0, 0, [154, 154, 33, 33, 1, 1, 134][img], [132, 132, 47, 47, 47, 47, 64][img]);
-        for (let i = 0; i < border.data.length; i += 4)
+        for (let i = 0; i < data.data.length; i += 4)
         {
             if (img % 2 == 0)
             {
