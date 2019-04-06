@@ -86,7 +86,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
             data.data[x + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)
             data.data[x + 3] /= 2;
         }
-        if (texts[1] > [120, 105, 103][i] + h)
+        if (text[1] > [120, 105, 103][i] + h)
         {
             h = text[1] - [120, 105, 103][i];
         }
