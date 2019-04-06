@@ -4,9 +4,6 @@ var titles = require('/app/stuffs/titles.json');
 
 
 exports.drawProfile = function(member, profile, avatar, background) {
-    let canvas = new Canvas.createCanvas();
-    let ctx = canvas.getContext('2d');
-
     let width, height;
     if (background.height > 300 || background.width > 400)
     {
@@ -27,6 +24,9 @@ exports.drawProfile = function(member, profile, avatar, background) {
     {
         [width, height] = [background.width, background.height];
     }
+
+    let canvas = new Canvas.createCanvas(width, height);
+    let ctx = canvas.getContext('2d');
 
     let color = new Color(profile.color);        
     let assets = [];
