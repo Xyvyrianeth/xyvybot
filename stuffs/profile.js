@@ -40,28 +40,26 @@ exports.drawProfile = function(member, profile, avatar, background) {
         let data = bdrctx.getImageData(0, 0, [154, 154, 33, 33, 1, 1, 134][img], [132, 132, 47, 47, 47, 47, 64][img]);
         for (let i = 0; i < data.data.length; i += 4)
         {
+            if (img == 6)
+            {
+                data.data[i]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r);
+                data.data[i + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g);
+                data.data[i + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b);
+            }
+            else
             if (img % 2 == 0)
             {
                 data.data[i]     = Math.floor(color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r) - 20;
                 data.data[i + 1] = Math.floor(color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g) - 20;
                 data.data[i + 2] = Math.floor(color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b) - 20;
-                data.data[i + 3] /= 2;
             }
             else
-            if (img !== 6)
             {
                 data.data[i]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r);
                 data.data[i + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g);
                 data.data[i + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b);
-                data.data[i + 3] /= 2;
             }
-            else
-            {
-                data.data[x]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)
-                data.data[x + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)
-                data.data[x + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)
-                data.data[x + 3] /= 2;
-            }
+            data.data[i + 3] /= 2;
         }
         bdrctx.putImageData(data, 0, 0);
         assets.push(border);
@@ -244,41 +242,41 @@ Canvas.loadImage("/app/img/profileAssets/border.png").then(image => {
     let canvas = new Canvas.createCanvas(154, 132);
     let ctx = canvas.getContext('2d');
     ctx.drawImage(image, 154, 132);
-    exports.Images.border = canvas; // ctx.getImageData(0, 0, 154, 132);
+    exports.Images.border = canvas;
 });
 Canvas.loadImage("/app/img/profileAssets/borderback.png").then(image => {
     let canvas = new Canvas.createCanvas(154, 132);
     let ctx = canvas.getContext('2d');
     ctx.drawImage(image, 154, 132);
-    exports.Images.borderback = canvas; // ctx.getImageData(0, 0, 154, 132);
+    exports.Images.borderback = canvas;
 });
 Canvas.loadImage("/app/img/profileAssets/corner.png").then(image => {
     let canvas = new Canvas.createCanvas(33, 47);
     let ctx = canvas.getContext('2d');
     ctx.drawImage(image, 33, 47);
-    exports.Images.corner = canvas; // ctx.getImageData(0, 0, 33, 47);
+    exports.Images.corner = canvas;
 });
 Canvas.loadImage("/app/img/profileAssets/cornerback.png").then(image => {
     let canvas = new Canvas.createCanvas(33, 47);
     let ctx = canvas.getContext('2d');
     ctx.drawImage(image, 33, 47);
-    exports.Images.cornerback = canvas; // ctx.getImageData(0, 0, 33, 47);
+    exports.Images.cornerback = canvas;
 });
 Canvas.loadImage("/app/img/profileAssets/extend.png").then(image => {
     let canvas = new Canvas.createCanvas(1, 47);
     let ctx = canvas.getContext('2d');
     ctx.drawImage(image, 1, 47);
-    exports.Images.extend = canvas; // ctx.getImageData(0, 0, 1, 47);
+    exports.Images.extend = canvas;
 });
 Canvas.loadImage("/app/img/profileAssets/extendback.png").then(image => {
     let canvas = new Canvas.createCanvas(1, 47);
     let ctx = canvas.getContext('2d');
     ctx.drawImage(image, 1, 47);
-    exports.Images.extendback = canvas; // ctx.getImageData(0, 0, 1, 47);
+    exports.Images.extendback = canvas;
 });
 Canvas.loadImage("/app/img/profileAssets/preText.png").then(image => {
     let canvas = new Canvas.createCanvas(134, 64);
     let ctx = canvas.getContext('2d');
     ctx.drawImage(image, 134, 64);
-    exports.Images.preText = canvas; // ctx.getImageData(0, 0, 134, 64);
+    exports.Images.preText = canvas;
 });
