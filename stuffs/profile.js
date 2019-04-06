@@ -84,7 +84,7 @@ exports.drawProfile = function(member, profile, avatar, background) {
     ctx.putImageData(assets[3], 152 + h, 0);
     for (let i = 0; i < 3; i++)
     {
-        ctx.putImageData(texts[i][0], 48, 3 + (15 * i), texts[i][1], 11);
+        ctx.putImageData(texts[i][0], 48, 3 + (15 * i));
     }
     ctx.putImageData(exports.Images.preText, 16, 49);
     ctx.drawImage(avatar, 2, 2, 43, 43);
