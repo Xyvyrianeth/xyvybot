@@ -1,4 +1,4 @@
-var version = "2.33.9.29";
+var version = "2.33.10.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -921,7 +921,7 @@ var commands = {
 
                 Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png` : "https://cdn.discordapp.com/embed/avatars/0.png").then(image1 => {
                     Canvas.loadImage('/app/img/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then(image2 => {
-                        return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile.drawProfile(member, profile, image1, image2), "profile.png"));
+                        return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"));
                     });
                 }).catch(err => sendChat("```" + err + "```"));
             });

@@ -3,7 +3,7 @@ const {Color} = require('/app/stuffs/color.js');
 var titles = require('/app/stuffs/titles.json');
 
 
-exports.drawProfile = function(member, profile, avatar, background) {
+exports.drawLeft = function(member, profile, avatar, background) {
     let width, height;
     if (background.height > 300 || background.width > 400)
     {
@@ -37,14 +37,14 @@ exports.drawProfile = function(member, profile, avatar, background) {
     {
         let w = [154, 154, 33, 33, 1, 1, 134][img];
         let h = [132, 132, 47, 47, 47, 47, 64][img]
-        let image = exports.Images[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
+        let image = exports.Images.left[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
         let border = new Canvas.createCanvas(w, h);
         let bdrctx = border.getContext('2d');
         bdrctx.drawImage(image, 0, 0);
         let data = bdrctx.getImageData(0, 0, w, h);
         for (let i = 0; i < data.data.length; i += 4)
         {
-            let val = img == 6 ? 127 : img % 2 == 0 ? 63 : 191;
+            let val = img == 6 ? 93 : img % 2 == 0 ? 63 : 191;
             data.data[i]     = Math.round(color.r - ((color.r - val) / 2));
             data.data[i + 1] = Math.round(color.g - ((color.g - val) / 2));
             data.data[i + 2] = Math.round(color.b - ((color.b - val) / 2));
@@ -66,32 +66,9 @@ exports.drawProfile = function(member, profile, avatar, background) {
         let data = tectx.getImageData(0, 0, text[1], 11);
         for (let x = 0; x < data.data.length; x += 4)
         {
-            data.data[x]     = Math.round(color.r - ((color.r - 127) / 2));
-            data.data[x + 1] = Math.round(color.g - ((color.g - 127) / 2));
-            data.data[x + 2] = Math.round(color.b - ((color.b - 127) / 2));
-            data.data[x + 3] /= 2;
-        }
-        if (text[1] > [120, 105, 103][i] + h)
-        {
-            h = text[1] - [120, 105, 103][i];
-        }
-        tectx.putImageData(data, 0, 0);
-        texts.push(Text);
-    }
-    
-    let scores = [];
-    for (let i = 0; i < 5; i++)
-    {
-        score = getWidth(profile["elo" + (i + 1)]);
-        let Text = new Canvas.createCanvas(text[1], 11);
-        let tectx = Text.getContext('2d');
-        tectx.drawImage(text[0], 0, 0);
-        let data = tectx.getImageData(0, 0, text[1], 11);
-        for (let x = 0; x < data.data.length; x += 4)
-        {
-            data.data[x]     = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r)
-            data.data[x + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g)
-            data.data[x + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b)
+            data.data[x]     = Math.round(color.r - ((color.r - 93) / 2));
+            data.data[x + 1] = Math.round(color.g - ((color.g - 93) / 2));
+            data.data[x + 2] = Math.round(color.b - ((color.b - 93) / 2));
             data.data[x + 3] /= 2;
         }
         if (text[1] > [120, 105, 103][i] + h)
@@ -119,6 +96,103 @@ exports.drawProfile = function(member, profile, avatar, background) {
     }
     ctx.drawImage(assets[6], 16, 49);
     ctx.drawImage(avatar, 2, 2, 43, 43);
+
+    return canvas.toBuffer();
+}
+
+exports.drawRight = function(member, profile, avatar, background) {
+    let width, height;
+    if (background.height > 300 || background.width > 400)
+    {
+        if (background.height / background.width == 0.75)
+        {
+            width = 400;
+            height = 300;
+        }
+        if (background.height / background.width <  0.75)
+        {
+            width = 400;
+            height = Math.round(background.height / background.width * 400);
+        }
+        if (background.height / background.width >  0.75)
+        {
+            width = Math.round(background.width / background.height * 300);
+            height = 300;
+        }
+    }
+    else
+    {
+        width = background.width;
+        height = background.height;
+    }
+    let canvas = new Canvas.createCanvas(width, height);
+    let ctx = canvas.getContext('2d');
+
+    let color = new Color(profile.color);        
+    let assets = [];
+    for (let img = 0; img < 7; img++)
+    {
+        let w = [154, 154, 33, 33, 1, 1, 134][img];
+        let h = [132, 132, 47, 47, 47, 47, 64][img]
+        let image = exports.Images.right[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
+        let border = new Canvas.createCanvas(w, h);
+        let bdrctx = border.getContext('2d');
+        bdrctx.drawImage(image, 0, 0);
+        let data = bdrctx.getImageData(0, 0, w, h);
+        for (let i = 0; i < data.data.length; i += 4)
+        {
+            let val = img == 6 ? 95 : img % 2 == 0 ? 63 : 191;
+            data.data[i]     = Math.round(color.r - ((color.r - val) / 2));
+            data.data[i + 1] = Math.round(color.g - ((color.g - val) / 2));
+            data.data[i + 2] = Math.round(color.b - ((color.b - val) / 2));
+            data.data[i + 3] /= 2;
+        }
+        bdrctx.putImageData(data, 0, 0);
+        assets.push(border);
+    }
+
+    // Text
+    let h = 0;
+    let texts = [];
+    for (let i = 0; i < 3; i++)
+    {
+        text = getWidth([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]);
+        let Text = new Canvas.createCanvas(text[1], 11);
+        let tectx = Text.getContext('2d');
+        tectx.drawImage(text[0], 0, 0);
+        let data = tectx.getImageData(0, 0, text[1], 11);
+        for (let x = 0; x < data.data.length; x += 4)
+        {
+            data.data[x]     = Math.round(color.r - ((color.r - 95) / 2));
+            data.data[x + 1] = Math.round(color.g - ((color.g - 95) / 2));
+            data.data[x + 2] = Math.round(color.b - ((color.b - 95) / 2));
+            data.data[x + 3] /= 2;
+        }
+        if (text[1] > [120, 105, 103][i] + h)
+        {
+            h = text[1] - [120, 105, 103][i];
+        }
+        tectx.putImageData(data, 0, 0);
+        texts.push(Text);
+    }
+
+    ctx.drawImage(background, 0, 0, width, height);
+    ctx.drawImage(assets[0], width - 154, 0);
+    ctx.drawImage(assets[1], width - 154, 0);
+    console.log(h);
+    for (let i = 0; i < h; i++)
+    {
+        ctx.drawImage(assets[4], width - (152 + i), 0);
+        ctx.drawImage(assets[5], width - (152 + i), 0);
+    }
+    ctx.drawImage(assets[2], width - (152 + h), 0);
+    ctx.drawImage(assets[3], width - (152 + h), 0);
+    for (let i = 0; i < 3; i++)
+    {
+        ctx.drawImage(texts[i], width - 47, 3 + (15 * i));
+    }
+    ctx.drawImage(assets[6], width - 16, 49);
+    ctx.drawImage(avatar, width - 2, 2, 43, 43);
 
     return canvas.toBuffer();
 }
@@ -256,27 +330,54 @@ function getWidth(text) {
 }
 
 exports.Images = {};
+exports.Images.left = {};
+exports.Images.right = {};
 Canvas.loadImage("/app/img/profileAssets/alphabet.png").then(image => {
     exports.Images.alphabet = image;
 });
-Canvas.loadImage("/app/img/profileAssets/border.png").then(image => {
-    exports.Images.border = image;
+
+// Left
+Canvas.loadImage("/app/img/profileAssets/left/border.png").then(image => {
+    exports.Images.left.border = image;
 });
-Canvas.loadImage("/app/img/profileAssets/borderback.png").then(image => {
-    exports.Images.borderback = image;
+Canvas.loadImage("/app/img/profileAssets/left/borderback.png").then(image => {
+    exports.Images.left.borderback = image;
 });
-Canvas.loadImage("/app/img/profileAssets/corner.png").then(image => {
-    exports.Images.corner = image;
+Canvas.loadImage("/app/img/profileAssets/left/corner.png").then(image => {
+    exports.Images.left.corner = image;
 });
-Canvas.loadImage("/app/img/profileAssets/cornerback.png").then(image => {
-    exports.Images.cornerback = image;
+Canvas.loadImage("/app/img/profileAssets/left/cornerback.png").then(image => {
+    exports.Images.left.cornerback = image;
 });
-Canvas.loadImage("/app/img/profileAssets/extend.png").then(image => {
-    exports.Images.extend = image;
+Canvas.loadImage("/app/img/profileAssets/left/extend.png").then(image => {
+    exports.Images.left.extend = image;
 });
-Canvas.loadImage("/app/img/profileAssets/extendback.png").then(image => {
-    exports.Images.extendback = image;
+Canvas.loadImage("/app/img/profileAssets/left/extendback.png").then(image => {
+    exports.Images.left.extendback = image;
 });
-Canvas.loadImage("/app/img/profileAssets/preText.png").then(image => {
-    exports.Images.preText = image;
+Canvas.loadImage("/app/img/profileAssets/left/preText.png").then(image => {
+    exports.Images.left.preText = image;
+});
+
+// Right
+Canvas.loadImage("/app/img/profileAssets/right/border.png").then(image => {
+    exports.Images.right.border = image;
+});
+Canvas.loadImage("/app/img/profileAssets/right/borderback.png").then(image => {
+    exports.Images.right.borderback = image;
+});
+Canvas.loadImage("/app/img/profileAssets/right/corner.png").then(image => {
+    exports.Images.right.corner = image;
+});
+Canvas.loadImage("/app/img/profileAssets/right/cornerback.png").then(image => {
+    exports.Images.right.cornerback = image;
+});
+Canvas.loadImage("/app/img/profileAssets/right/extend.png").then(image => {
+    exports.Images.right.extend = image;
+});
+Canvas.loadImage("/app/img/profileAssets/right/extendback.png").then(image => {
+    exports.Images.right.extendback = image;
+});
+Canvas.loadImage("/app/img/profileAssets/right/preText.png").then(image => {
+    exports.Images.right.preText = image;
 });
