@@ -1,4 +1,4 @@
-var version = "2.33.10.17";
+var version = "2.33.10.18";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -100,9 +100,7 @@ function command(message) {
     let a = message.channel.type == "dm" ? "user" : "guild";
     let args = message.content.split(/ {1,}/);
     let arg = args.shift().replace("x!", '').toLowerCase();
-    let cmd = Object.keys(aliases[a]).filter(alias => {
-        return aliases[a][alias].includes(arg);
-    });
+    let cmd = Object.keys(aliases[a]).filter(alias => aliases[a][alias].includes(arg))[0];
     let input = args.join(' ');
     if (cmd.length == 0)
     {
@@ -125,7 +123,7 @@ function command(message) {
 
     try
     {
-        return commands[cmd[0]](arg, args, input, message, sendChat);
+        return commands[cmd](arg, args, input, message, sendChat);
     }
     catch (error)
     {
@@ -702,13 +700,7 @@ var commands = {
             }
             else
             {
-                for (let i of gms)
-                {
-                    if (gms[i].includes(gm))
-                    {
-                        Gm = Number(["othello", "squares", "gomoku", "ttt3d", "connect4"].indexOf(i) + 1);
-                    }
-                }
+                Gm = Object.keys(gms).filter(x => gms[x].includes(gm))[0];
             }
             if (Gm)
             {
