@@ -48,7 +48,7 @@ exports.drawLeft = function(member, profile, avatar, background) {
             data.data[i]     = Math.round(color.r - ((color.r - val) / 2));
             data.data[i + 1] = Math.round(color.g - ((color.g - val) / 2));
             data.data[i + 2] = Math.round(color.b - ((color.b - val) / 2));
-            data.data[i + 3] /= 2;
+            data.data[i + 3] *= 0.8;
         }
         bdrctx.putImageData(data, 0, 0);
         assets.push(border);
@@ -101,6 +101,14 @@ exports.drawLeft = function(member, profile, avatar, background) {
             {
                 ctx.drawImage(drawText(Score[x])[0], 8 * x - 1, 0);
             }
+        }
+        let data = canvas.getImageData(0, 0, 47, 9);
+        for (let i = 0; i < data.data.length; i += 4)
+        {
+            data.data[i]     = Math.round(color.r - ((color.r - 63) / 2));
+            data.data[i + 1] = Math.round(color.g - ((color.g - 63) / 2));
+            data.data[i + 2] = Math.round(color.b - ((color.b - 63) / 2));
+            data.data[i + 3] /= 2;
         }
         scores.push(canvas);
     }
