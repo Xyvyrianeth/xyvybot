@@ -141,7 +141,7 @@ exports.drawRight = function(member, profile, avatar, background) {
         let data = bdrctx.getImageData(0, 0, w, h);
         for (let i = 0; i < data.data.length; i += 4)
         {
-            let val = img == 6 ? 95 : img % 2 == 0 ? 63 : 191;
+            let val = img == 6 ? 93 : img % 2 == 0 ? 63 : 191;
             data.data[i]     = Math.round(color.r - ((color.r - val) / 2));
             data.data[i + 1] = Math.round(color.g - ((color.g - val) / 2));
             data.data[i + 2] = Math.round(color.b - ((color.b - val) / 2));
@@ -163,9 +163,9 @@ exports.drawRight = function(member, profile, avatar, background) {
         let data = tectx.getImageData(0, 0, text[1], 11);
         for (let x = 0; x < data.data.length; x += 4)
         {
-            data.data[x]     = Math.round(color.r - ((color.r - 95) / 2));
-            data.data[x + 1] = Math.round(color.g - ((color.g - 95) / 2));
-            data.data[x + 2] = Math.round(color.b - ((color.b - 95) / 2));
+            data.data[x]     = Math.round(color.r - ((color.r - 93) / 2));
+            data.data[x + 1] = Math.round(color.g - ((color.g - 93) / 2));
+            data.data[x + 2] = Math.round(color.b - ((color.b - 93) / 2));
             data.data[x + 3] /= 2;
         }
         if (text[1] > [120, 105, 103][i] + h)
@@ -189,9 +189,9 @@ exports.drawRight = function(member, profile, avatar, background) {
     ctx.drawImage(assets[3], width - (185 + h), 0);
     for (let i = 0; i < 3; i++)
     {
-        ctx.drawImage(texts[i], width - (49 + texts[i].width), 3 + (15 * i));
+        ctx.drawImage(texts[i], width - (50 + texts[i].width), 3 + (15 * i));
     }
-    ctx.drawImage(assets[6], width - 138, 49);
+    ctx.drawImage(assets[6], width - 150, 49);
     ctx.drawImage(avatar, width - 45, 2, 43, 43);
 
     return canvas.toBuffer();
