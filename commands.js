@@ -1,4 +1,4 @@
-var version = "2.33.10.15";
+var version = "2.33.10.16";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -12,12 +12,6 @@ var images = require("/app/stuffs/images.json");
 var { table } = require("/app/stuffs/table.js");
 
 var admins = "357700219825160194".split(' ');
-var RE = {
-    ping: /^<@[0-9]{1,}>$/,
-    id1: /[0-9]{1,}/,
-    id2: /^[0-9]{1,}$/,
-    color: /^#([0-9a-f]{3}|[0-9a-f]{6})$/i
-};
 
 const pg = require("pg");
 var db = new pg.Client(config.DATABASE_URL);
@@ -662,7 +656,7 @@ var commands = {
             else
             if (args[1] && !args[2])
             {
-                if (RegExp.id1.test(args[1]))
+                if (/[0-9]{1,}/.test(args[1]))
                 {
                     id = args[1];
                 }
@@ -679,13 +673,13 @@ var commands = {
             else
             if (args[2])
             {
-                if (RegExp.id1.test(args[1]) && games.includes(args[2]))
+                if (/[0-9]{1,}/.test(args[1]) && games.includes(args[2]))
                 {
                     id = args[1];
                     gm = args[2]
                 }
                 else
-                if (RegExp.id1.test(args[2]) && games.includes(args[1]))
+                if (/[0-9]{1,}/.test(args[2]) && games.includes(args[1]))
                 {
                     id = args[2];
                     gm = args[1];
@@ -882,7 +876,7 @@ var commands = {
     },
 
     "profile": function(cmd, args, input, message, sendChat) {
-        if (!input || RE.ping.test(input) || RE.id2.test(input))
+        if (!input || /^<@[0-9]{1,}>$/.test(input) || /^[0-9]{1,}$/.test(input))
         {
             let member;
             if (!input)
@@ -892,7 +886,7 @@ var commands = {
             else
             if (message.channel.type !== "dm")
             {
-                member = message.channel.guild.members.get(input.match(RE.id1)[0]);
+                member = message.channel.guild.members.get(input.match(/[0-9]{1,}/)[0]);
             }
             else
             {
@@ -1252,7 +1246,7 @@ var commands = {
                 return sendChat("Please include the color you wish to set your profile color to, and please make it a hexidecimal value ('#' followed by 3 or 6 digits and/or letters).");
             }
             else
-            if (!RE.color.test(args[1]))
+            if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(args[1]))
             {
                 return sendChat("That is not a color hexidecimal. Try again.");
             }
@@ -1500,7 +1494,7 @@ var commands = {
 
     // Utility
     "avatar": function(cmd, args, input, message, sendChat) {
-        if (!input || RE.ping.test(input) || RE.id2.test(input))
+        if (!input || /^<@[0-9]{1,}>$/.test(input) || /^[0-9]{1,}$/.test(input))
         {
             let member;
             if (!input)
@@ -1510,7 +1504,7 @@ var commands = {
             else
             if (message.channel.type !== "dm")
             {
-                member = message.channel.guild.members.get(input.match(RE.id1)[0]);
+                member = message.channel.guild.members.get(input.match(/[0-9]{1,}/)[0]);
             }
             else
             {
@@ -1843,13 +1837,13 @@ var commands = {
         {
             return sendChat("**Proper Usage**: `x!kick <@user>`");
         }
-        if (!RE.ping.test(args[0]) || !RE.id2.test(args[0]))
+        if (!/^<@[0-9]{1,}>$/.test(args[0]) || !/^[0-9]{1,}$/.test(args[0]))
         {
             return sendChat("Invalid user mention, try again.");
         }
         else
         {
-            message.channel.guild.members.get(args[0].match(RE.id1)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => sendChat("kicked user <@" + args[0].match(RE.id1)[0] + '>')).catch((err) => sendChat("Failed to kick user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"));
+            message.channel.guild.members.get(args[0].match(/[0-9]{1,}/)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => sendChat("kicked user <@" + args[0].match(/[0-9]{1,}/)[0] + '>')).catch((err) => sendChat("Failed to kick user <@" + args[0].match(/[0-9]{1,}/)[0] + ">```\n" + err + "```"));
         }
 
     },
@@ -1864,13 +1858,13 @@ var commands = {
         {
             return sendChat("**Proper Usage**: `x!ban <@user>`");
         }
-        if (!RE.ping.test(args[0]) || !RE.id2.test(args[0]))
+        if (!/^<@[0-9]{1,}>$/.test(args[0]) || !/^[0-9]{1,}$/.test(args[0]))
         {
             return sendChat("Invalid user mention, try again.");
         }
         else
         {
-            message.channel.guild.members.get(args[0].match(RE.id1)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => sendChat("baned user <@" + args[0].match(RE.id1)[0] + '>')).catch((err) => sendChat("Failed to ban user <@" + args[0].match(RE.id1)[0] + ">```\n" + err + "```"));
+            message.channel.guild.members.get(args[0].match(/[0-9]{1,}/)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => sendChat("baned user <@" + args[0].match(/[0-9]{1,}/)[0] + '>')).catch((err) => sendChat("Failed to ban user <@" + args[0].match(/[0-9]{1,}/)[0] + ">```\n" + err + "```"));
         }
 
     },
