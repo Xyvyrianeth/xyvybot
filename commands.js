@@ -1,4 +1,4 @@
-var version = "2.33.10.11";
+var version = "2.33.10.12";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -509,14 +509,6 @@ var commands = {
             {
                 elos = "elo5";
             }
-            if (gms.pente.includes(args[1]))
-            {
-                elos = "elo6";
-            }
-            if (gms.ninemen.includes(args[1]))
-            {
-                elos = "elo7";
-            }
             if (!elos)
             {
                 return sendChat("Unknown game.");
@@ -658,7 +650,7 @@ var commands = {
                 "ttt3d": ["ttt3d", "3dttt", "3dtictactoe", "tictactoe3d", "ttt", "tictactoe"],
                 "connect4": ["connect4", "connectfour", "cfour", "c4"]
             };
-            let games = [].concat(gms.othello, gms.squares, gms.gomoku, gms.ttt3d, gms.connect4, gms.pente, gms.ninemen);
+            let games = [].concat(gms.othello, gms.squares, gms.gomoku, gms.ttt3d, gms.connect4);
             if (!args[1])
             {
 
