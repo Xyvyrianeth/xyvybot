@@ -44,7 +44,7 @@ exports.drawLeft = function(member, profile, avatar, background) {
         let data = bdrctx.getImageData(0, 0, w, h);
         for (let i = 0; i < data.data.length; i += 4)
         {
-            let val = img == 6 ? 93 : img % 2 == 0 ? 63 : 191;
+            let val = img == 6 ? 63 : img % 2 == 0 ? 31 : 223;
             data.data[i]     = Math.round(color.r - ((color.r - val) / 2));
             data.data[i + 1] = Math.round(color.g - ((color.g - val) / 2));
             data.data[i + 2] = Math.round(color.b - ((color.b - val) / 2));
@@ -59,16 +59,16 @@ exports.drawLeft = function(member, profile, avatar, background) {
     let texts = [];
     for (let i = 0; i < 3; i++)
     {
-        text = getWidth([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]);
+        text = drawText([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]);
         let Text = new Canvas.createCanvas(text[1], 11);
         let tectx = Text.getContext('2d');
         tectx.drawImage(text[0], 0, 0);
         let data = tectx.getImageData(0, 0, text[1], 11);
         for (let x = 0; x < data.data.length; x += 4)
         {
-            data.data[x]     = Math.round(color.r - ((color.r - 93) / 2));
-            data.data[x + 1] = Math.round(color.g - ((color.g - 93) / 2));
-            data.data[x + 2] = Math.round(color.b - ((color.b - 93) / 2));
+            data.data[x]     = Math.round(color.r - ((color.r - 63) / 2));
+            data.data[x + 1] = Math.round(color.g - ((color.g - 63) / 2));
+            data.data[x + 2] = Math.round(color.b - ((color.b - 63) / 2));
             data.data[x + 3] /= 2;
         }
         if (text[1] > [120, 105, 103][i] + h)
@@ -77,6 +77,31 @@ exports.drawLeft = function(member, profile, avatar, background) {
         }
         tectx.putImageData(data, 0, 0);
         texts.push(Text);
+    }
+
+    // Score
+    let scores = [];
+    for (let y = 0; y < 6; y++)
+    {
+        let score;
+        if (y !== 5)
+        {
+            score = profile["elo" + (y + 1)];
+        }
+        else
+        {
+            score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"];
+        }
+        let Score = ' '.repeat(6 - JSON.stringify(sc).length) + JSON.stringify(sc);
+
+        let canvas = new Canvas.createCanvas(47, 9);
+        let ctx = canvas.getContext('2d');
+        for (let x = 0; x < 6; x++)
+        {
+            let n = drawText(Score[x]);
+            ctx.drawImage(n[0], 8 * x, 0);
+        }
+        scores.push(canvas);
     }
 
     ctx.drawImage(background, 0, 0, width, height);
@@ -94,6 +119,11 @@ exports.drawLeft = function(member, profile, avatar, background) {
     {
         ctx.drawImage(texts[i], 47, 3 + (15 * i));
     }
+    for (let i = 0; i < 5; i++)
+    {
+        ctx.drawImage(scores[i], 4, 64 + (10 * i));
+    }
+    ctx.drawImage(scores[5], 4, 119);
     ctx.drawImage(assets[6], 16, 49);
     ctx.drawImage(avatar, 2, 2, 43, 43);
 
@@ -141,7 +171,7 @@ exports.drawRight = function(member, profile, avatar, background) {
         let data = bdrctx.getImageData(0, 0, w, h);
         for (let i = 0; i < data.data.length; i += 4)
         {
-            let val = img == 6 ? 93 : img % 2 == 0 ? 63 : 191;
+            let val = img == 6 ? 63 : img % 2 == 0 ? 31 : 223;
             data.data[i]     = Math.round(color.r - ((color.r - val) / 2));
             data.data[i + 1] = Math.round(color.g - ((color.g - val) / 2));
             data.data[i + 2] = Math.round(color.b - ((color.b - val) / 2));
@@ -156,16 +186,16 @@ exports.drawRight = function(member, profile, avatar, background) {
     let texts = [];
     for (let i = 0; i < 3; i++)
     {
-        text = getWidth([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]);
+        text = drawText([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]);
         let Text = new Canvas.createCanvas(text[1], 11);
         let tectx = Text.getContext('2d');
         tectx.drawImage(text[0], 0, 0);
         let data = tectx.getImageData(0, 0, text[1], 11);
         for (let x = 0; x < data.data.length; x += 4)
         {
-            data.data[x]     = Math.round(color.r - ((color.r - 93) / 2));
-            data.data[x + 1] = Math.round(color.g - ((color.g - 93) / 2));
-            data.data[x + 2] = Math.round(color.b - ((color.b - 93) / 2));
+            data.data[x]     = Math.round(color.r - ((color.r - 63) / 2));
+            data.data[x + 1] = Math.round(color.g - ((color.g - 63) / 2));
+            data.data[x + 2] = Math.round(color.b - ((color.b - 63) / 2));
             data.data[x + 3] /= 2;
         }
         if (text[1] > [120, 105, 103][i] + h)
@@ -174,6 +204,31 @@ exports.drawRight = function(member, profile, avatar, background) {
         }
         tectx.putImageData(data, 0, 0);
         texts.push(Text);
+    }
+
+    // Score
+    let scores = [];
+    for (let y = 0; y < 6; y++)
+    {
+        let score;
+        if (y !== 5)
+        {
+            score = profile["elo" + (y + 1)];
+        }
+        else
+        {
+            score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"];
+        }
+        let Score = ' '.repeat(6 - JSON.stringify(sc).length) + JSON.stringify(sc);
+
+        let canvas = new Canvas.createCanvas(47, 9);
+        let ctx = canvas.getContext('2d');
+        for (let x = 0; x < 6; x++)
+        {
+            let n = drawText(Score[x]);
+            ctx.drawImage(n[0], 8 * x, 0);
+        }
+        scores.push(canvas);
     }
 
     ctx.drawImage(background, 0, 0, width, height);
@@ -191,13 +246,18 @@ exports.drawRight = function(member, profile, avatar, background) {
     {
         ctx.drawImage(texts[i], width - (47 + texts[i].width), 3 + (15 * i));
     }
+    for (let i = 0; i < 5; i++)
+    {
+        ctx.drawImage(scores[i], width - 51, 64 + (10 * i));
+    }
+    ctx.drawImage(scores[5], width - 51, 119);
     ctx.drawImage(assets[6], width - 150, 49);
     ctx.drawImage(avatar, width - 45, 2, 43, 43);
 
     return canvas.toBuffer();
 }
 
-function getWidth(text) {
+function drawText(text) {
     let canvasA = new Canvas.createCanvas(64, 132)
     let Alphabet = canvasA.getContext("2d")
     Alphabet.drawImage(exports.Images.alphabet, 0, 0);
