@@ -182,14 +182,14 @@ exports.drawRight = function(member, profile, avatar, background) {
     console.log(h);
     for (let i = 0; i < h; i++)
     {
-        ctx.drawImage(assets[4], width - (152 + i), 0);
-        ctx.drawImage(assets[5], width - (152 + i), 0);
+        ctx.drawImage(assets[4], width - (153 + i), 0);
+        ctx.drawImage(assets[5], width - (153 + i), 0);
     }
     ctx.drawImage(assets[2], width - (185 + h), 0);
     ctx.drawImage(assets[3], width - (185 + h), 0);
     for (let i = 0; i < 3; i++)
     {
-        ctx.drawImage(texts[i], width - (50 + texts[i].width), 3 + (15 * i));
+        ctx.drawImage(texts[i], width - (47 + texts[i].width), 3 + (15 * i));
     }
     ctx.drawImage(assets[6], width - 150, 49);
     ctx.drawImage(avatar, width - 45, 2, 43, 43);
