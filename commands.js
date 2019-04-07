@@ -1,4 +1,4 @@
-var version = "2.33.10.18";
+var version = "2.33.10.20";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -695,7 +695,7 @@ var commands = {
             }
             else
             {
-                Gm = Object.keys(gms).filter(x => gms[x].includes(gm))[0];
+                Gm = Object.keys(gms).indexOf(Object.keys(gms).filter(x => gms[x].includes(gm))[0]) + 1;
             }
             if (Gm)
             {
