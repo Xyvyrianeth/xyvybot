@@ -185,14 +185,14 @@ exports.drawRight = function(member, profile, avatar, background) {
         ctx.drawImage(assets[4], width - (152 + i), 0);
         ctx.drawImage(assets[5], width - (152 + i), 0);
     }
-    ctx.drawImage(assets[2], width - (152 + h), 0);
-    ctx.drawImage(assets[3], width - (152 + h), 0);
+    ctx.drawImage(assets[2], width - (185 + h), 0);
+    ctx.drawImage(assets[3], width - (185 + h), 0);
     for (let i = 0; i < 3; i++)
     {
-        ctx.drawImage(texts[i], width - 47, 3 + (15 * i));
+        ctx.drawImage(texts[i], width - (49 + texts[i].width), 3 + (15 * i));
     }
-    ctx.drawImage(assets[6], width - 16, 49);
-    ctx.drawImage(avatar, width - 2, 2, 43, 43);
+    ctx.drawImage(assets[6], width - 138, 49);
+    ctx.drawImage(avatar, width - 45, 2, 43, 43);
 
     return canvas.toBuffer();
 }
