@@ -1,4 +1,4 @@
-var version = "2.33.10.10";
+var version = "2.33.10.11";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -478,35 +478,42 @@ var commands = {
         if (["leaderboard", "top"].includes(args[0]))
         {
             let elos = false;
+            let gms = {
+                "othello": ["othello", "reversi"],
+                "squares": ["squares"],
+                "gomoku": ["gomoku", "gobang", "renju"],
+                "ttt3d": ["ttt3d", "3dttt", "3dtictactoe", "tictactoe3d", "ttt", "tictactoe"],
+                "connect4": ["connect4", "connectfour", "cfour", "c4"]
+            };
             if (!args[1])
             {
                 elos = "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7";
             }
-            if (aliases.guild.othello.includes(args[1]))
+            if (gms.othello.includes(args[1]))
             {
                 elos = "elo1";
             }
-            if (aliases.guild.squares.includes(args[1]))
+            if (gms.squares.includes(args[1]))
             {
                 elos = "elo2";
             }
-            if (aliases.guild.gomoku.includes(args[1]))
+            if (gms.gomoku.includes(args[1]))
             {
                 elos = "elo3";
             }
-            if (aliases.guild.ttt3d.includes(args[1]))
+            if (gms.ttt3d.includes(args[1]))
             {
                 elos = "elo4";
             }
-            if (aliases.guild.connect4.includes(args[1]))
+            if (gms.connect4.includes(args[1]))
             {
                 elos = "elo5";
             }
-            if (aliases.guild.pente.includes(args[1]))
+            if (gms.pente.includes(args[1]))
             {
                 elos = "elo6";
             }
-            if (aliases.guild.ninemen.includes(args[1]))
+            if (gms.ninemen.includes(args[1]))
             {
                 elos = "elo7";
             }
@@ -644,7 +651,14 @@ var commands = {
         if (["stats", "statistics"].includes(args[0])) {
             let id = message.author.id;
             let gm = "all";
-            let games = [].concat(aliases.guild.othello, aliases.guild.squares, aliases.guild.gomoku, aliases.guild.ttt3d, aliases.guild.connect4, aliases.guild.pente, aliases.guild.ninemen);
+            let gms = {
+                "othello": ["othello", "reversi"],
+                "squares": ["squares"],
+                "gomoku": ["gomoku", "gobang", "renju"],
+                "ttt3d": ["ttt3d", "3dttt", "3dtictactoe", "tictactoe3d", "ttt", "tictactoe"],
+                "connect4": ["connect4", "connectfour", "cfour", "c4"]
+            };
+            let games = [].concat(gms.othello, gms.squares, gms.gomoku, gms.ttt3d, gms.connect4, gms.pente, gms.ninemen);
             if (!args[1])
             {
 
@@ -698,9 +712,9 @@ var commands = {
             }
             else
             {
-                for (let i of aliases.guild)
+                for (let i of gms)
                 {
-                    if (aliases.guild[i].includes(gm))
+                    if (gms[i].includes(gm))
                     {
                         Gm = Number(["othello", "squares", "gomoku", "ttt3d", "connect4", "pente", "ninemen"].indexOf(i) + 1);
                     }
@@ -777,7 +791,7 @@ var commands = {
         if (["games"].includes(args[0]))
         {
             let embed = new Discord.RichEmbed();
-            embed.setDescription("I have 4 games currently and 3 planned.\n\n**Games**: Othello, Squares, Gomoku, Connect Four\n**Planned**: 3D Tic Tac Toe, Pente, Nine Men's Morris\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).");
+            embed.setDescription("I currently have 4 games, and plan to add more.\n\n**Games**: Othello, Squares, 3D Tic-Tac-Toe, Connect Four\n**Planned**: Gomoku\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).");
             embed.setColor(new Color().random());
             sendChat({embed});
         }
