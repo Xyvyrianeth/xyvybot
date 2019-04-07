@@ -98,8 +98,10 @@ exports.drawLeft = function(member, profile, avatar, background) {
         let ctx = canvas.getContext('2d');
         for (let x = 0; x < 6; x++)
         {
-            let n = drawText(Score[x]);
-            ctx.drawImage(n[0], 8 * x, 0);
+            if (Score[x] !== ' ')
+            {
+                ctx.drawImage(drawText(Score[x])[0], 8 * x - 1, 0);
+            }
         }
         scores.push(canvas);
     }
