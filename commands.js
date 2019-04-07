@@ -1,4 +1,4 @@
-var version = "2.33.10.13";
+var version = "2.33.10.14";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -487,7 +487,7 @@ var commands = {
             };
             if (!args[1])
             {
-                elos = "round((elo1 + elo2 + elo3 + elo4 + elo5) / 5)";
+                elos = "elo1 + elo2 + elo3 + elo4 + elo5";
             }
             if (gms.othello.includes(args[1]))
             {
@@ -516,6 +516,10 @@ var commands = {
             
             let wins = elos.replace(/elo/g, "win");
             let loss = elos.replace(/elo/g, "los");
+            if (!args[1])
+            {
+                elos = "round((" + elos + ") / 5)";
+            }
             let query = [
                 `SELECT`,
                 `    id,`,
