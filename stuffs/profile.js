@@ -93,7 +93,7 @@ exports.drawLeft = function(member, profile, avatar, background) {
             score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"];
         }
         let Score = ' '.repeat(6 - JSON.stringify(score).length) + JSON.stringify(score);
-
+        console.log(Score);
         let canvas = new Canvas.createCanvas(47, 9);
         let ctx = canvas.getContext('2d');
         for (let x = 0; x < 6; x++)
@@ -107,7 +107,6 @@ exports.drawLeft = function(member, profile, avatar, background) {
     ctx.drawImage(background, 0, 0, width, height);
     ctx.drawImage(assets[0], 0, 0);
     ctx.drawImage(assets[1], 0, 0);
-    console.log(h);
     for (let i = 0; i < h; i++)
     {
         ctx.drawImage(assets[4], 152 + i, 0);
