@@ -460,9 +460,9 @@ var commands = {
         {
             let embed = new Discord.RichEmbed();
             embed.setDescription("Input tree for command x!games\n`x!games [input]`");
-            embed.addField("leaderboard", "View the players with the 10 highest ELOs for every game or the players with the 10 highest combined ELOs.\n`x!games leaderboard [game]`\nLeave `[game]` blank for general top 10 players.");
+            embed.addField("leaderboard", "View the players with the 10 highest Elos for every game or the players with the 10 highest combined Elos.\n`x!games leaderboard [game]`\nLeave `[game]` blank for general top 10 players.");
             embed.addField("stats", "View either your stats or another player's stats.");
-            embed.addField("info", "A detailed information about how the ELO system works and the entire ranking system in general.");
+            embed.addField("info", "A detailed information about how the Elo system works and the entire ranking system in general.");
             embed.addField("games", "A list of all the games that are a part of the ranking system and a few details about them.");
             embed.setColor(new Color().random());
             sendChat({embed});
@@ -619,7 +619,7 @@ var commands = {
                     }
                     let embed = new Discord.RichEmbed();
                     embed.setTitle("Leaderboard for " + game);
-                    embed.setDescription("__`\u034f RANK \u034f` | `\u034f ELO \u034f` | `\u034f W \u034f` / `\u034f L \u034f` (`WINRATE`) | <@USER>__\n" + users.join('\n'));
+                    embed.setDescription("__`\u034f RANK \u034f` | `\u034f Elo \u034f` | `\u034f W \u034f` / `\u034f L \u034f` (`WINRATE`) | <@USER>__\n" + users.join('\n'));
                     embed.setColor(new Color().random());
                     sendChat({embed});
                 }
@@ -647,14 +647,9 @@ var commands = {
                 "connect4": ["connect4", "connectfour", "cfour", "c4"]
             };
             let games = [].concat(gms.othello, gms.squares, gms.gomoku, gms.ttt3d, gms.connect4);
-            if (!args[1])
+            if (args.length == 2)
             {
-
-            }
-            else
-            if (args[1] && !args[2])
-            {
-                if (/[0-9]{1,}/.test(args[1]))
+                if (/^[0-9]{1,}$/.test(args[1]) || /^<@[0-9]{1,}>$/.test(args[1]))
                 {
                     id = args[1];
                 }
@@ -669,15 +664,15 @@ var commands = {
                 }
             }
             else
-            if (args[2])
+            if (args.length == 3)
             {
-                if (/[0-9]{1,}/.test(args[1]) && games.includes(args[2]))
+                if ((/^[0-9]{1,}$/.test(args[1]) || /^<@[0-9]{1,}>$/.test(args[1])) && games.includes(args[2]))
                 {
                     id = args[1];
                     gm = args[2]
                 }
                 else
-                if (/[0-9]{1,}/.test(args[2]) && games.includes(args[1]))
+                if ((/^[0-9]{1,}$/.test(args[2]) || /^<@[0-9]{1,}>$/.test(args[2])) && games.includes(args[1]))
                 {
                     id = args[2];
                     gm = args[1];
@@ -739,11 +734,11 @@ var commands = {
                             let w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u034f \u034f N/A \u034f \u034f";
                             ok.push('`' + game + ' \u034f'.repeat(17 - game.length) + '` | `' + '\u034f '.repeat(5 - String(elo).length) + elo + "` | `" + '\u034f '.repeat(3 - String(win).length) + win + "` / `" + los + ' \u034f'.repeat(3 - String(los).length) + "` (`" + '\u034f '.repeat(w_l !== "\u034f \u034f N/A \u034f \u034f" ? 7 - w_l.length : 0) + w_l + "`)");
                         }
-                        embed.setDescription("**User**: <@" + id + ">\n__`\u034f \u034f \u034f \u034f Game Name \u034f \u034f \u034f \u034f`__ | __`\u034f ELO \u034f`__ | __`\u034f W \u034f`__ / __`\u034f L \u034f`__ (__`\u034f WIN % \u034f`__)\n" + ok.join("\n"));
+                        embed.setDescription("**User**: <@" + id + ">\n__`\u034f \u034f \u034f \u034f Game Name \u034f \u034f \u034f \u034f`__ | __`\u034f Elo \u034f`__ | __`\u034f W \u034f`__ / __`\u034f L \u034f`__ (__`\u034f WIN % \u034f`__)\n" + ok.join("\n"));
                     }
                     else
                     {
-                        embed.setDescription("**User**: <@" + id + ">\n**__Game__: " + ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][Gm - 1] + "\n__ELO__: " + user["elo" + Gm] + "\n__W/L(%)__:" + user["win" + Gm] + " / " + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) : "N/A") + ")**");
+                        embed.setDescription("**User**: <@" + id + ">\n**__Game__: " + ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][Gm - 1] + "\n__Elo__: " + user["elo" + Gm] + "\n__W/L(%)__:" + user["win" + Gm] + " / " + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) : "N/A") + ")**");
                     }
 
                     embed.setColor(new Color().random());
@@ -761,11 +756,11 @@ var commands = {
         {
             let embed = new Discord.RichEmbed();
             embed.setTitle("Information");
-            embed.setDescription("I, Xyvyrianeth (I'm speaking through this bot), am a big fan of [abstract strategy games](https://en.wikipedia.org/wiki/Abstract_strategy_game). I like them so much I tried to create my own competetive social network in Discord that revolves around a select few of these types of games.");
-            embed.addField("\u034f", "Like every network of competition, there needs to be a way to evaluate who's better than who. Most PvP games, like League of Legends, have a score called attached to each player called ELO. ELO is most likely a number of some sort, and the method in which players can gain or lose ELO differs for each game. In some games, you gain ELO exclusively by winning and lose it exclusively from losing. In other games, ELO gained or lossed is based on the player's personal evaluation in a given match, and winning or losing only somewhat or doesn't affect it.");
-            embed.addField("\u034f", "For my bot, I used a system I heard from a friend (I don't know if he made it up or heard it from somewhere else or not, but credit goes to you, WholeWheatThins). Basically, everyone starts out with an ELO of 1000. After a game ends, the loser loses 10% of their ELO (rounded up) and it goes to the winner.\nIf the loser of a game had 1000 ELO, they lose 100, which goes to the winner.\nIf the loser had 1500 ELO, they lose 150.\nIf 5 ELO, they lose 1 (10% of 5 rounded up is 1. You stop losing ELO from losing when you have no ELO left to lose).\nWith this system, you better benefit winning against people who are supposedly better than you are. You don't gain much from beating people who aren't very good, and that applies to both ELO and your own skill of the game you suck at because you only play against other people who suck, so git gud.");
-            embed.addField("\u034f", "ELOs can be sorted either by game or totally, which is average ELO for all games (some people might only care about Othello). Everyone has their own ELO, but those numbers can sometimes end up being the same for multiple users, so instead of sorting by alphabetical order next, we'll use the [Lower bound of Wilson score confidence interval for a Bernoulli parameter](https://www.evanmiller.org/how-not-to-sort-by-average-rating.html): A user with 500 wins and 500 losses will score above someone with 5 wins and 1 loss, and the user with 5 wins and 1 loss will score above someone with 500 wins and 1000 losses. It's the perfect balance between net positive results (`wins - losses`) and average results (`wins / (wins + losses)`).\nIf two users have the same ELO *and* the same number of wins and losses, *then* we'll sort them by ID, I guess.");
-            embed.addField("\u034f", "For now, these scores and such won't mean anything other than a way to sort out the best. Until I think enough people are playing games on my bot, I won't be forming any sort of tournaments, and ELOs will never be reset. Get more people using this bot and I might change that.");
+            embed.setDescription("I, Xyvyrianeth (I'm speaking through this bot), am a big fan of [abstract strategy games](https://en.wikipedia.org/wiki/Abstract_strategy_game). I like them so much I tried to create my own competetive social network in Discord that revolves around a select few of these types of games. Whether or not that dream will come true is yet to be seen, but I still have hope and am still pushing towards that goal.");
+            embed.addField("\u034f", "Like every network of competition, there needs to be a way to evaluate who's better than who. Most PvP games, like League of Legends, have a score called attached to each player called Elo. Elo is most likely a number of some sort, and the method in which players can gain or lose Elo differs for each game. In some games, you gain Elo exclusively by winning and lose it exclusively from losing. In other games, Elo gained or lossed is based on the player's personal evaluation in a given match, and winning or losing only somewhat or doesn't affect it.");
+            embed.addField("\u034f", "For my bot, I used a system I heard from a friend (I don't know if he made it up or heard it from somewhere else or not, but credit goes to you, WholeWheatThins). Basically, everyone starts out with an Elo of 1000. After a game ends, the loser loses 10% of their Elo (rounded up) and it goes to the winner.\nIf the loser of a game had 1000 Elo, they lose 100, which goes to the winner.\nIf the loser had 1500 Elo, they lose 150.\nIf 5 Elo, they lose 1 (10% of 5 rounded up is 1. You stop losing Elo from losing when you have no Elo left to lose).\nWith this system, you better benefit winning against people who are supposedly better than you are. You don't gain much from beating people who aren't very good, and that applies to both Elo and your own skill of the game you suck at because you only play against other people who suck, so git gud.");
+            embed.addField("\u034f", "Elos can be sorted either by game or totally, which is average Elo for all games (some people might only care about Othello). Everyone has their own Elo, but those numbers can sometimes end up being the same for multiple users, so instead of sorting by alphabetical order next, we'll use the [Lower bound of Wilson score confidence interval for a Bernoulli parameter](https://www.evanmiller.org/how-not-to-sort-by-average-rating.html): A user with 500 wins and 500 losses will score above someone with 5 wins and 1 loss, and the user with 5 wins and 1 loss will score above someone with 500 wins and 1000 losses. It's the perfect balance between net positive results (`wins - losses`) and average results (`wins / (wins + losses)`).\nIf two users have the same Elo *and* the same number of wins and losses, *then* we'll sort them by ID, I guess.");
+            embed.addField("\u034f", "For now, these scores and such won't mean anything other than a way to sort out the best. Until I think enough people are playing games on my bot, I won't be forming any sort of tournaments, and Elos will never be reset. Get more people using this bot and I might change that.");
             embed.setColor(new Color().random());
             return sendChat({embed});
         }
