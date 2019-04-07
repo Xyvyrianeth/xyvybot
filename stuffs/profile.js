@@ -92,7 +92,7 @@ exports.drawLeft = function(member, profile, avatar, background) {
         {
             score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"];
         }
-        let Score = ' '.repeat(6 - JSON.stringify(sc).length) + JSON.stringify(sc);
+        let Score = ' '.repeat(6 - JSON.stringify(score).length) + JSON.stringify(score);
 
         let canvas = new Canvas.createCanvas(47, 9);
         let ctx = canvas.getContext('2d');
@@ -219,7 +219,7 @@ exports.drawRight = function(member, profile, avatar, background) {
         {
             score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"];
         }
-        let Score = ' '.repeat(6 - JSON.stringify(sc).length) + JSON.stringify(sc);
+        let Score = ' '.repeat(6 - JSON.stringify(score).length) + JSON.stringify(score);
 
         let canvas = new Canvas.createCanvas(47, 9);
         let ctx = canvas.getContext('2d');
