@@ -1,4 +1,4 @@
-var version = "2.33.10.12";
+var version = "2.33.10.13";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -487,7 +487,7 @@ var commands = {
             };
             if (!args[1])
             {
-                elos = "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7";
+                elos = "round((elo1 + elo2 + elo3 + elo4 + elo5) / 5)";
             }
             if (gms.othello.includes(args[1]))
             {
@@ -579,7 +579,7 @@ var commands = {
                     }
                     else
                     {
-                        game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][elos[3] - 1];
+                        game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][elos[3] - 1];
                     }
 
                     let users = [];
@@ -708,7 +708,7 @@ var commands = {
                 {
                     if (gms[i].includes(gm))
                     {
-                        Gm = Number(["othello", "squares", "gomoku", "ttt3d", "connect4", "pente", "ninemen"].indexOf(i) + 1);
+                        Gm = Number(["othello", "squares", "gomoku", "ttt3d", "connect4"].indexOf(i) + 1);
                     }
                 }
             }
@@ -735,14 +735,14 @@ var commands = {
                     }
 
                     let embed = new Discord.RichEmbed();
-                    embed.setTitle("User Statistics for " + (Gm == "all" ? "all games" : ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][Gm - 1]));
+                    embed.setTitle("User Statistics for " + (Gm == "all" ? "all games" : ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][Gm - 1]));
 
                     if (Gm == "all")
                     {
                         let ok = [];
-                        for (let i = 0; i < 7; i++)
+                        for (let i = 0; i < 5; i++)
                         {
-                            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][Gm - 1];
+                            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][i];
                             let elo = user["elo" + (i + 1)];
                             let win = user["win" + (i + 1)];
                             let los = user["los" + (i + 1)];
@@ -753,7 +753,7 @@ var commands = {
                     }
                     else
                     {
-                        embed.setDescription("**__Game__: " + ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four", "Pente", "Nine Men's Morris"][Gm - 1] + "\n__ELO__: " + user["elo" + Gm] + "\n__W/L(%)__:" + user["win" + Gm] + " / " + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) : "N/A") + ")**");
+                        embed.setDescription("**__Game__: " + ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][Gm - 1] + "\n__ELO__: " + user["elo" + Gm] + "\n__W/L(%)__:" + user["win" + Gm] + " / " + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) : "N/A") + ")**");
                     }
 
                     embed.setColor(new Color().random());
