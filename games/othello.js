@@ -252,44 +252,44 @@ exports.nextTurn = function(channel) {
 
 exports.Images = {};
 
-Canvas.loadImage("./img/gameAssets/squares/board.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/board.png").then(image => {
     exports.Images.board = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/black.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/black.png").then(image => {
     exports.Images.black = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/white.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/white.png").then(image => {
     exports.Images.white = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/placed.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/placed.png").then(image => {
     exports.Images.placed = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/captured.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/captured.png").then(image => {
     exports.Images.captured = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/available.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/available.png").then(image => {
     exports.Images.available = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/blackText.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/blackText.png").then(image => {
     exports.Images.blackText = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/whiteText.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/whiteText.png").then(image => {
     exports.Images.whiteText = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/turn.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/turn.png").then(image => {
     exports.Images.turn = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/win.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/win.png").then(image => {
     exports.Images.win = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/tie.png").then(image => {
+Canvas.loadImage("./img/gameAssets/othello/tie.png").then(image => {
     exports.Images.tie = image;
 });
 
 exports.Images.numbers = new Array(10);
 for (let i = 0; i < 10; i++)
 {
-    Canvas.loadImage(`./img/gameAssets/squares/numbers/${i}.png`).then(image => {
+    Canvas.loadImage(`./img/gameAssets/othello/numbers/${i}.png`).then(image => {
         exports.Images.numbers[i] = image;
     });
 }
