@@ -109,7 +109,7 @@ exports.drawBoard = function(game, end) {
         for (let i = 0; i < game.highlight.length; i++)
         {
             let spot = game.highlight[i];
-            ctx.drawImage(i == 0 ? exports.Images.captured : exports.Images.placed, 17 + (spot[1] * 25), 30 + (spot[0] * 25));
+            ctx.drawImage(i == 0 ? exports.Images.placed : exports.Images.captured, 17 + (spot[1] * 25), 30 + (spot[0] * 25));
         }
         for (let i = 0; i < game.possible.length; i++)
         {
