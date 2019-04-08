@@ -25,7 +25,7 @@ exports.newGame = function(channel, player1, cmd, mode) {
     game.board[4][3] = 0;
   
     game.timer = {
-        time: 10 * 60 * 15,
+        time: 9000,
         message: `It appears nobody wants to play right now, <@${player1}>.`
     }
   
@@ -39,303 +39,64 @@ exports.startGame = function(channel, player2) {
     game.started = true;
   
     game.timer = {
-        time: 10 * 60 * 5,
+        time: 6000,
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
   
     game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
     game.player = game.players[0];
-    game.buffer = exports.drawBoard(game, false);
+    game.buffer = exports.drawBoard(game, 0);
 
     return [`The game has started! <@${game.players[0]}> will be black, and <@${game.players[1]}> will be white!\n\nThe small green circles are the places you can put a stone.\nTo place a stone, say the letter of the row and the number of the column, like "f4".`, new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
 }
   
 exports.drawBoard = function(game, end) {
-    let canvas = new Canvas.createCanvas(230, 250);
+    let canvas = new Canvas.createCanvas(280, 300);
     let ctx = canvas.getContext('2d');
       
-    // Function will vary with game
-    
-    if (!end)
-    {
+    ctx.drawImage(exports.Images.board, 0, 0);
 
-        // Checks for empty spaces
-        end = true;
+    if (end === 0)
+    {
+        ctx.drawImage(exports.Images[["black", "white"][Math.floor(game.turn)] + "Text"], 2, 4);
+        ctx.drawImage(exports.Images.turn, 76, 4);
+    }
+    else
+    if (end === 1)
+    {
+        ctx.drawImage(exports.Images[["black", "white"][game.winner]], 2, 4);
+        ctx.drawImage(exports.Images.win, 76, 4);
+    }
+    else
+    if (end === 2)
+    {
+        ctx.drawImage(exports.Images.tie, 14, 10);
+    }
+    
+    for (let x = 0; x < 8; x++)
+    {
         for (let y = 0; y < 8; y++)
         {
-            for (let x = 0; x < 8; x++)
+            if (game.board[x][y] !== false)
             {
-                if (game.board[y][x] !== 0 && game.board[y][x] !== 1)
-                {
-                    end = false;
-                    game.board[y][x] = false;
-                }
+                ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
             }
         }
-        if (end)
-        {
-            game.over = true;
-        }
+    }
     
-
-        // If empty spaces are available, this finds spaces that can be played in
-        possible = [];
-        let a = game.turn === 0 ? 1 : 0;
-        if (!end)
-        {
-            for (let y = 0; y < 8; y++)
-            {
-                for (let x = 0; x < 8; x++)
-                {
-                    if (game.board[y][x] === false)
-                    {
-                        d = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
-                        p = [];
-                        for (let i = 0; i < 8; i++)
-                        {
-                            if (y + d[i][0] < 8 && y + d[i][0] > -1 && x + d[i][1] < 8 && x + d[i][1] > -1)
-                            {
-                                let y1 = y + d[i][0];
-                                let x1 = x + d[i][1];
-                                p1 = 1;
-                                if (game.board[y1][x1] === a)
-                                {
-                                    let yx = true;
-                                    do {
-                                        y1 += d[i][0];
-                                        x1 += d[i][1];
-                                        p1 += 1;
-                                        if (y1 < 8 && y1 > -1 && x1 < 8 && x1 > -1)
-                                        {
-                                            if (game.board[y1][x1] === game.turn)
-                                            {
-                                                p.push(d[i].concat(p1));
-                                                yx = false;
-                                            }
-                                            else
-                                            if (game.board[y1][x1] !== a)
-                                            {
-                                                yx = false;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            yx = false;
-                                        }
-                                    } while (yx);
-                                }
-                            }
-                        }
-                        if (p.length > 0)
-                        {
-                            game.board[y][x] = true;
-                            possible.push([y, x, p]);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // Draws the row and column identifiers
-    game.possible = possible;
-    ctx.textAlign = "center";
-    for (let i = 8; i--;)
-    {
-        ctx.fillText("ABCDEFGH".split('')[i], (i + 1) * 25 + 7.5, 42 + (25 * 8));
-        ctx.fillText(i + 1, 13, (i + 1) * 25 + 21);
-    }
-    ctx.textAlign = "start";
-  
-    // Draws the pieces and possible moves
-    for (let y = 0; y < 8; y++)
-    {
-        let r = 42.5 + (25 * y);
-        for (let x = 0; x < 8; x++)
-        {
-            let c = (x + 1) * 25 + 7.5;
-
-            if (game.board[y][x] === false && !quit) // Blank Spots
-            {
-                ctx.beginPath();
-                ctx.strokeStyle = "rgba(200, 200, 200, 0.25)";
-                ctx.moveTo(c + 5, r);
-                ctx.arc(c, r, 5, 0, 2 * Math.PI);
-                ctx.stroke();
-  
-            }
-            else
-            if (game.board[y][x] === true && !quit) // Possible Placements
-            {
-                ctx.beginPath();
-                ctx.strokeStyle = "#8f8";
-                ctx.moveTo(c + 5, r);
-                ctx.arc(c, r, 5, 0, 2 * Math.PI);
-                ctx.stroke();
-  
-            }
-            else
-            if (game.board[y][x] === 0) // Blacks
-            {
-                ctx.beginPath();
-                ctx.strokeStyle = "#222";
-                ctx.fillStyle = "#000";
-                ctx.moveTo(c + 9, r);
-                ctx.arc(c, r, 9, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.stroke();
-  
-                ctx.beginPath();
-                ctx.strokeStyle = "rgba(200, 200, 200, 0.5)";
-                ctx.moveTo(c - 7, r + 3);
-                ctx.arc(c, r, 8, 0.875 * Math.PI, 1.625 * Math.PI);
-                ctx.moveTo(c - 8, r);
-                ctx.arc(c, r, 8, 1 * Math.PI, 1.5 * Math.PI);
-                ctx.stroke();
-  
-            }
-            else
-            if (game.board[y][x] === 1) // Whites
-            {
-                ctx.beginPath();
-                ctx.strokeStyle = "#ddd";
-                ctx.fillStyle = "#fff";
-                ctx.moveTo(c + 9, r);
-                ctx.arc(c, r, 9, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.stroke();
-  
-                ctx.beginPath();
-                ctx.strokeStyle = "rgba(150, 150, 150, 0.5)";
-                ctx.moveTo(c + 7, r - 3);
-                ctx.arc(c, r, 8, 1.875 * Math.PI, 0.625 * Math.PI);
-                ctx.moveTo(c + 8, r);
-                ctx.arc(c, r, 8, 0, 0.5 * Math.PI);
-                ctx.stroke();
-              
-            }
-        }
-    }
-
-    // Counts scores
-    ctx.textBaseline = "hanging";
-    let k;
-    game.score = [0, 0];
-    for (let y = 0; y < 8; y++)
-    {
-        for (let x = 0; x < 8; x++)
-        {
-            if (game.board[y][x] === 0)
-            {
-                game.score[0] += 1;
-            }
-            if (game.board[y][x] === 1)
-            {
-                game.score[1] += 1;
-            }
-        }
-    }
-
-    // Text after move (wins, whose turn it is, etc.)
-    if (!end) // Game not over yet
-    {
-        ctx.font = "bold 20px calibri";
-        let n = game.turn == 0 ? "Black" : "White";
-        k = ctx.measureText(n).width;
-        if (n == "Black")
-        {
-            ctx.fillStyle = "#000";
-        }
-        if (n == "White")
-        {
-            ctx.fillStyle = "#fff";
-        }
-        ctx.fillText(n, 5, 5);
-        ctx.font = "20px calibri";
-        ctx.fillStyle = "#888";
-        ctx.fillText("'s turn.", k + 5, 5);
-        k += ctx.measureText("'s turn.  ").width;
-    }
-    else
-    if (quit)
-    {
-        ctx.font = "bold 20px calibri";
-        let n = game.turn == 1 ? "Black" : "White";
-        k = ctx.measureText(n).width;
-        if (n == "Black")
-        {
-            ctx.fillStyle = "#000";
-        }
-        if (n == "White")
-        {
-            ctx.fillStyle = "#fff";
-        }
-        ctx.fillText(n, 5, 5);
-        ctx.font = "20px calibri";
-        ctx.fillText(" forfeits!", k + 5, 5);
-        k += ctx.measureText(" forfeits!  ").width;
-        game.winner = game.turn;
-    }
-    else
-    if (game.score[0] !== game.score[1]) // Winner winner chicken dinner
-    {
-        ctx.font = "bold 20px calibri";
-        let n = game.score[0] > game.score[1] ? "Black" : "White";
-        k = ctx.measureText(n).width;
-        if (n == "Black")
-        {
-            ctx.fillStyle = "#000";
-        }
-        if (n == "White")
-        {
-            ctx.fillStyle = "#fff";
-        }
-        ctx.fillText(n, 5, 5);
-        ctx.font = "20px calibri";
-        ctx.fillText(" wins!", k + 5, 5);
-        k += ctx.measureText(" wins!  ").width;
- 
-        game.winner = game.score[0] > game.score[1] ? 0 : 1;
-    }
-    else
-    if (game.score[0] == game.score[1]) // Tie game
-    {
-        ctx.fillStyle = "#888";
-        ctx.font = "20px calibri";
-        ctx.fillText("Tie game!", 5, 5);
-  
-        k = ctx.measureText("Tie game!  ").width;
-    }
-
-    // Draws the piece last played and pieces captured
-    if (game.highlight && !quit)
+    if (end === 0)
     {
         for (let i = 0; i < game.highlight.length; i++)
         {
-            r = 42.5 + (25 * game.highlight[i][0]);
-            c = (game.highlight[i][1] + 1) * 25 + 7.5;
-            ctx.strokeStyle = i == 0 ? "#88f" : "#f88";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(c + 10, r);
-            ctx.arc(c, r, 10, 0, 2 * Math.PI);
-            ctx.stroke();
+            let spot = game.highlight[i];
+            ctx.drawImage(i == 0 ? exports.Images.captured : exports.Images.placed, 17 + (spot[1] * 25), 30 + (spot[0] * 25));
         }
     }
 
-    // Displays score
-    ctx.fillStyle = "#000";
-    ctx.fillText(String(game.score[0]), k + 5, 5);
-  
-    k += ctx.measureText(String(game.score[0])).width;
-    ctx.fillStyle = "#888";
-    ctx.fillText(' - ', k + 5, 5);
-  
-    k += ctx.measureText(' - ').width;
-    ctx.fillStyle = "#fff";
-    ctx.fillText(String(game.score[1]), k + 5, 5);
-  
-    //
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 159, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 169, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 193, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 203, 3);
       
     return canvas.toBuffer();
 }
@@ -368,6 +129,76 @@ exports.takeTurn = function(channel, Move) {
     }
 
     game.highlight.unshift(move);
+    
+    // Turns all booleans to false for possible placement algorithm
+    for (let y = 0; y < 8; y++)
+    {
+        for (let x = 0; x < 8; x++)
+        {
+            if (game.board[y][x] !== 0 && game.board[y][x] !== 1)
+            {
+                game.board[y][x] = false;
+            }
+        }
+    }
+
+    // If empty spaces are available, this finds spaces that can be played in
+    game.possible = [];
+    let a = game.turn === 0 ? 1 : 0;
+    if (!end)
+    {
+        for (let y = 0; y < 8; y++)
+        {
+            for (let x = 0; x < 8; x++)
+            {
+                if (game.board[y][x] === false)
+                {
+                    d = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
+                    p = [];
+                    for (let i = 0; i < 8; i++)
+                    {
+                        if (y + d[i][0] < 8 && y + d[i][0] > -1 && x + d[i][1] < 8 && x + d[i][1] > -1)
+                        {
+                            let y1 = y + d[i][0];
+                            let x1 = x + d[i][1];
+                            p1 = 1;
+                            if (game.board[y1][x1] === a)
+                            {
+                                let yx = true;
+                                do {
+                                    y1 += d[i][0];
+                                    x1 += d[i][1];
+                                    p1 += 1;
+                                    if (y1 < 8 && y1 > -1 && x1 < 8 && x1 > -1)
+                                    {
+                                        if (game.board[y1][x1] === game.turn)
+                                        {
+                                            p.push(d[i].concat(p1));
+                                            yx = false;
+                                        }
+                                        else
+                                        if (game.board[y1][x1] !== a)
+                                        {
+                                            yx = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        yx = false;
+                                    }
+                                } while (yx);
+                            }
+                        }
+                    }
+                    if (p.length > 0)
+                    {
+                        game.board[y][x] = true;
+                        game.possible.push([y, x, p]);
+                    }
+                }
+            }
+        }
+    }
     //
     
     return exports.nextTurn(channel);
@@ -376,30 +207,37 @@ exports.takeTurn = function(channel, Move) {
 exports.nextTurn = function(channel) {
     let game = channels[channel.id];
     let board;
-    let end = false;
+    let end = 0;
     game.turn = game.turn == 0 ? 1 : 0;
     game.player = game.players[game.turn];
     game.timer = {
-        time: 10 * 60 * 5,
+        time: 6000,
         message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
     }
-    game.buffer = exports.drawBoard(game, false);
+    game.buffer = exports.drawBoard(game, 0);
     board = new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     if (game.possible.length == 0)
     {
         game.turn = game.turn == 0 ? 1 : 0;
         game.player = game.players[game.turn];
         game.timer = {
-            time: 10 * 60 * 5,
+            time: 6000,
             message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
         }
-        game.buffer = exports.drawBoard(game, false);
+        game.buffer = exports.drawBoard(game, 0);
         board = new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
         if (game.possible.length == 0)
         {
-            end = true;
-            game.buffer = exports.drawBoard(game, true);
-            board = new Discord.Attachment(game.buffer, game.score[0] !== game.score[1] ? `${shortname}_1_${game.players[game.winner]}${game.casual ? "_fun" : ''}.png` : `${shortname}_2_${game.players[0]}vs${game.players[1]}.png`);
+            if (game.score[0] == game.score[1])
+            {
+                end = 2;
+            }
+            else
+            {
+                end = 1;
+            }
+            game.buffer = exports.drawBoard(game, end);
+            board = new Discord.Attachment(game.buffer, end == 1 ? `${shortname}_1_${game.players[game.winner]}.png` : `${shortname}_2_${game.players[0]}vs${game.players[1]}.png`);
         }
     }
     if (channels[channel.id].lastDisplay)
@@ -407,5 +245,51 @@ exports.nextTurn = function(channel) {
         channels[channel.id].lastDisplay.delete();
     }
 
-    return [!end ? `It is <@${game.player}>'s turn.` : game.score[0] !== game.score[1] ? `<@${game.player}> has won!` : "Tie game, everyone loses!", board];
+    return [end == 0 ? `It is <@${game.player}>'s turn.` : end == 1 ? `<@${game.player}> has won!` : "Tie game, everyone loses!", board];
+}
+
+// Images
+
+exports.Images = {};
+
+Canvas.loadImage("./img/gameAssets/squares/board.png").then(image => {
+    exports.Images.board = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/black.png").then(image => {
+    exports.Images.black = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/white.png").then(image => {
+    exports.Images.white = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/placed.png").then(image => {
+    exports.Images.placed = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/captured.png").then(image => {
+    exports.Images.captured = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/available.png").then(image => {
+    exports.Images.available = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/blackText.png").then(image => {
+    exports.Images.blackText = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/whiteText.png").then(image => {
+    exports.Images.whiteText = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/turn.png").then(image => {
+    exports.Images.turn = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/win.png").then(image => {
+    exports.Images.win = image;
+});
+Canvas.loadImage("./img/gameAssets/squares/tie.png").then(image => {
+    exports.Images.tie = image;
+});
+
+exports.Images.numbers = new Array(10);
+for (let i = 0; i < 10; i++)
+{
+    Canvas.loadImage(`./img/gameAssets/squares/numbers/${i}.png`).then(image => {
+        exports.Images.numbers[i] = image;
+    });
 }

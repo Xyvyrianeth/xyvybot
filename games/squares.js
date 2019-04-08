@@ -5,7 +5,7 @@ var gamename = "Squares";
 var shortname = "squares";
   
 exports.newGame = function(channel, player1, cmd, mode) {
-    channels[channel.id] = {game:shortname,guild:channel.guild.id,turn:0.5,players:[],started:false,lastmove:'',isOver:false,player:false,RE:/^([a-j] ?(?:10|[1-9])|(?:10|[1-9]) ?[a-j])$/i,casual:mode,score:[0,0]};
+    channels[channel.id] = {game:shortname,guild:channel.guild.id,turn:0.5,players:[],started:false,lastmove:'',isOver:false,player:false,RE:/^([a-j] ?(?:10|[1-9])|(?:10|[1-9]) ?[a-j])$/i,casual:mode,score:[0,0],highlight:false};
     let game = channels[channel.id];
 
     let _ = false;
@@ -65,7 +65,7 @@ exports.drawBoard = function(game, end, highlight) {
     else
     if (end === 2)
     {
-        ctx.drawImage(exports.Images.tie, 14, 4);
+        ctx.drawImage(exports.Images.tie, 14, 10);
     }
     
     for (let x = 0; x < 10; x++)
