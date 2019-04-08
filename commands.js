@@ -1,4 +1,4 @@
-var version = "2.33.11.7";
+var version = "2.33.11.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -100,9 +100,9 @@ function command(message) {
     let a = message.channel.type == "dm" ? "user" : "guild";
     let args = message.content.split(/ {1,}/);
     let arg = args.shift().replace("x!", '').toLowerCase();
-    let cmd = Object.keys(aliases[a]).filter(alias => aliases[a][alias].includes(arg))[0];
+    let cmd = Object.keys(aliases[a]).filter(alias => aliases[a][alias].includes(arg))[0] || false;
     let input = args.join(' ');
-    if (cmd.length == 0)
+    if (!cmd)
     {
         return;
     }
