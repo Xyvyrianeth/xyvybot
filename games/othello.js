@@ -37,6 +37,10 @@ exports.newGame = function(channel, player1, cmd, mode) {
     game.board[3][3] = 1;
     game.board[4][4] = 1;
     game.board[4][3] = 0;
+    game.board[2][3] = true;
+    game.board[3][2] = true;
+    game.board[4][5] = true;
+    game.board[5][4] = true;
   
     game.timer = {
         time: 9000,
