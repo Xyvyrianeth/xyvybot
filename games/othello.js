@@ -169,7 +169,8 @@ exports.takeTurn = function(channel, Move) {
 
     // If empty spaces are available, this finds spaces that can be played in
     game.possible = [];
-    let a = game.turn === 0 ? 1 : 0; // Opponent's piece
+    let b = game.turn === 0 ? 1 : 0; // Opponent's piece
+    let a = game.turn; // Not opponent's piece
     for (let y = 0; y < 8; y++)
     { 
         for (let x = 0; x < 8; x++)
@@ -205,9 +206,9 @@ exports.takeTurn = function(channel, Move) {
                                 if (y1 < 8 && y1 > -1 && x1 < 8 && x1 > -1)
                                 { // Next spot does not go off the endge
 
-                                    if (game.board[y1][x1] === game.turn)
+                                    if (game.board[y1][x1] === b)
                                     { // Next spot belongs to the active player
-                                        
+
                                         p.push(d[i].concat(p1)); // Add this direction as well as the number of pieces in this direction to this spot for the possible list
                                         yx = false; // We can no longer go this way
                                     }
