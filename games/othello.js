@@ -91,6 +91,7 @@ exports.drawBoard = function(game, end) {
         ctx.drawImage(exports.Images.tie, 14, 10);
     }
     
+    game.score = [0, 0];
     for (let x = 0; x < 8; x++)
     {
         for (let y = 0; y < 8; y++)
@@ -98,6 +99,7 @@ exports.drawBoard = function(game, end) {
             if (typeof game.board[x][y] !== "boolean")
             {
                 ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
+                game.score[game.board[x][y]] += 1;
             }
         }
     }
@@ -167,7 +169,7 @@ exports.takeTurn = function(channel, Move) {
 
     // If empty spaces are available, this finds spaces that can be played in
     game.possible = [];
-    let a = game.turn === 0 ? 1 : 0;
+    let a = game.turn;
     for (let y = 0; y < 8; y++)
     {
         for (let x = 0; x < 8; x++)
