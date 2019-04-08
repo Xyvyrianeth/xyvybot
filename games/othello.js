@@ -95,7 +95,7 @@ exports.drawBoard = function(game, end) {
     {
         for (let y = 0; y < 8; y++)
         {
-            if (game.board[x][y] !== false)
+            if (typeof game.board[x][y] !== "boolean")
             {
                 ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
             }
