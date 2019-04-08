@@ -168,56 +168,53 @@ exports.takeTurn = function(channel, Move) {
     // If empty spaces are available, this finds spaces that can be played in
     game.possible = [];
     let a = game.turn === 0 ? 1 : 0;
-    if (!end)
+    for (let y = 0; y < 8; y++)
     {
-        for (let y = 0; y < 8; y++)
+        for (let x = 0; x < 8; x++)
         {
-            for (let x = 0; x < 8; x++)
+            if (game.board[y][x] === false)
             {
-                if (game.board[y][x] === false)
+                d = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
+                p = [];
+                for (let i = 0; i < 8; i++)
                 {
-                    d = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
-                    p = [];
-                    for (let i = 0; i < 8; i++)
+                    if (y + d[i][0] < 8 && y + d[i][0] > -1 && x + d[i][1] < 8 && x + d[i][1] > -1)
                     {
-                        if (y + d[i][0] < 8 && y + d[i][0] > -1 && x + d[i][1] < 8 && x + d[i][1] > -1)
+                        let y1 = y + d[i][0];
+                        let x1 = x + d[i][1];
+                        p1 = 1;
+                        if (game.board[y1][x1] === a)
                         {
-                            let y1 = y + d[i][0];
-                            let x1 = x + d[i][1];
-                            p1 = 1;
-                            if (game.board[y1][x1] === a)
-                            {
-                                let yx = true;
-                                do {
-                                    y1 += d[i][0];
-                                    x1 += d[i][1];
-                                    p1 += 1;
-                                    if (y1 < 8 && y1 > -1 && x1 < 8 && x1 > -1)
+                            let yx = true;
+                            do {
+                                y1 += d[i][0];
+                                x1 += d[i][1];
+                                p1 += 1;
+                                if (y1 < 8 && y1 > -1 && x1 < 8 && x1 > -1)
+                                {
+                                    if (game.board[y1][x1] === game.turn)
                                     {
-                                        if (game.board[y1][x1] === game.turn)
-                                        {
-                                            p.push(d[i].concat(p1));
-                                            yx = false;
-                                        }
-                                        else
-                                        if (game.board[y1][x1] !== a)
-                                        {
-                                            yx = false;
-                                        }
+                                        p.push(d[i].concat(p1));
+                                        yx = false;
                                     }
                                     else
+                                    if (game.board[y1][x1] !== a)
                                     {
                                         yx = false;
                                     }
-                                } while (yx);
-                            }
+                                }
+                                else
+                                {
+                                    yx = false;
+                                }
+                            } while (yx);
                         }
                     }
-                    if (p.length > 0)
-                    {
-                        game.board[y][x] = true;
-                        game.possible.push([y, x, p]);
-                    }
+                }
+                if (p.length > 0)
+                {
+                    game.board[y][x] = true;
+                    game.possible.push([y, x, p]);
                 }
             }
         }
