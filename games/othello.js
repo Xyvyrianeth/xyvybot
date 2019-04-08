@@ -19,6 +19,20 @@ exports.newGame = function(channel, player1, cmd, mode) {
         }
         game.board.push(row);
     }
+    game.possible = [
+        [2, 3, [
+            [1, 0, 2]
+        ]],
+        [3, 2, [
+            [0, 1, 2]
+        ]],
+        [4, 5, [
+            [0, -1, 2]
+        ]],
+        [5, 4, [
+            [-1, 0, 2]
+        ]]
+    ];
     game.board[3][4] = 0;
     game.board[3][3] = 1;
     game.board[4][4] = 1;
@@ -51,7 +65,7 @@ exports.startGame = function(channel, player2) {
 }
   
 exports.drawBoard = function(game, end) {
-    let canvas = new Canvas.createCanvas(280, 300);
+    let canvas = new Canvas.createCanvas(221, 246);
     let ctx = canvas.getContext('2d');
       
     ctx.drawImage(exports.Images.board, 0, 0);
