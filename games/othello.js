@@ -5,7 +5,7 @@ var gamename = "Othello";
 var shortname = "othello";
   
 exports.newGame = function(channel, player1, cmd, mode) {
-    channels[channel.id] = {game:shortname,guild:channel.guild.id,turn:0,players:[],started:false,lastmove:'',over:false,player:false,RE:/^([a-h][1-8]|[1-8][a-h])$/i,casual:mode,highlight:[]};
+    channels[channel.id] = {game:shortname,guild:channel.guild.id,turn:0,players:[],started:false,lastmove:'',over:false,player:false,RE:/^([a-h][1-8]|[1-8][a-h])$/i,casual:mode,highlight:[],score:[0,0]};
     game = channels[channel.id];
 
     let _ = false;
