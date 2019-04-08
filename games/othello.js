@@ -160,7 +160,7 @@ exports.takeTurn = function(channel, Move) {
     {
         for (let x = 0; x < 8; x++)
         {
-            if (game.board[y][x] !== 0 && game.board[y][x] !== 1)
+            if (game.board[y][x] === true)
             {
                 game.board[y][x] = false;
             }
@@ -169,54 +169,68 @@ exports.takeTurn = function(channel, Move) {
 
     // If empty spaces are available, this finds spaces that can be played in
     game.possible = [];
-    let a = game.turn;
+    let a = game.turn === 0 ? 1 : 0; // Opponent's piece
     for (let y = 0; y < 8; y++)
-    {
+    { 
         for (let x = 0; x < 8; x++)
-        {
+        { // Goes through every spot on the board
+
             if (game.board[y][x] === false)
-            {
-                d = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
-                p = [];
+            { // If [this] spot is empty
+
+                d = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]; // All 8 directions
+                p = []; // Total directions that can be captured in [this]
+                
                 for (let i = 0; i < 8; i++)
-                {
+                { // For all 8 directions...
+
                     if (y + d[i][0] < 8 && y + d[i][0] > -1 && x + d[i][1] < 8 && x + d[i][1] > -1)
-                    {
-                        let y1 = y + d[i][0];
-                        let x1 = x + d[i][1];
-                        p1 = 1;
+                    { // If the next space in this [d]irection does not go off the edge
+                    
+                        let y1 = y + d[i][0]; // Y-coord of next space d
+                        let x1 = x + d[i][1]; // X-coord of next space d
+                        let p1 = 1; // How many pieces in [d]?
+
                         if (game.board[y1][x1] === a)
-                        {
-                            let yx = true;
-                            do {
-                                y1 += d[i][0];
-                                x1 += d[i][1];
-                                p1 += 1;
+                        { // If the first piece in [d] belongs to the opponent
+
+                            let yx = true; // Can we keep going this way?
+
+                            do
+                            { // Keep going in that direction
+                                y1 += d[i][0]; // +1 in vertical direction
+                                x1 += d[i][1]; // +1 in horizontal direction
+                                p1 += 1; // +1 to distance
+                                
                                 if (y1 < 8 && y1 > -1 && x1 < 8 && x1 > -1)
-                                {
+                                { // Next spot does not go off the endge
+
                                     if (game.board[y1][x1] === game.turn)
-                                    {
-                                        p.push(d[i].concat(p1));
-                                        yx = false;
+                                    { // Next spot belongs to the active player
+                                        
+                                        p.push(d[i].concat(p1)); // Add this direction as well as the number of pieces in this direction to this spot for the possible list
+                                        yx = false; // We can no longer go this way
                                     }
                                     else
-                                    if (game.board[y1][x1] !== a)
-                                    {
-                                        yx = false;
+                                    if (typeof game.board[y1][x1] == "boolean")
+                                    { // Next spot is blank
+                                        yx = false; // We can no longer go this way
                                     }
                                 }
                                 else
-                                {
-                                    yx = false;
+                                { // Next spot goes off the edge
+                                    yx = false; // We can no longer go this way
                                 }
-                            } while (yx);
+                            }
+                            while (yx); // Let's keep going this way
                         }
                     }
                 }
                 if (p.length > 0)
-                {
-                    game.board[y][x] = true;
-                    game.possible.push([y, x, p]);
+                { // For every direction in this spot
+
+                    game.board[y][x] = true; // This spot can be played in
+                    game.possible.push([y, x, p]); // And this is the information for what pieces to turn if played here next
                 }
             }
         }
