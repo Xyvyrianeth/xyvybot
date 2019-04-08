@@ -105,12 +105,17 @@ exports.drawBoard = function(game, end) {
             let spot = game.highlight[i];
             ctx.drawImage(i == 0 ? exports.Images.captured : exports.Images.placed, 17 + (spot[1] * 25), 30 + (spot[0] * 25));
         }
+        for (let i = 0; i < game.possible.length; i++)
+        {
+            let spot = game.possible[i];
+            ctx.drawImage(exports.Images.possible, 17 + (spot[1] * 25), 30 + (spot[0] * 25));
+        }
     }
 
     ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 159, 3);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 169, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 170, 3);
     ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 193, 3);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 203, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 204, 3);
       
     return canvas.toBuffer();
 }
@@ -122,7 +127,7 @@ exports.takeTurn = function(channel, Move) {
     // Function will vary with game
     possible = game.possible;
     game.highlight = [];
-    if (!game.board[move[0]][move[1]])
+    if (game.board[move[0]][move[1]] === false)
     {
         return ["You cannot place there.", new Discord.Attachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
     }
@@ -281,8 +286,8 @@ Canvas.loadImage("./img/gameAssets/othello/placed.png").then(image => {
 Canvas.loadImage("./img/gameAssets/othello/captured.png").then(image => {
     exports.Images.captured = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/available.png").then(image => {
-    exports.Images.available = image;
+Canvas.loadImage("./img/gameAssets/othello/possible.png").then(image => {
+    exports.Images.possible = image;
 });
 Canvas.loadImage("./img/gameAssets/othello/blackText.png").then(image => {
     exports.Images.blackText = image;
