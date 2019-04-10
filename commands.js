@@ -1,4 +1,4 @@
-var version = "2.34.0.8";
+var version = "2.34.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -810,6 +810,15 @@ var commands = {
                 "waiting": function(game) {
                     return game.game == gameName && !game.started;
                 },
+                "playingYourself": function(game) {
+                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
+                },
+                "somethingElseHere": function(game) {
+                    return games.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.game == gameName;
+                },
+                "alreadyQueued": function(game) {
+                    return !game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
+                },
                 "noGameHere": function(game) {
                     return game.channels.includes(message.channel.id);
                 },
@@ -826,7 +835,22 @@ var commands = {
         }
         if (["start"].includes(args[0]))
         {
-            message.delete();
+            if (games.games.filter(condition("alreadyQueued")).length != 0)
+            {
+                return sendChat("You are already queued for that game somewhere else!");
+            }
+            if (games.games.filter(condition("playingYourself")).length != 0)
+            {
+                return sendChat("You cannot play a game against yourself!");
+            }
+            if (games.games.filter(condition("somethingElseHere")).length != 0)
+            {
+                return sendChat("You're already queued for a different game in this channel!");
+            }
+            if (games.games.filter(condition("noGameHere")).length != 0)
+            {
+                return sendChat("Someone is already queueing for a game in this channel! Go to another one!");
+            }
             if (games.games.filter(condition("noGame")).length == 0)
             {
                 games[gameName].newGame(message.channel.id, message.author.id);
