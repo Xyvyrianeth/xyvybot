@@ -290,7 +290,7 @@ exports.nextTurn = function(channel) {
     
     for (let i = 0; i < game.lastDisplays.length; i++)
     {
-        game.lastDisplays.delete();
+        game.lastDisplays[i].delete();
     }
 
     exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 1 ? `<@${game.player}> has won!` : "Tie game, everyone loses!", game.buffer]);
