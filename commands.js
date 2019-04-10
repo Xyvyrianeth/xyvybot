@@ -1,4 +1,4 @@
-var version = "2.34.2.3";
+var version = "2.34.2.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1664,6 +1664,11 @@ var commands = {
                         ["x!ttt3d [start|rules]", "3D Tic Tac Toe is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!ttt3d start"],
                         ["x!connect4 [start|rules]", "Connect Four, or Vertical Checkers, is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!connect4 start"],
                         ["x!profile (user)", "Show of your own profile card that shows your game stats and rank. It has a customizable background and overlay color.", "x!profile 357700219825160194"],
+                        ["x!hangman", "Play a quick game of hangman either by yourself or with your friends!", "x!hangman"],
+                        ["x!math", "Returns a random math function and the first to solve it wins!", "x!math"],
+                        ["x!iq", "Returns a simple puzzle, similar to one that might be found on an IQ test, and the first to solve it wins!", "x!iq"],
+                        ["x!sequence", "Returns a series of numbers that have a pattern in their order, and the first to guess the next in the sequence wins!", "x!sequence"],
+                        ["x!shuffle", "Returns a word that's had its letters all jumbled up, and the first to put the word back into the correct order wins!", "x!shuffle"],
                         ["x!minesweeper (width) (height) (difficulty)", "A classic game of Minesweeper right here on Discord. Wouldn't be possible without the ||spoiler|| feature.", "x!minesweeper "],
                         ["x!about", "Just a bit of information about what this bot does and some history about it.", "x!about"],
                         ["x!help [command]", "Generates a list of commands, or gives a short description about a specific command.", "x!help help"],
