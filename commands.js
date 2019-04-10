@@ -1,4 +1,4 @@
-var version = "2.34.2.2";
+var version = "2.34.2.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1684,6 +1684,7 @@ var commands = {
                     embed.setAuthor("Command: " + Object.keys(aliases.guild)[index]);
                     embed.setDescription("__**Usage**__:\n`" + help[0] + "`\n\n" + help[1] + "\n\n__**Example**__:\n" + help[2]);
                     embed.setColor(new Color().random());
+                    sendChat({embed});
                 }
                 else
                 if (index == Object.keys(aliases[message.channel.type == "dm" ? "user" : "guild"]).length)
