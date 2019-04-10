@@ -1,4 +1,4 @@
-var version = "2.34.2.1";
+var version = "2.34.2.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -167,7 +167,6 @@ function other(message) {
     {
         images = Array.from(message.attachments).map(m => m[1].url);
         client.guilds.get("399327996076621825").channels.get("537098266685472788").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
-        message.author.send("If you're sending me an image of yourself, please know that you must be 18 years or older to distribute explicit pictures of yourself. If you are not 18, do not send anybody those kinds of pictures.");
     }
     if (games.games.filter(game => game.channels.includes(message.channel.id) && game.started).length == 1)
     {
@@ -1655,7 +1654,7 @@ var commands = {
         else
         {
             Object.values(aliases[message.channel.type == "dm" ? "user" : "guild"]).forEach((alias, index) => {
-                if (aliases[message.channel.type == "dm" ? "user" : "guild"][index].includes(alias))
+                if (alias.includes(input))
                 {
                     let help = [
                         ["x!games [leaderboard|statistics] (game name|user ID)", "The umbrella command for checking out all game statistics for any user in Discord.", "x!games statistics 357700219825160194"],
@@ -1673,8 +1672,8 @@ var commands = {
                         ["x!guild", "Get all the basic information about this server, like member count or how old it is.", "x!guild"],
                         ["x!kick [user] (reason)", "Removes a user from the server without preventing them from being able to come back.", "x!kick 357700219825160194 Mic spamming in voice chat"],
                         ["x!ban [user] (reason)", "Removes a user from the server with the guarantee that they will never come back. This will also delete all messages sent by that user in the last 2 days.", "x!ban 357700219825160194 Spam and harassment"],
-                        ["x!bug [command]\n[description]", "If you find a feature that you don't think should be a feature, use this command so that the dev will know about it. Be sure to be descriptive! Can be used once per user every 2 horus.", "x!bug minesweeper\nDimensions don't match what's requested."],
-                        ["x!request [description]", "If there's a feature the bot does not yet support and you want to see supported, use this command so the dev will know about it. Be sure to be descriptive! Can be used once per user every 2 hours.", "x!request Add more profile backgrounds"],
+                        ["x!bug [command]\n[description]", "If you find a feature that you don't think should be a feature, use this command so that the dev will know about it. Be sure to be descriptive! Can only be used in direct messages. Can be used once per user every 2 hours.", "x!bug minesweeper\nDimensions don't match what's requested."],
+                        ["x!request [description]", "If there's a feature the bot does not yet support and you want to see supported, use this command so the dev will know about it. Be sure to be descriptive! Can only be used in direct messages. Can be used once per user every 2 hours.", "x!request Add more profile backgrounds"],
                         ["x!neko", "Get a picture of a cute anime girl with cat ears.", "x!neko"],
                         ["x!calc [equation]", "Solves a simple equation for you like a calculator.", "x!calc 2 + 2"],
                         ["x!graph [equation]", "Draws out an equation on a coordinate grid. You can graph up to 10 equations at once.", "x!graph 2x + 7"],
@@ -1684,6 +1683,12 @@ var commands = {
                     embed.setTitle("Help!");
                     embed.setAuthor("Command: " + Object.keys(aliases.guild)[index]);
                     embed.setDescription("__**Usage**__:\n`" + help[0] + "`\n\n" + help[1] + "\n\n__**Example**__:\n" + help[2]);
+                    embed.setColor(new Color().random());
+                }
+                else
+                if (index == Object.keys(aliases[message.channel.type == "dm" ? "user" : "guild"]).length)
+                {
+                    sendChat("That command does not exist.");
                 }
             });
         }
