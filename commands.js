@@ -1,4 +1,4 @@
-var version = "2.34.0.2";
+var version = "2.34.0.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -827,12 +827,12 @@ var commands = {
         if (["start"].includes(args[0]))
         {
             message.delete();
-            if (games.filter(condition("noGame")).length == 0)
+            if (games.games.filter(condition("noGame")).length == 0)
             {
                 games[gameName].newGame(message.channel.id, message.author.id);
             }
             else
-            if (games.filter(condition("waiting")).length == 1)
+            if (games.games.filter(condition("waiting")).length == 1)
             {
                 let game = games.games.filter(condition("waiting"))[0];
                 games[gameName].startGame(game.channels[0], channel, message.author.id);
