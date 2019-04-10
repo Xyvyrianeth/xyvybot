@@ -13,7 +13,7 @@ var timer = setInterval(function() {
                 client.channels.get(game.channels[i]).send(game.timer.message, game.buffer);
             }
             delete game;
-            games.splice(index + 1, 1);
+            games.splice(index, 1);
         }
         if (game.forfeit)
         {
@@ -22,7 +22,7 @@ var timer = setInterval(function() {
                 client.channels.get(game.channels[i]).send(`<@${game.forfeit}> has forfeit the game!`, game.buffer);
             }
             delete game;
-            games.splice(index + 1, 1);
+            games.splice(index, 1);
         }
     });
 }, 100);
