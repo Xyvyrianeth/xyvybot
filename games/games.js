@@ -27,4 +27,4 @@ var timer = setInterval(function() {
     });
 }, 100);
 
-exports.channels = channels;
+exports.games = games;
