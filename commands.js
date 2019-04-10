@@ -1,4 +1,4 @@
-var version = "2.34.1.1";
+var version = "2.34.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -811,10 +811,13 @@ var commands = {
                     return game.game == gameName && !game.started;
                 },
                 "playingYourself": function(game) {
-                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
+                    return !admins.includes(message.author.id) && game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
                 },
                 "somethingElseHere": function(game) {
-                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.game == gameName;
+                    return !admins.includes(message.author.id) && game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.game == gameName;
+                },
+                "someoneElseHere": function(game) {
+                    return game.channels.includes(message.channel.id) && !game.game == gameName;
                 },
                 "alreadyQueued": function(game) {
                     return !game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
@@ -847,7 +850,7 @@ var commands = {
             {
                 return sendChat("You're already queued for a different game in this channel!");
             }
-            if (games.games.filter(condition("noGameHere")).length != 0)
+            if (games.games.filter(condition("someoneElseHere")).length != 0)
             {
                 return sendChat("Someone is already queueing for a game in this channel! Go to another one!");
             }
