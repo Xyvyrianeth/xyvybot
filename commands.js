@@ -1,4 +1,4 @@
-var version = "2.34.0.4";
+var version = "2.34.0.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -835,7 +835,7 @@ var commands = {
             if (games.games.filter(condition("waiting")).length == 1)
             {
                 let game = games.games.filter(condition("waiting"))[0];
-                games[gameName].startGame(game.channels[0], channel, message.author.id);
+                games[gameName].startGame(game.channels[0], message.channel.id, message.author.id);
             }
         }
         else
