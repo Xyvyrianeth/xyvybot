@@ -1,4 +1,4 @@
-var version = "2.34.1.0";
+var version = "2.34.1.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -814,7 +814,7 @@ var commands = {
                     return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
                 },
                 "somethingElseHere": function(game) {
-                    return games.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.game == gameName;
+                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.game == gameName;
                 },
                 "alreadyQueued": function(game) {
                     return !game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
