@@ -904,7 +904,7 @@ var commands = {
                     {
                         sendChat(`Pending game canceled, <@${message.author.id}>.`);
                         delete games[index];
-                        games.games.splice(index, 0);
+                        games.games.splice(index, 1);
                     }
                 });
             }

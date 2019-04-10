@@ -19,7 +19,7 @@ var timer = setInterval(function() {
         {
             for (let i = 0; i < game.channels.length; i++)
             {
-                client.channels.get(game.channels[i]).send(`Well, <@${game.forfeit == game.players[0] ? game.players[0] : game.players[1]}>, It looks like your opponent, <@${game.forfeit}>, has forfeit the game!`, {});
+                client.channels.get(game.channels[i]).send(`Well, <@${game.forfeit == game.players[0] ? game.players[1] : game.players[0]}>, It looks like your opponent, <@${game.forfeit}>, has forfeit the game!`, {});
             }
             delete games[index];
             games.splice(index, 1);
