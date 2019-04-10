@@ -1,4 +1,4 @@
-var version = "2.34.1.4";
+var version = "2.34.1.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -880,11 +880,11 @@ var commands = {
             else
             if (games.games.filter(condition("dontStart")).length == 1)
             {
-                sendChat(`Pending game canceled, <@${message.author.id}>.`);
                 games.games.forEach((game, index) => {
                     if (game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.started)
                     {
-                        delete game;
+                        sendChat(`Pending game canceled, <@${message.author.id}>.`);
+                        delete games[index];
                         games.games.splice(index, 0);
                     }
                 });
