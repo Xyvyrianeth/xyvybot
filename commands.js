@@ -1,4 +1,4 @@
-var version = "2.34.2.4";
+var version = "2.34.2.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1669,7 +1669,7 @@ var commands = {
                         ["x!iq", "Returns a simple puzzle, similar to one that might be found on an IQ test, and the first to solve it wins!", "x!iq"],
                         ["x!sequence", "Returns a series of numbers that have a pattern in their order, and the first to guess the next in the sequence wins!", "x!sequence"],
                         ["x!shuffle", "Returns a word that's had its letters all jumbled up, and the first to put the word back into the correct order wins!", "x!shuffle"],
-                        ["x!minesweeper (width) (height) (difficulty)", "A classic game of Minesweeper right here on Discord. Wouldn't be possible without the ||spoiler|| feature.", "x!minesweeper "],
+                        ["x!minesweeper (width) (height) (difficulty)", "A classic game of Minesweeper right here on Discord. Wouldn't be possible without the ||spoiler|| feature.", "x!minesweeper 10 15 20%"],
                         ["x!about", "Just a bit of information about what this bot does and some history about it.", "x!about"],
                         ["x!help [command]", "Generates a list of commands, or gives a short description about a specific command.", "x!help help"],
                         ["x!avatar (user)", "Get a large version of a user's profile picture.", "x!avatar 357700219825160194"],
