@@ -1,4 +1,4 @@
-var version = "2.34.2.0";
+var version = "2.34.2.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1655,7 +1655,7 @@ var commands = {
         else
         {
             Object.values(aliases[message.channel.type == "dm" ? "user" : "guild"]).forEach((alias, index) => {
-                if (aliases[message.channel.type == "dm" ? "user" : "guild"].includes(alias))
+                if (aliases[message.channel.type == "dm" ? "user" : "guild"][index].includes(alias))
                 {
                     let help = [
                         ["x!games [leaderboard|statistics] (game name|user ID)", "The umbrella command for checking out all game statistics for any user in Discord.", "x!games statistics 357700219825160194"],
