@@ -1,11 +1,26 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
-const { channels } = require("/app/games/channels.js");
+const { games } = require("/app/games/games.js");
+const { client } = require("/app/Xyvy.js");
 var gamename = "3D Tic Tac Toe";
 var shortname = "ttt3d";
 
-exports.newGame = function(channel, player1, cmd, mode) {
-    let game = channels[channel.id] = {game:shortname,guild:channel.guild.id,turn:0,players:[],started:false,lastmove:'',player:false,RE:/^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,casual:mode};
+exports.newGame = function(channel, player) {
+    let game = {
+        buffer:  {},
+        channels: [channel],
+        forfeit:  false,
+        game: shortname,
+        lastDisplays: [],
+        lastmove: '',
+        player: false,
+        players: [player],
+        RE: /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,
+        started: false,
+        turn: 0
+    };
+    channels.push(game);
+
     game.board = {
         '1': {
             'A': [false, false, false, false],
@@ -35,27 +50,28 @@ exports.newGame = function(channel, player1, cmd, mode) {
  
     game.timer = {
         time: 9000,
-        message: "It appears nobody wants to play right now, <@" + player1 + ">."
+        message: `It appears nobody wants to play right now, <@${player}>.`
     }
- 
-    game.players[0] = player1;
-    return `**$user$** is now requesting a new game of ${gamename}, say \`x!${cmd} start\` to play against them!`;
+
+    exports.say([channel], [`<@${player}> is now requesting a new game of ${gamename}!`, game.buffer]);
 }
  
-exports.startGame = function(channel, player2) {
-    let game = channels[channel.id];
+exports.startGame = function(channel1, channel2, player2) {
+    let game = games.filter(game => game.channels.includes(channel1))[0];
+    if (channel1 !== channel2) game.channels.push(channel2);
     game.players[1] = player2;
     game.started = true;
+ 
+    game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
+    game.player = game.players[0];
  
     game.timer = {
         time: 6000,
         message: "Whoops, it looks like <@" + game.players[0] + "> has run out of time, so the game is over!"
     }
- 
-    game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
-    game.player = game.players[0];
-    game.buffer = exports.drawBoard(game, 0, false, true);
-    return [`The game has started! <@${game.players[0]}> will be **X**, and <@${game.players[1]}> will be **O**!`, new Discord.Attachment(game.buffer, `${shortname}_0.png`)];
+
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false, true), `${shortname}_0.png`);
+    exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be **X**, and <@${game.players[1]}> will be **O**!`, game.buffer]);
 }
  
 exports.drawBoard = function(game, end, highlight, firstDisp) {
@@ -110,7 +126,7 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
 }
  
 exports.takeTurn = function(channel, move) {
-    let game = channels[channel.id];
+    let game = games.filter(game => game.channels.includes(channel))[0];
     // Function will vary with game
     let X = move.match(/[1-4]/g)[0];
     let Y = move.match(/[a-d]/i)[0].toUpperCase();
@@ -119,8 +135,7 @@ exports.takeTurn = function(channel, move) {
 
     if (game.board[X][Y][Z] !== false)
     {
-        game.lastDisplay.delete();
-        return ["Someone has aleady played there, pick another spot!", new Discord.MessageAttachment(game.buffer, `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`)];
+        exports.say([channel], ["Someone has aleady played there, pick another spot!", {}]);
     }
     else
     {
@@ -248,11 +263,11 @@ exports.takeTurn = function(channel, move) {
 
     //
      
-    return exports.nextTurn(channel, end, highlight);
+    exports.nextTurn(channel, end, highlight);
 }
  
 exports.nextTurn = function(channel, end, highlight) {
-    let game = channels[channel.id];
+    let game = games.filter(game => game.channels.includes(channel))[0];
     if (end == 0)
     {
         game.turn = game.turn == 0 ? 1 : 0;
@@ -262,13 +277,21 @@ exports.nextTurn = function(channel, end, highlight) {
             message: `Whoops, it looks like <@${game.players[game.player]}> has run out of time, so the game is over!`
         }
     }
-    game.buffer = exports.drawBoard(game, end, highlight);
-    board = new Discord.Attachment(game.buffer, end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
-    if (channels[channel.id].lastDisplay)
+
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
+    for (let i = 0; i < game.lastDisplays.length; i++)
     {
-        channels[channel.id].lastDisplay.delete();
+        game.lastDisplays[i].delete();
     }
-    return [end == 0 ? `It is <@${game.players[game.turn]}>'s turn.` : end == 1 ? `<@${game.players[game.winner]}> has won!` : "Tie game, everyone loses!", board];
+
+    exports.say(game.channels, [end == 0 ? `It is <@${game.players[game.turn]}>'s turn.` : end == 1 ? `<@${game.players[game.winner]}> has won!` : "Tie game, everyone loses!", game.buffer]);
+}
+
+exports.say = function(channels, message) {
+    for (let i = 0; i < channels.length; i++)
+    {
+        client.channels.get(channels[i]).send(message[0], message[1]);
+    }
 }
 
 // Images
