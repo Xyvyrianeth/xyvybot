@@ -1,4 +1,4 @@
-var version = "2.34.1.3";
+var version = "2.34.1.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -655,7 +655,7 @@ var commands = {
                 "ttt3d": ["ttt3d", "3dttt", "3dtictactoe", "tictactoe3d", "ttt", "tictactoe"],
                 "connect4": ["connect4", "connectfour", "cfour", "c4"]
             };
-            let games = [].concat(gms.othello, gms.squares, gms.gomoku, gms.ttt3d, gms.connect4);
+            let Games = [].concat(gms.othello, gms.squares, gms.gomoku, gms.ttt3d, gms.connect4);
             if (args.length == 2)
             {
                 if (/^[0-9]{1,}$/.test(args[1]) || /^<@[0-9]{1,}>$/.test(args[1]))
@@ -663,7 +663,7 @@ var commands = {
                     id = args[1];
                 }
                 else
-                if (games.includes(args[1]))
+                if (Games.includes(args[1]))
                 {
                     gm = args[1];
                 }
@@ -675,13 +675,13 @@ var commands = {
             else
             if (args.length == 3)
             {
-                if ((/^[0-9]{1,}$/.test(args[1]) || /^<@[0-9]{1,}>$/.test(args[1])) && games.includes(args[2]))
+                if ((/^[0-9]{1,}$/.test(args[1]) || /^<@[0-9]{1,}>$/.test(args[1])) && Games.includes(args[2]))
                 {
                     id = args[1];
                     gm = args[2]
                 }
                 else
-                if ((/^[0-9]{1,}$/.test(args[2]) || /^<@[0-9]{1,}>$/.test(args[2])) && games.includes(args[1]))
+                if ((/^[0-9]{1,}$/.test(args[2]) || /^<@[0-9]{1,}>$/.test(args[2])) && Games.includes(args[1]))
                 {
                     id = args[2];
                     gm = args[1];
@@ -885,7 +885,7 @@ var commands = {
                     if (game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.started)
                     {
                         delete game;
-                        games.splice(index, 0);
+                        games.games.splice(index, 0);
                     }
                 });
             }
