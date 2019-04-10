@@ -18,7 +18,7 @@ exports.newGame = function(channel, player) {
         started: false,
         turn: 0.5
     };
-    channels.push(game);
+    games.push(game);
 
     let _ = false;
     game.board = [];

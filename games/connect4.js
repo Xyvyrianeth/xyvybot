@@ -19,12 +19,12 @@ exports.newGame = function(channel, player) {
         started: false,
         turn: 0
     };
-
+    games.push(game);
 
     game.board = [[],[],[],[],[],[],[]];
  
     game.timer = {
-        time: 10 * 60 * 15,
+        time: 9000,
         message: `It appears nobody wants to play right now, <@${player}>.`
     }
 
