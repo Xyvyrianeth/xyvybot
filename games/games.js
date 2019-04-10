@@ -12,16 +12,16 @@ var timer = setInterval(function() {
             {
                 client.channels.get(game.channels[i]).send(game.timer.message, game.buffer);
             }
-            delete game;
+            delete games[index];
             games.splice(index, 1);
         }
         if (game.forfeit)
         {
             for (let i = 0; i < game.channels.length; i++)
             {
-                client.channels.get(game.channels[i]).send(`<@${game.forfeit}> has forfeit the game!`, game.buffer);
+                client.channels.get(game.channels[i]).send(`Well, <@${game.forfeit == game.players[0] ? game.players[0] : game.players[1]}>, It looks like your opponent, <@${game.forfeit}>, has forfeit the game!`, {});
             }
-            delete game;
+            delete games[index];
             games.splice(index, 1);
         }
     });
