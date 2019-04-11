@@ -1,4 +1,4 @@
-var version = "2.34.2.7";
+var version = "2.34.2.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -835,10 +835,13 @@ var commands = {
                     return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName && !game.started;
                 },
                 "somethingElseHere": function(game) {
-                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.game == gameName && !game.started;
+                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game !== gameName && !game.started;
                 },
                 "someoneElseHere": function(game) {
-                    return game.channels.includes(message.channel.id) && game.game !== gameName;
+                    return game.channels.includes(message.channel.id) && game.game !== gameName && !game.started;
+                },
+                "gameStarted": function(game) {
+                    return game.channels.includes(message.channel.id) && game.started;
                 },
                 "alreadyQueued": function(game) {
                     return !game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
@@ -874,6 +877,10 @@ var commands = {
             if (games.games.filter(condition("someoneElseHere")).length != 0)
             {
                 return sendChat("Someone is already queueing for a game in this channel! Go to another one!");
+            }
+            if (games.games.filter(condition("gameStarted")).length != 0)
+            {
+                return sendChat("SOmeone is already playing a game in this channel!");
             }
             if (games.games.filter(condition("noGame")).length == 0)
             {
