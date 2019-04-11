@@ -1,8 +1,7 @@
-var version = "2.34.2.5";
+var version = "2.34.2.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
-const Jimp = require("jimp");
 
 var { client,config } = require("/app/Xyvy.js");
 var Profile = require("/app/stuffs/profile.js");
@@ -57,11 +56,11 @@ var requestTimer = setInterval(function() {
     }
 }, 10);
 var games = {
-    connect4: require("/app/games/connect4.js"),
-    squares: require("/app/games/squares.js"),
     othello: require("/app/games/othello.js"),
+    squares: require("/app/games/squares.js"),
     gomoku: require("/app/games/gomoku.js"),
     ttt3d: require("/app/games/3dttt.js"),
+    connect4: require("/app/games/connect4.js"),
     games: require("/app/games/games.js").games
 }
 
@@ -173,9 +172,12 @@ function other(message) {
         let game = games.games.filter(game => game.channels.includes(message.channel.id))[0];
         if (message.author.id == game.player && game.RE.test(message.content))
         {
-            setTimeout(function() {
-                message.delete();
-            }, 5000);
+            if (message.channel.type !== "dm")
+            {
+                setTimeout(function() {
+                    message.delete();
+                }, 5000);
+            }
             try
             {
                 games[game.game].takeTurn(message.channel.id, message.content);
@@ -789,23 +791,23 @@ var commands = {
     },
 
     "othello": function(cmd, args, input, message, sendChat) {
-        return commands.game(cmd, args, input, message, sendChat);
+        return commands.game("othello", args, input, message, sendChat);
     },
 
     "squares": function(cmd, args, input, message, sendChat) {
-        return commands.game(cmd, args, input, message, sendChat);
+        return commands.game("squares", args, input, message, sendChat);
     },
 
     "gomoku": function(cmd, args, input, message, sendChat) {
-        return commands.game(cmd, args, input, message, sendChat);
+        return commands.game("gomoku", args, input, message, sendChat);
     },
 
     "ttt3d": function(cmd, args, input, message, sendChat) {
-        return commands.game(cmd, args, input, message, sendChat);
+        return commands.game("ttt3d", args, input, message, sendChat);
     },
 
     "connect4": function(cmd, args, input, message, sendChat) {
-        return commands.game(cmd, args, input, message, sendChat);
+        return commands.game("connect4", args, input, message, sendChat);
     },
 
     "game": function(cmd, args, input, message, sendChat) {
@@ -830,10 +832,10 @@ var commands = {
                     return game.game == gameName && !game.started;
                 },
                 "playingYourself": function(game) {
-                    return !admins.includes(message.author.id) && game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
+                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName && !game.started;
                 },
                 "somethingElseHere": function(game) {
-                    return !admins.includes(message.author.id) && game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.game == gameName;
+                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.game == gameName && !game.started;
                 },
                 "someoneElseHere": function(game) {
                     return game.channels.includes(message.channel.id) && !game.game == gameName;
