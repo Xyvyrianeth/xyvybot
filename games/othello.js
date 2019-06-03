@@ -91,13 +91,13 @@ exports.drawBoard = function(game, end) {
 
     if (end === 0)
     {
-        ctx.drawImage(exports.Images[["black", "white"][Math.floor(game.turn)] + "Text"], 2, 4);
+        ctx.drawImage(exports.Images[["black", "white"][Math.floor(game.turn)] + "Text"], 20, 6);
         ctx.drawImage(exports.Images.turn, 76, 4);
     }
     else
     if (end === 1)
     {
-        ctx.drawImage(exports.Images[["black", "white"][game.winner]], 2, 4);
+        ctx.drawImage(exports.Images[["black", "white"][game.winner] + "Text"], 20, 6);
         ctx.drawImage(exports.Images.win, 76, 4);
     }
     else
