@@ -57,7 +57,7 @@ exports.startGame = function(channel1, channel2, player2) {
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
     
-    game.buffer = new Discord.Attachment(gexports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be dark, and <@${game.players[1]}> will be light!`, game.buffer]);
 }
   
