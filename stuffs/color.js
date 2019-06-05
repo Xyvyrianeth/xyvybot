@@ -61,6 +61,7 @@ Color.prototype.toHexa = function() {
 
 Color.prototype.getName = function() {
 	var hexa = this.toHexa();
+	var low = 256;
 	var name;
 	for (var n in Color.map) {
 		if (!Color.map.hasOwnProperty(n))
@@ -70,7 +71,7 @@ Color.prototype.getName = function() {
 			return n;
 		}
 		var dist = this.distance(color);
-		if (dist < 256) {
+		if (dist < low) {
 			low = dist;
 			name = n;
 		}
@@ -147,7 +148,7 @@ Color.addToMap("#98777B", "Bazaar");
 Color.addToMap("#9F8170", "Beaver");
 Color.addToMap("#F5F5DC", "Beige");
 Color.addToMap("#2E5894", "B'dazzled blue");
-Color.addToMap("#9C2542", "Big dip oâ€™ruby");
+Color.addToMap("#9C2542", "Big dip o’ruby");
 Color.addToMap("#FFE4C4", "Bisque");
 Color.addToMap("#3D2B1F", "Bistre");
 Color.addToMap("#967117", "Bistre brown");
