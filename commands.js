@@ -1,4 +1,4 @@
-var version = "2.34.3.5";
+var version = "2.34.3.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2343,14 +2343,6 @@ var commands = {
             }
             display.push(input[i].split(';')[0] + " - " + result_);
         }
-
-        ctx.beginPath();
-        ctx.strokeStyle = "#000000";
-        ctx.lineWidth = 1;
-        ctx.strokeRect(-140, -140, 10, 10);
-        ctx.font = "11px Calibri";
-        ctx.fillStyle = "#000000"
-        ctx.fillText("= 10 units\u00b2", -126, -132);
         let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
         sendChat("```\n" + text + "```", new Discord.Attachment(canvas.toBuffer()));
    
