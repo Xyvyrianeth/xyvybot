@@ -2148,48 +2148,8 @@ var commands = {
         // Draw blank graph
         canvas = new Canvas.createCanvas(301, 301);
         ctx = canvas.getContext('2d');
+        ctx.drawImage(Images.graph, 0, 0);
         ctx.translate(150.5, 150.5);
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(-150, -150, 300, 300);
-        for (let i = 80; i--;)
-        {
-            ctx.beginPath();
-            ctx.strokeStyle = "#ddd";
-            ctx.moveTo(-150, i * 10 - 150);
-            ctx.lineTo(150, i * 10 - 150);
-            ctx.stroke();
-        }
-        for (let i = 80; i--;)
-        {
-            ctx.beginPath();
-            ctx.strokeStyle = "#ddd";
-            ctx.moveTo(i * 10 - 150, -150);
-            ctx.lineTo(i * 10 - 150, 150);
-            ctx.stroke();
-        }
-        for (let i = 5; i--;)
-        {
-            ctx.beginPath();
-            ctx.strokeStyle = "#bbb";
-            ctx.moveTo(-150, i * 50 - 100);
-            ctx.lineTo(150, i * 50 - 100);
-            ctx.stroke();
-        }
-        for (let i = 5; i--;)
-        {
-            ctx.beginPath();
-            ctx.strokeStyle = "#bbb";
-            ctx.moveTo(i * 50 - 100, -150);
-            ctx.lineTo(i * 50 - 100, 150);
-            ctx.stroke();
-        }
-        ctx.beginPath();
-        ctx.strokeStyle = "#000";
-        ctx.moveTo(0, -150);
-        ctx.lineTo(0, 150);
-        ctx.moveTo(-150, 0);
-        ctx.lineTo(150, 0);
-        ctx.stroke();
         e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
         input = input.split('\n');
         colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
@@ -2700,6 +2660,13 @@ var commands = {
     },
    
 };
+
+Images = {
+    graph
+};
+Canvas.loadImage("./img/graph.png").then(image => {
+    Images.graph = image;
+});
 
 Object.defineProperty(Array.prototype, 'clone', {
     value: function() {
