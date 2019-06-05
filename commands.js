@@ -1,4 +1,4 @@
-var version = "2.34.3.4";
+var version = "2.34.3.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2661,8 +2661,8 @@ var commands = {
    
 };
 
-Images = {
-    graph
+var Images = {
+    graph: null
 };
 Canvas.loadImage("./img/graph.png").then(image => {
     Images.graph = image;
