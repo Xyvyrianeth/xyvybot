@@ -1,4 +1,4 @@
-var version = "2.34.3.6";
+var version = "2.34.3.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1903,41 +1903,18 @@ var commands = {
     "calc": function(cmd, args, input, message, sendChat) {
         if (!input)
         {
-            return sendChat(`**Syntax**: \`${a.prefix}calc\` \`[equation]\``);
+            return sendChat(`**Syntax**: \`x!calc\` \`[equation]\``);
         }
-        let equation = input;
-        equation = equation.replace(/([0-9.])\(/g, "$1*(");
-        equation = equation.replace(/\)([0-9.])/g, ")*$1");
-        equation = equation.replace(/(pi|π)/g, 'Math.PI');
-        equation = equation.replace(/\)\(/g, ")*(");
-        equation = equation.replace(/\^/g, '**');
-        if (/\|/.test(equation))
-        {
-            a = equation.match(/\|/g);
-            if (a.length % 2 == 1)
-            {
-                return sendChat("`Unmatched |`");
-            }
-            for (let i = 0; i < a.length; i++)
-            {
-                if (i % 2 == 0)
-                {
-                    equation = equation.replace('|', 'Math.abs(');
-                }
-                else
-                {
-                    equation = equation.replace('|', ')');
-                }
-            }
-        }
+
+        let answer = equation(input);
    
-        try
+        if (answer[0] == "equated")
         {
-            return sendChat("```Input: " + input + "``````Output: " + eval(equation) + "```");
+            return sendChat("```Input: " + input + "``````Output: " + answer[1] + "```");
         }
-        catch (err)
+        else
         {
-            return sendChat("```Input: " + input + "``````Output: " + err + "```");
+            return sendChat("```Input: " + input + "``````Output: " + answer[1] + "```");
         }
     },
    
@@ -1971,381 +1948,208 @@ var commands = {
         }
         else
         {
-            function equ(equation, x) {
-                if (x !== undefined)
-                {
-                    equation = equation.replace(/x/g, '(' + x + ')');
-                }
-                let terms = [ [
-                        /(pi|π)/g,
-                        "(Math.PI)"
-                    ], [
-                        /(infinity|∞)/g,
-                        "(Math.Infinity)"
-                    ]
-                ];
-                for (let i = 0; i < terms.length; i++)
-                {
-                    equation = equation.replace(terms[i][0], terms[i][1]);
-                }
-                let methods = [
-                    [// Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
-                        // \sin(5)
-                        /\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-                        "Math.$1($2)"
-
-                    ], [// Asin, Acos, or Atan of a number
-                        // \asin(5)
-                        /\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-                        "Math.a$1($2)"
-
-                    ], [// Sinh, Cosh, or Tanh of a number
-                        // \sinh(5)
-                        /\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-                        "Math.$1h($2)"
-
-                    ], [// Asinh, Acosh, or Atanh of a number
-                        // \asinh(5)
-                        /\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-                        "Math.a$1h($2)"
-
-                    ], [// Root of a number, if the radicand is a real number and the radical is 2
-                        // \sqrt(5)
-                        /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g,
-                        "Math.sqrt($1)"
-
-                    ], [// If the radicand is positive
-                        // \rt[2](5)
-                        /(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g,
-                        "Math.pow($2,(1/Math.round($1)))"
-
-                    ], [// If the radicand is negative and the radical is odd
-                        // \rt[3](-5)
-                        /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
-                        "-Math.pow($2$3,(1/Math.round($1)))"
-
-                    ], [// If the radicand is negative and the radical is even
-                        // \rt[2](-5)
-                        /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
-                        "NaN"
-
-                    ], [// A number number to the power of another number
-                        // 5^7
-                        /(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
-                        "(Math.pow($1,Math.round($2)))"
-
-                    ], [// Summation function
-                        // \sum[n=0](5)5
-                        /(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
-                        "Math.sum($1, $2, $3)"
-
-                    ], [// Product function
-                        // \prod[n=0](5)5
-                        /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-                        "Math.prod($1, $2, $3)"
-
-                    ], [// The absolute value of a number
-                        // |-5|
-                        /\|(-?[0-9.+\-/*()]{1,})\|/g,
-                        "Math.abs($1)"
-
-                    ], [// A number against a parentheses sequence
-                        // 5(7)
-                        /([0-9.])\(/g,
-                        "$1*("
-
-                    ], [// Same but reversed
-                        // (7)5
-                        /\)([0-9.])/,
-                        ")*$1"
-
-                    ], [// A number against a Javascript Math function
-                        // 5Math.sin(7)
-                        /([0-9.])M/g,
-                        "$1*M"
-
-                    ], [// Parentheses sequence against parentheses sequence
-                        // (5)(7)
-                        /\)\(/g,
-                        ")*("
-                    ]
-                ];
-                let lastEquation;
-                for (let i = 0; i < 1; i++)
-                {
-                    lastEquation = equation;
-                    if (/\(Math.(PI|Infinity)\)/g.test(equation))
-                    {
-                        equation = equation.replace(/\(Math.PI\)/g, Math.PI);
-                        equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
-                    }
-                    if (/(?![0-9)])-\(-[0-9.]{1,}\)/g.test(equation))
-                    {
-                        equation = equation.replace(/(?![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
-                    }
-                    if (/([0-9)])-\(-[0-9.]{1,}\)/g.test(equation))
-                    {
-                        equation = equation.replace(/([0-9)])-\(-([0-9.]{1,})\)/g, "$1+$2");
-                    }
-                    if (/\([0-9.+\-/*]{1,}\)/.test(equation))
-                    {
-                        equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
-                        for (let i = 0; i < equate.length; i++)
-                        {
-                            if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
-                            {
-                                equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-                            }
-                        }
-                    }
-                    if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
-                    {
-                        equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
-                        for (let i = 0; i < equate.length; i++)
-                        {
-                            if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
-                            {
-                                equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-                            }
-                        }
-                    }
-                    for (let i = 0; i < methods.length; i++)
-                    {
-                        equation = equation.replace(methods[i][0], methods[i][1]);
-                    }
-                    if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation))
-                    {
-                        equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g);
-                        for (let i = 0; i < equate.length; i++)
-                        {
-                            equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-                        }
-                    }
-                    if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation)) {
-                        equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
-                        equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
-                    }
-                    if (/\(-?[0-9.]{1,}\)/g.test(equation))
-                    {
-                        equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
-                    }
-                    if (equation != lastEquation)
-                    {
-                        i--;
-                    }
-                }
-                try
-                {
-                    return ["equated", eval(equation)];
-                }
-                catch (err)
-                {
-                    return ["error", err];
-                }
-            }
-        }
    
-        // Draw blank graph
-        canvas = new Canvas.createCanvas(301, 301);
-        ctx = canvas.getContext('2d');
-        ctx.drawImage(Images.graph, 0, 0);
-        ctx.translate(150.5, 150.5);
-        e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
-        input = input.split('\n');
-        colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
-        if (/;$/.test(input))
-        {
-            e.pop();
-        }
-        if (e.length > colors.length)
-        {
-            console.log("`Too many equations!`");
-        }
-        let display = [];
+            // Draw blank graph
+            canvas = new Canvas.createCanvas(301, 301);
+            ctx = canvas.getContext('2d');
+            ctx.drawImage(Images.graph, 0, 0);
+            ctx.translate(150.5, 150.5);
+            e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
+            input = input.split('\n');
+            colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
+            if (/;$/.test(input))
+            {
+                e.pop();
+            }
+            if (e.length > colors.length)
+            {
+                console.log("`Too many equations!`");
+            }
+            let display = [];
 
-        for (let i = 0; i < e.length; i++)
-        {
-            // decide color
-            let ic = e[i].split(';');
-            let color = colors[i];
-            let y = ic[0];
-            if (ic.length == 2)
+            for (let i = 0; i < e.length; i++)
             {
-                if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase()))
+                // decide color
+                let ic = e[i].split(';');
+                let color = colors[i];
+                let y = ic[0];
+                if (ic.length == 2)
                 {
-                    color = ic[1].toLowerCase();
+                    if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase()))
+                    {
+                        color = ic[1].toLowerCase();
+                    }
+                    if (/^(red|orange|yellow|(?:light||blue)green|blue|purple|brown|pink)$/i.test(ic[1]))
+                    {
+                        color = {
+                            "red": "#ff0000",
+                            "orange": "#ff7F00",
+                            "yellow": "#fefe33",
+                            "lightgreen": "00ff00",
+                            "green": "#008000",
+                            "bluegreen": "#0d98ba",
+                            "blue": "#0000ff",
+                            "purple": "#a020f0",
+                            "brown": "#964b00",
+                            "pink": "#ffc0cb"
+                        }[ic[1].toLowerCase()];
+                    }
                 }
-                if (/^(red|orange|yellow|(?:light||blue)green|blue|purple|brown|pink)$/i.test(ic[1]))
+                Y = y.match(/^y(=|(>=?|≥)|(<=?|≤))/);
+                if (Y != null)
                 {
-                    color = {
-                        "red": "#ff0000",
-                        "orange": "#ff7F00",
-                        "yellow": "#fefe33",
-                        "lightgreen": "00ff00",
-                        "green": "#008000",
-                        "bluegreen": "#0d98ba",
-                        "blue": "#0000ff",
-                        "purple": "#a020f0",
-                        "brown": "#964b00",
-                        "pink": "#ffc0cb"
-                    }[ic[1].toLowerCase()];
+                    y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
+                    egl = Y[0].substring(1);
+                    if (egl == '≤')
+                    {
+                        egl = "<=";
+                    }
+                    if (egl == '≥')
+                    {
+                        egl = ">=";
+                    }
                 }
-            }
-            Y = y.match(/^y(=|(>=?|≥)|(<=?|≤))/);
-            if (Y != null)
-            {
-                y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
-                egl = Y[0].substring(1);
-                if (egl == '≤')
+                else
                 {
-                    egl = "<=";
+                    egl = '=';
                 }
-                if (egl == '≥')
-                {
-                    egl = ">=";
-                }
-            }
-            else
-            {
-                egl = '=';
-            }
 
-            // start graphing
-            let canEquate = true;
-            let result;
+                // start graphing
+                let canEquate = true;
+                let result;
 
-            if (y.includes('y') && !y.includes("infinity")) 
-            {
-                canEquate = false;
-                result = "Output (*y*) must remain isolated in all equations.";
-            }
-            else
-            {
-                result = [];
-                for (let x = -150; x < 151; x++)
+                if (y.includes('y') && !y.includes("infinity")) 
                 {
-                    let ans1 = equ(y, x - 0.5);
-                    let ans2 = equ(y, x + 0.5);
-                    let ans3 = equ(y, x);
-                    if (ans1[0] == "error")
-                    {
-                        result = ans1[1];
-                        canEquate = false;
-                        break;
-                    }
-                    if (ans2[0] == "error")
-                    {
-                        result = ans2[1];
-                        canEquate = false;
-                        break;
-                    }
-                    if (ans3[0] == "error")
-                    {
-                        result = ans3[1];
-                        canEquate = false;
-                        break;
-                    }
-                    if ([isNaN(ans1[1]), isNaN(ans2[1]), isNaN(ans3[1])].filter(x => x).length < 2)
-                    {
-                        if (isNaN(ans1[1]) && !isNaN(ans2[1]))
-                        {
-                            result.push([egl, x, -ans3[1], -ans2[1], 0]);
-                        }
-                        else
-                        if (!isNaN(ans1[1]) && isNaN(ans2[1]))
-                        {
-                            result.push([egl, x, -ans1[1], -ans3[1], 1]);
-                        }
-                        else
-                        {
-                            result.push([egl, x, -ans1[1], -ans2[1], 2]);
-                        }
-                    }
-                    else
-                    {
-                        result.push([false]);
-                    }
+                    canEquate = false;
+                    result = "Output (*y*) must remain isolated in all equations.";
                 }
-            }
-
-            let result_;
-            if (canEquate)
-            {
-                ctx.strokeStyle = color;
-                ctx.lineJoin = "round";
-                ctx.lineCap = "round";
-                for (let i = 0; i < result.length; i++)
+                else
                 {
-                    //display.push(result[i]);
-                    if (result[i][0])
+                    result = [];
+                    for (let x = -150; x < 151; x++)
                     {
-                        if (result[i][0] == '=')
+                        let ans1 = equ(y, x - 0.5);
+                        let ans2 = equ(y, x + 0.5);
+                        let ans3 = equ(y, x);
+                        if (ans1[0] == "error")
                         {
-                            ctx.beginPath();
-                            ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
-                            ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
-                            ctx.stroke();
+                            result = ans1[1];
+                            canEquate = false;
+                            break;
                         }
-                        else
+                        if (ans2[0] == "error")
                         {
-                            console.log(result[i]);
+                            result = ans2[1];
+                            canEquate = false;
+                            break;
                         }
-                        if (result[i][0].startsWith('>'))
+                        if (ans3[0] == "error")
                         {
-                            let c = new Color(color);
-                            ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
-                            ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
-                            ctx.beginPath();
-                            ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], -151);
-                            ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
-                            ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
-                            ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], -151);
-                            ctx.fill();
-                            
-                            if (result[i][0].endsWith('='))
+                            result = ans3[1];
+                            canEquate = false;
+                            break;
+                        }
+                        if ([isNaN(ans1[1]), isNaN(ans2[1]), isNaN(ans3[1])].filter(x => x).length < 2)
+                        {
+                            if (isNaN(ans1[1]) && !isNaN(ans2[1]))
                             {
-                                ctx.strokeStyle = color;
+                                result.push([egl, x, -ans3[1], -ans2[1], 0]);
+                            }
+                            else
+                            if (!isNaN(ans1[1]) && isNaN(ans2[1]))
+                            {
+                                result.push([egl, x, -ans1[1], -ans3[1], 1]);
+                            }
+                            else
+                            {
+                                result.push([egl, x, -ans1[1], -ans2[1], 2]);
+                            }
+                        }
+                        else
+                        {
+                            result.push([false]);
+                        }
+                    }
+                }
+
+                let result_;
+                if (canEquate)
+                {
+                    ctx.strokeStyle = color;
+                    ctx.lineJoin = "round";
+                    ctx.lineCap = "round";
+                    for (let i = 0; i < result.length; i++)
+                    {
+                        //display.push(result[i]);
+                        if (result[i][0])
+                        {
+                            if (result[i][0] == '=')
+                            {
                                 ctx.beginPath();
                                 ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
                                 ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
                                 ctx.stroke();
                             }
-                        }
-                        else
-                        if (result[i][0].startsWith('<'))
-                        {
-                            let c = new Color(color);
-                            ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
-                            ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
-                            ctx.beginPath();
-                            ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], 151);
-                            ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
-                            ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
-                            ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], 151);
-                            ctx.fill();
-                            
-                            if (result[i][0].endsWith('='))
+                            else
                             {
-                                ctx.strokeStyle = color;
+                                console.log(result[i]);
+                            }
+                            if (result[i][0].startsWith('>'))
+                            {
+                                let c = new Color(color);
+                                ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
+                                ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
                                 ctx.beginPath();
-                                ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], -151);
+                                ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
                                 ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
-                                ctx.stroke();
+                                ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], -151);
+                                ctx.fill();
+                                
+                                if (result[i][0].endsWith('='))
+                                {
+                                    ctx.strokeStyle = color;
+                                    ctx.beginPath();
+                                    ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                    ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                    ctx.stroke();
+                                }
+                            }
+                            else
+                            if (result[i][0].startsWith('<'))
+                            {
+                                let c = new Color(color);
+                                ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
+                                ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
+                                ctx.beginPath();
+                                ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], 151);
+                                ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], 151);
+                                ctx.fill();
+                                
+                                if (result[i][0].endsWith('='))
+                                {
+                                    ctx.strokeStyle = color;
+                                    ctx.beginPath();
+                                    ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                    ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                    ctx.stroke();
+                                }
                             }
                         }
                     }
+                    result_ = new Color(color).getName();
                 }
-                result_ = new Color(color).getName();
+                else
+                {
+                    result_ = result;
+                }
+                display.push(input[i].split(';')[0] + " - " + result_);
             }
-            else
-            {
-                result_ = result;
-            }
-            display.push(input[i].split(';')[0] + " - " + result_);
+            let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
+            sendChat("```\n" + text + "```", new Discord.Attachment(canvas.toBuffer()));
         }
-        let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
-        sendChat("```\n" + text + "```", new Discord.Attachment(canvas.toBuffer()));
-   
     },
    
     // NSFW
@@ -2731,6 +2535,178 @@ Math.prod = function(n, a, b) {
         c *= b;
     }
     return c;
+}
+function equ(equation, x) {
+    if (x !== undefined)
+    {
+        equation = equation.replace(/x/g, '(' + x + ')');
+    }
+    let terms = [ [
+            /(pi|π)/g,
+            "(Math.PI)"
+        ], [
+            /(infinity|∞)/g,
+            "(Math.Infinity)"
+        ]
+    ];
+    for (let i = 0; i < terms.length; i++)
+    {
+        equation = equation.replace(terms[i][0], terms[i][1]);
+    }
+    let methods = [
+        [// Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
+            // \sin(5)
+            /\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.$1($2)"
+
+        ], [// Asin, Acos, or Atan of a number
+            // \asin(5)
+            /\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.a$1($2)"
+
+        ], [// Sinh, Cosh, or Tanh of a number
+            // \sinh(5)
+            /\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.$1h($2)"
+
+        ], [// Asinh, Acosh, or Atanh of a number
+            // \asinh(5)
+            /\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.a$1h($2)"
+
+        ], [// Root of a number, if the radicand is a real number and the radical is 2
+            // \sqrt(5)
+            /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.sqrt($1)"
+
+        ], [// If the radicand is positive
+            // \rt[2](5)
+            /(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g,
+            "Math.pow($2,(1/Math.round($1)))"
+
+        ], [// If the radicand is negative and the radical is odd
+            // \rt[3](-5)
+            /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
+            "-Math.pow($2$3,(1/Math.round($1)))"
+
+        ], [// If the radicand is negative and the radical is even
+            // \rt[2](-5)
+            /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
+            "NaN"
+
+        ], [// A number number to the power of another number
+            // 5^7
+            /(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
+            "(Math.pow($1,Math.round($2)))"
+
+        ], [// Summation function
+            // \sum[n=0](5)5
+            /(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
+            "Math.sum($1, $2, $3)"
+
+        ], [// Product function
+            // \prod[n=0](5)5
+            /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.prod($1, $2, $3)"
+
+        ], [// The absolute value of a number
+            // |-5|
+            /\|(-?[0-9.+\-/*()]{1,})\|/g,
+            "Math.abs($1)"
+
+        ], [// A number against a parentheses sequence
+            // 5(7)
+            /([0-9.])\(/g,
+            "$1*("
+
+        ], [// Same but reversed
+            // (7)5
+            /\)([0-9.])/,
+            ")*$1"
+
+        ], [// A number against a Javascript Math function
+            // 5Math.sin(7)
+            /([0-9.])M/g,
+            "$1*M"
+
+        ], [// Parentheses sequence against parentheses sequence
+            // (5)(7)
+            /\)\(/g,
+            ")*("
+        ]
+    ];
+    let lastEquation;
+    for (let i = 0; i < 1; i++)
+    {
+        lastEquation = equation;
+        if (/\(Math.(PI|Infinity)\)/g.test(equation))
+        {
+            equation = equation.replace(/\(Math.PI\)/g, Math.PI);
+            equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+        }
+        if (/(?![0-9)])-\(-[0-9.]{1,}\)/g.test(equation))
+        {
+            equation = equation.replace(/(?![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
+        }
+        if (/([0-9)])-\(-[0-9.]{1,}\)/g.test(equation))
+        {
+            equation = equation.replace(/([0-9)])-\(-([0-9.]{1,})\)/g, "$1+$2");
+        }
+        if (/\([0-9.+\-/*]{1,}\)/.test(equation))
+        {
+            equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
+            for (let i = 0; i < equate.length; i++)
+            {
+                if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
+                {
+                    equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                }
+            }
+        }
+        if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
+        {
+            equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
+            for (let i = 0; i < equate.length; i++)
+            {
+                if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
+                {
+                    equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                }
+            }
+        }
+        for (let i = 0; i < methods.length; i++)
+        {
+            equation = equation.replace(methods[i][0], methods[i][1]);
+        }
+        if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation))
+        {
+            equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g);
+            for (let i = 0; i < equate.length; i++)
+            {
+                equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+            }
+        }
+        if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation)) {
+            equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
+            equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
+        }
+        if (/\(-?[0-9.]{1,}\)/g.test(equation))
+        {
+            equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
+        }
+        if (equation != lastEquation)
+        {
+            i--;
+        }
+    }
+    try
+    {
+        return ["equated", eval(equation)];
+    }
+    catch (err)
+    {
+        return ["error", err];
+    }
 }
    
 exports.db = db;
