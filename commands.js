@@ -1,4 +1,4 @@
-var version = "2.34.3.7";
+var version = "2.34.3.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1906,7 +1906,7 @@ var commands = {
             return sendChat(`**Syntax**: \`x!calc\` \`[equation]\``);
         }
 
-        let answer = equation(input);
+        let answer = equ(input);
    
         if (answer[0] == "equated")
         {
