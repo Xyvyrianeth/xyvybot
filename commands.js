@@ -1,4 +1,4 @@
-var version = "2.34.3.8";
+var version = "2.34.4.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1571,34 +1571,25 @@ var commands = {
     "avatar": function(cmd, args, input, message, sendChat) {
         if (!input || /^<@[0-9]{1,}>$/.test(input) || /^[0-9]{1,}$/.test(input))
         {
-            let member;
+            let user;
             if (!input)
             {
-                member = message.channel.guild.members.get(message.author.id);
-            }
-            else
-            if (message.channel.type !== "dm")
-            {
-                member = message.channel.guild.members.get(input.match(/[0-9]{1,}/)[0]);
+                user = client.users.get(message.author.id);
             }
             else
             {
-                return sendChat("Cannot display other users' avatars in DMs, yet, sorry~");
+                user = client.users.get(input.match(/[0-9]{1,}/)[0]);
             }
   
-            if (member == null)
+            if (user == null)
             {
                 return sendChat("User not found.");
-            }
-            else
-            {
-                member = member.user;
             }
 
             let embed = new Discord.RichEmbed();
             embed.setTitle("User Avatar");
-            embed.setDescription(`Avatar for <@${member.id}>`);
-            embed.setImage(`https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png?size=2048`);
+            embed.setDescription(`Avatar for <@${user.id}>`);
+            embed.setImage(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith("a_") ? "gif" : "png"}?size=2048`);
             embed.setColor(new Color().random());
             return sendChat({embed});
         }
