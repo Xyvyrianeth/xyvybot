@@ -100,7 +100,7 @@ exports.takeTurn = function(channel, move) {
     let x = move - 1;
     if (game.board[x].length == 6)
     {
-        exports.say([channel], ["This column is full, please pick another!", {}]);
+        return exports.say([channel], ["This column is full, please pick another!", {}]);
     }
 
     game.board[x].push(game.turn);

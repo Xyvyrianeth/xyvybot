@@ -1,4 +1,4 @@
-var version = "2.34.4.0";
+var version = "2.34.5.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -870,7 +870,7 @@ var commands = {
             }
             if (games.games.filter(condition("gameStarted")).length != 0)
             {
-                return sendChat("SOmeone is already playing a game in this channel!");
+                return sendChat("Someone is already playing a game in this channel!");
             }
             if (games.games.filter(condition("noGame")).length == 0)
             {

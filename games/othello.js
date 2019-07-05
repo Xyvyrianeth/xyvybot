@@ -150,7 +150,7 @@ exports.takeTurn = function(channel, Move) {
     game.highlight = [];
     if (game.board[move[0]][move[1]] === false)
     {
-        exports.say([channel], ["Someone has aleady played there, pick another spot!", {}]);
+        return exports.say([channel], ["Someone has aleady played there, pick another spot!", {}]);
     }
     for (let i = 0; i < possible.length; i++)
     {

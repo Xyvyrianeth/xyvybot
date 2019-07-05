@@ -120,7 +120,7 @@ exports.takeTurn = function(channel, Move) {
     // Function will vary with game
     if (game.board[move[0]][move[1]] !== false)
     {
-        exports.say([channel], ["Someone has aleady played there, pick another spot!", {}]);
+        return exports.say([channel], ["Someone has aleady played there, pick another spot!", {}]);
     }
     else
     {
