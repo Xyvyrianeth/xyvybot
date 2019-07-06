@@ -13,6 +13,7 @@ exports.newGame = function(channel, player) {
         game: shortname,
         lastDisplays: [],
         lastmove: '',
+        over: false,
         player: false,
         players: [player],
         RE: /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,
@@ -276,6 +277,10 @@ exports.nextTurn = function(channel, end, highlight) {
             time: 6000,
             message: `Whoops, it looks like <@${game.players[game.player]}> has run out of time, so the game is over!`
         }
+    }
+    else
+    {
+        game.over = true;
     }
 
     game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);

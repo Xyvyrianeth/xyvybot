@@ -14,6 +14,7 @@ exports.newGame = function(channel, player) {
         highlight: [],
         lastDisplays: [],
         lastmove: '',
+        over: false,
         player: false,
         players: [player],
         RE: /^([a-h][1-8]|[1-8][a-h])$/i,
@@ -277,6 +278,7 @@ exports.nextTurn = function(channel) {
         game.buffer = new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
         if (game.possible.length == 0)
         {
+            game.over = true;
             if (game.score[0] == game.score[1])
             {
                 end = 2;

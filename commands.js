@@ -1,4 +1,4 @@
-var version = "2.34.5.0";
+var version = "2.34.5.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -213,11 +213,6 @@ function bot(message) {
         let img = message.attachments.first().filename;
         if (/^(connect4|squares|othello|gomoku|ttt3d)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
         {
-            if (games.games.filter(game => game.channels.includes(message.channel.id)).lenght == 0)
-            {
-                return client.guilds.get("399327996076621825").channels.get("467902250128506880").send("Bot is sending images when it shouldn't @`function bot`.");
-            }
-
             let game = games.games.filter(game => game.channels.includes(message.channel.id))[0];
             let end = img.match(/_[0-2]_/)[0].substring(1, 2);
             if (end === '0')
@@ -310,7 +305,6 @@ function bot(message) {
                             return sqlError(message, err, query);
                         }
                     });
-                    
                 });
             }
         }
