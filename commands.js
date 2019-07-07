@@ -1,4 +1,4 @@
-var version = "2.35.0.0";
+var version = "2.35.0.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -16,6 +16,7 @@ const pg = require("pg");
 var db = new pg.Client(config.DATABASE_URL);
 db.connect();
 db.query("UPDATE games SET backup = true");
+exports.db = db;
    
 const jishoApi = require("unofficial-jisho-api");
 const jisho = new jishoApi();
@@ -2703,8 +2704,7 @@ function equ(equation, x) {
         return ["error", err];
     }
 }
-   
-exports.db = db;
+
 exports.version = version;
 exports.command = command;
 exports.other = other;
