@@ -1,4 +1,4 @@
-var version = "2.34.5.1";
+var version = "2.35.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -15,6 +15,7 @@ var admins = "357700219825160194".split(' ');
 const pg = require("pg");
 var db = new pg.Client(config.DATABASE_URL);
 db.connect();
+db.query("UPDATE games SET backup = true");
    
 const jishoApi = require("unofficial-jisho-api");
 const jisho = new jishoApi();
@@ -72,6 +73,9 @@ function sqlError(message, err, res) {
     if (query == "Check console")
     {
         console.log(res);
+        setTimeout(function() {
+            console.log(res);
+        }, 60000);
     }
     return client.guilds.get("399327996076621825").channels.get("478371618620571648").send([
         `\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})`,
@@ -160,7 +164,13 @@ function other(message) {
     if (games.games.filter(game => game.channels.includes(message.channel.id) && game.started).length == 1)
     {
         let game = games.games.filter(game => game.channels.includes(message.channel.id))[0];
-        if (message.author.id == game.player && game.RE.test(message.content))
+        if (message.author.id == game.player && {
+            "squares": /^([a-j] ?(?:10|[1-9])|(?:10|[1-9]) ?[a-j])$/i,
+            "othello": /^([a-h][1-8]|[1-8][a-h])$/i,
+            "gomoku": /^([a-s] ?1?[0-9]{1,}|1?[0-9]{1,} ?[a-s])$/i,
+            "connect4": /^[1-7]$/,
+            "3dttt": /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i
+        }[game.game].test(message.content))
         {
             if (message.channel.type !== "dm")
             {

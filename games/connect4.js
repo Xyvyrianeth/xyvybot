@@ -16,7 +16,6 @@ exports.newGame = function(channel, player) {
         over: false,
         player: false,
         players: [player],
-        RE: /^[1-7]$/,
         started: false,
         turn: 0
     };
@@ -25,7 +24,7 @@ exports.newGame = function(channel, player) {
     game.board = [[],[],[],[],[],[],[]];
  
     game.timer = {
-        time: 9000,
+        time: 900,
         message: `It appears nobody wants to play right now, <@${player}>.`
     }
 
@@ -42,7 +41,7 @@ exports.startGame = function(channel1, channel2, player2) {
     game.player = game.players[0];
  
     game.timer = {
-        time: 6000,
+        time: 600,
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
 
@@ -181,7 +180,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.turn = game.turn == 0 ? 1 : 0;
         game.player = game.players[game.turn];
         game.timer = {
-            time: 6000,
+            time: 600,
             message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
         }
     }
@@ -190,19 +189,21 @@ exports.nextTurn = function(channel, end, highlight) {
         game.over = true;
     }
     game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
-    
-    for (let i = 0; i < game.lastDisplays.length; i++)
+    for (let ch of game.channels)
     {
-        game.lastDisplays[i].delete();
+        for (let i = 0; i < game.channels[ch].length; i++)
+        {
+            client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
+        }
     }
 
     exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 1 ? `<@${game.player}> has won!` : "Tie game, everyone loses!", game.buffer]);
 }
 
 exports.say = function(channels, message) {
-    for (let i = 0; i < channels.length; i++)
+    for (let i = 0; i < Object.keys(channels).length; i++)
     {
-        client.channels.get(channels[i]).send(message[0], message[1]);
+        client.channels.get(Object.keys(channels)[i]).send(message[0], message[1]);
     }
 }
 

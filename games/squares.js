@@ -8,20 +8,19 @@ var shortname = "squares";
 exports.newGame = function(channel, player) {
     let game = {
         buffer: {},
-        channels: [channel],
+        channels: {},
         forfeit: false,
         game: shortname,
         highlight: false,
-        lastDisplays: [],
         lastmove: '',
         over: false,
         player: false,
         players: [player],
-        RE: /^([a-j] ?(?:10|[1-9])|(?:10|[1-9]) ?[a-j])$/i,
         score: [0, 0],
         started: false,
         turn: 0.5
     };
+    game.channels[channel] = [];
     games.push(game);
 
     let _ = false;
@@ -37,7 +36,7 @@ exports.newGame = function(channel, player) {
     }
   
     game.timer = {
-        time: 9000,
+        time: 900,
         message: `It appears nobody wants to play right now, <@${player}>.`
     }
 
@@ -45,8 +44,8 @@ exports.newGame = function(channel, player) {
 }
   
 exports.startGame = function(channel1, channel2, player2) {
-    let game = games.filter(game => game.channels.includes(channel1))[0];
-    if (channel1 !== channel2) game.channels.push(channel2);
+    let game = games.filter(game => game.channels.hasOwnProperty(channel1))[0];
+    if (channel1 !== channel2) game.channels[channel2] = [];
     game.players[1] = player2;
     game.started = true;
   
@@ -54,7 +53,7 @@ exports.startGame = function(channel1, channel2, player2) {
     game.player = game.players[0];
   
     game.timer = {
-        time: 6000,
+        time: 600,
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
     
@@ -196,7 +195,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.turn = game.turn == 1.5 ? 0 : game.turn + 0.5;
         game.player = game.players[Math.floor(game.turn)];
         game.timer = {
-            time: 6000,
+            time: 600,
             message: `Whoops, it looks like <@${game.players[Math.floor(game.turn)]}> has run out of time, so the game is over!`
         }
     }
@@ -206,18 +205,21 @@ exports.nextTurn = function(channel, end, highlight) {
     }
 
     game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
-    for (let i = 0; i < game.lastDisplays.length; i++)
+    for (let ch of game.channels)
     {
-        game.lastDisplays[i].delete();
+        for (let i = 0; i < game.channels[ch].length; i++)
+        {
+            client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
+        }
     }
 
     exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ? "Tie game, everyone loses!" : `<@${game.players[game.score[0] > game.score[1] ? 0 : 1]}> has won!`, game.buffer]);
 }
 
 exports.say = function(channels, message) {
-    for (let i = 0; i < channels.length; i++)
+    for (let i = 0; i < Object.keys(channels).length; i++)
     {
-        client.channels.get(channels[i]).send(message[0], message[1]);
+        client.channels.get(Object.keys(channels)[i]).send(message[0], message[1]);
     }
 }
 
