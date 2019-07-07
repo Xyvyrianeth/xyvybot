@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const { client, config } = require("/app/Xyvy.js");
 var db = require("/app/commands.js").db;
+var backup = true;
 
 var timer = setInterval(function() {
     let games = exports.games;
@@ -42,10 +43,10 @@ var timer = setInterval(function() {
             {
                 client.channels.get("478371618620571648").send('Error retrieving game data backups\n```\n' + err + '```');
             }
-            if (res.rows[0].backup)
+            if (backup)
             {
                 games = res.rows[0].data;
-                db.query("UPDATE games SET backup = false");
+                backup = false;
             }
             else
             {
