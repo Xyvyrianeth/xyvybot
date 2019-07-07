@@ -8,7 +8,7 @@ var shortname = "gomoku";
 exports.newGame = function(channel, player) {
     let game = {
         buffer: {},
-        channels: [channel],
+        channels: {},
         forfeit: false,
         game: shortname,
         lastDisplays: [],
@@ -19,6 +19,7 @@ exports.newGame = function(channel, player) {
         started: false,
         turn: 0.5
     };
+    game.channels[channel] = [];
     games.push(game);
 
     let _ = false;
@@ -38,12 +39,12 @@ exports.newGame = function(channel, player) {
         message: `It appears nobody wants to play right now, <@${player1}>.`
     }
 
-    exports.say([channel], [`<@${player}> is now requesting a new game of ${gamename}!`, {}]);
+    exports.say(game.channels, [`<@${player}> is now requesting a new game of ${gamename}!`, {}]);
 }
  
 exports.startGame = function(channel1, channel2, player2) {
-    let game = games.filter(game => game.channels.includes(channel1))[0];
-    if (channel1 !== channel2) game.channels.push(channel2);
+    let game = games.filter(game => game.channels.hasOwnProperty(channel1))[0];
+    if (channel1 !== channel2) game.channels[channel2] = [];
     game.players[1] = player2;
     game.started = true;
  
@@ -200,13 +201,13 @@ exports.drawBoard = function(game, end, highlight, row) {
 }
  
 exports.takeTurn = function(channel, Move) {
-    let game = games.filter(game => game.channels.includes(channel))[0];
+    let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghijklmnopqrs'.indexOf(Move.toLowerCase().match(/[a-z]/)[0])];
      
     // Function will vary with game
     if (game.board[move[0]][move[1]] !== false)
     {
-        return exports.say([channel], ["Someone has aleady played there, pick another spot!", {}]);
+        return exports.say(game.channels, ["Someone has aleady played there, pick another spot!", {}]);
     }
     else
     {
@@ -443,7 +444,7 @@ exports.takeTurn = function(channel, Move) {
 }
  
 exports.nextTurn = function(channel, end, highlight, row) {
-    let game = games.filter(game => game.channels.includes(channel))[0];
+    let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
     {
         game.turn = game.turn == 1.5 ? 0 : game.turn += 0.5;
@@ -464,6 +465,7 @@ exports.nextTurn = function(channel, end, highlight, row) {
         {
             client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
         }
+        game.channels[ch] = [];
     }
 
     exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn` : end == 1 ? `<@${game.player}> has won!` : `Tie game, everyone loses!`, game.buffer]);
