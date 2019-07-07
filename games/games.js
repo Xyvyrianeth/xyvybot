@@ -5,6 +5,7 @@ var db = require("/app/commands.js").db;
 var games = []; // Leave blank
 
 var timer = setInterval(function() {
+    console.log(exports.games);
     exports.games.forEach((game, index) => {
         game.timer.time -= 1;
         if (game.timer.time == 0)
