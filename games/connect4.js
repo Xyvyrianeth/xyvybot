@@ -58,19 +58,19 @@ exports.drawBoard = function(game, end, highlight) {
 
     if (end == 0)
     {
-        ctx.drawImage(exports.Images[["red", "blue"][game.turn] + "Text"], 5, 6);
-        ctx.drawImage(exports.Images.turn, 41 + (13 * game.turn), 4);
+        ctx.drawImage(exports.Images[["red", "blue"][game.turn] + "Text"], 9, 6);
+        ctx.drawImage(exports.Images.turn, 45 + (13 * game.turn), 4);
     }
     else
     if (end == 1)
     {
-        ctx.drawImage(exports.Images[["red", "blue"][game.turn] + "Text"], 5, 6);
-        ctx.drawImage(exports.Images.win, 46 + (13 * game.turn), 6);
+        ctx.drawImage(exports.Images[["red", "blue"][game.turn] + "Text"], 9, 6);
+        ctx.drawImage(exports.Images.win, 50 + (13 * game.turn), 6);
     }
     else
     if (end == 2)
     {
-        ctx.drawImage(exports.Images.tie, 5, 6);
+        ctx.drawImage(exports.Images.tie, 9, 6);
     }
 
     for (let i = 0; i < 7; i++)
