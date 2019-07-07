@@ -1681,4 +1681,1030 @@ var commands = {
                     let embed = new Discord.RichEmbed();
                     embed.setTitle("Help!");
                     embed.setAuthor("Command: " + Object.keys(aliases.guild)[index]);
-                    embed.setDescription("__**Usage**__:\n`" + help[0] + "`\n\n" + help[1] + 
+                    embed.setDescription("__**Usage**__:\n`" + help[0] + "`\n\n" + help[1] + "\n\n__**Example**__:\n" + help[2]);
+                    embed.setColor(new Color().random());
+                    sendChat({embed});
+                }
+                else
+                if (index == Object.keys(aliases[message.channel.type == "dm" ? "user" : "guild"]).length)
+                {
+                    sendChat("That command does not exist.");
+                }
+            });
+        }
+    },
+  
+    "about": function(cmd, args, input, message, sendChat) {
+        let embed = new Discord.RichEmbed();
+        embed.setTitle("About me");
+        embed.addDescription("Let's start off by saying that the only reason this bot exists is because someone else told me I should make it. Not for any reason in particular, they were just testing me to see if I could do it.\nWell, I did it, and then I found I enjoyed making it, so I kept building on it. It's still a piece of crap, but it works, and that's all that matters, right?\n\nFast-forward 2 years and I find myself interested in abstract strategy games, like Go and Othello. It's not easy using a completely different application or software to play simple games with my friends on Discord, so I made this bot able to do what those other apps did, and we had fun.\n*Then*, someone suggested I make this bot go public so *other people* won't have the same problem. Thank that person (I forgot who, honestly) for telling me to solve that problem for you if you had it as well.");
+        embed.setThumbnail("https://cdn.discordapp.com/avatars/398606274721480725/773bffc6d905ce79e8e9ab950d1d1e23.png?size=2048");
+        sendChat({embed});
+    },
+
+    "aliases": function(cmd, args, input, message, sendChat) {
+        if (!input)
+        {
+            return sendChat("To view all the aliases for a command, do `x!aliases` `[command name]`");
+        }
+        else
+        if (input.startsWith('['))
+        {
+            return sendChat("With***out*** the brackets.");
+        }
+        for (let i in aliases.guild)
+        {
+            if (aliases.guild[i].includes(input))
+            {
+                let embed = new Discord.RichEmbed();
+                embed.setTitle("Aliases for " + i);
+                embed.setDescription('`' + aliases.guild.join("`  `") + '`');
+                embed.setColor(new Color().random());
+                return sendChat({embed});
+            }
+        }
+    },
+
+    "bug": function(cmd, args, input, message, sendChat) {
+        return db.query(`SELECT bug FROM bans`, function(err, res) {
+            if (err)
+            {
+                return sendChat("```" + err + "```");
+            }
+            if (!rows.includes(message.author.id))
+            {
+                if (bugTimers[message.author.id])
+                {
+                    return sendChat("You can submit 1 bug every 2 hours. Xyvy doesn't like being spammed, you know.");
+                }
+                if (!input)
+                {
+                    return sendChat("Here is how to format a bug report:\n\n```\nx!reportbug [command that's bugged]\n[description of bug (less than 1000 characters, please)]```\nPlease take note that if you submit a fake bug report, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
+                }
+                let com = input.split("\n")[0];
+                console.log('"' + com + '"');
+                if (com.startsWith('['))
+                {
+                    return sendChat("With***out*** the brackets, you twit.");
+                }
+                let aliases = message.channel.type == "dm" ? aliases.user : aliases.guild;
+                let a = false;
+                for (let i in aliases) 
+                    if (aliases[i].includes(com))
+                    {
+                        a = true;
+                        break;
+                    }
+                if (!a)
+                {
+                    return sendChat("That command does not exist!");
+                }
+                let desc = input.substring(com.length).trim();
+                if (desc.length > 1000)
+                {
+                    return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
+                }
+                let embed = new Discord.RichEmbed();
+                embed.setTitle("Bug Report");
+                embed.setAuthor(message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')');
+                embed.setDescription("**Command**: " + com + "\n\n" + desc);
+                client.guilds.get("399327996076621825").channels.get("467853697528102912").send(embed);
+                bugTimers[message.author.id] = 100 * 60 * 60 * 2;
+                return sendChat("Bug report sent! Thanks for helping out!");
+            }
+            else
+            {
+                sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
+            }
+        });
+    },
+
+    "request": function(cmd, args, input, message, sendChat) {
+        return db.query(`SELECT request FROM bans`, function(err, res) {
+            if (err)
+            {
+                return sendChat("```" + err + "```");
+            }
+            if (!rows.includes(message.author.id))
+            {
+                if (requestTimers[message.author.id])
+                {
+                    return sendChat("You can submit 1 request every 2 hours. Xyvy doesn't like being spammed, you know.");
+                }
+                if (!input)
+                {
+                    return sendChat("Here is how to format a request:\n\n```\nx!request [description of suggestion (less than 1000 characters, please)]```\nPlease take note that if you submit a fake request, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
+                }
+                if (input.length > 1000)
+                {
+                    return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
+                }
+                let embed = new Discord.RichEmbed();
+                embed.setTitle("User Request");
+                embed.setAuthor(message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')');
+                embed.setDescription("**Suggestion**:\n" + input);
+                client.guilds.get("399327996076621825").channels.get("468245442388295691").send(embed);
+                requestTimers[message.author.id] = 100 * 60 * 60 * 2;
+                return sendChat("Request sent! Thanks for the suggestion!");
+            }
+            else
+            {
+                sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
+            }
+        });
+    },
+   
+    "guild": function(cmd, args, input, message, sendChat) {
+        if (!input)
+        {
+            let guild = message.channel.guild;
+            embed = new Discord.RichEmbed();
+            embed.setTitle("Guild ID: " + guild.id);
+            embed.setAuthor(guild.name);
+            embed.setColor(new Color().random());
+            if (guild.icon != null)
+            {
+                embed.setThumbnail(guild.iconURL);
+            }
+            owner = guild.members.get(guild.ownerID).user;
+            embed.addField("Owner", `<@${owner.id}>`, true);
+            embed.addField("Region", guild.region, true);
+            embed.addField("Verification Level", [
+                "None\nNo restrictions", 
+                "Low\nAccount must be verified by email", 
+                "Medium\nAccount must be verified by email and be older than 5 minutes", 
+                "(╯°□°）╯︵ ┻━┻\nAccount must be verified by email, older than 5 minutes, and be a member of the server for at least 10 minutes", 
+                "┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻\nAccount must have a verified phone on it"
+            ][guild.verificationLevel]);
+            let text = guild.channels.filterArray(channel => channel.type == "text").length;
+            let voice = guild.channels.filterArray(channel => channel.type == "voice").length;
+            let categories = guild.channels.filterArray(channel => channel.type == "category").length;
+            embed.addField(`Channels (${text + voice})`, `${text} Text | ${voice} Voice\nSplit into ${categories} categories`, true);
+            let members = guild.memberCount;
+            let bots = guild.members.filterArray(member => member.user.bot).length;
+            embed.addField(`Members (${members})`, `${members - bots} Humans | ${bots} Bots`, true);
+            embed.addField("Roles", guild.roles.array().length, true);
+            embed.addField("Emotes", guild.emojis.array().length, true);
+            return sendChat({embed});
+        }
+    },
+
+    "kick": function(cmd, args, input, message, sendChat) {
+        let user = message.channel.guild.members.get(message.author.id);
+        if (!user.hasPermission("KICK_MEMBERS"))
+        {
+            return;
+        }
+        if (!input)
+        {
+            return sendChat("**Proper Usage**: `x!kick <@user>`");
+        }
+        if (!/^<@[0-9]{1,}>$/.test(args[0]) || !/^[0-9]{1,}$/.test(args[0]))
+        {
+            return sendChat("Invalid user mention, try again.");
+        }
+        else
+        {
+            message.channel.guild.members.get(args[0].match(/[0-9]{1,}/)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => sendChat("kicked user <@" + args[0].match(/[0-9]{1,}/)[0] + '>')).catch((err) => sendChat("Failed to kick user <@" + args[0].match(/[0-9]{1,}/)[0] + ">```\n" + err + "```"));
+        }
+
+    },
+
+    "ban": function(cmd, args, input, message, sendChat) {
+        let user = message.channel.guild.members.get(message.author.id);
+        if (user.hasPermission("BAN_MEMBERS"))
+        {
+            return;
+        }
+        if (!input)
+        {
+            return sendChat("**Proper Usage**: `x!ban <@user>`");
+        }
+        if (!/^<@[0-9]{1,}>$/.test(args[0]) || !/^[0-9]{1,}$/.test(args[0]))
+        {
+            return sendChat("Invalid user mention, try again.");
+        }
+        else
+        {
+            message.channel.guild.members.get(args[0].match(/[0-9]{1,}/)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => sendChat("baned user <@" + args[0].match(/[0-9]{1,}/)[0] + '>')).catch((err) => sendChat("Failed to ban user <@" + args[0].match(/[0-9]{1,}/)[0] + ">```\n" + err + "```"));
+        }
+
+    },
+   
+    "nekos": function(cmd, args, input, message, sendChat) {
+        Nekos.sfw.neko().then(neko => sendChat(new Discord.RichEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
+    },
+
+    "calc": function(cmd, args, input, message, sendChat) {
+        if (!input)
+        {
+            return sendChat(`**Syntax**: \`x!calc\` \`[equation]\``);
+        }
+
+        let answer = equ(input);
+   
+        if (answer[0] == "equated")
+        {
+            return sendChat("```Input: " + input + "``````Output: " + answer[1] + "```");
+        }
+        else
+        {
+            return sendChat("```Input: " + input + "``````Output: " + answer[1] + "```");
+        }
+    },
+   
+    "graph": function(cmd, args, input, message, sendChat) {
+        if (["info", "about", "history"].includes(args[0])) {
+            let embed = new Discord.RichEmbed();
+            embed.setTitle("Brief History of the Xyvyrianethian Graphic Calculator");
+            embed.setAuthor("By Xyvyrianeth");
+            embed.setDescription([
+                "Okay, well, I made this simply because I had nothing better to do with my time. When I started, it was 100% text-drawn, ",
+                "and it was really cool because I could add a lot of features to it when it didn't have to be accurate. Then I moved to ",
+                "Node Canvas and had to start over. I'm still not anywhere near the level of Desmos, but I'm proud of myself with what ",
+                "I have.\n",
+                "\n",
+                "In order to have a more advanced calculator, there needs to be a more strict syntax. I had to change a lot of things in ",
+                "the old syntax just to enable something simple like square root, cube root, or n-root of x, and I'll have to change even ",
+                "more if I want to add something like Π and ∑. I also had to change the method it uses to calculate almost entirely: instead ",
+                "of it trying to do everything at once, it has to solve it step by step. It has its own order of operation it has to follow.\n",
+                "\n",
+                "I'm constantly refining it little by little, and soon it'll be something. Maybe not great, but something."].join(''));
+            embed.addField("Other Sub-Commands", "`x!" + cmd + "`  `syntax`");
+        }
+        else
+        if (["help", "syntax", "rules"].includes(args[0]) || !args[0])
+        {
+            let embed = new Discord.RichEmbed();
+            embed.setTitle("How to Graphic Calculator, Xyvybot Style");
+            embed.setAuthor("by Xyvyrianeth");
+            embed.setDescription("[Click this link, it totally isn't spoopy](https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph)");
+
+        }
+        else
+        {
+   
+            // Draw blank graph
+            canvas = new Canvas.createCanvas(301, 301);
+            ctx = canvas.getContext('2d');
+            ctx.drawImage(Images.graph, 0, 0);
+            ctx.translate(150.5, 150.5);
+            e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
+            input = input.split('\n');
+            colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
+            if (/;$/.test(input))
+            {
+                e.pop();
+            }
+            if (e.length > colors.length)
+            {
+                console.log("`Too many equations!`");
+            }
+            let display = [];
+
+            for (let i = 0; i < e.length; i++)
+            {
+                // decide color
+                let ic = e[i].split(';');
+                let color = colors[i];
+                let y = ic[0];
+                if (ic.length == 2)
+                {
+                    if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase()))
+                    {
+                        color = ic[1].toLowerCase();
+                    }
+                    if (/^(red|orange|yellow|(?:light||blue)green|blue|purple|brown|pink)$/i.test(ic[1]))
+                    {
+                        color = {
+                            "red": "#ff0000",
+                            "orange": "#ff7F00",
+                            "yellow": "#fefe33",
+                            "lightgreen": "00ff00",
+                            "green": "#008000",
+                            "bluegreen": "#0d98ba",
+                            "blue": "#0000ff",
+                            "purple": "#a020f0",
+                            "brown": "#964b00",
+                            "pink": "#ffc0cb"
+                        }[ic[1].toLowerCase()];
+                    }
+                }
+                Y = y.match(/^y(=|(>=?|≥)|(<=?|≤))/);
+                if (Y != null)
+                {
+                    y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
+                    egl = Y[0].substring(1);
+                    if (egl == '≤')
+                    {
+                        egl = "<=";
+                    }
+                    if (egl == '≥')
+                    {
+                        egl = ">=";
+                    }
+                }
+                else
+                {
+                    egl = '=';
+                }
+
+                // start graphing
+                let canEquate = true;
+                let result;
+
+                if (y.includes('y') && !y.includes("infinity")) 
+                {
+                    canEquate = false;
+                    result = "Output (*y*) must remain isolated in all equations.";
+                }
+                else
+                {
+                    result = [];
+                    for (let x = -150; x < 151; x++)
+                    {
+                        let ans1 = equ(y, x - 0.5);
+                        let ans2 = equ(y, x + 0.5);
+                        let ans3 = equ(y, x);
+                        if (ans1[0] == "error")
+                        {
+                            result = ans1[1];
+                            canEquate = false;
+                            break;
+                        }
+                        if (ans2[0] == "error")
+                        {
+                            result = ans2[1];
+                            canEquate = false;
+                            break;
+                        }
+                        if (ans3[0] == "error")
+                        {
+                            result = ans3[1];
+                            canEquate = false;
+                            break;
+                        }
+                        if ([isNaN(ans1[1]), isNaN(ans2[1]), isNaN(ans3[1])].filter(x => x).length < 2)
+                        {
+                            if (isNaN(ans1[1]) && !isNaN(ans2[1]))
+                            {
+                                result.push([egl, x, -ans3[1], -ans2[1], 0]);
+                            }
+                            else
+                            if (!isNaN(ans1[1]) && isNaN(ans2[1]))
+                            {
+                                result.push([egl, x, -ans1[1], -ans3[1], 1]);
+                            }
+                            else
+                            {
+                                result.push([egl, x, -ans1[1], -ans2[1], 2]);
+                            }
+                        }
+                        else
+                        {
+                            result.push([false]);
+                        }
+                    }
+                }
+
+                let result_;
+                if (canEquate)
+                {
+                    ctx.strokeStyle = color;
+                    ctx.lineJoin = "round";
+                    ctx.lineCap = "round";
+                    for (let i = 0; i < result.length; i++)
+                    {
+                        //display.push(result[i]);
+                        if (result[i][0])
+                        {
+                            if (result[i][0] == '=')
+                            {
+                                ctx.beginPath();
+                                ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                ctx.stroke();
+                            }
+                            else
+                            {
+                                console.log(result[i]);
+                            }
+                            if (result[i][0].startsWith('>'))
+                            {
+                                let c = new Color(color);
+                                ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
+                                ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
+                                ctx.beginPath();
+                                ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], -151);
+                                ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], -151);
+                                ctx.fill();
+                                
+                                if (result[i][0].endsWith('='))
+                                {
+                                    ctx.strokeStyle = color;
+                                    ctx.beginPath();
+                                    ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                    ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                    ctx.stroke();
+                                }
+                            }
+                            else
+                            if (result[i][0].startsWith('<'))
+                            {
+                                let c = new Color(color);
+                                ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
+                                ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
+                                ctx.beginPath();
+                                ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], 151);
+                                ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], 151);
+                                ctx.fill();
+                                
+                                if (result[i][0].endsWith('='))
+                                {
+                                    ctx.strokeStyle = color;
+                                    ctx.beginPath();
+                                    ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
+                                    ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+                                    ctx.stroke();
+                                }
+                            }
+                        }
+                    }
+                    result_ = new Color(color).getName();
+                }
+                else
+                {
+                    result_ = result;
+                }
+                display.push(input[i].split(';')[0] + " - " + result_);
+            }
+            let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
+            sendChat("```\n" + text + "```", new Discord.Attachment(canvas.toBuffer()));
+        }
+    },
+   
+    // NSFW
+    "nsfw": function(cmd, args, input, message, sendChat) {
+        let tags = Object.keys(Nekos.nsfw).sort();
+
+        if (message.channel.type != "dm" && !message.channel.nsfw)
+        {
+            return;
+        }
+        else
+        if (!input)
+        {
+            let type = tags.random();
+            let embed = new Discord.RichEmbed();
+            embed.setDescription(`Tag: \`${type}\` | Do \`x!nsfw ${type}\` to see more like this\nDo \`x!nsfw tags\` to see all tags`);
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random());
+            return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+        }
+        else
+        if (input.startsWith('['))
+        {
+            return sendChat("With***out*** the brackets. How is that ***not*** obvious? You're probably too young to look at porn, go play violent video games, instead.");
+        }
+        else
+        if (["tags", "help"].includes(input))
+        {
+            let embed = new Discord.RichEmbed();
+            embed.setTitle("NSFW Tags");
+            let joined = '';
+            for (let i = 0; i < tags.length; i++)
+            {
+                joined += tags[i] + ' '.repeat(16 - (tags[i].length % 16));
+            }
+            embed.setDescription('```\n' + joined.trim() + '```\n**Usage**: `x!nsfw [tag]`');
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random());
+            return Nekos.nsfw.eroNeko().then(help => sendChat(embed.setImage(help.url)));
+        }
+        else
+        if (["random"].includes(args[0]))
+        {
+            let types = [];
+            let nopes = [];
+            let type;
+            if (!args[1])
+            {
+                type = tags.random();
+            }
+            else
+            {
+                for (let i = 1; i < args.length; i++)
+                {
+                    let tag = tags.filter(tag => {
+                        if (!types.includes(tag) && (tag.toLowerCase() == args[i].toLowerCase() || tag.toLowerCase().includes(args[i].toLowerCase())))
+                        {
+                            return true;
+                        }
+                    });
+                    if (tag.length == 0)
+                    {
+                        nopes.push(args[i]);
+                    }
+                    else
+                    {
+                        types = types.concat(tag);
+                    }
+                }
+                if (types.length + nopes.length > tags.length)
+                {
+                    return sendChat("There's not even that many tags, try again.");
+                }
+                else
+                if (types.length > 0)
+                {
+                    type = types.random();
+                }
+                else
+                {
+                    return sendChat("None of those tags exist.");
+                }
+            }
+        
+            let embed = new Discord.RichEmbed();
+            embed.setDescription(`Tag: \`${type}\`\nSelected randomly from: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random())
+            return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+        }
+        else
+        if (["exclude"].includes(args[0]))
+        {
+            let types = [];
+            let nopes = [];
+            if (!args[1])
+            {
+                type = tags.random();
+            }
+            else
+            {
+                for (let i = 1; i < args.length; i++)
+                {
+                    let tag = tags.filter(tag => {
+                        if (!types.includes(tag) && (tag.toLowerCase() == args[i].toLowerCase() || tag.toLowerCase().includes(args[i].toLowerCase())))
+                        {
+                            return true;
+                        }
+                    });
+                    if (tag.length == 0)
+                    {
+                        nopes.push(args[i]);
+                    }
+                    else
+                    {
+                        types = types.concat(tag); 
+                    }
+                }
+
+                if (types.length + nopes.length > tags.length)
+                {
+                    return sendChat("There's not even that many tags, try again.");
+                }
+                else
+                if (types.length == tags.length)
+                {
+                    return sendChat("That removes literally every tag, try again.");
+                }
+                if (types.length > 0)
+                {
+                    let Types = [];
+                    for (let i = 0; i < tags.length; i++)
+                    {
+                        if (!types.includes(tags[i]))
+                        {
+                            Types.push(tags[i]);
+                        }
+                    }
+                    type = Types.random();
+                }
+                else
+                {
+                    return sendChat("None of those tags exist.");
+                }
+            }
+            let embed = new Discord.RichEmbed();
+            embed.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random())
+            return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+        }
+        else
+        if (args.length > 1)
+        {
+            let types = [];
+            let nopes = [];
+            for (let i = 0; i < args.length; i++)
+            {
+                let tag = tags.filter(tag => {
+                    if (!types.includes(tag) && (tag.toLowerCase() == args[i].toLowerCase() || tag.toLowerCase().includes(args[i].toLowerCase())))
+                    {
+                        return true;
+                    }
+                });
+                if (tag.length == 0)
+                {
+                    nopes = nopes.push(args[i]);
+                }
+                else
+                {
+                    types = types.concat(tag);
+                }
+            }
+            if (types.length == 0)
+            {
+                return sendChat("Query matched no tags, try again.");
+            }
+            let queue = [];
+            if (types.length <= 5)
+            {
+                queue = queue.concat(types);
+            }
+            if (types.length > 5)
+            {
+                for (let i = 0; i < 5; i++)
+                {
+                    queue.push(types[i]);
+                }
+            }
+            let Types = [];
+            for (let i = 0; i < queue.length; i++)
+            {
+                Nekos.nsfw[queue[i]]().then(nsfw => {
+                    Types.push(nsfw.url);
+                    if (Types.length == queue.length)
+                    {
+                        let Tags = [];
+                        for (let x = 0; x < Types.length; x++)
+                        {
+                            Tags.push(`[${types[x]}](${Types[x]})`);
+                        }
+                        let embed = new Discord.RichEmbed();
+                        embed.setDescription(`Tags: [\`${queue.join('`, `')}\`]${types.length > 5 ? `\nMaximum of 5 tags allowed` : ''}\n\n[${Tags.join(']\n\n[')}]`);
+                        embed.setFooter("Powered by Nekos.Life");
+                        embed.setColor(new Color().random());
+                        embed.setImage(queue[0]);
+                        return sendChat({embed});
+                    }
+                });
+            }
+        }
+        else
+        {
+            let tag = tags.filter(tag => {
+                if (tag.toLowerCase() == args[0].toLowerCase() ||tag.toLowerCase().includes(args[0].toLowerCase()))
+                {
+                    return true;
+                }
+            });
+            if (tag.length == 0)
+            {
+                return sendChat("Sorry, I don't have that");
+            }
+            else
+            {
+                type = tag.random();
+            }
+        
+            let embed = new Discord.RichEmbed();
+            embed.setDescription(`Tag: \`${type}\``);
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random())
+            return Nekos.nsfw[type]().then(nsfw => sendChat(embed.setImage(nsfw.url)));
+        }
+    },
+   
+    // Admin-only
+    "js": function(cmd, args, input, message, sendChat) {
+        if (!admins.includes(message.author.id))
+        {
+            return;
+        }
+        if (!message.content.startsWith("x!js"))
+        {
+            return;
+        }
+        if (input.startsWith("```js\n") && input.endsWith("```"))
+        {
+            let execute = input.substring(6, input.length - 3);
+            try
+            {
+                sendChat("```js\n" + JSON.stringify(eval(execute)) + "```");
+            }
+            catch (err)
+            {
+                let stack = err.stack.split('\n');
+                let a = stack.length;
+                for (let i = 0; i < stack.length; i++)
+                {
+                    if (stack[i].includes("at Client.emit"))
+                    {
+                        a = i;
+                        break;
+                    }
+                }
+                let Err = [];
+                let b = false;
+                for (let i = 1; i < a; i++)
+                {
+                    Err.push(stack[i]);
+                    if (/<anonymous>:[0-9]{1,}:[0-9]{1,}/.test(stack[i]))
+                    {
+                        let c = stack[i].match(/<anonymous>:[0-9]{1,}:[0-9]{1,}/)[0].split(':');
+                        b = [execute.split('\n')[Number(c[1]) - 1], Number(c[2]) - 1];
+                    }
+                }
+                if (!b)
+                {
+                    sendChat("```" + err + "``````\n" + Err.join("\n") + "```");
+                }
+                else
+                {
+                    return sendChat("```" + err + "``````" + b[0] + '\n' + ' '.repeat(b[1]) + "^```");
+                }
+            }
+        }
+    },
+   
+    "pg": function(cmd, args, input, message, sendChat) {
+        if (!admins.includes(message.author.id))
+        {
+            return;
+        }
+        if (input.startsWith("```sql\n") && input.endsWith("```"))
+        {
+            return db.query(input.substring(7, input.length - 3), function(err, res) {
+                if (err)
+                {
+                    return sendChat("```" + err + "```");
+                }
+                return sendChat(table(res));
+            });
+        }
+    },
+   
+};
+
+var Images = {
+    graph: null
+};
+Canvas.loadImage("./img/graph.png").then(image => {
+    Images.graph = image;
+});
+
+Object.defineProperty(Array.prototype, 'clone', {
+    value: function() {
+        return JSON.parse(JSON.stringify(this));
+    }
+});
+Object.defineProperty(Array.prototype, 'random', {
+    value: function(a) {
+        if (!a)
+        {
+            return this[Math.random() * this.length | 0];
+        }
+        else
+        {
+            let b = [];
+            let c = [];
+            if (this.length < a)
+            {
+                a = this.length;
+            }
+            for (let i = a; i--;)
+            {
+                let d = Math.random() * this.length | 0;
+                if (c.includes(d))
+                {
+                    i++;
+                }
+                else
+                {
+                    c.push(d);
+                }
+            }
+            for (let i = a; i--;)
+            {
+                b.push(this[c[i]]);
+            }
+            return b;
+        }
+    }
+});
+Object.defineProperty(Array.prototype, 'shuffle', {
+    value: function() {
+        let a = JSON.parse(JSON.stringify(this));
+        let b = [];
+        for (let i = 0; i < this.length; i++)
+        {
+            let c = a[Math.random() * a.length | 0];
+            b.push(c);
+            a.splice(a.indexOf(c), 1);
+        }
+        return b;
+    }
+});
+Math.sum = function(n, a, b) {
+    n = Math.round(n);
+    a = Math.round(a);
+    c = 0;
+    for (let i = n; i <= a; i++)
+    {
+        c += b;
+    }
+    return c;
+}
+Math.prod = function(n, a, b) {
+    n = Math.round(n);
+    a = Math.round(a);
+    c = 0;
+    for (let i = n; i <= a; i++)
+    {
+        c *= b;
+    }
+    return c;
+}
+function equ(equation, x) {
+    if (x !== undefined)
+    {
+        equation = equation.replace(/x/g, '(' + x + ')');
+    }
+    let terms = [ [
+            /(pi|π)/g,
+            "(Math.PI)"
+        ], [
+            /(infinity|∞)/g,
+            "(Math.Infinity)"
+        ]
+    ];
+    for (let i = 0; i < terms.length; i++)
+    {
+        equation = equation.replace(terms[i][0], terms[i][1]);
+    }
+    let methods = [
+        [// Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
+            // \sin(5)
+            /\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.$1($2)"
+
+        ], [// Asin, Acos, or Atan of a number
+            // \asin(5)
+            /\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.a$1($2)"
+
+        ], [// Sinh, Cosh, or Tanh of a number
+            // \sinh(5)
+            /\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.$1h($2)"
+
+        ], [// Asinh, Acosh, or Atanh of a number
+            // \asinh(5)
+            /\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.a$1h($2)"
+
+        ], [// Root of a number, if the radicand is a real number and the radical is 2
+            // \sqrt(5)
+            /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.sqrt($1)"
+
+        ], [// If the radicand is positive
+            // \rt[2](5)
+            /(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g,
+            "Math.pow($2,(1/Math.round($1)))"
+
+        ], [// If the radicand is negative and the radical is odd
+            // \rt[3](-5)
+            /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
+            "-Math.pow($2$3,(1/Math.round($1)))"
+
+        ], [// If the radicand is negative and the radical is even
+            // \rt[2](-5)
+            /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
+            "NaN"
+
+        ], [// A number number to the power of another number
+            // 5^7
+            /(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
+            "(Math.pow($1,Math.round($2)))"
+
+        ], [// Summation function
+            // \sum[n=0](5)5
+            /(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
+            "Math.sum($1, $2, $3)"
+
+        ], [// Product function
+            // \prod[n=0](5)5
+            /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
+            "Math.prod($1, $2, $3)"
+
+        ], [// The absolute value of a number
+            // |-5|
+            /\|(-?[0-9.+\-/*()]{1,})\|/g,
+            "Math.abs($1)"
+
+        ], [// A number against a parentheses sequence
+            // 5(7)
+            /([0-9.])\(/g,
+            "$1*("
+
+        ], [// Same but reversed
+            // (7)5
+            /\)([0-9.])/,
+            ")*$1"
+
+        ], [// A number against a Javascript Math function
+            // 5Math.sin(7)
+            /([0-9.])M/g,
+            "$1*M"
+
+        ], [// Parentheses sequence against parentheses sequence
+            // (5)(7)
+            /\)\(/g,
+            ")*("
+        ]
+    ];
+    let lastEquation;
+    for (let i = 0; i < 1; i++)
+    {
+        lastEquation = equation;
+        if (/\(Math.(PI|Infinity)\)/g.test(equation))
+        {
+            equation = equation.replace(/\(Math.PI\)/g, Math.PI);
+            equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+        }
+        if (/(?![0-9)])-\(-[0-9.]{1,}\)/g.test(equation))
+        {
+            equation = equation.replace(/(?![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
+        }
+        if (/([0-9)])-\(-[0-9.]{1,}\)/g.test(equation))
+        {
+            equation = equation.replace(/([0-9)])-\(-([0-9.]{1,})\)/g, "$1+$2");
+        }
+        if (/\([0-9.+\-/*]{1,}\)/.test(equation))
+        {
+            equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
+            for (let i = 0; i < equate.length; i++)
+            {
+                if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
+                {
+                    equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                }
+            }
+        }
+        if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
+        {
+            equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
+            for (let i = 0; i < equate.length; i++)
+            {
+                if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
+                {
+                    equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                }
+            }
+        }
+        for (let i = 0; i < methods.length; i++)
+        {
+            equation = equation.replace(methods[i][0], methods[i][1]);
+        }
+        if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation))
+        {
+            equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g);
+            for (let i = 0; i < equate.length; i++)
+            {
+                equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+            }
+        }
+        if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation)) {
+            equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
+            equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
+        }
+        if (/\(-?[0-9.]{1,}\)/g.test(equation))
+        {
+            equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
+        }
+        if (equation != lastEquation)
+        {
+            i--;
+        }
+    }
+    try
+    {
+        return ["equated", eval(equation)];
+    }
+    catch (err)
+    {
+        return ["error", err];
+    }
+}
+
+exports.version = version;
+exports.command = command;
+exports.other = other;
+exports.bot = bot;
