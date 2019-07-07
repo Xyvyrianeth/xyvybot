@@ -15,7 +15,6 @@ var admins = "357700219825160194".split(' ');
 const pg = require("pg");
 var db = new pg.Client(config.DATABASE_URL);
 db.connect();
-db.query("UPDATE games SET backup = true");
 exports.db = db;
    
 const jishoApi = require("unofficial-jisho-api");
