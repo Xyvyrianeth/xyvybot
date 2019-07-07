@@ -34,6 +34,7 @@ var timer = setInterval(function() {
 
     if (games.length > 0)
     {
+        client.channels.get("597288988902162482").send("Successfully uploaded data to backup.");
         db.query(`UPDATE games SET data = '${JSON.stringify(games)}'`);
     }
     else
@@ -41,15 +42,17 @@ var timer = setInterval(function() {
         db.query("SELECT * FROM games", function(err, res) {
             if (err)
             {
-                client.guilds.get("399327996076621825").channels.get("478371618620571648").send('Error retrieving game data backups\n```\n' + err + '```');
+                client.channels.get("478371618620571648").send('Error retrieving game data backups\n```\n' + err + '```');
             }
             if (res.rows[0].backup)
             {
+                client.channels.get("597288988902162482").send("Successfully loaded data from backup.");
                 games = res.rows[0].data;
                 db.query("UPDATE games SET backup = false");
             }
             else
             {
+                client.channels.get("597288988902162482").send("Backups are clear.");
                 db.query("UPDATE games SET data = '[]'");
             }
         });
