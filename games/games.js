@@ -32,6 +32,7 @@ var timer = setInterval(function() {
         }
     });
 
+    console.log(games);
     if (games.length > 0)
     {
         db.query(`UPDATE games SET data = '${JSON.stringify(games)}'`);
@@ -54,6 +55,6 @@ var timer = setInterval(function() {
             }
         });
     }
-}, 1000);
+}, 5000);
 
 exports.games = games;
