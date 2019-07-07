@@ -1,4 +1,4 @@
-var version = "2.35.0.14";
+var version = "2.35.0.15";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1056,7 +1056,7 @@ var commands = {
                             b2.push('[' + images.titles[b1[i]] + "](" + b1[i] + ') (Equipped)');
                         }
                     }
-                    return sendChat(`\`\`\`md\n# All Backgrounds owned by user ${res.rows[0].id}:\n\n  [Background Title](background ID)\n\n  ${b2.join("\n  ")}\n\nIf you wish to equip any of these, do \`x!profiles background [title ID]\` (capitals are important!)\`\`\``);
+                    return sendChat(`\`\`\`md\n# All Backgrounds owned by user ${res.rows[0].id}:\n\n  [Background Title](background ID)\n\n  ${b2.join("\n  ")}\n\nIf you wish to equip any of these, do \`x!profile background [title ID]\` (capitals are important!)\`\`\``);
                 });
             }
             else
