@@ -2,11 +2,10 @@ const Discord = require("discord.js");
 const { client, config } = require("/app/Xyvy.js");
 var db = require("/app/commands.js").db;
 
-var games = []; // Leave blank
+exports.games = [];
 
 var timer = setInterval(function() {
-    console.log(exports.games);
-    games.forEach((game, index) => {
+    exports.games.forEach((game, index) => {
         game.timer.time -= 1;
         if (game.timer.time == 0)
         {
@@ -14,8 +13,8 @@ var timer = setInterval(function() {
             {
                 client.channels.get(ch).send(game.timer.message, game.buffer);
             }
-            delete games[index];
-            games.splice(index, 1);
+            delete exports.games[index];
+            exports.games.splice(index, 1);
         }
         if (game.forfeit)
         {
@@ -23,19 +22,19 @@ var timer = setInterval(function() {
             {
                 client.channels.get(ch).send(`Well, <@${game.forfeit == game.players[0] ? game.players[1] : game.players[0]}>, It looks like your opponent, <@${game.forfeit}>, has forfeit the game!`, {});
             }
-            delete games[index];
-            games.splice(index, 1);
+            delete exports.games[index];
+            exports.games.splice(index, 1);
         }
         if (game.over)
         {
-            delete games[index];
-            games.splice(index, 1);
+            delete exports.games[index];
+            exports.games.splice(index, 1);
         }
     });
 
-    if (games.length > 0)
+    if (exports.games.length > 0)
     {
-        db.query(`UPDATE games SET data = '${JSON.stringify(games)}'`);
+        db.query(`UPDATE games SET data = '${JSON.stringify(exports.games)}'`);
     }
     else
     {
@@ -46,7 +45,7 @@ var timer = setInterval(function() {
             }
             if (res.rows[0].backup)
             {
-                games = res.rows[0].data;
+                exports.games = res.rows[0].data;
                 db.query("UPDATE games SET backup = false");
             }
             else
@@ -56,5 +55,3 @@ var timer = setInterval(function() {
         });
     }
 }, 5000);
-
-exports.games = games;
