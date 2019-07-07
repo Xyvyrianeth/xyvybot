@@ -1,4 +1,4 @@
-var version = "2.35.0.16";
+var version = "2.35.0.17";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1124,14 +1124,14 @@ var commands = {
                 }
                 return db.query([
                     `SELECT *`,
-                    `FROM profile`,
+                    `FROM profiles`,
                     `WHERE id = '${message.author.id}'`
                 ].join('\n'), function(err, res) {
                     if (err)
                     {
                         return sqlError(message, err, [
                             `SELECT *`,
-                            `FROM profile`,
+                            `FROM profiles`,
                             `WHERE id = '${message.author.id}'`
                         ].join('\n'));
                     }
