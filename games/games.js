@@ -2,8 +2,9 @@ const Discord = require("discord.js");
 const { client, config } = require("/app/Xyvy.js");
 var db = require("/app/commands.js").db;
 
+var games = [];
+
 var timer = setInterval(function() {
-    console.log(exports.games.length);
     exports.games.forEach((game, index) => {
         game.timer.time -= 1;
         if (game.timer.time == 0)
@@ -55,4 +56,4 @@ var timer = setInterval(function() {
     }
 }, 5000);
 
-exports.games = [];
+exports.games = games;
