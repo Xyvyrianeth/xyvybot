@@ -5,7 +5,10 @@ var db = require("/app/commands.js").db;
 var games = []; // Leave blank
 
 var timer = setInterval(function() {
+    console.log(games);
     games.forEach((game, index) => {
+        console.log(games);
+        console.log(game);
         game.timer.time -= 1;
         if (game.timer.time == 0)
         {
@@ -32,7 +35,6 @@ var timer = setInterval(function() {
         }
     });
 
-    console.log(games);
     if (games.length > 0)
     {
         db.query(`UPDATE games SET data = '${JSON.stringify(games)}'`);
