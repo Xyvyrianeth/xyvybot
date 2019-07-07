@@ -1,4 +1,4 @@
-var version = "2.35.1.1";
+var version = "2.35.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -169,7 +169,7 @@ function other(message) {
             "othello": /^([a-h][1-8]|[1-8][a-h])$/i,
             "gomoku": /^([a-s] ?1?[0-9]{1,}|1?[0-9]{1,} ?[a-s])$/i,
             "connect4": /^[1-7]$/,
-            "3dttt": /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i
+            "ttt3d": /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i
         }[game.game].test(message.content))
         {
             if (message.channel.type !== "dm")
