@@ -34,7 +34,6 @@ var timer = setInterval(function() {
 
     if (games.length > 0)
     {
-        client.channels.get("597288988902162482").send("Successfully uploaded data to backup.");
         db.query(`UPDATE games SET data = '${JSON.stringify(games)}'`);
     }
     else
@@ -46,13 +45,11 @@ var timer = setInterval(function() {
             }
             if (res.rows[0].backup)
             {
-                client.channels.get("597288988902162482").send("Successfully loaded data from backup.");
                 games = res.rows[0].data;
                 db.query("UPDATE games SET backup = false");
             }
             else
             {
-                client.channels.get("597288988902162482").send("Backups are clear.");
                 db.query("UPDATE games SET data = '[]'");
             }
         });
