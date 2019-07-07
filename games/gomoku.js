@@ -458,7 +458,7 @@ exports.nextTurn = function(channel, end, highlight, row) {
         game.over = true;
     }
     game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight, row), end == 1 ? `${shortname}_${end}_${game.winner}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
-    for (let ch of game.channels)
+    for (let ch in game.channels)
     {
         for (let i = 0; i < game.channels[ch].length; i++)
         {
@@ -470,8 +470,8 @@ exports.nextTurn = function(channel, end, highlight, row) {
 }
 
 exports.say = function(channels, message) {
-    for (let i = 0; i < Object.keys(channels).length; i++)
+    for (let i in channels)
     {
-        client.channels.get(Object.keys(channels)[i]).send(message[0], message[1]);
+        client.channels.get(i).send(message[0], message[1]);
     }
 }
