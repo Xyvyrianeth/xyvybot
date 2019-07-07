@@ -34,12 +34,7 @@ var timer = setInterval(function() {
 
     if (games.length > 0)
     {
-        let Games = [];
-        for (let i = 0; i < games.length; i++)
-        {
-            Games[i] = games[i].clone();
-        }
-        db.query(`UPDATE games SET data = ${JSON.stringify(games)}`);
+        db.query(`UPDATE games SET data = '${JSON.stringify(games)}'`);
     }
     else
     {
