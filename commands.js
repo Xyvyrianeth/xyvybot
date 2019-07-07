@@ -1,4 +1,4 @@
-var version = "2.35.0.1";
+var version = "2.35.0.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -15,7 +15,7 @@ var admins = "357700219825160194".split(' ');
 const pg = require("pg");
 var db = new pg.Client(config.DATABASE_URL);
 db.connect();
-db.query("UPDATE games SET backup = true");
+db.query("UPDATE games SET backup = true, data = '[]'");
 exports.db = db;
    
 const jishoApi = require("unofficial-jisho-api");
