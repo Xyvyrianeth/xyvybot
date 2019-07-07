@@ -113,7 +113,7 @@ exports.drawBoard = function(game, end, highlight) {
 }
   
 exports.takeTurn = function(channel, Move) {
-    let game = games.filter(game => game.channels.includes(channel))[0];
+    let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
     let highlight = move;
       
@@ -189,7 +189,7 @@ exports.takeTurn = function(channel, Move) {
 }
   
 exports.nextTurn = function(channel, end, highlight) {
-    let game = games.filter(game => game.channels.includes(channel))[0];
+    let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
     {
         game.turn = game.turn == 1.5 ? 0 : game.turn + 0.5;
@@ -217,9 +217,9 @@ exports.nextTurn = function(channel, end, highlight) {
 }
 
 exports.say = function(channels, message) {
-    for (let i = 0; i < Object.keys(channels).length; i++)
+    for (let i of channels)
     {
-        client.channels.get(Object.keys(channels)[i]).send(message[0], message[1]);
+        client.channels.get(i).send(message[0], message[1]);
     }
 }
 

@@ -1,4 +1,4 @@
-var version = "2.35.0.3";
+var version = "2.35.0.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -162,9 +162,9 @@ function other(message) {
         images = Array.from(message.attachments).map(m => m[1].url);
         client.guilds.get("399327996076621825").channels.get("537098266685472788").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
     }
-    if (games.games.filter(game => game.channels.includes(message.channel.id) && game.started).length == 1)
+    if (games.games.filter(game => game.channels.hasOwnProperty(message.channel.id) && game.started).length == 1)
     {
-        let game = games.games.filter(game => game.channels.includes(message.channel.id))[0];
+        let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
         if (message.author.id == game.player && {
             "squares": /^([a-j] ?(?:10|[1-9])|(?:10|[1-9]) ?[a-j])$/i,
             "othello": /^([a-h][1-8]|[1-8][a-h])$/i,
@@ -186,7 +186,7 @@ function other(message) {
             catch (error)
             {
                 games.games.forEach((game, index) => {
-                    if (game.channels.includes(message.author.id))
+                    if (game.channels.hasOwnProperty(message.author.id))
                     {
                         for (let i = 0; i < game.channels.length; i++)
                         {
@@ -224,7 +224,7 @@ function bot(message) {
         let img = message.attachments.first().filename;
         if (/^(connect4|squares|othello|gomoku|ttt3d)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
         {
-            let game = games.games.filter(game => game.channels.includes(message.channel.id))[0];
+            let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
             let end = img.match(/_[0-2]_/)[0].substring(1, 2);
             if (end === '0')
             {
@@ -241,7 +241,7 @@ function bot(message) {
                 };
             }
             games.games.forEach((game, index) => {
-                if (game.channels.includes(message.author.id))
+                if (game.channels.hasOwnProperty(message.channel.id))
                 {
                     for (let i = 0; i < game.channels.length; i++)
                     {
@@ -321,9 +321,9 @@ function bot(message) {
         }
     }
     else
-    if (games.games.filter(game => game.channels.includes(message.channel.id)).length == 1)
+    if (games.games.filter(game => game.channels.hasOwnProperty(message.channel.id)).length == 1)
     {
-        let game = games.games.filter(game => game.channels.includes(message.channel.id));
+        let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id));
         if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Gomoku), say `x![3a-z]{1,} start` to play against them!/.test(message.content) || [
             "Column is full, please pick another.",
             "There's already a stone there, pick another spot!",
@@ -827,31 +827,31 @@ var commands = {
                     return game.game == gameName && !game.started;
                 },
                 "playingYourself": function(game) {
-                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName && !game.started;
+                    return game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName && !game.started;
                 },
                 "somethingElseHere": function(game) {
-                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game !== gameName && !game.started;
+                    return game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game !== gameName && !game.started;
                 },
                 "someoneElseHere": function(game) {
-                    return game.channels.includes(message.channel.id) && game.game !== gameName && !game.started;
+                    return game.channels.hasOwnProperty(message.channel.id) && game.game !== gameName && !game.started;
                 },
                 "gameStarted": function(game) {
-                    return game.channels.includes(message.channel.id) && game.started;
+                    return game.channels.hasOwnProperty(message.channel.id) && game.started;
                 },
                 "alreadyQueued": function(game) {
-                    return !game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
+                    return !game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
                 },
                 "noGameHere": function(game) {
-                    return game.channels.includes(message.channel.id);
+                    return game.channels.hasOwnProperty(message.channel.id);
                 },
                 "participant": function(game) {
-                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id);
+                    return game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id);
                 },
                 "dontStart": function(game) {
-                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.started;
+                    return game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && !game.started;
                 },
                 "quit": function(game) {
-                    return game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && game.started;
+                    return game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.started;
                 }
             }[condition];
         }
@@ -904,7 +904,7 @@ var commands = {
             if (games.games.filter(condition("dontStart")).length == 1)
             {
                 games.games.forEach((game, index) => {
-                    if (game.channels.includes(message.channel.id) && game.players.includes(message.author.id) && !game.started)
+                    if (game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && !game.started)
                     {
                         sendChat(`Pending game canceled, <@${message.author.id}>.`);
                         delete games[index];
@@ -915,7 +915,7 @@ var commands = {
             else
             if (games.games.filter(condition("quit")).length == 1)
             {
-                games.games.filter(game => game.channels.includes(message.channel.id))[0].forfeit = message.author.id;
+                games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0].forfeit = message.author.id;
             }
 
         }
