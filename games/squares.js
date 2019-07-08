@@ -90,7 +90,7 @@ exports.drawBoard = function(game, end) {
         {
             for (let h = 0; h < game.highlight.length; h++)
             {
-                if (game.highlight[i][0] == x && game.highlight[i][1] == y)
+                if (game.highlight[h][0] == x && game.highlight[h][1] == y)
                 {
                     ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
                 }
