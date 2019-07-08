@@ -12,7 +12,7 @@ exports.newGame = function(channel, player) {
         forfeit: false,
         game: shortname,
         highlight: false,
-        lastmove: '',
+        lastmove: [],
         over: false,
         player: false,
         players: [player],
@@ -61,7 +61,7 @@ exports.startGame = function(channel1, channel2, player2) {
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be dark, and <@${game.players[1]}> will be light!`, game.buffer]);
 }
   
-exports.drawBoard = function(game, end, highlight) {
+exports.drawBoard = function(game, end) {
     let canvas = new Canvas.createCanvas(280, 300);
     let ctx = canvas.getContext('2d');
       
@@ -88,12 +88,12 @@ exports.drawBoard = function(game, end, highlight) {
     {
         for (let y = 0; y < 10; y++)
         {
-            if (end === 0 && 
-                (highlight !== false && highlight[0] == x && highlight[1] == y) ||
-                (game.highlight !== false && game.highlight[0] == x && game.highlight[1] == y)
-            )
+            for (let h = 0; h < game.highlight.length; h++)
             {
-                ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
+                if (game.highlight[i][0] == x && game.highlight[i][1] == y)
+                {
+                    ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
+                }
             }
             if (game.board[x][y] !== false)
             {
@@ -115,12 +115,11 @@ exports.drawBoard = function(game, end, highlight) {
 exports.takeTurn = function(channel, Move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
-    let highlight = move;
       
     // Function will vary with game
     if (game.board[move[0]][move[1]] !== false)
     {
-        return exports.say([channel], ["Someone has aleady played there, pick another spot!", {}]);
+        return exports.say(game.channels, ["Someone has aleady played there, pick another spot!", {}]);
     }
     else
     {
@@ -166,11 +165,11 @@ exports.takeTurn = function(channel, Move) {
 
     if (game.turn == Math.floor(game.turn))
     {
-        game.highlight = highlight;
+        game.highlight.push(move);
     }
     else
     {
-        game.highlight = false;
+        game.highlight = [move];
     }
     
     if (end !== 0)
@@ -183,12 +182,13 @@ exports.takeTurn = function(channel, Move) {
         {
             game.winner = game.score[0] > game.score[1] ? 0 : 1;
         }
+        game.highlight = [];
     }
       
-    exports.nextTurn(channel, end, highlight);
+    exports.nextTurn(channel, end);
 }
   
-exports.nextTurn = function(channel, end, highlight) {
+exports.nextTurn = function(channel, end) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
     {
@@ -204,7 +204,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.over = true;
     }
 
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
     for (let ch in game.channels)
     {
         for (let i = 0; i < game.channels[ch].length; i++)
