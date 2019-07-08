@@ -1,4 +1,4 @@
-var version = "2.36.0.0";
+var version = "2.36.0.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1375,7 +1375,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "MineSweeper",
-                "./img/minesweeper.png"
+                "https://cdn.discordapp.com/attachments/597695621154996244/597696037431410689/minesweeper.png"
             );
             embed.setDescription([
                 "You can control 3 aspects of a game: height, width, and the number of bombs. Here are the 3 possible syntaxes:",
@@ -1413,7 +1413,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "MineSweeper",
-                "./img/minesweeper.png"
+                "https://cdn.discordapp.com/attachments/597695621154996244/597696037431410689/minesweeper.png"
             );
             embed.addField("5%", "`novice`\n`beginner`");
             embed.addField("10%", "`easy`\n`apprentice`");
@@ -1550,7 +1550,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "MineSweeper",
-                "./img/minesweeper.png"
+                "https://cdn.discordapp.com/attachments/597695621154996244/597696037431410689/minesweeper.png"
             );
             embed.setDescription("||" + a.join("||\n||") + "||");
             embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
@@ -2159,7 +2159,7 @@ var commands = {
         embed.setDescription("One day I needed to test a change I made to Squares, but I had nobody to test it with, so I created another bot to play the game with me and holy shit it kicks ass.\n\nI decided to make this new bot as public as Xyvybot so that other people can play against it, too! [Click here to invite it to your server](https://discordapp.com/oauth2/authorize?client_id=561578790837289002&scope=bot&permissions=3072)! Once you have it, just request a game with Xyvybot and then ping it!\nNote that this bot is completely useless if your server does not also have Xyvybot in it.\nAlso, the only game it can play right now is Squares. I haven't gotten around to letting it play other games, yet.");
         embed.setAuthor(
             "Xyvybot - AI",
-            "./img/AI.png"
+            "https://cdn.discordapp.com/attachments/597695621154996244/597696037431410690/AI.png"
         );
         embed.setColor(new Color().random());
         return sendChat({embed});
