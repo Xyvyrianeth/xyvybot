@@ -31,6 +31,7 @@ function holidays(date) {
                     holidays.push("Where are your fingers?");
                     holidays.push("And as always, thanks for watching.");
                     holidays.push("Wish VSauce1 a happy birthday, if you haven't already!");
+                    holidays.push("I'm about to do what's called a \"pro gamer move.\"");
                 }
             }
             break;
@@ -77,7 +78,7 @@ function holidays(date) {
                 {
                     holidays.push("Today, we celebrate the existence of Women.");
                     holidays.push("All Women are created awesome.");
-                    holidays.push("If you see a woman today, tell her she's beautiful, even if she isn't.");
+                    holidays.push("If you see a woman today, tell her she's beautiful, even if she isn't in your opinion because she is.");
                 }
                 case 20:
                 {
@@ -130,6 +131,7 @@ function holidays(date) {
                     holidays.push("Happy Star Wars Day!");
                     holidays.push("VWOOM. VWOOM. PEW PEW PEW. VWOOM.");
                     holidays.push("If you haven't seen Star Wars... do.");
+                    holidays.push("The prequels don't count");
                 }
                 case 5:
                 {

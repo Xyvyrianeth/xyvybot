@@ -1,4 +1,4 @@
-var version = "2.35.2.3";
+var version = "2.36.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -415,6 +415,8 @@ var aliases = {
         "nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
         "calc": ["calc", "calculate", "domath"],
         "graph": ["graph"],
+        "ai": ["ai", "aibot", "xyvyai"],
+        "botsbyxyvy": ["botsbyxyvy", "xyvybots"],
        
         // NSFW
         "nsfw": ["nsfw", "hentai", "lewd", "porn"],
@@ -452,6 +454,8 @@ var aliases = {
         "nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
         "calc": ["calc"],
         "graph": ["graph"],
+        "ai": ["ai", "aibot", "xyvyai"],
+        "botsbyxyvy": ["botsbyxyvy", "xyvybots"],
        
         // NSFW
         "nsfw": ["nsfw", "hentai", "lewd", "porn"],
@@ -927,7 +931,7 @@ var commands = {
                 "squares": "This game was created by Xyvy himself because he was bored and didn't want to work on Gomoku win logic one night. It's played almost exactly like Gomoku, except for the objective of the game and the limitless board size. The board size is always 10x10, and the object of the game is to have created more squares than your opponent before the end. You make a square by placing 4 of your stones in a square pattern. Stones can be a part of multiple squares, and squares can range in size from 2x2 to 10x10 (if you put a stone in all 4 corners of the map, that's a point to you!).\n\nTaking turns is the same as in Gomoku: 2 stones per turn, but whoever goes first only places 1 stone on their very first turn. This eliminates \"first player advantage\" where player 1 is the only one that will ever have more stones on the board than their opponent.\n\nThe game ends when there are no more empty spaces on the board. After that, the squares are counted for each player and the player with more squares is declared the winner.",
                 "othello": "[Click here to learn how to play Othello!](https://www.wikipedia.org/wiki/Reversi#Rules)\nI don't really know how to explain it without pictures.",
                 "gomoku": "Gomoku, also called Go Bang or Renju, in the simplest terms, is a very large game of Tic Tac Toe. The board is 19x19 instead of 3x3, and instead of a 3-in-a-row, you want a 5-in-a-row.\n\nTaking turns differs from traditional 1v1 board games like checkers in that each player does not get 1 move per turn. In Gomoku, both players get 2 moves per turn, but player 1 only gets one move on their very first turn. This removes what's known as \"player 1 advantage,\" which is very prevalent in Tic Tac Toe, where player 1 is able to have more pieces on the board than player 2, but player 2 can never have more pieces on the board than player 1.\n\nTo win, you must have 5 of your stones in a line. No more, no less. That's right: if you have 6 or more in a line, you do not win.",
-                "ttt3d": "This game plays exactly like the game Tic Tac Toe: get 3 in a row, but instead of 3 you want 4 in a row. Also, you have another dimension to work with."
+                "ttt3d": "This game plays exactly like the game Tic Tac Toe: get 3 in a row, but instead of 3 you want 4 in a row. Also, you have another dimension to work with. You're in a cube. Multi-level-toeing."
             }[gameName]);
             embed.setColor(new Color().random());
             return sendChat({embed});
@@ -1371,7 +1375,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "MineSweeper",
-                "https://cdn.discordapp.com/attachments/434783815047577610/543961408442990592/2000px-Minesweeper_flag.png"
+                "./img/minesweeper.png"
             );
             embed.setDescription([
                 "You can control 3 aspects of a game: height, width, and the number of bombs. Here are the 3 possible syntaxes:",
@@ -1409,7 +1413,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "MineSweeper",
-                "https://cdn.discordapp.com/attachments/434783815047577610/543961408442990592/2000px-Minesweeper_flag.png"
+                "./img/minesweeper.png"
             );
             embed.addField("5%", "`novice`\n`beginner`");
             embed.addField("10%", "`easy`\n`apprentice`");
@@ -1546,7 +1550,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "MineSweeper",
-                "https://cdn.discordapp.com/attachments/434783815047577610/543961408442990592/2000px-Minesweeper_flag.png"
+                "./img/minesweeper.png"
             );
             embed.setDescription("||" + a.join("||\n||") + "||");
             embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
@@ -1614,7 +1618,7 @@ var commands = {
                     "`othello`  `squares`  `3dtictactoe`  `connect4`\n__Related Commands__:\n`games`  `profile`\n__Unimplemented__:\n`gomoku`  `ordo`  `ninemen`  `gonnect`",
                     "`minesweeper`\nUnimplemented:\n`hangman`  `quickmaffs`  `iq`  `sequence`  `shuffle`",
                     "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`",
-                    "`nekos`  `calculate`  `graph`"
+                    "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`"
             ];
             if (message.channel.type == "dm")
             {
@@ -1676,6 +1680,8 @@ var commands = {
                         ["x!neko", "Get a picture of a cute anime girl with cat ears.", "x!neko"],
                         ["x!calc [equation]", "Solves a simple equation for you like a calculator.", "x!calc 2 + 2"],
                         ["x!graph [equation]", "Draws out an equation on a coordinate grid. You can graph up to 10 equations at once.", "x!graph 2x + 7"],
+                        ["x!ai", "Gives you a link to invite Xyvybot - AI to your server.", "x!ai"],
+                        ["x!botsbyxyvy", "Gives you a link to the site where you request a commission for a custom-made Discord bot by Xyvyrianeth.", "x!botsbyxyvy"],
                         ["x!nsfw (tag)", "Get a naughty hentai image. This command can only be used in channels marked as NSFW or in direct messages.", "x!nsfw gif"]
                     ][index];
                     let embed = new Discord.RichEmbed();
@@ -2145,6 +2151,27 @@ var commands = {
             let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
             sendChat("```\n" + text + "```", new Discord.Attachment(canvas.toBuffer()));
         }
+    },
+
+    // AI
+    "ai": function(cmd, args, input, message, sendChat) {
+        let embed = new Discord.RichEmbed();
+        embed.setDescription("One day I needed to test a change I made to Squares, but I had nobody to test it with, so I created another bot to play the game with me and holy shit it kicks ass.\n\nI decided to make this new bot as public as Xyvybot so that other people can play against it, too! [Click here to invite it to your server](https://discordapp.com/oauth2/authorize?client_id=561578790837289002&scope=bot&permissions=3072)! Once you have it, just request a game with Xyvybot and then ping it!\nNote that this bot is completely useless if your server does not also have Xyvybot in it.\nAlso, the only game it can play right now is Squares. I haven't gotten around to letting it play other games, yet.");
+        embed.setAuthor(
+            "Xyvybot - AI",
+            "./img/AI.png"
+        );
+        embed.setColor(new Color().random());
+        return sendChat({embed});
+    },
+
+    // Bots by Xyvy
+    "botsbyxyvy": function(cmd, args, input, message, sendChat) {
+        let embed = new Discord.RichEmbed();
+        embed.setTitle("Bots by Xyvy");
+        embed.setDescription("Are you tired of sorting through countless Discord bot listings trying to find one that does exactly what you need one to do? Well, stop doing that. Sometimes, a bot that does what you need it to do just doesn't exist. But it *can*, and that's where I come in! If you have money and a lack of programming knowledge and really need a bot that doesn't exist, I'll make it for you! Just click [this link](https://sites.google.com/site/botsbyxyvy/), read the information, and submit a commission request so we can get to work!");
+        embed.setColor(new Color().random());
+        return sendChat({embed});
     },
    
     // NSFW
