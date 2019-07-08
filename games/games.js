@@ -4,8 +4,7 @@ var db = require("/app/commands.js").db;
 var backup = true;
 
 var timer = setInterval(function() {
-    console.log(backup);
-    console.log(exports.games);
+    if (backup) console.log(exports.games);
     let games = exports.games;
     games.forEach((game, index) => {
         game.timer.time -= 1;
@@ -47,6 +46,7 @@ var timer = setInterval(function() {
             }
             if (backup)
             {
+                console.log(res);
                 games = res.rows[0].data;
                 backup = false;
             }
@@ -57,8 +57,6 @@ var timer = setInterval(function() {
         });
     }
     exports.games = games;
-    console.log(backup);
-    console.log(exports.games);
 }, 1000);
 
 exports.games = [];
