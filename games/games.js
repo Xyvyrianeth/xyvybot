@@ -5,6 +5,7 @@ var backup = true;
 
 var timer = setInterval(function() {
     console.log(backup);
+    console.log(exports.games);
     let games = exports.games;
     games.forEach((game, index) => {
         game.timer.time -= 1;
@@ -56,6 +57,8 @@ var timer = setInterval(function() {
         });
     }
     exports.games = games;
+    console.log(backup);
+    console.log(exports.games);
 }, 1000);
 
 exports.games = [];
