@@ -165,11 +165,11 @@ exports.takeTurn = function(channel, Move) {
 
     if (game.turn == Math.floor(game.turn))
     {
-        game.highlight.push(move);
+        game.highlight = [move];
     }
     else
     {
-        game.highlight = [move];
+        game.highlight.push(move);
     }
     
     if (end !== 0)
