@@ -4,8 +4,7 @@ var db = require("/app/commands.js").db;
 var backup = true;
 
 var timer = setInterval(function() {
-    let games = exports.games;
-    games.forEach((game, index) => {
+    exports.games.forEach((game, index) => {
         game.timer.time -= 1;
         if (game.timer.time == 0)
         {
@@ -13,8 +12,8 @@ var timer = setInterval(function() {
             {
                 client.channels.get(ch).send(game.timer.message, game.buffer);
             }
-            delete games[index];
-            games.splice(index, 1);
+            delete exports.games[index];
+            exports.games.splice(index, 1);
         }
         if (game.forfeit)
         {
@@ -22,39 +21,36 @@ var timer = setInterval(function() {
             {
                 client.channels.get(ch).send(`Well, <@${game.forfeit == game.players[0] ? game.players[1] : game.players[0]}>, It looks like your opponent, <@${game.forfeit}>, has forfeit the game!`, {});
             }
-            delete games[index];
-            games.splice(index, 1);
+            delete exports.games[index];
+            exports.games.splice(index, 1);
         }
         if (game.over)
         {
-            delete games[index];
-            games.splice(index, 1);
+            delete exports.games[index];
+            exports.games.splice(index, 1);
         }
     });
+    db.query("SELECT * FROM games", function(err, res) {
+        if (err)
+        {
+            client.channels.get("478371618620571648").send('Error retrieving game data backups\n```\n' + err + '```');
+        }
 
-    if (games.length > 0)
-    {
-        db.query(`UPDATE games SET data = '${JSON.stringify(games)}'`);
-    }
-    else
-    {
-        db.query("SELECT * FROM games", function(err, res) {
-            if (err)
-            {
-                client.channels.get("478371618620571648").send('Error retrieving game data backups\n```\n' + err + '```');
-            }
-            if (backup)
-            {
-                exports.games = res.rows[0].data;
-                backup = false;
-            }
-            else
-            {
-                db.query("UPDATE games SET data = '[]'");
-            }
-        });
-    }
-    exports.games = games;
+        if (backup)
+        {
+            exports.games = res.rows[0].data;
+            backup = false;
+        }
+        
+        if (exports.games.length > 0)
+        {
+            db.query(`UPDATE games SET data = '${JSON.stringify(exports.games)}'`);
+        }
+        else
+        {
+            db.query("UPDATE games SET data = '[]'");
+        }
+    });
 }, 1000);
 
 exports.games = [];
