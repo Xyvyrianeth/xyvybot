@@ -584,7 +584,7 @@ Canvas.loadImage("/app/assets/games/ordo/to.png").then(image => {
 Canvas.loadImage("/app/assets/games/ordo/from.png").then(image => {
     exports.Images.from = image;
 });
-Canvas.loadImage("/app/assets/games/gomoku/winHighlight.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/winHighlight.png").then(image => {
     exports.Images.winHighlight = image;
 });
 Canvas.loadImage("/app/assets/games/ordo/blueText.png").then(image => {

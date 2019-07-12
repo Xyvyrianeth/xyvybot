@@ -278,14 +278,14 @@ Canvas.loadImage("/app/assets/games/squares/board.png").then(image => {
 Canvas.loadImage("/app/assets/games/squares/black.png").then(image => {
     exports.Images.black = image;
 });
-Canvas.loadImage("/app/assets/games/squares/white.png").then(image => {
-    exports.Images.white = image;
+Canvas.loadImage("/app/assets/games/squares/red.png").then(image => {
+    exports.Images.red = image;
 });
 Canvas.loadImage("/app/assets/games/squares/blackText.png").then(image => {
     exports.Images.blackText = image;
 });
-Canvas.loadImage("/app/assets/games/squares/whiteText.png").then(image => {
-    exports.Images.whiteText = image;
+Canvas.loadImage("/app/assets/games/squares/redText.png").then(image => {
+    exports.Images.redText = image;
 });
 Canvas.loadImage("/app/assets/games/squares/turn.png").then(image => {
     exports.Images.turn = image;

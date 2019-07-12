@@ -1,4 +1,4 @@
-var version = "2.37.0.1";
+var version = "2.37.0.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2812,7 +2812,7 @@ exports.Images = {
     nekosLife: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/nekos_life.png"
 };
 Canvas.loadImage("/app/assets/misc/graph.png").then(image => {
-    Images.graph = image;
+    exports.Images.graph = image;
 });
 
 Object.defineProperty(Array.prototype, 'clone', {
