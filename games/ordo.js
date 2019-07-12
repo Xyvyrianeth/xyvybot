@@ -301,7 +301,7 @@ exports.takeTurn = function(channel, Move) {
                         let between = [];
                         for (let i = 1; i < dis; i++)
                         {
-                            between.push(board[c[0] - (i * (c[0] != y ? (c[0] - y) / Math.abs(c[0] - y) : 0))][c[1] - (i * (c[1] != x ? (c[1] - x) / Math.abs(c[1] - x) : 0))]);
+                            between.push(game.board[c[0] - (i * (c[0] != y ? (c[0] - y) / Math.abs(c[0] - y) : 0))][c[1] - (i * (c[1] != x ? (c[1] - x) / Math.abs(c[1] - x) : 0))]);
                         }
                         if (!between.some(k => k !== false))
                         {
