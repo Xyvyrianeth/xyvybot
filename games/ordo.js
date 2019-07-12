@@ -139,7 +139,7 @@ exports.takeTurn = function(channel, Move) {
         {
             if (i < dis && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][dir] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][dir] * i)] !== false)
             {
-                return exports.say(channel, ["There is a stone blocking this move!"]);
+                return exports.say(channel, ["There is a stone blocking this move!\n" + dis]);
             }
             if (i == dis && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][dir] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][dir] * i)] === game.turn)
             {

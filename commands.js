@@ -1,4 +1,4 @@
-var version = "2.37.0.15";
+var version = "2.37.0.16";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -201,7 +201,7 @@ function other(message) {
             catch (error)
             {
                 games.games.forEach((game, index) => {
-                    if (game.channels.hasOwnProperty(message.author.id))
+                    if (game.channels.hasOwnProperty(message.channel.id))
                     {
                         for (let i = 0; i < game.channels.length; i++)
                         {
