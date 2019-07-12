@@ -99,7 +99,7 @@ exports.drawBoard = function(game, end, highlight) {
             }
             if (game.board[x][y] !== false)
             {
-                ctx.drawImage(exports.Images[["black", "red"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
+                ctx.drawImage(exports.Images[["blue", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
             }
         }
     }
