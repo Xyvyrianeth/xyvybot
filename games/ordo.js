@@ -548,7 +548,7 @@ exports.nextTurn = function(channel, end) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [game.split ? `It is <@${game.player}>'s turn.` : `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.`, `<@${game.player}> has won by reaching the opponent's home row!`, `<@${game.player} has won by capturing all of the opponent's stones!`, `<@${game.player} has won by isolating their opponent's pieces!`][end], game.buffer);
+    exports.say(game.channels, [[game.split ? `It is <@${game.player}>'s turn.` : `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.`, `<@${game.player}> has won by reaching the opponent's home row!`, `<@${game.player} has won by capturing all of the opponent's stones!`, `<@${game.player} has won by isolating their opponent's pieces!`][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {
