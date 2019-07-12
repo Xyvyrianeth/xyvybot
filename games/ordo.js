@@ -12,7 +12,7 @@ exports.newGame = function(channel, player, here) {
         forfeit: false,
         game: shortname,
         here: here,
-        highlight: [],
+        highlight: [[], []],
         over: false,
         player: false,
         players: [player],
