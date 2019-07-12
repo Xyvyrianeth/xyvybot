@@ -118,22 +118,14 @@ exports.takeTurn = function(channel, Move) {
             to:   [[Number(Move.split(' ')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[1].match(/[a-j]/i)[0])]]
         };
         let dir = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
-        let dis;
-        if (dir == 8)
+        let dis = move.from[0][1] == move.to[0][1] ? dis = Math.abs(move.from[0][0] - move.to[0][0]) :  dis = Math.abs(move.from[0][1] - move.to[0][1]);
+        if (dir == 8 || dis == 0)
         {
             return exports.say(channel, ["This won't move the stone, try again."]);
         }
         if (move.from[0][0] != move.to[0][0] && move.from[0][1] != move.to[0][1] && Math.abs(move.from[0][0] - move.to[0][0]) != Math.abs(move.from[0][1] - move.to[0][1]))
         {
             return exports.say(channel, ["This move isn't in a diagonal or orthagonal direction!"]);
-        }
-        if (move.from[0][1] == move.to[0][1])
-        {
-            dis = Math.abs(move.from[0][0] - move.to[0][0]);
-        }
-        else
-        {
-            dis = Math.abs(move.from[0][1] - move.to[0][1]);
         }
         for (let i = 1; i <= dis; i++)
         {
