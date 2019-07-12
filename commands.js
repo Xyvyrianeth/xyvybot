@@ -1,4 +1,4 @@
-var version = "2.37.0.23";
+var version = "2.37.0.24";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -237,7 +237,7 @@ function bot(message) {
     if (message.attachments.array().length != 0)
     {
         let img = message.attachments.first().filename;
-        if (/^(connect4|squares|othello|rokumoku|ttt3d)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
+        if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
         {
             let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
             let end = img.match(/_[0-2]_/)[0].substring(1, 2);
