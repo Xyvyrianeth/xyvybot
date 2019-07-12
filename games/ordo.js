@@ -509,6 +509,7 @@ exports.takeTurn = function(channel, Move) {
     else
     {
         game.split = false;
+        end = 0;
     }
 
     game.highlight = Object.values(move);
