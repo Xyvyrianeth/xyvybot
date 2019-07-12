@@ -193,33 +193,33 @@ exports.say = function(channels, message) {
 
 exports.Images = {};
 
-Canvas.loadImage("./assets/games/connect4/board.png").then(image => {
+Canvas.loadImage("/app/assets/games/connect4/board.png").then(image => {
     exports.Images.board = image;
 });
-Canvas.loadImage("./assets/games/connect4/red.png").then(image => {
+Canvas.loadImage("/app/assets/games/connect4/red.png").then(image => {
     exports.Images.red = image;
 });
-Canvas.loadImage("./assets/games/connect4/blue.png").then(image => {
+Canvas.loadImage("/app/assets/games/connect4/blue.png").then(image => {
     exports.Images.blue = image;
 });
-Canvas.loadImage("./assets/games/connect4/redText.png").then(image => {
+Canvas.loadImage("/app/assets/games/connect4/redText.png").then(image => {
     exports.Images.redText = image;
 });
-Canvas.loadImage("./assets/games/connect4/blueText.png").then(image => {
+Canvas.loadImage("/app/assets/games/connect4/blueText.png").then(image => {
     exports.Images.blueText = image;
 });
-Canvas.loadImage("./assets/games/connect4/turn.png").then(image => {
+Canvas.loadImage("/app/assets/games/connect4/turn.png").then(image => {
     exports.Images.turn = image;
 });
-Canvas.loadImage("./assets/games/connect4/win.png").then(image => {
+Canvas.loadImage("/app/assets/games/connect4/win.png").then(image => {
     exports.Images.win = image;
 });
-Canvas.loadImage("./assets/games/connect4/highlight.png").then(image => {
+Canvas.loadImage("/app/assets/games/connect4/highlight.png").then(image => {
     exports.Images.highlight = image;
 });
-Canvas.loadImage("./assets/games/connect4/winHighlight.png").then(image => {
+Canvas.loadImage("/app/assets/games/connect4/winHighlight.png").then(image => {
     exports.Images.winHighlight = image;
 });
-Canvas.loadImage("./assets/games/connect4/tie.png").then(image => {
+Canvas.loadImage("/app/assets/games/connect4/tie.png").then(image => {
     exports.Images.tie = image;
 });

@@ -569,36 +569,36 @@ exports.say = function(channels, message) {
 
 exports.Images = {};
 
-Canvas.loadImage("./assets/games/gomoku/board.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/board.png").then(image => {
     exports.Images.board = image;
 });
-Canvas.loadImage("./assets/games/gomoku/blue.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/blue.png").then(image => {
     exports.Images.blue = image;
 });
-Canvas.loadImage("./assets/games/gomoku/white.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/white.png").then(image => {
     exports.Images.white = image;
 });
-Canvas.loadImage("./assets/games/gomoku/to.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/to.png").then(image => {
     exports.Images.to = image;
 });
-Canvas.loadImage("./assets/games/gomoku/from.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/from.png").then(image => {
     exports.Images.from = image;
 });
-Canvas.loadImage("./assets/games/gomoku/winHighlight.png").then(image => {
+Canvas.loadImage("/app/assets/games/gomoku/winHighlight.png").then(image => {
     exports.Images.winHighlight = image;
 });
-Canvas.loadImage("./assets/games/gomoku/blueText.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/blueText.png").then(image => {
     exports.Images.blueText = image;
 });
-Canvas.loadImage("./assets/games/gomoku/whiteText.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/whiteText.png").then(image => {
     exports.Images.whiteText = image;
 });
-Canvas.loadImage("./assets/games/gomoku/turn.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/turn.png").then(image => {
     exports.Images.turn = image;
 });
-Canvas.loadImage("./assets/games/gomoku/win.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/win.png").then(image => {
     exports.Images.win = image;
 });
-Canvas.loadImage("./assets/games/gomoku/tie.png").then(image => {
+Canvas.loadImage("/app/assets/games/ordo/tie.png").then(image => {
     exports.Images.tie = image;
 });

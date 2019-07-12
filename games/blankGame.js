@@ -114,14 +114,14 @@ exports.say = function(channels, message) {
 
 exports.Images = {};
 
-Canvas.loadImage("./assets/games/gamename/board.png").then(image => {
+Canvas.loadImage("/app/assets/games/gamename/board.png").then(image => {
     exports.Images.board = image;
 });
 
 exports.Images.numbers = new Array(10);
 for (let i = 0; i < 10; i++)
 {
-    Canvas.loadImage(`./assets/games/gamename/numbers/${i}.png`).then(image => {
+    Canvas.loadImage(`/app/assets/games/gamename/numbers/${i}.png`).then(image => {
         exports.Images.numbers[i] = image;
     });
 }

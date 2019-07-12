@@ -219,33 +219,33 @@ exports.say = function(channels, message) {
 
 exports.Images = {};
 
-Canvas.loadImage("./assets/games/rokumoku/board.png").then(image => {
+Canvas.loadImage("/app/assets/games/rokumoku/board.png").then(image => {
     exports.Images.board = image;
 });
-Canvas.loadImage("./assets/games/rokumoku/black.png").then(image => {
+Canvas.loadImage("/app/assets/games/rokumoku/black.png").then(image => {
     exports.Images.black = image;
 });
-Canvas.loadImage("./assets/games/rokumoku/white.png").then(image => {
+Canvas.loadImage("/app/assets/games/rokumoku/white.png").then(image => {
     exports.Images.white = image;
 });
-Canvas.loadImage("./assets/games/rokumoku/highlight.png").then(image => {
+Canvas.loadImage("/app/assets/games/rokumoku/highlight.png").then(image => {
     exports.Images.highlight = image;
 });
-Canvas.loadImage("./assets/games/rokumoku/winHighlight.png").then(image => {
+Canvas.loadImage("/app/assets/games/rokumoku/winHighlight.png").then(image => {
     exports.Images.winHighlight = image;
 });
-Canvas.loadImage("./assets/games/rokumoku/blackText.png").then(image => {
+Canvas.loadImage("/app/assets/games/rokumoku/blackText.png").then(image => {
     exports.Images.blackText = image;
 });
-Canvas.loadImage("./assets/games/rokumoku/whiteText.png").then(image => {
+Canvas.loadImage("/app/assets/games/rokumoku/whiteText.png").then(image => {
     exports.Images.whiteText = image;
 });
-Canvas.loadImage("./assets/games/rokumoku/turn.png").then(image => {
+Canvas.loadImage("/app/assets/games/rokumoku/turn.png").then(image => {
     exports.Images.turn = image;
 });
-Canvas.loadImage("./assets/games/rokumoku/win.png").then(image => {
+Canvas.loadImage("/app/assets/games/rokumoku/win.png").then(image => {
     exports.Images.win = image;
 });
-Canvas.loadImage("./assets/games/rokumoku/tie.png").then(image => {
+Canvas.loadImage("/app/assets/games/rokumoku/tie.png").then(image => {
     exports.Images.tie = image;
 });
