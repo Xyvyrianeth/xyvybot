@@ -70,14 +70,14 @@ exports.drawBoard = function(game, end) {
 
     if (end === 0)
     {
-        ctx.drawImage(exports.Images[["blue", "white"][Math.floor(game.turn)] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.turn, 76 + (6 * Math.floor(game.turn)), 4);
+        ctx.drawImage(exports.Images[["blue", "white"][game.turn] + "Text"], 20, 6);
+        ctx.drawImage(exports.Images.turn, 76 + (6 * game.turn), 4);
     }
     else
     if (end === 1)
     {
         ctx.drawImage(exports.Images[["blue", "white"][game.winner] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.win, 81 + (6 * Math.floor(game.turn)), 6);
+        ctx.drawImage(exports.Images.win, 81 + (6 * game.winner), 6);
     }
     else
     if (end === 2)
@@ -278,7 +278,7 @@ exports.takeTurn = function(channel, Move) {
         return exports.say(channel, [game.split ? "This move does not reconnect your stones!" : "This move would split your stones into more than one group!"]);
     }
     else
-    if (game.board[[7, 0][game.turn]].some(p => p == game.turn))
+    if (game.board[[7, 0][game.turn]].some(p => p === game.turn))
     {
         end = 1;
     }
@@ -541,9 +541,9 @@ exports.nextTurn = function(channel, end) {
         }
     }
     else
-    if (end > 1)
     {
         game.over = true;
+        game.winner = game.turn;
     }
 
     game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`, `${shortname}_${end}_${game.players[game.winner]}.png`][end]);
