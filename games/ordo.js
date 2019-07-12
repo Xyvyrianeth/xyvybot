@@ -60,7 +60,7 @@ exports.startGame = function(channel1, channel2, player2) {
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be White!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
   
-exports.drawBoard = function(game, end, highlight) {
+exports.drawBoard = function(game, end) {
     let canvas = new Canvas.createCanvas(271, 246);
     let ctx = canvas.getContext('2d');
       
@@ -525,10 +525,10 @@ exports.takeTurn = function(channel, Move) {
 
     game.highlight = move;
       
-    exports.nextTurn(channel, end, highlight);
+    exports.nextTurn(channel, end);
 }
   
-exports.nextTurn = function(channel, end, highlight) {
+exports.nextTurn = function(channel, end) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
     {
@@ -545,7 +545,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.over = true;
     }
 
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), [`${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`, `${shortname}_${end}_${game.players[game.winner]}.png`][end]);
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`, `${shortname}_${end}_${game.players[game.winner]}.png`][end]);
     for (let ch in game.channels)
     {
         for (let i = 0; i < game.channels[ch].length; i++)

@@ -1,4 +1,4 @@
-var version = "2.37.0.11";
+var version = "2.37.0.12";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1611,7 +1611,7 @@ var commands = {
             embed.setDescription("A list of all commands supported by Bakeneko~\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "\nFor more help about any specific command, do \"`x![command]` `help`\"");
             let helps;
             helps = [
-                    "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`\n__Related Commands__:\n`games`  `profile`\n__Unimplemented__:\n`ordo`  `ninemen`  `gonnect`",
+                    "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`\n***Related Commands***:\n`games`  `profile`\n***Unimplemented***:\n`ninemen`  `gonnect`",
                     "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`",
                     "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`  `minesweeper`"
             ];
