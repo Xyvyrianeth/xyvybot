@@ -1,4 +1,4 @@
-var version = "2.37.0.5";
+var version = "2.37.0.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -940,12 +940,12 @@ var commands = {
                 if (games.games.some(condition("gameHere")))
                 {
                     let game = games.games.filter(condition("gameHere"))[0];
-                    return games[gamename].startGame(Object.keys(game.channels)[0], message.channel.id, message.author.id);
+                    return games[gameName].startGame(Object.keys(game.channels)[0], message.channel.id, message.author.id);
                 }
                 if (games.games.some(condition("gameThere")))
                 {
                     let game = games.games.filter(condition("gameThere"))[0];
-                    return games[gamename].startGame(Object.keys(game.channels)[0], message.channel.id, message.author.id);
+                    return games[gameName].startGame(Object.keys(game.channels)[0], message.channel.id, message.author.id);
                 }
                 if (!games.games.some(condition("noGame")))
                 {
