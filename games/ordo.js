@@ -105,11 +105,12 @@ exports.takeTurn = function(channel, Move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     let move;
     let end;
-    if (/^([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])$/i.test(Move))
+    Move = Move.toLowerCase();
+    if (/^([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])$/.test(Move))
     {
         move = {
-            from: [[Number(Move.split(' ')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].match(/[a-j]/i)[0])]],
-            to:   [[Number(Move.split(' ')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[1].match(/[a-j]/i)[0])]]
+            from: [[Number(Move.split(' ')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].match(/[a-j]/)[0])]],
+            to:   [[Number(Move.split(' ')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[1].match(/[a-j]/)[0])]]
         };
         let dir = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
         let dis = move.from[0][1] == move.to[0][1] ? Math.abs(move.from[0][0] - move.to[0][0]) : Math.abs(move.from[0][1] - move.to[0][1]);
@@ -134,7 +135,7 @@ exports.takeTurn = function(channel, Move) {
         }
     }
     else
-    if (/^([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9]$/i.test(Move))
+    if (/^([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9]$/.test(Move))
     {
         dir = {
             "up": 0,
