@@ -5,7 +5,7 @@ const { client } = require("/app/Xyvy.js");
 var gamename = "Ordo";
 var shortname = "ordo";
   
-exports.newGame = function(channel, player) {
+exports.newGame = function(channel, player, here) {
     let game = {
         buffer: {},
         channels: {},
