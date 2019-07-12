@@ -5,14 +5,14 @@ const { client } = require("/app/Xyvy.js");
 var gamename = "3D Tic Tac Toe";
 var shortname = "ttt3d";
 
-exports.newGame = function(channel, player) {
+exports.newGame = function(channel, player, here) {
     let game = {
         buffer:  {},
         channels: {},
         forfeit:  false,
         game: shortname,
+        here: here,
         lastDisplays: [],
-        lastmove: '',
         over: false,
         player: false,
         players: [player],
@@ -63,7 +63,7 @@ exports.startGame = function(channel1, channel2, player2) {
     game.players[1] = player2;
     game.started = true;
  
-    game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
+    if ((Math.random() * 2 | 0) == 0) game.players.reverse(); // Makes player one random instead of always the challenger
     game.player = game.players[0];
  
     game.timer = {
@@ -72,7 +72,7 @@ exports.startGame = function(channel1, channel2, player2) {
     }
 
     game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false, true), `${shortname}_0.png`);
-    exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be **X**, and <@${game.players[1]}> will be **O**!`, game.buffer]);
+    exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be **X**, and <@${game.players[1]}> will be **O**!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
  
 exports.drawBoard = function(game, end, highlight, firstDisp) {
@@ -271,7 +271,7 @@ exports.nextTurn = function(channel, end, highlight) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
     {
-        game.turn = game.turn == 0 ? 1 : 0;
+        game.turn = [1, 0][game.turn];
         game.player = game.players[game.turn];
         game.timer = {
             time: 600,
@@ -307,36 +307,36 @@ exports.say = function(channels, message) {
 
 exports.Images = {};
 
-Canvas.loadImage("./img/gameAssets/3dttt/board.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/board.png").then(image => {
     exports.Images.board = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/x.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/x.png").then(image => {
     exports.Images.X = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/o.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/o.png").then(image => {
     exports.Images.O = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/Xtext.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/Xtext.png").then(image => {
     exports.Images.Xtext = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/Otext.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/Otext.png").then(image => {
     exports.Images.Otext = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/turn.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/turn.png").then(image => {
     exports.Images.turn = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/win.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/win.png").then(image => {
     exports.Images.win = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/highlight.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/highlight.png").then(image => {
     exports.Images.highlight = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/winHighlight.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/winHighlight.png").then(image => {
     exports.Images.winHighlight = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/tie.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/tie.png").then(image => {
     exports.Images.tie = image;
 });
-Canvas.loadImage("./img/gameAssets/3dttt/firstDisp.png").then(image => {
+Canvas.loadImage("./assets/games/3dttt/firstDisp.png").then(image => {
     exports.Images.firstDisp = image;
 });

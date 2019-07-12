@@ -1,59 +1,74 @@
-var version = "2.36.0.1";
+var version = "2.37.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
-
-var { client,config } = require("/app/Xyvy.js");
-var Profile = require("/app/stuffs/profile.js");
-var { Color } = require("/app/stuffs/color.js");
-var titles = require("/app/stuffs/titles.json");
-var images = require("/app/stuffs/images.json");
-var { table } = require("/app/stuffs/table.js");
-
-var admins = "357700219825160194".split(' ');
-
 const pg = require("pg");
-var db = new pg.Client(config.DATABASE_URL);
+const nekos = require("nekos.life");
+
+var { client, config } = require("/app/Xyvy.js");
+var { Color } = require("/app/assets/misc/color.js");
+var { table } = require("/app/assets/misc/table.js");
+var Profile = require("/app/assets/misc/profile.js");
+var titles = require("/app/assets/profile/titles.json");
+var images = require("/app/assets/backgrounds/images.json");
+
+const Nekos = new nekos();
+const db = new pg.Client(config.DATABASE_URL);
 db.connect();
 exports.db = db;
-   
-const jishoApi = require("unofficial-jisho-api");
-const jisho = new jishoApi();
-   
-const nekos = require("nekos.life");
-const Nekos = new nekos();
 
-var bugTimers = {};
-var bugTimer = setInterval(function() {
-    for (let i in bugTimers)
-    {
-        bugTimers[i] -= 1;
-        if (bugTimers[i] == 0)
-        {
-            delete bugTimers[i];
-        }
-    }
-}, 10);
+var admins = ["357700219825160194"];
 
-var requestTimers = {};
-var requestTimer = setInterval(function() {
-    for (let i in requestTimers)
-    {
-        requestTimers[i] -= 1;
-        if (requestTimers[i] == 0)
+var timers = setInterval(function() {
+    db.query("SELECT * FROM timers", function(err, res) {
+        if (err)
         {
-            delete requestTimers[i];
+            return sqlError(
+                "Internal (var timers @ line 23)",
+                err,
+                "SELECT * FROM timers"
+            );
         }
-    }
-}, 10);
+        res.rows.forEach(row => {
+            if (row.time > 0)
+            {
+                db.query(`UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'`, function(err) {
+                    if (err)
+                    {
+                        sqlError(
+                            "Internal (var timers @ line 23 | db.query @ line 36)",
+                            err,
+                            `UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'`
+                        );
+                    }
+                });
+            }
+            else
+            {
+                db.query(`DELETE FROM timers WHERE id = '${row.id}'`, function(err) {
+                    if (err)
+                    {
+                        sqlError(
+                            "Internal (var timers @ line 23 | db.query @ line 53)",
+                            err,
+                            `DELETE FROM timers WHERE id = '${row.id}'`
+                        );
+                    }
+                });
+            }
+        });
+    });
+}, 1000);
+
 var games = {
+    games: require("/app/games/games.js").games,
     othello: require("/app/games/othello.js"),
     squares: require("/app/games/squares.js"),
-    gomoku: require("/app/games/gomoku.js"),
+    rokumoku: require("/app/games/rokumoku.js"),
     ttt3d: require("/app/games/3dttt.js"),
     connect4: require("/app/games/connect4.js"),
-    games: require("/app/games/games.js").games
-}
+    ordo: require("/app/games/ordo.js")
+};
 
 function botError(message, err) {
     return client.guilds.get("399327996076621825").channels.get("467902250128506880").send([
@@ -165,11 +180,12 @@ function other(message) {
     {
         let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
         if (message.author.id == game.player && {
-            "squares": /^([a-j] ?(?:10|[1-9])|(?:10|[1-9]) ?[a-j])$/i,
+            "squares": /^([a-j] ?(10|[1-9])|(10|[1-9]) ?[a-j])$/i,
             "othello": /^([a-h][1-8]|[1-8][a-h])$/i,
-            "gomoku": /^([a-s] ?1?[0-9]{1,}|1?[0-9]{1,} ?[a-s])$/i,
+            "rokumoku": /^([a-s] ?1?[0-9]{1,}|1?[0-9]{1,} ?[a-s])$/i,
             "connect4": /^[1-7]$/,
-            "ttt3d": /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i
+            "ttt3d": /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,
+            "ordo": /^(([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])|([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9])$/i
         }[game.game].test(message.content))
         {
             if (message.channel.type !== "dm")
@@ -221,7 +237,7 @@ function bot(message) {
     if (message.attachments.array().length != 0)
     {
         let img = message.attachments.first().filename;
-        if (/^(connect4|squares|othello|gomoku|ttt3d)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
+        if (/^(connect4|squares|othello|rokumoku|ttt3d)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
         {
             let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
             let end = img.match(/_[0-2]_/)[0].substring(1, 2);
@@ -235,7 +251,7 @@ function bot(message) {
                 result = {
                     winner: game.players[game.winner],
                     loser: game.players[game.winner == 0 ? 1 : 0],
-                    game: JSON.stringify(["othello", "squares", "gomoku", "ttt3d", "connect4"].indexOf(game.game) + 1),
+                    game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo"].indexOf(game.game) + 1),
                     score: game.score
                 };
             }
@@ -276,8 +292,8 @@ function bot(message) {
                     else
                     if (res.rows.length == 2)
                     {
-                        wins = res.rows[0].id == result.winner ? res.rows[0] : res.rows[1];
-                        lose = res.rows[0].id == result.loser ? res.rows[0] : res.rows[1];
+                        wins = res.rows.find(x => x.id == result.winner);
+                        lose = res.rows.find(x => x.id == result.loser);
                     }
                     else
                     if (res.rows[0].id == result.winner)
@@ -299,14 +315,35 @@ function bot(message) {
                     {
                         lose["elo" + result.game] = 1000;
                     }
+                    if (lose["elo" + result.game] > wins["elo" + result.game])
+                    {
+                        lose.money += 100;
+                        wins.money += 10;
+                    }
+                    if (lose["elo" + result.game] == wins["elo" + result.game])
+                    {
+                        lose.money += 50;
+                        wins.money += 50;
+                    }
+                    if (lose["elo" + result.game] < wins["elo" + result.game])
+                    {
+                        lose.money += 25;
+                        wins.money += 75;
+                    }
                     let booty = Math.ceil(lose["elo" + result.game] / 10);
                     let query = [
                         `UPDATE profiles`,
-                        `SET elo${result.game} = ${wins["elo" + result.game] + booty}, win${result.game} = ${wins["win" + result.game] + 1}`,
+                        `SET`,
+                        `   elo${result.game} = ${wins["elo" + result.game] + booty},`,
+                        `   win${result.game} = ${wins["win" + result.game] + 1},`,
+                        `   money = ${wins.money}`,
                         `WHERE id = '${wins.id}';`,
                         ``,
                         `UPDATE profiles`,
-                        `SET elo${result.game} = ${lose["elo" + result.game] - booty}, los${result.game} = ${lose["los" + result.game] + 1}`,
+                        `SET`,
+                        `   elo${result.game} = ${lose["elo" + result.game] - booty},`,
+                        `   los${result.game} = ${lose["los" + result.game] + 1},`,
+                        `   money = ${lose.money}`,
                         `WHERE id = '${lose.id}';`
                     ].join('\n');
                     return db.query(query, function(err) {
@@ -323,12 +360,12 @@ function bot(message) {
     if (games.games.filter(game => game.channels.hasOwnProperty(message.channel.id)).length == 1)
     {
         let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id));
-        if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Gomoku), say `x![3a-z]{1,} start` to play against them!/.test(message.content) || [
-            "Column is full, please pick another.",
-            "There's already a stone there, pick another spot!",
+        if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|Ordo|3D Tic Tac Toe)!/.test(message.content) || [
+            "This column is full, please pick another!",
+            "Someone has aleady played there, pick another space!",
         ].includes(message.content))
         {
-            game.lastDisplays[game.channels.indexOf(message.channel.id)] = message;
+            game.channels[message.channel.id].push(message.id);
         }
     }
 }
@@ -337,9 +374,9 @@ function newUser(id, message) {
     let image = images.ids.random();
     let query = [
         `INSERT INTO profiles (`,
-        `    id,       color,   title,      titles,             background,  backgrounds,         lefty,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
+        `    id,       color,   title,      titles,             background,  backgrounds,         lefty,  money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
         `) VALUES (`,
-        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
+        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   500,    0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
         `)`
     ].join('\n');
     db.query(query, function(err) {
@@ -356,7 +393,7 @@ function newUser(id, message) {
         background: image,
         backgrounds: [image],
         lorr: "right",
-        money: 0,
+        money: 500,
         elo1: 1000,
         elo2: 1000,
         elo3: 1000,
@@ -383,25 +420,19 @@ function newUser(id, message) {
 
 var aliases = {
     guild: {
-        // Competitive Games
+        // Games
         "games": ["games"],
         "othello": ["othello", "reversi"],
         "squares": ["squares"],
-        "gomoku": ["gomoku", "gobang", "renju"],
+        "rokumoku": ["rokumoku", "connect6", "connectsix"],
         "ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
         "connect4": ["connectfour", "connect4", "cfour", "c4"],
+        "ordo": ["ordo"],
         "profile": ["profile", "scorecard", "prof"],
-
-        // Small Games
-        "hangman": ["hangman", "hm"],
-        "math": ["math", "quickmath", "quickmaffs", "maffs"],
-        "iq": ["iq", "fakeiqtest", "fakeiqquiz", "fakeiq"],
-        "sequence": ["sequence", "pattern"],
-        "shuffle": ["shuffle", "scramble"],
-        "minesweeper": ["minesweeper", "ms", "mines"],
        
         // Utility
         "about": ["about", "info", "bot"],
+        "credits": ["credits", "acknowledgements"],
         "help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
         "avatar": ["avatar", "pfp"],
         "aliases": ["aliases"],
@@ -417,6 +448,7 @@ var aliases = {
         "graph": ["graph"],
         "ai": ["ai", "aibot", "xyvyai"],
         "botsbyxyvy": ["botsbyxyvy", "xyvybots"],
+        "minesweeper": ["minesweeper", "ms", "mines"],
        
         // NSFW
         "nsfw": ["nsfw", "hentai", "lewd", "porn"],
@@ -428,19 +460,17 @@ var aliases = {
     user: {
         // Games
         "games": ["games"],
-        "game": ["game", "othello", "reversi", "squares", "gomoku", "gobang", "renju", "3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe", "connectfour", "connect4", "cfour", "c4"],
+        "othello": ["othello", "reversi"],
+        "squares": ["squares"],
+        "rokumoku": ["rokumoku", "gobang", "renju"],
+        "ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
+        "connect4": ["connectfour", "connect4", "cfour", "c4"],
+        "ordo": ["ordo"],
         "profile": ["profile", "scorecard", "prof"],
-    
-        // Small Games
-        "hangman": [],
-        "math": [],
-        "iq": [],
-        "sequence": [],
-        "shuffle": [],
-        "minesweeper": ["minesweeper", "ms", "mines"],
        
         // Utility
         "about": ["about", "info", "bot"],
+        "credits": ["credits", "acknowledgements"],
         "help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
         "avatar": ["avatar", "pfp"],
         "aliases": ["aliases"],
@@ -456,6 +486,7 @@ var aliases = {
         "graph": ["graph"],
         "ai": ["ai", "aibot", "xyvyai"],
         "botsbyxyvy": ["botsbyxyvy", "xyvybots"],
+        "minesweeper": ["minesweeper", "ms", "mines"],
        
         // NSFW
         "nsfw": ["nsfw", "hentai", "lewd", "porn"],
@@ -487,7 +518,7 @@ var commands = {
             let gms = {
                 "othello": ["othello", "reversi"],
                 "squares": ["squares"],
-                "gomoku": ["gomoku", "gobang", "renju"],
+                "rokumoku": ["rokumoku", "gobang", "renju"],
                 "ttt3d": ["ttt3d", "3dttt", "3dtictactoe", "tictactoe3d", "ttt", "tictactoe"],
                 "connect4": ["connect4", "connectfour", "cfour", "c4"]
             };
@@ -503,7 +534,7 @@ var commands = {
             {
                 elos = "elo2";
             }
-            if (gms.gomoku.includes(args[1]))
+            if (gms.rokumoku.includes(args[1]))
             {
                 elos = "elo3";
             }
@@ -589,7 +620,7 @@ var commands = {
                     }
                     else
                     {
-                        game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][elos[3] - 1];
+                        game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four"][elos[3] - 1];
                     }
 
                     let users = [];
@@ -656,11 +687,11 @@ var commands = {
             let gms = {
                 "othello": ["othello", "reversi"],
                 "squares": ["squares"],
-                "gomoku": ["gomoku", "gobang", "renju"],
+                "rokumoku": ["rokumoku", "gobang", "renju"],
                 "ttt3d": ["ttt3d", "3dttt", "3dtictactoe", "tictactoe3d", "ttt", "tictactoe"],
                 "connect4": ["connect4", "connectfour", "cfour", "c4"]
             };
-            let Games = [].concat(gms.othello, gms.squares, gms.gomoku, gms.ttt3d, gms.connect4);
+            let Games = [].concat(gms.othello, gms.squares, gms.rokumoku, gms.ttt3d, gms.connect4);
             if (args.length == 2)
             {
                 if (/^[0-9]{1,}$/.test(args[1]) || /^<@[0-9]{1,}>$/.test(args[1]))
@@ -734,14 +765,14 @@ var commands = {
                     }
 
                     let embed = new Discord.RichEmbed();
-                    embed.setTitle("User Statistics for " + (Gm == "all" ? "all games" : ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][Gm - 1]));
+                    embed.setTitle("User Statistics for " + (Gm == "all" ? "all games" : ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four"][Gm - 1]));
 
                     if (Gm == "all")
                     {
                         let ok = [];
                         for (let i = 0; i < 5; i++)
                         {
-                            let game = ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][i];
+                            let game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four"][i];
                             let elo = user["elo" + (i + 1)];
                             let win = user["win" + (i + 1)];
                             let los = user["los" + (i + 1)];
@@ -752,7 +783,7 @@ var commands = {
                     }
                     else
                     {
-                        embed.setDescription("**User**: <@" + id + ">\n**__Game__: " + ["Othello", "Squares", "Gomoku", "3D Tic Tac Toe", "Connect Four"][Gm - 1] + "\n__Elo__: " + user["elo" + Gm] + "\n__W/L (%)__: " + user["win" + Gm] + "/" + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? Math.round(user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) * 10000) / 100 : "N/A") + "%)**");
+                        embed.setDescription("**User**: <@" + id + ">\n**__Game__: " + ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four"][Gm - 1] + "\n__Elo__: " + user["elo" + Gm] + "\n__W/L (%)__: " + user["win" + Gm] + "/" + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? Math.round(user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) * 10000) / 100 : "N/A") + "%)**");
                     }
 
                     embed.setColor(new Color().random());
@@ -782,7 +813,7 @@ var commands = {
         if (["games"].includes(args[0]))
         {
             let embed = new Discord.RichEmbed();
-            embed.setDescription("I currently have 4 games, and plan to add more.\n\n**Games**: Othello, Squares, 3D Tic-Tac-Toe, Connect Four\n**Planned**: Gomoku\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).");
+            embed.setDescription("I currently have 4 games, and plan to add more.\n\n**Games**: Othello, Squares, 3D Tic-Tac-Toe, Connect Four\n**Planned**: Rokumoku\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).");
             embed.setColor(new Color().random());
             sendChat({embed});
         }
@@ -796,8 +827,8 @@ var commands = {
         return commands.game("squares", args, input, message, sendChat);
     },
 
-    "gomoku": function(cmd, args, input, message, sendChat) {
-        return commands.game("gomoku", args, input, message, sendChat);
+    "rokumoku": function(cmd, args, input, message, sendChat) {
+        return commands.game("rokumoku", args, input, message, sendChat);
     },
 
     "ttt3d": function(cmd, args, input, message, sendChat) {
@@ -808,14 +839,19 @@ var commands = {
         return commands.game("connect4", args, input, message, sendChat);
     },
 
+    "ordo": function(cmd, args, input, message, sendChat) {
+        return commands.game("ordo", args, input, message, sendChat);
+    },
+
     "game": function(cmd, args, input, message, sendChat) {
         let gameName = cmd;
         let GameName = {
             "othello": "Othello",
             "squares": "Squares",
-            "gomoku": "Gomoku",
+            "rokumoku": "Rokumoku",
             "ttt3d": "3D Tic Tac Toe",
-            "connect4": "Connect Four"
+            "connect4": "Connect Four",
+            "ordo": "Ordo"
         }[gameName];
         if (!input)
         {
@@ -826,8 +862,14 @@ var commands = {
                 "noGame": function(game) {
                     return game.game == gameName
                 },
-                "waiting": function(game) {
-                    return game.game == gameName && !game.started;
+                "noGameHere": function(game) {
+                    return game.game == gameName && !game.channels.hasOwnProperty(message.channel.id);
+                },
+                "gameHere": function(game) {
+                    return game.game == gameName && !game.started && game.channels.hasOwnProperty(message.channel.id);
+                },
+                "gameThere": function(game) {
+                    return game.game == gameName && !game.started && !game.channels.hasOwnProperty(message.channel.id) && !game.here;
                 },
                 "playingYourself": function(game) {
                     return game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName && !game.started;
@@ -844,7 +886,7 @@ var commands = {
                 "alreadyQueued": function(game) {
                     return !game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
                 },
-                "noGameHere": function(game) {
+                "nothingHere": function(game) {
                     return game.channels.hasOwnProperty(message.channel.id);
                 },
                 "participant": function(game) {
@@ -860,51 +902,70 @@ var commands = {
         }
         if (["start"].includes(args[0]))
         {
-            if (games.games.filter(condition("alreadyQueued")).length != 0)
+            if (games.games.some(condition("alreadyQueued")))
             {
                 return sendChat("You are already queued for that game somewhere else!");
             }
-            if (games.games.filter(condition("playingYourself")).length != 0)
+            if (games.games.some(condition("playingYourself")))
             {
                 return sendChat("You cannot play a game against yourself!");
             }
-            if (games.games.filter(condition("somethingElseHere")).length != 0)
+            if (games.games.some(condition("somethingElseHere")))
             {
                 return sendChat("You're already queued for a different game in this channel!");
             }
-            if (games.games.filter(condition("someoneElseHere")).length != 0)
+            if (games.games.some(condition("someoneElseHere")))
             {
-                return sendChat("Someone is already queueing for a game in this channel! Go to another one!");
+                return sendChat("Someone is already queueing for a different game in this channel!");
             }
-            if (games.games.filter(condition("gameStarted")).length != 0)
+            if (games.games.some(condition("gameStarted")))
             {
-                return sendChat("Someone is already playing a game in this channel!");
+                return sendChat("There is already an active game in this channel!");
             }
-            if (games.games.filter(condition("noGame")).length == 0)
+
+            if (["here"].includes(args[1]))
             {
-                games[gameName].newGame(message.channel.id, message.author.id);
+                if (games.games.some(condition("gameHere")))
+                {
+                    let game = games.games.filter(condition("gameHere"))[0];
+                    return games[gameName].startGame(Object.keys(game.channels)[0], message.channel.id, message.author.id);
+                }
+                if (games.games.some(condition("noGame")) || !games.games.some(condition("noGameHere")))
+                {
+                    return games[gameName].newGame(message.channel.id, message.author.id, true);
+                }
             }
             else
-            if (games.games.filter(condition("waiting")).length == 1)
             {
-                let game = games.games.filter(condition("waiting"))[0];
-                games[gameName].startGame(Object.keys(game.channels)[0], message.channel.id, message.author.id);
+                if (games.games.some(condition("gameHere")))
+                {
+                    let game = games.games.filter(condition("gameHere"))[0];
+                    return games[gamename].startGame(Object.keys(game.channels)[0], message.channel.id, message.author.id);
+                }
+                if (games.games.some(condition("gameThere")))
+                {
+                    let game = games.games.filter(condition("gameThere"))[0];
+                    return games[gamename].startGame(Object.keys(game.channels)[0], message.channel.id, message.author.id);
+                }
+                if (!games.games.some(condition("noGame")))
+                {
+                    return games[gameName].newGame(message.channel.id, message.author.id, true);
+                }
             }
         }
-        else
-        if (["quit", "forfeit", "leave"].includes(input))
+        if (["quit", "forfeit", "leave"].includes(input)) 
         {
-            if (games.games.filter(condition("noGameHere")).length == 0)
+            if (games.games.some(condition("nothingHere")))
             {
                 return sendChat("There is not a game in this channel for you to quit!");
             }
             else
-            if (games.games.filter(condition("participant")).length == 0)
+            if (games.games.some(condition("participant")))
             {
                 return sendChat(`You are not a participant of that game, <@${message.author.id}>!`);
             }
             else
-            if (games.games.filter(condition("dontStart")).length == 1)
+            if (!games.games.some(condition("dontStart")))
             {
                 games.games.forEach((game, index) => {
                     if (game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && !game.started)
@@ -916,25 +977,187 @@ var commands = {
                 });
             }
             else
-            if (games.games.filter(condition("quit")).length == 1)
+            if (!games.games.some(condition("quit")))
             {
                 games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0].forfeit = message.author.id;
             }
 
         }
-        else
-        if (["rules", "howtoplay"].includes(args[0]))
+        if (["help", "rules", "howtoplay"].includes(args[0])) /** @TODO Make example .gifs */
         {
-            new Discord.RichEmbed();
-            embed.setDescription({
-                "connect4": "If you don't know how to play this game, you must have had a shitty childhood. You drop pieces into each row and try to get a row of 4 before your opponent, very simple.",
-                "squares": "This game was created by Xyvy himself because he was bored and didn't want to work on Gomoku win logic one night. It's played almost exactly like Gomoku, except for the objective of the game and the limitless board size. The board size is always 10x10, and the object of the game is to have created more squares than your opponent before the end. You make a square by placing 4 of your stones in a square pattern. Stones can be a part of multiple squares, and squares can range in size from 2x2 to 10x10 (if you put a stone in all 4 corners of the map, that's a point to you!).\n\nTaking turns is the same as in Gomoku: 2 stones per turn, but whoever goes first only places 1 stone on their very first turn. This eliminates \"first player advantage\" where player 1 is the only one that will ever have more stones on the board than their opponent.\n\nThe game ends when there are no more empty spaces on the board. After that, the squares are counted for each player and the player with more squares is declared the winner.",
-                "othello": "[Click here to learn how to play Othello!](https://www.wikipedia.org/wiki/Reversi#Rules)\nI don't really know how to explain it without pictures.",
-                "gomoku": "Gomoku, also called Go Bang or Renju, in the simplest terms, is a very large game of Tic Tac Toe. The board is 19x19 instead of 3x3, and instead of a 3-in-a-row, you want a 5-in-a-row.\n\nTaking turns differs from traditional 1v1 board games like checkers in that each player does not get 1 move per turn. In Gomoku, both players get 2 moves per turn, but player 1 only gets one move on their very first turn. This removes what's known as \"player 1 advantage,\" which is very prevalent in Tic Tac Toe, where player 1 is able to have more pieces on the board than player 2, but player 2 can never have more pieces on the board than player 1.\n\nTo win, you must have 5 of your stones in a line. No more, no less. That's right: if you have 6 or more in a line, you do not win.",
-                "ttt3d": "This game plays exactly like the game Tic Tac Toe: get 3 in a row, but instead of 3 you want 4 in a row. Also, you have another dimension to work with. You're in a cube. Multi-level-toeing."
-            }[gameName]);
+            let wiki = {
+                asg: "[Abstract Strategy Game](https://wikipedia.org/wiki/Abstract_strategy_game)",
+                attt: "[Advanced Tic Tac Toe](https://wikipedia.org/wiki/M,n,k-game)"
+            }
+            let embed = new Discord.RichEmbed();
+            embed.setTitle("How to play: " + GameName);
+            switch (gameName)
+            {
+                case "othello":
+                {
+                    embed.setDescription(
+                        `Othello, or Reversi, is an ${wiki.asg}. The game consists of stones of both black and white and is played on an 8x8 board. The game starts with 2 stones of each color placed in the middle of the board with stones of the same color diagonal to each other. Black goes first.\n` +
+                        "Players take turns placing 1 stone in a manner that would \"capture\" lines of opponent's stones at either end, effectively changing the opponent's stones into the player's.\n" +
+                        "The obective of the game is to have the most stones on the board before both player can no longer make a legal move."
+                    );
+                    embed.addField(
+                        "Stone Placement",
+                        "In order to place a stone in an empty space, that space must be at the end of a line of your opponent's stones with one of your own stones at the other end of it. For simplicity, legal spaces will be highlighted in blue for you.\n" +
+                        "To place a stone on the board, simply say the row number and column letter of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
+                        "The stone placed on any given turn will be highlighted in yellow.\n" +
+                        "[Example .gif of stone placements]()"
+                    );
+                    embed.addField(
+                        "Capturing Stones",
+                        "Once you place a stone, all lines of your opponent's stones that have the stone you just placed at one end with one of your other stones at the other end are \"captured\" and will immediately turn into your stones.\n" +
+                        "Placing a stone can capture your opponent's stones in any diagonal and orthagonal direction. You can also capture in multiple directions at once.\n" +
+                        "Stones that have been captured on any given turn will be highlighted in green.\n" +
+                        "[Example .gif of capturing stones in multiple directions]()"
+                    );
+                    embed.addField(
+                        "Endgame",
+                        "The game officially ends when both players can no longer make a legal move to capture their opponent's stones.\n" +
+                        "Once this happens, all stones on the board are counted that the player with the most stones is declared the winner.",
+                        "[Example .gif of game ending]()"
+                    );
+                }
+                case "squares":
+                {
+                    embed.setDescription(
+                        `Squares is an ${wiki.asg} created by Xyvyrianeth originally for Xyvybot. The game consists of stones of both black and red and is played on a 10x10 board.\n` +
+                        "Players take turns placing 2 stones on empty spaces, except for the first and final turns where the first player only places 1, until the board is completely full. Black goes first.\n" +
+                        "The objective of the game is to arrange as many sets of 4 stones into perfect squares as possible, the winner being the player with the most squares at the end."
+                    );
+                    embed.addField(
+                        "Stone Placement",
+                        "To place a stone on the board, simply say the row number and column letter of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
+                        "The stones placed on any given turn will be highlighted in yellow.\n" +
+                        "[Example .gif of stone placement]()"
+                    );
+                    embed.addField(
+                        "Creating Squares",
+                        "For every set of 4 stones of the same color that are arranged into a perfect square, the player of that color gets 1 point.\n" +
+                        "When a player places a stone that completes a square, the other 3 stones of that square will be highlighted in green.\n" +
+                        "A single stone can contribute to multiple squares.\n" +
+                        "[Example .gif of square creation]()"
+                    );
+                    embed.addField(
+                        "Endgame",
+                        "The game officially ends when there are no longer any empty spaces on the board.\n" +
+                        "Once this happens, all squares are counted and the player with the most squares is declared the winner.\n" +
+                        "[Example .gif of game ending]()"
+                    );
+                }
+                case "rokumoku":
+                {
+                    embed.setDescription(
+                        `Rokumoku, or Connect Six (literally \"six eyes\" in Japanese) is an ${wiki.asg} and a type of ${wiki.attt}. The game consists of stones of both black and white and can be played on a board of any size, but for Xyvybot you'll use a static 12x12 board. Black goes first.\n` +
+                        "Players take turns placing 2 stones on empty spaces, except for the first player's first turn, until either player has created a line of 6 of their own stones, or until the board is full. Black goes first.\n" +
+                        "The rules for Rokumoku is very simple, as it's basically just large Tic Tac Toe."
+                    );
+                    embed.addField(
+                        "Stone Placement",
+                        "To place a stone on the board, simply say the row number and column letter of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
+                        "The stones placed on any given turn will be highlighted in yellow.\n" +
+                        "[Example .gif of stone placement]()"
+                    );
+                    embed.addField(
+                        "Endgame",
+                        "The game officially ends when either player has created a line of 6 of their own stones, either diagonally or orthagonally.\n" +
+                        "Once this happens, the 6 stones that constitute the winning line will be highlighted in green.",
+                        "[Example .gif of game ending]()"
+                    );
+                }
+                case "ttt3d":
+                {
+                    embed.setDescription(
+                        `3D Tic Tac Toe is an ${wiki.asg} and, as the name suggests, a type of ${wiki.attt}. The game consists of stones, either X's or O's, and a 3-dimensional 4x4x4 playing area.\n` +
+                        "Players take turns placing 1 stone in an emtpy space on the 3-dimensional playing area until either the playing area is full or a player has created a line of 4 of their own stones through any number of planes in the playing area. X goes first.\n" +
+                        "The way the 3D Tic Tac Toe playing area is displayed might be confusing for some players. Traditionally, the 4 *y*-planes are displayed vertically, but to save space, the 2nd and 4th *y*-planes are to the right of the 1st and 3rd."
+                    );
+                    embed.addField(
+                        "Stone Placement",
+                        "To place a stone in the playing area, simply say which *y*-plane you wish to place in, followed by the row number and column letter of that *y*-plane; for example, say \"34C\" to place a stone in Row 4–Column C in the 3rd *y*-plane.\n" +
+                        "The stone placed on any given turn will be highlighted in yellow.\n" +
+                        "[Example .gif of stone placement]()"
+                    );
+                    embed.addField(
+                        "Endgame",
+                        "The game officially ends when either player has created a line of 4 of their own stones going across any number of planes.\n" +
+                        "Once this happens, the 4 stones that constitute the winning line will be highlighted in green.",
+                        "[Example .gif of game ending]()"
+                    );
+                }
+                case "connect4":
+                {
+                    embed.setDescription(
+                        `Connect Four is an ${wiki.asg} and a type of ${wiki.attt}. The game consists of stones of both black and red and is played on a 6x7 board. Blue goes first.\n` +
+                        "Players take turns placing 1 stone in the lowest empty space of any column until either the board is full or a player has created a line of 4 of their own stones.\n" +
+                        "This has been a very popular board game for many years, and if you've never heard of it until now, your childhood was clearly shit."
+                    );
+                    embed.addField(
+                        "Stone Placement",
+                        "To place a stone on the board, simply say the column number of the empty space you wish to play in; for example, say \"4\" to place a stone in Column 4.\n" +
+                        "When placing a stone, it will automatically be placed in the lowest empty space of the column you placed it in.\n" +
+                        "The stone placed on any given turn will be highlighted in yellow.\n" +
+                        "[Example .gif of stone placement]()"
+                    );
+                    embed.addField(
+                        "Endgame",
+                        "The game officially ends when either player has create a line of 4 of their own stones, either diagonally or orthagonally.\n" +
+                        "Once this happens, the 4 stones that constitute the winning line will be highlighted in green.\n" +
+                        "[Example .gif of game ending]()"
+                    );
+                }
+                case "ordo":
+                {
+                    embed.setDescription(
+                        `Ordo is an ${wiki.asg} that has rules and gameplay reminiscent of Checkers. The game consists of stones of both blue and white and is played on an 8x10 board. The game starts with all stones on the board in a set pattern. Blue goes first.\n` +
+                        "Players take turns moving 1 stone around the board in diagonal or orthagonal directions (or multiple stones, but only orthagonally), making sure that all of their stones are connected in the same group."
+                    );
+                    embed.addField(
+                        "Singleton Moves",
+                        "Singleton moves consist of one stone being moved in any direction, either diagonally or orthagonally, any number of spaces. These moves can end in either an empty space or on a space occupied by one of your opponent's stones (which effectively \"captures\" and removes that stone from the game).\n" +
+                        "You make a singleton move by saying the row number and column letter of the stone you want to move followed by the row number and column letter of the space you wish to move it to; for example, say \"4C 7F\" to move a stone from Row 4–Column C to Row 7–Column F.\n" +
+                        "Stones that have been moved will be highlighted in yellow with the space they were moved from being highlighted in red.\n" +
+                        "[Example .gif of a singleton move]()"
+                    );
+                    embed.addField(
+                        "Ordo Moves",
+                        "Ordo moves consist of multiple stones that are adjacent orthagonally from each other being moved in either perpendicular direction (if the stones being moved are aligned vertically, they can only be moved horizontally, and vice versa).\n" +
+                        "You make an ordo move by saying the row number and column letter of the stones located at the ends of the line of stones you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many spaces you wish to move it in that direction; for example, say \"5A-7A left 4\" to move 3 stones aligned vertically in Column A to the left 4 spaces each.\n" +
+                        "These moves cannot capture enemy stones.\n" +
+                        "[Example .gif of an ordo move]()"
+                    );
+                    embed.addField(
+                        "Groups",
+                        "At the end of either player's turn, all of their stones must be connected into a single group where all stones are adjacent to at least one other, either diagonally or orthagonally. If a move is attempted and the moved stone(s) is not connected to the primary group, it is not a legal move.\n" +
+                        "If a player were to make a move that would separate their opponent's stones into two or more groups, their opponent must immediately make a move that would reconnect their stones into a single group again.\n" +
+                        "If a player's stones were to be split into two or more groups and that player cannot reconnect them into a single group again on their next turn, the game immediately ends.\n" +
+                        "[Example .gif of a group being separated and then reconnected]()"
+                    );
+                    embed.addField(
+                        "Endgame",
+                        "There are 3 conditions for ending the game:\n" +
+                        " -A player moves a stone into any space in their opponent's \"home row\" (for blue it's row 8, and for white it's row 1). This player is the winner. Both home rows have been highlighted in the color of which stone needs to be placed in it to end the game.\n" +
+                        " -All of a player's stones have been captured and removed from the game. This player is the loser.\n" +
+                        " -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser.\n" +
+                        "[Example .gif of all 3 scenarios]()"
+                    );
+                }
+            }
             embed.setColor(new Color().random());
-            return sendChat({embed});
+            message.author.send({embed});
+            return sendChat("The rules for " + GameName + " have been sent to you via DMs!");
+        }
+        if (["tourney", "tournament"].includes(args[0]))
+        {
+            if (message.channel.guild.members.get(message.author.id).roles.some(x => x.id == "597901572843896841"))
+            {
+                let player1 = args[1].match(/[0-9]{1,}/)[0];
+                let player2 = args[2].match(/[0-9]{1,}/)[0];
+                games[gameName].newTourney(message.channel.id, player1, player2);
+            }
         }
     },
 
@@ -986,8 +1209,8 @@ var commands = {
                     profile = res.rows[0];
                 }
 
-                Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.png` : "https://cdn.discordapp.com/embed/avatars/0.png").then(image1 => {
-                    Canvas.loadImage('/app/img/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then(image2 => {
+                Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then(image1 => {
+                    Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then(image2 => {
                         return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"));
                     });
                 }).catch(err => sendChat("```" + err + "```"));
@@ -999,6 +1222,7 @@ var commands = {
         {
             return sendChat("With***out*** the brackets, you twit.");
         }
+
         else
         if (["background", "backgrounds", "bg", "bgs"].includes(args[0]))
         {
@@ -1019,10 +1243,10 @@ var commands = {
                     }
                     if (res.rows[0].backgrounds.length == 1)
                     {
-                        return sendChat("This is your current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 20 Xuvys.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+                        return sendChat("This is your current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 500 money.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
                     }
 
-                    return sendChat("This is your current background, $user$! New backgrounds are still 20 Xuvys.\nDo `x!profile backgrounds` to view the other backgrounds you own.", new Discord.Attachment("https://i.imgur.com/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+                    return sendChat("This is your current background, $user$! New backgrounds cost 500 money.\nDo `x!profile backgrounds` to view the other backgrounds you own.", new Discord.Attachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
                 });
             }
             else
@@ -1085,11 +1309,11 @@ var commands = {
                     }
                     if (res.rows[0].backgrounds.length == images.ids.length)
                     {
-                        return sendChat("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, okay~?");
+                        return sendChat("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, ok?");
                     }
-                    if (res.rows[0].money < 20)
+                    if (res.rows[0].money < 500)
                     {
-                        return sendChat("You do not have enough money to buy another background! Get more money by playing games (and winning)!");
+                        return sendChat("You do not have enough money to buy another background! Backgrounds cost 500 money each! Get more money by playing games (and winning)!");
                     }
   
                     newbg = images.ids.random();
@@ -1101,14 +1325,14 @@ var commands = {
                     res.rows[0].backgrounds.push(newbg);
                     return db.query([
                         `UPDATE profiles`,
-                        `SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "'")}, money = '${res.rows[0].money - 20}'`,
+                        `SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "'")}, money = '${res.rows[0].money - 500}'`,
                         `WHERE id = '${message.author.id}'`
                     ].join('\n'), function(err) {
                         if (err)
                         {
                             sqlError(message, err, [
                                 `UPDATE profiles`,
-                                `SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "''")}, money = '${res.rows[0].money - 20}'`,
+                                `SET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "''")}, money = '${res.rows[0].money - 500}'`,
                                 `WHERE id = '${message.author.id}'`
                             ].join('\n'));
                         }
@@ -1177,8 +1401,9 @@ var commands = {
                 return sendChat("Unknown request.");
             }
         }
+
         else
-        if (["lefty", "sidedisplay", "displayside", "displaylorr", "leftorright", "rightorleft"].includes(args[0]))
+        if (["righty", "lefty", "sidedisplay", "displayside", "displaylorr", "leftorright", "rightorleft", "changeside", "sidechange", "side"].includes(args[0]))
         {
             return db.query([
                 `SELECT *`,
@@ -1217,6 +1442,7 @@ var commands = {
                 });
             });
         }
+
         else
         if (["title", "titles"].includes(args[0]))
         {
@@ -1301,6 +1527,7 @@ var commands = {
                 });
             });
         }
+
         else
         if (["color", "colors"].includes(args[0]))
         {
@@ -1351,231 +1578,124 @@ var commands = {
                 });
             });
         }
+
         else
         if (["help"].includes(input))
         {
-            return sendChat("**Available sub-commands for `x!profile`** (do `x!profile [subcommand]`):\n\n**backgrounds** - opens the background menu for changing your profile's background\n**displaylorr** - allows you to change which side all the text n stuff is displayed on in your profile\n**title** - can display your currently equipped title, your currently owned titles, or allows you to change your currently equipped title (if you know the ID for it)\n**color** - allows you to change the color your profile uses to display text");
+            let embed = new Discord.RichEmbed();
+            embed.setTitle("Available subcommands for x!profile");
+            embed.setDescription(
+                "x!profile `subcommand`\n" +
+                "\n" +
+                "**backgrounds** - Opens the background menu for changing your profile's background.\n" +
+                "**displayside** - Allows you to change which side all the text n stuff is displayed on in your profile.\n" +
+                "**title** - Displays your currently equipped title, your currently owned titles, or allows you to change your currently equipped title (if you know the ID for it).\n" +
+                "**color** - Allows you to change the color your profile uses to display information."
+            );
+            embed.setColor(new Color().random());
+            return sendChat({embed});
         }
+
         else
         {
             return sendChat("Invalid syntax. Try `x!profile help` for more information on how to use this.");
         }
     },
-   
-    // Smaller Games
-
-    "hangman": function(cmd, args, input, message, sendChat) {
-        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
-    },
-
-    "minesweeper": function(cmd, args, input, message, sendChat) {
-        let w, h, d;
-        if (["help"].includes(input))
-        {
-            let embed = new Discord.RichEmbed();
-            embed.setAuthor(
-                "MineSweeper",
-                "https://cdn.discordapp.com/attachments/597695621154996244/597696037431410689/minesweeper.png"
-            );
-            embed.setDescription([
-                "You can control 3 aspects of a game: height, width, and the number of bombs. Here are the 3 possible syntaxes:",
-                "```md",
-                "x!minesweeper [width] [height] [bombs]",
-                "x!minesweeper [width] [height]",
-                "x!minesweeper [bombs]",
-                "```",
-                "The maximum height you can set a game to is 20.",
-                "The maximum width you can set a game to is 16, but may have to be lower depending on the height (max number of total tiles is 198).",
-                "The maximum number of bombs depends on the number of tiles total (height * width). You can also set the number of bombs with a % instead of an exact number, OR you can use a preset difficulty (type `x!ms diff` to get a list)."].join('\n')
-            );
-            embed.addField(
-                "Examples", [
-                "```js",
-                "`x!minesweeper 11 18 50`",
-                "   // 11x18 board with 50 bombs",
-                "`x!minesweeper 30`",
-                "   // 10x10 board with 30 bombs",
-                "`x!minesweeper 12 12`",
-                "   // 12x12 board with 14 bombs",
-                "`x!minesweeper 10 15 30%`",
-                "   // 10x15 board with 45 bombs",
-                "`x!minesweeper 14 14 hard`",
-                "   // 14x14 board with 39 bombs",
-                "```"].join('\n')
-            );
-            embed.setTitle("Help");
-            embed.setColor(new Color().random());
-            sendChat({embed});
-        }
-        else
-        if (["diff", "difficulty", "difficulties"].includes(input))
-        {
-            let embed = new Discord.RichEmbed();
-            embed.setAuthor(
-                "MineSweeper",
-                "https://cdn.discordapp.com/attachments/597695621154996244/597696037431410689/minesweeper.png"
-            );
-            embed.addField("5%", "`novice`\n`beginner`");
-            embed.addField("10%", "`easy`\n`apprentice`");
-            embed.addField("15%", "`medium`\n`normal`\n`adept`");
-            embed.addField("20%", "`hard`\n`expert`");
-            embed.addField("25%", "`legendary`\n`master`");
-            embed.setTitle("Difficulties");
-            embed.setColor(new Color().random());
-            sendChat({embed});
-        }
-        else
-        {
-            h = !input || args.length == 1 || args.length > 3 ?
-                    10 :
-                !/^[1-9][0-9]{0,}$/.test(args[1]) ?
-                    10 :
-                Number(args[1]) > 20 ?
-                    20 :
-                Number(args[1]);
-            w = !input || args.length == 1 || args.length > 3 ?
-                    10 :
-                !/^[1-9][0-9]{0,}$/.test(args[0]) ?
-                    10 :
-                Number(args[0]) * h > 198 ?
-                    Math.floor(198 / h) > 16 ?
-                        16 :
-                    Math.floor(198 / h) :
-                Number(args[0]) > 16 ?
-                    16 :
-                Number(args[0]);
-            wh = w * h;
-            D = args.length == 1 || args.length > 3 ?
-                    args[1] :
-                args.length == 3 ?
-                    args[2] :
-                "easy";
-            d = !input ?
-                    10 :
-                args.length == 2 ?
-                    Math.round(wh * 0.1) :
-                /^[1-9][0-9]{0,}%?$/.test(D) ?
-                    /%/.test(D) ?
-                        Number(D.substring(0, D.length - 1)) > 100 ?
-                            wh :
-                        Math.round(wh * (Number(D.substring(0, D.length - 1)) / 100)) :
-                    Number(D) > wh ?
-                        wh :
-                    Number(D) :
-                "novice beginner easy apprentice medium normal adept hard expert legendary master".split(' ').includes(D) ?
-                    Math.round(wh * {
-                        "novice": 0.05,
-                        "beginner": 0.05,
-                        "easy": 0.1,
-                        "apprentice": 0.1,
-                        "medium": 0.15,
-                        "normal": 0.15,
-                        "adept": 0.15,
-                        "hard": 0.2,
-                        "expert": 0.2,
-                        "legendary": 0.25,
-                        "master": 0.25
-                    }[D]) :
-                Math.round(wh * 0.1);
-            a = [];
-            for (let y = h; y--;)
-            {
-                let b = [];
-                for (let x = w; x--;)
-                {
-                    b.push(0);
-                }
-                a.push(b);
-            }
-            k = [];
-            do
-            {
-                let x = Math.random() * w | 0;
-                let y = Math.random() * h | 0;
-                if (typeof a[y][x] == "number")
-                {
-                    a[y][x] = "☠";
-                    k.push([y, x]);
-                }
-            }
-            while (k.length < d);
-            for (let b = d; b--;)
-            {
-                y = k[b][0];
-                x = k[b][1];
-                z = [true, true, true, true, true, true, true, true];
-                if (y == 0)
-                {
-                    z[0] = z[1] = z[2] = false;
-                }
-                if (y == h - 1)
-                {
-                    z[4] = z[5] = z[6] = false;
-                }
-                if (x == 0)
-                {
-                    z[0] = z[7] = z[6] = false;
-                }
-                if (x == w - 1)
-                {
-                    z[2] = z[3] = z[4] = false;
-                }
-                for (let xy = 8; xy--;)
-                {
-                    if (z[xy])
-                    {
-                        Y = y + [-1, -1, -1, 0, 1, 1,  1,  0][xy];
-                        X = x + [-1,  0,  1, 1, 1, 0, -1, -1][xy];
-                        if (typeof a[Y][X] == "number")
-                        {
-                            a[Y][X] += 1;
-                        }
-                    }
-                }
-            }
-            for (let y = h; y--;)
-            {
-                for (let x = w; x--;)
-                {
-                    if (typeof a[y][x] == "number")
-                    {
-                        a[y][x] = "0⃣ 1⃣ 2⃣ 3⃣ 4⃣ 5⃣ 6⃣ 7⃣ 8⃣".split(' ')[a[y][x]];
-                    }
-                }
-            }
-            for (let y = h; y--;)
-            {
-                a[y] = a[y].join("||||");
-            }
-            let embed = new Discord.RichEmbed();
-            embed.setAuthor(
-                "MineSweeper",
-                "https://cdn.discordapp.com/attachments/597695621154996244/597696037431410689/minesweeper.png"
-            );
-            embed.setDescription("||" + a.join("||\n||") + "||");
-            embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
-            embed.setColor(new Color().random());
-            sendChat({embed});
-        }
-    },
-
-    "math": function(cmd, args, input, message, sendChat) {
-        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
-    },
-
-    "iq": function(cmd, args, input, message, sendChat) {
-        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
-    },
-
-    "sequence": function(cmd, args, input, message, sendChat) {
-        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
-    },
-
-    "shuffle": function(cmd, args, input, message, sendChat) {
-        return sendChat("This game has not yet been implemented to this bot. Please be patient, it will be added eventually.");
-    },
 
     // Utility
+    "help": function(cmd, args, input, message, sendChat) {
+        if (!input)
+        {
+            let embed = new Discord.RichEmbed();
+            embed.setTitle("Help");
+            embed.setDescription("A list of all commands supported by Bakeneko~\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "\nFor more help about any specific command, do \"`x![command]` `help`\"");
+            let helps;
+            helps = [
+                    "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`\n__Related Commands__:\n`games`  `profile`\n__Unimplemented__:\n`ordo`  `ninemen`  `gonnect`",
+                    "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`",
+                    "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`  `minesweeper`"
+            ];
+            if (message.channel.type == "dm")
+            {
+                helps[1] += "  `bugreport`  `request`";
+            }
+            else
+            {
+                helps[1] += "  `kick`  `ban`";
+            }
+            embed.addField("Games", helps[0]);
+            embed.addField("Utility", helps[1]);
+            embed.addField("Miscellaneous", helps[2]);
+            if (message.channel.type == "dm" || message.channel.nsfw)
+            {
+                embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \`x!nsfw help\` for a list of all the lewds I'm capable of.`);
+            }
+            embed.setColor(new Color().random());
+            embed.setFooter("Xyvybot version " + version);
+            return sendChat({embed});
+        }
+        else
+        if (["games", "minigames", "utility", "miscellaneous", "misc", "nsfw"].includes(input))
+        {
+            let embed = new Discord.RichEmbed();
+            embed.setTitle(input.toUpperCase());
+            embed.setDescription({
+                "games": "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`\n__Related Commands__:\n`games`  `profile`\n__Unimplemented__:\n`ordo`  `ninemen`  `gonnect`",
+                "utility": "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`" + (message.channel.type == "dm" ? "  `bugreport`  `request`" : "  `kick`  `ban`"),
+                "misc": "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`  `minesweeper`",
+                "nsfw": "`nsfw`\nThat's the only one. No need for multiple commands that do the same thing."
+            }[input]);
+            embed.setColor(new Color().random());
+            embed.setFooter("Xyvybot version " + version);
+            return sendChat({embed});
+        }
+        else
+        {
+            Object.values(aliases[message.channel.type == "dm" ? "user" : "guild"]).forEach((alias, index) => {
+                if (alias.includes(input))
+                {
+                    let help = [
+                        ["x!games [leaderboard|statistics] (game name|user ID)", "The umbrella command for checking out all game statistics for any user in Discord.", "x!games statistics 357700219825160194"],
+                        ["x!othello [start|rules]", "Othello, or Reversi, is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!othello start"],
+                        ["x!squares [start|rules]", "Squares is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that I created that can be played with my bot against other people.", "x!squares start"],
+                        ["x!rokumoku [start|rules]", "Rokumoku is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!rokumoku start"],
+                        ["x!ttt3d [start|rules]", "3D Tic Tac Toe is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!ttt3d start"],
+                        ["x!connect4 [start|rules]", "Connect Four, or Vertical Checkers, is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!connect4 start"],
+                        ["x!profile (user)", "Show of your own profile card that shows your game stats and rank. It has a customizable background and overlay color.", "x!profile 357700219825160194"],
+                        ["x!about", "Just a bit of information about what this bot does and some history about it.", "x!about"],
+                        ["x!help [command]", "Generates a list of commands, or gives a short description about a specific command.", "x!help help"],
+                        ["x!avatar (user)", "Get a large version of a user's profile picture.", "x!avatar 357700219825160194"],
+                        ["x!aliases [command]", "Get a list of all available keywords you can use to trigger a command.", "x!aliases help"],
+                        ["x!guild", "Get all the basic information about this server, like member count or how old it is.", "x!guild"],
+                        ["x!kick [user] (reason)", "Removes a user from the server without preventing them from being able to come back.", "x!kick 357700219825160194 Mic spamming in voice chat"],
+                        ["x!ban [user] (reason)", "Removes a user from the server with the guarantee that they will never come back. This will also delete all messages sent by that user in the last 2 days.", "x!ban 357700219825160194 Spam and harassment"],
+                        ["x!bug [command]\n[description]", "If you find a feature that you don't think should be a feature, use this command so that the dev will know about it. Be sure to be descriptive! Can only be used in direct messages. Can be used once per user every 2 hours.", "x!bug minesweeper\nDimensions don't match what's requested."],
+                        ["x!request [description]", "If there's a feature the bot does not yet support and you want to see supported, use this command so the dev will know about it. Be sure to be descriptive! Can only be used in direct messages. Can be used once per user every 2 hours.", "x!request Add more profile backgrounds"],
+                        ["x!neko", "Get a picture of a cute anime girl with cat ears.", "x!neko"],
+                        ["x!calc [equation]", "Solves a simple equation for you like a calculator.", "x!calc 2 + 2"],
+                        ["x!graph [equation]", "Draws out an equation on a coordinate grid. You can graph up to 10 equations at once.", "x!graph 2x + 7"],
+                        ["x!ai", "Gives you a link to invite Xyvybot - AI to your server.", "x!ai"],
+                        ["x!botsbyxyvy", "Gives you a link to the site where you request a commission for a custom-made Discord bot by Xyvyrianeth.", "x!botsbyxyvy"],
+                        ["x!minesweeper (width) (height) (difficulty)", "A classic game of Minesweeper right here on Discord. Wouldn't be possible without the ||spoiler|| feature.", "x!minesweeper 10 15 20%"],
+                        ["x!nsfw (tag)", "Get a naughty hentai image. This command can only be used in channels marked as NSFW or in direct messages.", "x!nsfw gif"]
+                    ][index];
+                    let embed = new Discord.RichEmbed();
+                    embed.setTitle("Help!");
+                    embed.setAuthor("Command: " + Object.keys(aliases.guild)[index]);
+                    embed.setDescription("__**Usage**__:\n`" + help[0] + "`\n\n" + help[1] + "\n\n__**Example**__:\n" + help[2]);
+                    embed.setColor(new Color().random());
+                    embed.setFooter("Xyvybot version " + version);
+                    sendChat({embed});
+                }
+                else
+                if (index == Object.keys(aliases[message.channel.type == "dm" ? "user" : "guild"]).length)
+                {
+                    sendChat("That command does not exist.");
+                }
+            });
+        }
+    },
+
     "avatar": function(cmd, args, input, message, sendChat) {
         if (!input || /^<@[0-9]{1,}>$/.test(input) || /^[0-9]{1,}$/.test(input))
         {
@@ -1607,111 +1727,63 @@ var commands = {
         }
     },
 
-    "help": function(cmd, args, input, message, sendChat) {
-        if (!input)
-        {
-            let embed = new Discord.RichEmbed();
-            embed.setTitle("Help");
-            embed.setDescription("A list of all commands supported by Bakeneko~\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "`\nFor more help about any specific command, do \"`x![command]` `help`\"");
-            let helps;
-            helps = [
-                    "`othello`  `squares`  `3dtictactoe`  `connect4`\n__Related Commands__:\n`games`  `profile`\n__Unimplemented__:\n`gomoku`  `ordo`  `ninemen`  `gonnect`",
-                    "`minesweeper`\nUnimplemented:\n`hangman`  `quickmaffs`  `iq`  `sequence`  `shuffle`",
-                    "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`",
-                    "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`"
-            ];
-            if (message.channel.type == "dm")
-            {
-                helps[2] = helps[2].concat(["`bugreport", "`request"]);
-            }
-            embed.addField("Games", helps[0]);
-            embed.addField("Smaller Games", helps[1]);
-            embed.addField("Utility", helps[2]);
-            embed.addField("Miscellaneous", helps[3]);
-            if (message.channel.type == "dm" || message.channel.nsfw)
-            {
-                embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \`x!nsfw help\` for a list of all the lewds I'm capable of.`);
-            }
-            embed.setColor(new Color().random());
-            embed.setFooter("Xyvybot version " + version);
-            return sendChat({embed});
-        }
-        else
-        if (["games", "utility", "miscellaneous", "misc", "nsfw"].includes(input))
-        {
-            let embed = new Discord.RichEmbed();
-            embed.setTitle(input.toUpperCase());
-            embed.setDescription({
-                "games": "Just a few board games, specifically [Abstract Strategy Games](https://en.wikipedia.org/wiki/Abstract_strategy_game). I'm not gonna add chess. No.",
-                "utility": "Random stuffs that relate to the bot or users or servers.",
-                "miscellaneous": "Other stuffs. Things that don't fit well in other categories.",
-                "misc": "Other stuffs. Things that don't fit well in other categories.",
-                "nsfw": "Lewd stuffs. Not available in server channels that aren't marked NSFW. It's stupid that some bots have created their own permission system to enable NSFW stuff in specific channels, like, just check if the channel is marked NSFW and you're good to go. It's 354% easier for the server owners than your stupid \"Sorry, NSFW commands are disabled here. Do `/bot commands enable nsfw` to enable them here!\" shit. Learn what's easy."
-            }[input]);
-        }
-        else
-        {
-            Object.values(aliases[message.channel.type == "dm" ? "user" : "guild"]).forEach((alias, index) => {
-                if (alias.includes(input))
-                {
-                    let help = [
-                        ["x!games [leaderboard|statistics] (game name|user ID)", "The umbrella command for checking out all game statistics for any user in Discord.", "x!games statistics 357700219825160194"],
-                        ["x!othello [start|rules]", "Othello, or Reversi, is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!othello start"],
-                        ["x!squares [start|rules]", "Squares is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that I created that can be played with my bot against other people.", "x!squares start"],
-                        ["x!gomoku [start|rules]", "Gomoku, or Go Bang, is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!gomoku start"],
-                        ["x!ttt3d [start|rules]", "3D Tic Tac Toe is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!ttt3d start"],
-                        ["x!connect4 [start|rules]", "Connect Four, or Vertical Checkers, is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!connect4 start"],
-                        ["x!profile (user)", "Show of your own profile card that shows your game stats and rank. It has a customizable background and overlay color.", "x!profile 357700219825160194"],
-                        ["x!hangman", "Play a quick game of hangman either by yourself or with your friends!", "x!hangman"],
-                        ["x!math", "Returns a random math function and the first to solve it wins!", "x!math"],
-                        ["x!iq", "Returns a simple puzzle, similar to one that might be found on an IQ test, and the first to solve it wins!", "x!iq"],
-                        ["x!sequence", "Returns a series of numbers that have a pattern in their order, and the first to guess the next in the sequence wins!", "x!sequence"],
-                        ["x!shuffle", "Returns a word that's had its letters all jumbled up, and the first to put the word back into the correct order wins!", "x!shuffle"],
-                        ["x!minesweeper (width) (height) (difficulty)", "A classic game of Minesweeper right here on Discord. Wouldn't be possible without the ||spoiler|| feature.", "x!minesweeper 10 15 20%"],
-                        ["x!about", "Just a bit of information about what this bot does and some history about it.", "x!about"],
-                        ["x!help [command]", "Generates a list of commands, or gives a short description about a specific command.", "x!help help"],
-                        ["x!avatar (user)", "Get a large version of a user's profile picture.", "x!avatar 357700219825160194"],
-                        ["x!aliases [command]", "Get a list of all available keywords you can use to trigger a command.", "x!aliases help"],
-                        ["x!guild", "Get all the basic information about this server, like member count or how old it is.", "x!guild"],
-                        ["x!kick [user] (reason)", "Removes a user from the server without preventing them from being able to come back.", "x!kick 357700219825160194 Mic spamming in voice chat"],
-                        ["x!ban [user] (reason)", "Removes a user from the server with the guarantee that they will never come back. This will also delete all messages sent by that user in the last 2 days.", "x!ban 357700219825160194 Spam and harassment"],
-                        ["x!bug [command]\n[description]", "If you find a feature that you don't think should be a feature, use this command so that the dev will know about it. Be sure to be descriptive! Can only be used in direct messages. Can be used once per user every 2 hours.", "x!bug minesweeper\nDimensions don't match what's requested."],
-                        ["x!request [description]", "If there's a feature the bot does not yet support and you want to see supported, use this command so the dev will know about it. Be sure to be descriptive! Can only be used in direct messages. Can be used once per user every 2 hours.", "x!request Add more profile backgrounds"],
-                        ["x!neko", "Get a picture of a cute anime girl with cat ears.", "x!neko"],
-                        ["x!calc [equation]", "Solves a simple equation for you like a calculator.", "x!calc 2 + 2"],
-                        ["x!graph [equation]", "Draws out an equation on a coordinate grid. You can graph up to 10 equations at once.", "x!graph 2x + 7"],
-                        ["x!ai", "Gives you a link to invite Xyvybot - AI to your server.", "x!ai"],
-                        ["x!botsbyxyvy", "Gives you a link to the site where you request a commission for a custom-made Discord bot by Xyvyrianeth.", "x!botsbyxyvy"],
-                        ["x!nsfw (tag)", "Get a naughty hentai image. This command can only be used in channels marked as NSFW or in direct messages.", "x!nsfw gif"]
-                    ][index];
-                    let embed = new Discord.RichEmbed();
-                    embed.setTitle("Help!");
-                    embed.setAuthor("Command: " + Object.keys(aliases.guild)[index]);
-                    embed.setDescription("__**Usage**__:\n`" + help[0] + "`\n\n" + help[1] + "\n\n__**Example**__:\n" + help[2]);
-                    embed.setColor(new Color().random());
-                    sendChat({embed});
-                }
-                else
-                if (index == Object.keys(aliases[message.channel.type == "dm" ? "user" : "guild"]).length)
-                {
-                    sendChat("That command does not exist.");
-                }
-            });
-        }
-    },
-  
     "about": function(cmd, args, input, message, sendChat) {
         let embed = new Discord.RichEmbed();
-        embed.setTitle("About me");
-        embed.addDescription("Let's start off by saying that the only reason this bot exists is because someone else told me I should make it. Not for any reason in particular, they were just testing me to see if I could do it.\nWell, I did it, and then I found I enjoyed making it, so I kept building on it. It's still a piece of crap, but it works, and that's all that matters, right?\n\nFast-forward 2 years and I find myself interested in abstract strategy games, like Go and Othello. It's not easy using a completely different application or software to play simple games with my friends on Discord, so I made this bot able to do what those other apps did, and we had fun.\n*Then*, someone suggested I make this bot go public so *other people* won't have the same problem. Thank that person (I forgot who, honestly) for telling me to solve that problem for you if you had it as well.");
-        embed.setThumbnail("https://cdn.discordapp.com/avatars/398606274721480725/773bffc6d905ce79e8e9ab950d1d1e23.png?size=2048");
+        embed.setTitle(
+            "About me",
+            Images.avatar
+        );
+        embed.setDescription(
+            "Let's start off by saying that the only reason this bot exists is because someone else told me I should make it. Not for any reason in particular, they were just testing me to see if I could do it.\n" +
+            "Well, I did it, and then I found I enjoyed making it, so I kept building on it. It's still kinda rough on the edges, but it works, and that's all that matters, right?\n" +
+            "\n" +
+            "Fast-forward 2 years and I find myself interested in [abstract strategy games](https://en.wikipedia.org/wiki/Abstract_strategy_game), like Go and Othello. It's not easy using a completely different application or software to play simple games with my friends on Discord, so I made this bot able to do what those other apps did, and we had fun.\n" +
+            "*Then*, someone suggested I make this bot go public so *other people* won't have the same problem. Thank that person (I forgot who, honestly) for telling me to solve that problem for you if you had it as well.\n" +
+            "\n" +
+            "Currently, I'm building up to starting a community centered around abstract strategy games. I plan to run tournaments where people play these games and win prizes, like money and Steam codes and more.\n" +
+            "Once I feel the bot is in a state of relative completeness, the server this would all happen in will go public. Please look forward to it."
+        );
+        embed.setColor(new Color().random());
+        sendChat({embed});
+    },
+
+    "credits": function(cmd, args, input, message, sendChat) {
+        let embed = new Discord.RichEmbed();
+        embed.setTitle(
+            "Credits",
+            Images.avatar
+        );
+        embed.addField(
+            "Created, Authored, and Primarily Tested by",
+            "Xyvyrianeth"
+        );
+        embed.addField(
+            "Code Dependencies",
+            "[Heroku](https://heroku.com/), [Node.js](https://nodejs.org/en/), and the following NPM libraries:\n" +
+            " -[Discord.js](https://npm.js/package/discord.js)\n" +
+            " -[PostgreSQL](https://npm.js/package/pg)\n" +
+            " -[Nekos.Life](https://npm.js/package/nekos.life)\n" +
+            " -[Canvas](https://npm.js/package/canvas)\n" +
+            "[Multiplayer Piano](https://multiplayerpiano.com) for all functions relating to [color hexadecimals](https://multiplayerpiano.com/Color.js)."
+        );
+        embed.addField(
+            "Images",
+            "All profile backgrounds found on [Imgur](https://imgur.com/) and posted by user [u/Kizenkis](https://imgur.com/user/Kizenkis) throughout various posts.\n" +
+            `All images from x!nekos${message.channel.nsfw ? " and x!nsfw " : " "}come directly from the [Nekos.Life](https://nekos.life/) API.\n` +
+            "All other assets made by Xyvyrianeth."
+        );
+        embed.addField(
+            "Special Thanks",
+            "to various users from [The Officially Unofficial Server to the Unofficially Official Dan-Ball Community](https://discord.gg/gYVMUrM) for both support and player testing."
+        );
+        embed.setColor(new Color().random());
         sendChat({embed});
     },
 
     "aliases": function(cmd, args, input, message, sendChat) {
         if (!input)
         {
-            return sendChat("To view all the aliases for a command, do `x!aliases` `[command name]`");
+            return sendChat("To view all the aliases for a command, do x!aliases `[command name]`");
         }
         else
         if (input.startsWith('['))
@@ -1737,46 +1809,52 @@ var commands = {
             {
                 return sendChat("```" + err + "```");
             }
-            if (!rows.includes(message.author.id))
+            if (!res.rows[0].bug.includes(message.author.id))
             {
-                if (bugTimers[message.author.id])
-                {
-                    return sendChat("You can submit 1 bug every 2 hours. Xyvy doesn't like being spammed, you know.");
-                }
                 if (!input)
                 {
                     return sendChat("Here is how to format a bug report:\n\n```\nx!reportbug [command that's bugged]\n[description of bug (less than 1000 characters, please)]```\nPlease take note that if you submit a fake bug report, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
                 }
-                let com = input.split("\n")[0];
-                console.log('"' + com + '"');
-                if (com.startsWith('['))
-                {
-                    return sendChat("With***out*** the brackets, you twit.");
-                }
-                let aliases = message.channel.type == "dm" ? aliases.user : aliases.guild;
-                let a = false;
-                for (let i in aliases) 
-                    if (aliases[i].includes(com))
+                db.query(`SELECT * FROM timers WHERE id = '${message.author.id}`, function(err, res) {
+                    if (res.rows.length == 1 && res.rows[0].bug > 0)
                     {
-                        a = true;
-                        break;
+                        return sendChat("You can submit 1 bug every 2 hours. Xyvy doesn't like being spammed, you know.");
                     }
-                if (!a)
-                {
-                    return sendChat("That command does not exist!");
-                }
-                let desc = input.substring(com.length).trim();
-                if (desc.length > 1000)
-                {
-                    return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
-                }
-                let embed = new Discord.RichEmbed();
-                embed.setTitle("Bug Report");
-                embed.setAuthor(message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')');
-                embed.setDescription("**Command**: " + com + "\n\n" + desc);
-                client.guilds.get("399327996076621825").channels.get("467853697528102912").send(embed);
-                bugTimers[message.author.id] = 100 * 60 * 60 * 2;
-                return sendChat("Bug report sent! Thanks for helping out!");
+                    let com = input.split("\n")[0];
+                    let desc = input.substring(com.length).trim();
+                    let aliases = message.channel.type == "dm" ? aliases.user : aliases.guild;
+                    let a = false;
+                    for (let i in aliases)
+                    {
+                        if (aliases[i].includes(com))
+                        {
+                            a = true;
+                            break;
+                    }   }
+                    if (!a)
+                    {
+                        return sendChat("That command does not exist!");
+                    }
+
+                    let embed = new Discord.RichEmbed();
+                    embed.setTitle("Bug Report");
+                    embed.setAuthor(
+                        message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')',
+                        `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.${message.author.avatar.startsWith("a_") ? "gif" : "png"}?size=2048`
+                    );
+                    embed.setDescription("**Command**: " + com + "\n\n" + desc);
+                    embed.setColor(new Color().random());
+                    client.guilds.get("399327996076621825").channels.get("467853697528102912").send({embed});
+                    sendChat("Bug report sent! Thanks for helping out!");
+                    if (res.rows.length == 0)
+                    {
+                        db.query(`INSERT INTO timers (id, bug, req) VALUES (${message.author.id}, 7200, 0);`);
+                    }
+                    else
+                    {
+                        db.query(`UPDATE timers SET bug = 7200 WHERE id = '${message.author.id}'`);
+                    }
+                });
             }
             else
             {
@@ -1786,32 +1864,42 @@ var commands = {
     },
 
     "request": function(cmd, args, input, message, sendChat) {
-        return db.query(`SELECT request FROM bans`, function(err, res) {
+        return db.query(`SELECT req FROM bans`, function(err, res) {
             if (err)
             {
                 return sendChat("```" + err + "```");
             }
-            if (!rows.includes(message.author.id))
+            if (!res.rows[0].req.includes(message.author.id))
             {
-                if (requestTimers[message.author.id])
-                {
-                    return sendChat("You can submit 1 request every 2 hours. Xyvy doesn't like being spammed, you know.");
-                }
                 if (!input)
                 {
-                    return sendChat("Here is how to format a request:\n\n```\nx!request [description of suggestion (less than 1000 characters, please)]```\nPlease take note that if you submit a fake request, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
+                    return sendChat("Here is how to format a request:\n\n```\nx!request [description of suggestion]```\nPlease take note that if you submit a fake request, your user ID will be blacklisted and you will no longer be able to use this command. Don't be a dick.");
                 }
-                if (input.length > 1000)
-                {
-                    return sendChat("Your description must be 1000 characters or shorter! This is not my personal preference, it's just a Discord thing.");
-                }
-                let embed = new Discord.RichEmbed();
-                embed.setTitle("User Request");
-                embed.setAuthor(message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')');
-                embed.setDescription("**Suggestion**:\n" + input);
-                client.guilds.get("399327996076621825").channels.get("468245442388295691").send(embed);
-                requestTimers[message.author.id] = 100 * 60 * 60 * 2;
-                return sendChat("Request sent! Thanks for the suggestion!");
+                db.query(`SELECT * FROM timers WHERE id = '${message.author.id}`, function(err, res) {
+                    if (res.rows.length == 1 && res.rows[0].req > 0)
+                    {
+                        return sendChat("You can submit 1 request every 2 hours. Xyvy doesn't like being spammed, you know.");
+                    }
+
+                    let embed = new Discord.RichEmbed();
+                    embed.setTitle("User Request");
+                    embed.setAuthor(
+                        message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')',
+                        `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.${message.author.avatar.startsWith("a_") ? "gif" : "png"}?size=2048`
+                    );
+                    embed.setDescription("**Suggestion**:\n" + input);
+                    embed.setColor(new Color().random());
+                    client.guilds.get("399327996076621825").channels.get("468245442388295691").send({embed});
+                    sendChat("Request sent! Thanks for the suggestion!");
+                    if (res.rows.length == 0)
+                    {
+                        db.query(`INSERT INTO timers (id, bug, req) VALUES (${message.author.id}, 0, 7200);`);
+                    }
+                    else
+                    {
+                        db.query(`UPDATE timers SET req = 7200 WHERE id = '${message.author.id}'`);
+                    }
+                });
             }
             else
             {
@@ -1897,8 +1985,20 @@ var commands = {
 
     },
    
+    // Misc
     "nekos": function(cmd, args, input, message, sendChat) {
-        Nekos.sfw.neko().then(neko => sendChat(new Discord.RichEmbed().setImage(neko.url).setDescription("Have a neko~!").setFooter("Powered by Nekos.Life").setColor(new Color().random())));
+        Nekos.sfw.neko().then(neko => {
+            let embed = new Discord.RichEmbed();
+            embed.setAuthor(
+                "x!nsfw",
+                Images.nekosLife
+            );
+            embed.setImage(neko.url);
+            embed.setDescription("Have a neko~!");
+            embed.setFooter("Powered by Nekos.Life");
+            embed.setColor(new Color().random());
+            return sendChat({embed});
+        });
     },
 
     "calc": function(cmd, args, input, message, sendChat) {
@@ -1923,7 +2023,7 @@ var commands = {
         if (["info", "about", "history"].includes(args[0])) {
             let embed = new Discord.RichEmbed();
             embed.setTitle("Brief History of the Xyvyrianethian Graphic Calculator");
-            embed.setAuthor("By Xyvyrianeth");
+            embed.setAuthor("By Xyvyrianeth", exports.Images.avatar);
             embed.setDescription([
                 "Okay, well, I made this simply because I had nothing better to do with my time. When I started, it was 100% text-drawn, ",
                 "and it was really cool because I could add a lot of features to it when it didn't have to be accurate. Then I moved to ",
@@ -1943,7 +2043,7 @@ var commands = {
         {
             let embed = new Discord.RichEmbed();
             embed.setTitle("How to Graphic Calculator, Xyvybot Style");
-            embed.setAuthor("by Xyvyrianeth");
+            embed.setAuthor("By Xyvyrianeth", exports.Images.avatar);
             embed.setDescription("[Click this link, it totally isn't spoopy](https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph)");
 
         }
@@ -2153,25 +2253,214 @@ var commands = {
         }
     },
 
-    // AI
     "ai": function(cmd, args, input, message, sendChat) {
         let embed = new Discord.RichEmbed();
         embed.setDescription("One day I needed to test a change I made to Squares, but I had nobody to test it with, so I created another bot to play the game with me and holy shit it kicks ass.\n\nI decided to make this new bot as public as Xyvybot so that other people can play against it, too! [Click here to invite it to your server](https://discordapp.com/oauth2/authorize?client_id=561578790837289002&scope=bot&permissions=3072)! Once you have it, just request a game with Xyvybot and then ping it!\nNote that this bot is completely useless if your server does not also have Xyvybot in it.\nAlso, the only game it can play right now is Squares. I haven't gotten around to letting it play other games, yet.");
         embed.setAuthor(
             "Xyvybot - AI",
-            "https://cdn.discordapp.com/attachments/597695621154996244/597696037431410690/AI.png"
+            Images.AIvatar
         );
         embed.setColor(new Color().random());
         return sendChat({embed});
     },
 
-    // Bots by Xyvy
     "botsbyxyvy": function(cmd, args, input, message, sendChat) {
         let embed = new Discord.RichEmbed();
         embed.setTitle("Bots by Xyvy");
         embed.setDescription("Are you tired of sorting through countless Discord bot listings trying to find one that does exactly what you need one to do? Well, stop doing that. Sometimes, a bot that does what you need it to do just doesn't exist. But it *can*, and that's where I come in! If you have money and a lack of programming knowledge and really need a bot that doesn't exist, I'll make it for you! Just click [this link](https://sites.google.com/site/botsbyxyvy/), read the information, and submit a commission request so we can get to work!");
         embed.setColor(new Color().random());
         return sendChat({embed});
+    },
+
+    "minesweeper": function(cmd, args, input, message, sendChat) {
+        let w, h, d;
+        if (["help"].includes(input))
+        {
+            let embed = new Discord.RichEmbed();
+            embed.setAuthor(
+                "MineSweeper",
+                Images.minesweeper
+            );
+            embed.setDescription([
+                "You can control 3 aspects of a game: height, width, and the number of bombs. Here are the 3 possible syntaxes:",
+                "```md",
+                "x!minesweeper [width] [height] [bombs]",
+                "x!minesweeper [width] [height]",
+                "x!minesweeper [bombs]",
+                "```",
+                "The maximum height you can set a game to is 20.",
+                "The maximum width you can set a game to is 16, but may have to be lower depending on the height (max number of total tiles is 198).",
+                "The maximum number of bombs depends on the number of tiles total (height * width). You can also set the number of bombs with a % instead of an exact number, OR you can use a preset difficulty (type `x!ms diff` to get a list)."].join('\n')
+            );
+            embed.addField(
+                "Examples", [
+                "```js",
+                "`x!minesweeper 11 18 50`",
+                "   // 11x18 board with 50 bombs",
+                "`x!minesweeper 30`",
+                "   // 10x10 board with 30 bombs",
+                "`x!minesweeper 12 12`",
+                "   // 12x12 board with 14 bombs",
+                "`x!minesweeper 10 15 30%`",
+                "   // 10x15 board with 45 bombs",
+                "`x!minesweeper 14 14 hard`",
+                "   // 14x14 board with 39 bombs",
+                "```"].join('\n')
+            );
+            embed.setTitle("Help");
+            embed.setColor(new Color().random());
+            sendChat({embed});
+        }
+        else
+        if (["diff", "difficulty", "difficulties"].includes(input))
+        {
+            let embed = new Discord.RichEmbed();
+            embed.setAuthor(
+                "MineSweeper",
+                Images.minesweeper
+            );
+            embed.addField("5%", "`novice`\n`beginner`");
+            embed.addField("10%", "`easy`\n`apprentice`");
+            embed.addField("15%", "`medium`\n`normal`\n`adept`");
+            embed.addField("20%", "`hard`\n`expert`");
+            embed.addField("25%", "`legendary`\n`master`");
+            embed.setTitle("Difficulties");
+            embed.setColor(new Color().random());
+            sendChat({embed});
+        }
+        else
+        {
+            h = !input || args.length == 1 || args.length > 3 ?
+                    10 :
+                !/^[1-9][0-9]{0,}$/.test(args[1]) ?
+                    10 :
+                Number(args[1]) > 20 ?
+                    20 :
+                Number(args[1]);
+            w = !input || args.length == 1 || args.length > 3 ?
+                    10 :
+                !/^[1-9][0-9]{0,}$/.test(args[0]) ?
+                    10 :
+                Number(args[0]) * h > 198 ?
+                    Math.floor(198 / h) > 16 ?
+                        16 :
+                    Math.floor(198 / h) :
+                Number(args[0]) > 16 ?
+                    16 :
+                Number(args[0]);
+            wh = w * h;
+            D = args.length == 1 || args.length > 3 ?
+                    args[1] :
+                args.length == 3 ?
+                    args[2] :
+                "easy";
+            d = !input ?
+                    10 :
+                args.length == 2 ?
+                    Math.round(wh * 0.1) :
+                /^[1-9][0-9]{0,}%?$/.test(D) ?
+                    /%/.test(D) ?
+                        Number(D.substring(0, D.length - 1)) > 100 ?
+                            wh :
+                        Math.round(wh * (Number(D.substring(0, D.length - 1)) / 100)) :
+                    Number(D) > wh ?
+                        wh :
+                    Number(D) :
+                "novice beginner easy apprentice medium normal adept hard expert legendary master".split(' ').includes(D) ?
+                    Math.round(wh * {
+                        "novice": 0.05,
+                        "beginner": 0.05,
+                        "easy": 0.1,
+                        "apprentice": 0.1,
+                        "medium": 0.15,
+                        "normal": 0.15,
+                        "adept": 0.15,
+                        "hard": 0.2,
+                        "expert": 0.2,
+                        "legendary": 0.25,
+                        "master": 0.25
+                    }[D]) :
+                Math.round(wh * 0.1);
+            a = [];
+            for (let y = h; y--;)
+            {
+                let b = [];
+                for (let x = w; x--;)
+                {
+                    b.push(0);
+                }
+                a.push(b);
+            }
+            k = [];
+            do
+            {
+                let x = Math.random() * w | 0;
+                let y = Math.random() * h | 0;
+                if (typeof a[y][x] == "number")
+                {
+                    a[y][x] = "☠";
+                    k.push([y, x]);
+                }
+            }
+            while (k.length < d);
+            for (let b = d; b--;)
+            {
+                y = k[b][0];
+                x = k[b][1];
+                z = [true, true, true, true, true, true, true, true];
+                if (y == 0)
+                {
+                    z[0] = z[1] = z[2] = false;
+                }
+                if (y == h - 1)
+                {
+                    z[4] = z[5] = z[6] = false;
+                }
+                if (x == 0)
+                {
+                    z[0] = z[7] = z[6] = false;
+                }
+                if (x == w - 1)
+                {
+                    z[2] = z[3] = z[4] = false;
+                }
+                for (let xy = 8; xy--;)
+                {
+                    if (z[xy])
+                    {
+                        Y = y + [-1, -1, -1, 0, 1, 1,  1,  0][xy];
+                        X = x + [-1,  0,  1, 1, 1, 0, -1, -1][xy];
+                        if (typeof a[Y][X] == "number")
+                        {
+                            a[Y][X] += 1;
+                        }
+                    }
+                }
+            }
+            for (let y = h; y--;)
+            {
+                for (let x = w; x--;)
+                {
+                    if (typeof a[y][x] == "number")
+                    {
+                        a[y][x] = "0⃣ 1⃣ 2⃣ 3⃣ 4⃣ 5⃣ 6⃣ 7⃣ 8⃣".split(' ')[a[y][x]];
+                    }
+                }
+            }
+            for (let y = h; y--;)
+            {
+                a[y] = a[y].join("||||");
+            }
+            let embed = new Discord.RichEmbed();
+            embed.setAuthor(
+                "MineSweeper",
+                Images.minesweeper
+            );
+            embed.setDescription("||" + a.join("||\n||") + "||");
+            embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
+            embed.setColor(new Color().random());
+            sendChat({embed});
+        }
     },
    
     // NSFW
@@ -2187,6 +2476,10 @@ var commands = {
         {
             let type = tags.random();
             let embed = new Discord.RichEmbed();
+            embed.setAuthor(
+                "x!nsfw",
+                Images.nekosLife
+            );
             embed.setDescription(`Tag: \`${type}\` | Do \`x!nsfw ${type}\` to see more like this\nDo \`x!nsfw tags\` to see all tags`);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random());
@@ -2201,6 +2494,10 @@ var commands = {
         if (["tags", "help"].includes(input))
         {
             let embed = new Discord.RichEmbed();
+            embed.setAuthor(
+                "x!nsfw",
+                Images.nekosLife
+            );
             embed.setTitle("NSFW Tags");
             let joined = '';
             for (let i = 0; i < tags.length; i++)
@@ -2257,6 +2554,10 @@ var commands = {
             }
         
             let embed = new Discord.RichEmbed();
+            embed.setAuthor(
+                "x!nsfw",
+                Images.nekosLife
+            );
             embed.setDescription(`Tag: \`${type}\`\nSelected randomly from: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random())
@@ -2318,6 +2619,10 @@ var commands = {
                 }
             }
             let embed = new Discord.RichEmbed();
+            embed.setAuthor(
+                "x!nsfw",
+                Images.nekosLife
+            );
             embed.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random())
@@ -2374,6 +2679,10 @@ var commands = {
                             Tags.push(`[${types[x]}](${Types[x]})`);
                         }
                         let embed = new Discord.RichEmbed();
+                        embed.setAuthor(
+                            "x!nsfw",
+                            Images.nekosLife
+                        );
                         embed.setDescription(`Tags: [\`${queue.join('`, `')}\`]${types.length > 5 ? `\nMaximum of 5 tags allowed` : ''}\n\n[${Tags.join(']\n\n[')}]`);
                         embed.setFooter("Powered by Nekos.Life");
                         embed.setColor(new Color().random());
@@ -2401,6 +2710,10 @@ var commands = {
             }
         
             let embed = new Discord.RichEmbed();
+            embed.setAuthor(
+                "x!nsfw",
+                Images.nekosLife
+            );
             embed.setDescription(`Tag: \`${type}\``);
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random())
@@ -2421,9 +2734,14 @@ var commands = {
         if (input.startsWith("```js\n") && input.endsWith("```"))
         {
             let execute = input.substring(6, input.length - 3);
+            let embed = new Discord.RichEmbed();
+            embed.setTitle("x!js");
+            embed.setColor(new Color().random());
+            embed.setTimestamp();
             try
             {
-                sendChat("```js\n" + JSON.stringify(eval(execute)) + "```");
+                embed.setDescription("```js\n" + JSON.stringify(eval(execute)) + "```");
+                sendChat({embed});
             }
             catch (err)
             {
@@ -2450,12 +2768,13 @@ var commands = {
                 }
                 if (!b)
                 {
-                    sendChat("```" + err + "``````\n" + Err.join("\n") + "```");
+                    embed.setDescription("```" + err + "``````\n" + Err.join("\n") + "```");
                 }
                 else
                 {
-                    return sendChat("```" + err + "``````" + b[0] + '\n' + ' '.repeat(b[1]) + "^```");
+                    embed.setDescription("```" + err + "``````" + b[0] + '\n' + ' '.repeat(b[1]) + "^```");
                 }
+                sendChat({embed});
             }
         }
     },
@@ -2468,21 +2787,31 @@ var commands = {
         if (input.startsWith("```sql\n") && input.endsWith("```"))
         {
             return db.query(input.substring(7, input.length - 3), function(err, res) {
+                let embed = new Discord.RichEmbed();
+                embed.setTitle("x!pg");
+                embed.setColor(new Color().random());
+                embed.setTimestamp();
                 if (err)
                 {
-                    return sendChat("```" + err + "```");
+                    embed.setDescription("```" + err + "```");
+                    return sendChat({embed});
                 }
-                return sendChat(table(res));
+                embed.setDescription(table(res));
+                return sendChat({embed});
             });
         }
     },
    
 };
 
-var Images = {
-    graph: null
+exports.Images = {
+    graph: null,
+    avatar: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png",
+    AIvatar: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/AI.png",
+    minesweeper: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/minesweeper.png",
+    nekosLife: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/nekos_life.png"
 };
-Canvas.loadImage("./img/graph.png").then(image => {
+Canvas.loadImage("/app/assets/misc/graph.png").then(image => {
     Images.graph = image;
 });
 

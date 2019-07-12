@@ -5,14 +5,14 @@ const { client } = require("/app/Xyvy.js");
 var gamename = "Connect Four";
 var shortname = "connect4";
  
-exports.newGame = function(channel, player) {
+exports.newGame = function(channel, player, here) {
     let game = {
         buffer: {},
         channels: {},
         forfeit: false,
         game: shortname,
+        here: here,
         lastDisplays: [],
-        lastmove: '',
         over: false,
         player: false,
         players: [player],
@@ -38,7 +38,7 @@ exports.startGame = function(channel1, channel2, player2) {
     game.players[1] = player2;
     game.started = true;
  
-    game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
+    if ((Math.random() * 2 | 0) == 0) game.players.reverse(); // Makes player one random instead of always the challenger
     game.player = game.players[0];
  
     game.timer = {
@@ -47,7 +47,7 @@ exports.startGame = function(channel1, channel2, player2) {
     }
 
     game.buffer = new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
-    exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Red, and <@${game.players[1]}> will be Blue!`, game.buffer]);
+    exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be Red!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
  
 exports.drawBoard = function(game, end, highlight) {
@@ -58,14 +58,14 @@ exports.drawBoard = function(game, end, highlight) {
 
     if (end == 0)
     {
-        ctx.drawImage(exports.Images[["red", "blue"][game.turn] + "Text"], 9, 6);
-        ctx.drawImage(exports.Images.turn, 45 + (13 * game.turn), 4);
+        ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 9, 6);
+        ctx.drawImage(exports.Images.turn, 45 - (13 * game.turn), 4);
     }
     else
     if (end == 1)
     {
-        ctx.drawImage(exports.Images[["red", "blue"][game.turn] + "Text"], 9, 6);
-        ctx.drawImage(exports.Images.win, 50 + (13 * game.turn), 6);
+        ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 9, 6);
+        ctx.drawImage(exports.Images.win, 50 - (13 * game.turn), 6);
     }
     else
     if (end == 2)
@@ -77,9 +77,9 @@ exports.drawBoard = function(game, end, highlight) {
     {
         for (let ii = 0; ii < game.board[i].length; ii++)
         {
-            ctx.drawImage(exports.Images[["red", "blue"][game.board[i][ii]]], 6 + (25 * i), 30 + (25 * (5 - ii)));
+            ctx.drawImage(exports.Images[["blue", "red"][game.board[i][ii]]], 6 + (25 * i), 30 + (25 * (5 - ii)));
             
-            if (end === 1 && highlight.filter(x => { return x[0] == i && x[1] == ii; }).length == 1)
+            if (end === 1 && highlight.some(x => x[0] == i && x[1] == ii))
             {
                 ctx.drawImage(exports.Images.winHighlight, 6 + (25 * i), 30 + (25 * (5 - ii)));
             }
@@ -94,18 +94,18 @@ exports.drawBoard = function(game, end, highlight) {
     return canvas.toBuffer();
 }
  
-exports.takeTurn = function(channel, move) {
+exports.takeTurn = function(channel, Move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
      
     // Function will vary with game
-    let x = move - 1;
-    if (game.board[x].length == 6)
+    let move = Move - 1;
+    if (game.board[move].length == 6)
     {
         return exports.say(game.channels, ["This column is full, please pick another!", {}]);
     }
 
-    game.board[x].push(game.turn);
-    let highlight = x;
+    game.board[move].push(game.turn);
+    game.highlight = move;
  
     let end = 2;
     for (let i = 7; i--;)
@@ -116,65 +116,45 @@ exports.takeTurn = function(channel, move) {
             break;
         }
     }
-    for (let i = 0; i < 4; i++)
+
+    let a = game.board;
+    let b = game.turn;
+    let e = [-1, 0, 1, 1];
+    let f = [1, 1, 1, 0];
+    for (let d = 0; d < 4; d++)
     {
-        for (let x = 0; x < 6; x++)
+        for (let y = [3, 0, 0, 0][d]; y < [6, 6, 3, 3][d]; y++)
         {
-            if (x < 3)
+            for (let x = 0; d < [7, 3, 3, 7][d]; x++)
             {
-                if (game.board[i][x] == game.turn && game.board[i + 1][x] == game.turn && game.board[i + 2][x] == game.turn && game.board[i + 3][x] == game.turn)
+                if (![
+                    a[y][x],
+                    a[y + (e[d] * 1)][x + (f[d] * 1)],
+                    a[y + (e[d] * 2)][x + (f[d] * 2)],
+                    a[y + (e[d] * 3)][x + (f[d] * 3)]
+                ].some(c => c != b))
                 {
-                    highlight = [[i, x], [i + 1, x], [i + 2, x], [i + 3, x]];
+                    game.highlight = [
+                        a[y][x],
+                        a[y + (e[d] * 1)][x + (f[d] * 1)],
+                        a[y + (e[d] * 2)][x + (f[d] * 2)],
+                        a[y + (e[d] * 3)][x + (f[d] * 3)]
+                    ];
                     end = 1;
-                    break;
-                }
-                if (game.board[i][x] == game.turn && game.board[i + 1][x + 1] == game.turn && game.board[i + 2][x + 2] == game.turn && game.board[i + 3][x + 3] == game.turn)
-                {
-                    highlight = [[i, x], [i + 1, x + 1], [i + 2, x + 2], [i + 3, x + 3]];
-                    end = 1;
-                    break;
-                }
-                if (game.board[i][x] == game.turn && game.board[i][x + 1] == game.turn && game.board[i][x + 2] == game.turn && game.board[i][x + 3] == game.turn)
-                {
-                    highlight = [[i, x], [i, x + 1], [i, x + 2], [i, x + 3]];
-                    end = 1;
-                    break;
-                }
-            }
-            else
-            {
-                if (game.board[i][x] == game.turn && game.board[i + 1][x] == game.turn && game.board[i + 2][x] == game.turn && game.board[i + 3][x] == game.turn)
-                {
-                    highlight = [[i, x], [i + 1, x], [i + 2, x], [i + 3, x]];
-                    end = 1;
-                    break;
-                }
-                if (game.board[i][x] == game.turn && game.board[i + 1][x - 1] == game.turn && game.board[i + 2][x - 2] == game.turn && game.board[i + 3][x - 3] == game.turn)
-                {
-                    highlight = [[i, x], [i + 1, x - 1], [i + 2, x - 2], [i + 3, x - 3]];
-                    end = 1;
-                    break;
-                }
-                if (game.board[i][x] == game.turn && game.board[i][x - 1] == game.turn && game.board[i][x - 2] == game.turn && game.board[i][x - 3] == game.turn)
-                {
-                    highlight = [[i, x], [i, x - 1], [i, x - 2], [i, x - 3]];
-                    end = 1;
-                    break;
                 }
             }
         }
     }
-    //
 
     if (end !== 0)
     {
         game.winner = game.turn;
     }
      
-    exports.nextTurn(channel, end, highlight);
+    exports.nextTurn(channel, end);
 }
  
-exports.nextTurn = function(channel, end, highlight) {
+exports.nextTurn = function(channel, end) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
     {
@@ -189,7 +169,7 @@ exports.nextTurn = function(channel, end, highlight) {
     {
         game.over = true;
     }
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`, `${shortname}_${end}_${game.players[game.winner]}.png`][end]);
     for (let ch in game.channels)
     {
         for (let i = 0; i < game.channels[ch].length; i++)
@@ -199,7 +179,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 1 ? `<@${game.player}> has won!` : "Tie game, everyone loses!", game.buffer]);
+    exports.say(game.channels, [[`It is <@${game.player}>'s turn.`, `<@${game.player}> has won!`, "Tie game, everyone loses!"][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {
@@ -213,33 +193,33 @@ exports.say = function(channels, message) {
 
 exports.Images = {};
 
-Canvas.loadImage("./img/gameAssets/connect4/board.png").then(image => {
+Canvas.loadImage("./assets/games/connect4/board.png").then(image => {
     exports.Images.board = image;
 });
-Canvas.loadImage("./img/gameAssets/connect4/red.png").then(image => {
+Canvas.loadImage("./assets/games/connect4/red.png").then(image => {
     exports.Images.red = image;
 });
-Canvas.loadImage("./img/gameAssets/connect4/blue.png").then(image => {
+Canvas.loadImage("./assets/games/connect4/blue.png").then(image => {
     exports.Images.blue = image;
 });
-Canvas.loadImage("./img/gameAssets/connect4/redText.png").then(image => {
+Canvas.loadImage("./assets/games/connect4/redText.png").then(image => {
     exports.Images.redText = image;
 });
-Canvas.loadImage("./img/gameAssets/connect4/blueText.png").then(image => {
+Canvas.loadImage("./assets/games/connect4/blueText.png").then(image => {
     exports.Images.blueText = image;
 });
-Canvas.loadImage("./img/gameAssets/connect4/turn.png").then(image => {
+Canvas.loadImage("./assets/games/connect4/turn.png").then(image => {
     exports.Images.turn = image;
 });
-Canvas.loadImage("./img/gameAssets/connect4/win.png").then(image => {
+Canvas.loadImage("./assets/games/connect4/win.png").then(image => {
     exports.Images.win = image;
 });
-Canvas.loadImage("./img/gameAssets/connect4/highlight.png").then(image => {
+Canvas.loadImage("./assets/games/connect4/highlight.png").then(image => {
     exports.Images.highlight = image;
 });
-Canvas.loadImage("./img/gameAssets/connect4/winHighlight.png").then(image => {
+Canvas.loadImage("./assets/games/connect4/winHighlight.png").then(image => {
     exports.Images.winHighlight = image;
 });
-Canvas.loadImage("./img/gameAssets/connect4/tie.png").then(image => {
+Canvas.loadImage("./assets/games/connect4/tie.png").then(image => {
     exports.Images.tie = image;
 });

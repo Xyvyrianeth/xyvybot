@@ -5,15 +5,15 @@ const { client } = require("/app/Xyvy.js");
 var gamename = "Othello";
 var shortname = "othello";
   
-exports.newGame = function(channel, player) {
+exports.newGame = function(channel, player, here) {
     let game = {
         buffer: {},
         channels: {},
         forfeit: false,
         game: shortname,
+        here: here,
         highlight: [],
         lastDisplays: [],
-        lastmove: '',
         over: false,
         player: false,
         players: [player],
@@ -72,7 +72,7 @@ exports.startGame = function(channel1, channel2, player2) {
     game.players[1] = player2;
     game.started = true;
   
-    game.players = (Math.random() * 2 | 0) == 0 ? game.players : [game.players[1], game.players[0]]; // Makes player one random instead of always the challenger
+    if ((Math.random() * 2 | 0) == 0) game.players.reverse(); // Makes player one random instead of always the challenger
     game.player = game.players[0];
   
     game.timer = {
@@ -81,7 +81,7 @@ exports.startGame = function(channel1, channel2, player2) {
     }
 
     game.buffer =  new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
-    exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be dark, and <@${game.players[1]}> will be light!`, game.buffer]);
+    exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Black, and <@${game.players[1]}> will be White!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
   
 exports.drawBoard = function(game, end) {
@@ -149,9 +149,13 @@ exports.takeTurn = function(channel, Move) {
     // Function will vary with game
     possible = game.possible;
     game.highlight = [];
+    if (typeof game.board[move[0]][move[1]] !== "boolean")
+    {
+        return exports.say(JSON.parse(`{"${channel}":[]}`), ["Someone has aleady played that space!", {}]);
+    }
     if (game.board[move[0]][move[1]] === false)
     {
-        return exports.say(game.channels, ["Someone has aleady played there, pick another spot!", {}]);
+        return exports.say(JSON.parse(`{"${channel}":[]}`), ["That space cannot be played!", {}]);
     }
     for (let i = 0; i < possible.length; i++)
     {
@@ -183,20 +187,43 @@ exports.takeTurn = function(channel, Move) {
         }
     }
 
+    game.turn = [1, 0][game.turn];
+
+    exports.checkPossible(game);
+    if (!game.possible)
+    {
+        game.turn = [1, 0][game.turn];
+        exports.checkPossible(game);
+        if (game.possible)
+        {
+            exports.nextTurn(channel, true);
+        }
+        else
+        {
+            exports.nextTurn(channel, false);
+        }
+    }
+    else
+    {
+        exports.nextTurn(channel, false);
+    }
+}
+
+exports.checkPossible = function(game) {
     // If empty spaces are available, this finds spaces that can be played in
     game.possible = [];
-    let b = game.turn === 0 ? 1 : 0; // Opponent's piece
-    let a = game.turn; // Not opponent's piece
+    let a = game.turn; // Active players's stone
+    let b = game.turn === 0 ? 1 : 0; // Opponent's stone
     for (let y = 0; y < 8; y++)
-    { 
+    { // Goes through every space on the board...
         for (let x = 0; x < 8; x++)
-        { // Goes through every spot on the board
+        { // Goes through every space on the board...
 
             if (game.board[y][x] === false)
-            { // If [this] spot is empty
+            { // If [this] space is empty...
 
-                d = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]; // All 8 directions
-                p = []; // Total directions that can be captured in [this]
+                d = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]; // All 8 cardinal [d]irections
+                p = []; // Total [d]irections that can be captured in [this] space
                 
                 for (let i = 0; i < 8; i++)
                 { // For all 8 directions...
@@ -206,89 +233,82 @@ exports.takeTurn = function(channel, Move) {
                     
                         let y1 = y + d[i][0]; // Y-coord of next space d
                         let x1 = x + d[i][1]; // X-coord of next space d
-                        let p1 = 1; // How many pieces in [d]?
+                        let p1 = 1; // How many stones in [d]irection?
 
                         if (game.board[y1][x1] === a)
-                        { // If the first piece in [d] belongs to the opponent
+                        { // If the first stone in [d]irection belongs to the opponent
 
                             let yx = true; // Can we keep going this way?
 
                             do
-                            { // Keep going in that direction
-                                y1 += d[i][0]; // +1 in vertical direction
-                                x1 += d[i][1]; // +1 in horizontal direction
+                            { // Keep going in this [d]irection...
+                                y1 += d[i][0]; // +1 in vertical [d]irection
+                                x1 += d[i][1]; // +1 in horizontal [d]irection
                                 p1 += 1; // +1 to distance
                                 
                                 if (y1 < 8 && y1 > -1 && x1 < 8 && x1 > -1)
-                                { // Next spot does not go off the endge
+                                { // Next space does not go off the endge
 
                                     if (game.board[y1][x1] === b)
-                                    { // Next spot belongs to the active player
+                                    { // Next space belongs to the active player
 
-                                        p.push(d[i].concat(p1)); // Add this direction as well as the number of pieces in this direction to this spot for the possible list
-                                        yx = false; // We can no longer go this way
+                                        p.push(d[i].concat(p1)); // Add this direction as well as the number of stones in this direction to this space for the possible list
+                                        yx = false; // We can no longer go in this [d]irection
                                     }
                                     else
                                     if (typeof game.board[y1][x1] == "boolean")
-                                    { // Next spot is blank
-                                        yx = false; // We can no longer go this way
+                                    { // Next space is blank
+                                        yx = false; // We can no longer go in this [d]irection
                                     }
                                 }
                                 else
-                                { // Next spot goes off the edge
-                                    yx = false; // We can no longer go this way
+                                { // Next space goes off the edge
+                                    yx = false; // We can no longer go in this [d]irection
                                 }
                             }
-                            while (yx); // Let's keep going this way
+                            while (yx); // ...until we can no longer go in this [d]irection
                         }
                     }
                 }
                 if (p.length > 0)
-                { // For every direction in this spot
+                { // For every direction in this space
 
-                    game.board[y][x] = true; // This spot can be played in
-                    game.possible.push([y, x, p]); // And this is the information for what pieces to turn if played here next
+                    game.board[y][x] = true; // This space can be played in
+                    game.possible.push([y, x, p]); // And this is the information for what stones to turn if played here next
                 }
             }
         }
     }
-    //
-    
-    exports.nextTurn(channel);
-}
-  
-exports.nextTurn = function(channel) {
-    let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
-    let end = 0;
-    game.turn = game.turn == 0 ? 1 : 0;
-    game.player = game.players[game.turn];
-    game.timer = {
-        time: 600,
-        message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
-    }
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     if (game.possible.length == 0)
     {
-        game.turn = game.turn == 0 ? 1 : 0;
-        game.player = game.players[game.turn];
+        game.possible = false;
+    }
+}
+  
+exports.nextTurn = function(channel, End) {
+    let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
+    let end = 0;
+    if (End)
+    {
+        if (game.score[0] == game.score[1])
+        {
+            end = 2;
+        }
+        else
+        {
+            end = 1;
+            game.winner = game.score[0] > game.score[1] ? 0 : 1;
+        }
+        game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`${shortname}_1_${game.players[game.winner]}.png`, `${shortname}_2_${game.players[0]}vs${game.players[1]}.png`][end - 1]);
+    }
+    else
+    {
         game.timer = {
             time: 600,
             message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
         }
+        game.player = game.players[game.turn];
         game.buffer = new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
-        if (game.possible.length == 0)
-        {
-            game.over = true;
-            if (game.score[0] == game.score[1])
-            {
-                end = 2;
-            }
-            else
-            {
-                end = 1;
-            }
-            game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 1 ? `${shortname}_1_${game.players[game.winner]}.png` : `${shortname}_2_${game.players[0]}vs${game.players[1]}.png`);
-        }
     }
     for (let ch in game.channels)
     {
@@ -299,7 +319,7 @@ exports.nextTurn = function(channel) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 1 ? `<@${game.player}> has won!` : "Tie game, everyone loses!", game.buffer]);
+    exports.say(game.channels, [[`It is <@${game.player}>'s turn.`, `<@${game.player}> has won!`, "Tie game, everyone loses!"][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {
@@ -313,44 +333,44 @@ exports.say = function(channels, message) {
 
 exports.Images = {};
 
-Canvas.loadImage("./img/gameAssets/othello/board.png").then(image => {
+Canvas.loadImage("./assets/games/othello/board.png").then(image => {
     exports.Images.board = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/black.png").then(image => {
+Canvas.loadImage("./assets/games/othello/black.png").then(image => {
     exports.Images.black = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/white.png").then(image => {
+Canvas.loadImage("./assets/games/othello/white.png").then(image => {
     exports.Images.white = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/placed.png").then(image => {
+Canvas.loadImage("./assets/games/othello/placed.png").then(image => {
     exports.Images.placed = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/captured.png").then(image => {
+Canvas.loadImage("./assets/games/othello/captured.png").then(image => {
     exports.Images.captured = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/possible.png").then(image => {
+Canvas.loadImage("./assets/games/othello/possible.png").then(image => {
     exports.Images.possible = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/blackText.png").then(image => {
+Canvas.loadImage("./assets/games/othello/blackText.png").then(image => {
     exports.Images.blackText = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/whiteText.png").then(image => {
+Canvas.loadImage("./assets/games/othello/whiteText.png").then(image => {
     exports.Images.whiteText = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/turn.png").then(image => {
+Canvas.loadImage("./assets/games/othello/turn.png").then(image => {
     exports.Images.turn = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/win.png").then(image => {
+Canvas.loadImage("./assets/games/othello/win.png").then(image => {
     exports.Images.win = image;
 });
-Canvas.loadImage("./img/gameAssets/othello/tie.png").then(image => {
+Canvas.loadImage("./assets/games/othello/tie.png").then(image => {
     exports.Images.tie = image;
 });
 
 exports.Images.numbers = new Array(10);
 for (let i = 0; i < 10; i++)
 {
-    Canvas.loadImage(`./img/gameAssets/othello/numbers/${i}.png`).then(image => {
+    Canvas.loadImage(`./assets/games/numbers/${i}.png`).then(image => {
         exports.Images.numbers[i] = image;
     });
 }

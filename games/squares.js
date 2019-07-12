@@ -5,14 +5,14 @@ const { client } = require("/app/Xyvy.js");
 var gamename = "Squares";
 var shortname = "squares";
   
-exports.newGame = function(channel, player) {
+exports.newGame = function(channel, player, here) {
     let game = {
         buffer: {},
         channels: {},
         forfeit: false,
         game: shortname,
-        highlight: [],
-        lastmove: [],
+        here: here,
+        highlight: [[], []],
         over: false,
         player: false,
         players: [player],
@@ -23,14 +23,13 @@ exports.newGame = function(channel, player) {
     game.channels[channel] = [];
     games.push(game);
 
-    let _ = false;
     game.board = [];
     for (let i = 10; i--;)
     {
         let row = [];
         for (let i = 10; i--;)
         {
-            row.push(_);
+            row.push(false);
         }
         game.board.push(row);
     }
@@ -49,7 +48,7 @@ exports.startGame = function(channel1, channel2, player2) {
     game.players[1] = player2;
     game.started = true;
   
-    if ((Math.random() * 2 | 0) == 0) game.players.push(game.players.shift()); // Makes player one random instead of always the challenger
+    if ((Math.random() * 2 | 0) == 0) game.players.push(game.players.shift());
     game.player = game.players[0];
   
     game.timer = {
@@ -58,7 +57,49 @@ exports.startGame = function(channel1, channel2, player2) {
     }
     
     game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
-    exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be dark, and <@${game.players[1]}> will be light!`, game.buffer]);
+    exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Black, and <@${game.players[1]}> will be Red!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
+}
+
+exports.newTourney = function(channel, player1, player2) {
+    let game = {
+        buffer: {},
+        channels: {},
+        forfeit: false,
+        game: shortname,
+        highlight: [[], []],
+        oneChannel: here,
+        over: false,
+        player: false,
+        players: [player1, player2],
+        score: [0, 0],
+        started: true,
+        turn: 0.5
+    };
+    game.channels[channel] = [];
+    games.push(game);
+
+    let _ = false;
+    game.board = [];
+    for (let i = 10; i--;)
+    {
+        let row = [];
+        for (let i = 10; i--;)
+        {
+            row.push(_);
+        }
+        game.board.push(row);
+    }
+  
+    if ((Math.random() * 2 | 0) == 0) game.players.reverse();
+    game.player = game.players[0];
+  
+    game.timer = {
+        time: 600,
+        message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
+    }
+    
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+    exports.say(game.channels, [`A tourney match has been started between <@${game.players[0]}> and <@${game.players[1]}>!\n<@${game.players[0]}> will be Black, and <@${game.players[1]}> will be Red!`, game.buffer]);
 }
   
 exports.drawBoard = function(game, end) {
@@ -69,14 +110,14 @@ exports.drawBoard = function(game, end) {
 
     if (end === 0)
     {
-        ctx.drawImage(exports.Images[["black", "white"][Math.floor(game.turn)] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.turn, 76, 4);
+        ctx.drawImage(exports.Images[["black", "red"][Math.floor(game.turn)] + "Text"], 20, 6);
+        ctx.drawImage(exports.Images.turn, 76 - (19 * Math.floor(game.turn)), 4);
     }
     else
     if (end === 1)
     {
-        ctx.drawImage(exports.Images[["black", "white"][game.winner] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.win, 81, 6);
+        ctx.drawImage(exports.Images[["black", "red"][game.winner] + "Text"], 20, 6);
+        ctx.drawImage(exports.Images.win, 81 - (19 * Math.floor(game.turn)), 6);
     }
     else
     if (end === 2)
@@ -88,16 +129,17 @@ exports.drawBoard = function(game, end) {
     {
         for (let y = 0; y < 10; y++)
         {
-            for (let h = 0; h < game.highlight.length; h++)
+            if (game.highlight[0].some(h => h[0] == x && h[1] == y))
             {
-                if (game.highlight[h][0] == x && game.highlight[h][1] == y)
-                {
-                    ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
-                }
+                ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
+            }
+            if (game.highlight[1].some(h => h[0] == x && h[1] == y))
+            {
+                ctx.drawImage(exports.Images.squareHighlight, 17 + (y * 25), 30 + (x * 25));
             }
             if (game.board[x][y] !== false)
             {
-                ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
+                ctx.drawImage(exports.Images[["black", "red"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
             }
         }
     }
@@ -115,8 +157,7 @@ exports.drawBoard = function(game, end) {
 exports.takeTurn = function(channel, Move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
-      
-    // Function will vary with game
+
     if (game.board[move[0]][move[1]] !== false)
     {
         return exports.say(game.channels, ["Someone has aleady played there, pick another spot!", {}]);
@@ -126,7 +167,6 @@ exports.takeTurn = function(channel, Move) {
         game.board[move[0]][move[1]] = Math.floor(game.turn);
     }
 
-    // Checks if board is full
     let end = 1;
     for (let y = 10; y--;)
     {
@@ -140,15 +180,15 @@ exports.takeTurn = function(channel, Move) {
         }
     }
 
-    // Counts the number of squares
     game.score = [0, 0];
+    let highlight = [];
     for (let i = 1; i < 10; i++)
     {
         for (let x = 0; x < 10 - i; x++)
         {
             for (let y = 0; y < 10 - i; y++)
             {
-                if (game.board[y][x] !== false && game.board[y][x] === game.board[y + i][x] && game.board[y + i][x] === game.board[y][x + i] && game.board[y][x + i] === game.board[y + i][x + i])
+                if (game.board[y][x] !== false && game.board[y][x] === game.board[y + i][x] && game.board[y][x] === game.board[y][x + i] && game.board[y][x] === game.board[y + i][x + i])
                 {
                     if (game.board[y][x] === 0)
                     {
@@ -158,6 +198,11 @@ exports.takeTurn = function(channel, Move) {
                     {
                         game.score[1] += 1;
                     }
+
+                    if ([[y, x], [y + i, x], [y, x + i], [y + i, x + i]].some(h => h[0] == move[0] && h[1] == move[1]))
+                    {
+                        highlight = highlight.concat([[y, x], [y + i, x], [y, x + i], [y + i, x + i]]);
+                    }
                 }
             }
         }
@@ -165,11 +210,13 @@ exports.takeTurn = function(channel, Move) {
 
     if (game.turn == Math.floor(game.turn))
     {
-        game.highlight = [move];
+        game.highlight[0] = [move];
+        game.highlight[1] = highlight
     }
     else
     {
-        game.highlight.push(move);
+        game.highlight[0].push(move);
+        games.highlight[1] = games.highlight[1].concat(highlight);
     }
     
     if (end !== 0)
@@ -182,7 +229,6 @@ exports.takeTurn = function(channel, Move) {
         {
             game.winner = game.score[0] > game.score[1] ? 0 : 1;
         }
-        game.highlight = [];
     }
       
     exports.nextTurn(channel, end);
@@ -224,42 +270,43 @@ exports.say = function(channels, message) {
     }
 }
 
-// Images
-
 exports.Images = {};
 
-Canvas.loadImage("./img/gameAssets/squares/board.png").then(image => {
+Canvas.loadImage("./assets/games/squares/board.png").then(image => {
     exports.Images.board = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/black.png").then(image => {
+Canvas.loadImage("./assets/games/squares/black.png").then(image => {
     exports.Images.black = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/white.png").then(image => {
+Canvas.loadImage("./assets/games/squares/white.png").then(image => {
     exports.Images.white = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/blackText.png").then(image => {
+Canvas.loadImage("./assets/games/squares/blackText.png").then(image => {
     exports.Images.blackText = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/whiteText.png").then(image => {
+Canvas.loadImage("./assets/games/squares/whiteText.png").then(image => {
     exports.Images.whiteText = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/turn.png").then(image => {
+Canvas.loadImage("./assets/games/squares/turn.png").then(image => {
     exports.Images.turn = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/win.png").then(image => {
+Canvas.loadImage("./assets/games/squares/win.png").then(image => {
     exports.Images.win = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/highlight.png").then(image => {
+Canvas.loadImage("./assets/games/squares/highlight.png").then(image => {
     exports.Images.highlight = image;
 });
-Canvas.loadImage("./img/gameAssets/squares/tie.png").then(image => {
+Canvas.loadImage("./assets/games/squares/squareHighlight.png").then(image => {
+    exports.Images.squareHighlight = image;
+});
+Canvas.loadImage("./assets/games/squares/tie.png").then(image => {
     exports.Images.tie = image;
 });
 
 exports.Images.numbers = new Array(10);
 for (let i = 0; i < 10; i++)
 {
-    Canvas.loadImage(`./img/gameAssets/squares/numbers/${i}.png`).then(image => {
+    Canvas.loadImage(`./assets/games/numbers/${i}.png`).then(image => {
         exports.Images.numbers[i] = image;
     });
 }

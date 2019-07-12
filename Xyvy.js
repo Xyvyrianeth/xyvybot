@@ -13,7 +13,7 @@ client.on("ready", () => {
             "You know what they say",
             "reversi and chill",
             "Shit inside me is being fixed, be patient.",
-            "Currently have 4 playable games with at least 4 still in development.",
+            "I currently have 7 playable games, with at least 1 still in the planning stage. Suggest your favorite Abstract Strategy Game with the command \"x!request\"!",
             "they don't think it be like it is, but it do",
             "Have you seen Endgame, yet?",
             "sub 2 pewdiepie",
@@ -35,8 +35,10 @@ client.on("ready", () => {
             "Ever heard of the game Ordo?",
             "Adding Go would be a mistake because there's no guaranteed end to it. It just goes on and on until both players decide they're done.",
             "fuck movies",
-            "I'm setting up a public server for tourneys 'n' shit for these games. It'll go full public once all the games I want are added and the back-up system works. Look forward to it!"
-        ].concat(require("/app/stuffs/holidays.js").holidays(new Date()));
+            "I'm setting up a public server for tourneys 'n' shit for these games (it'll actually become public once all the games I want are added and the back-up system works). Look forward to it!",
+            "Now try Ordo!",
+            "A new game has been added recently! Try it out!"
+        ].concat(require("/app/assets/misc/holidays.js").holidays(new Date()));
         client.user.setPresence({
             status: "online",
             game: {
