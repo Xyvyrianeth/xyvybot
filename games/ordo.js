@@ -91,15 +91,15 @@ exports.drawBoard = function(game, end, highlight) {
         {
             if (game.highlight[0].some(h => h[0] == y && h[1] == x))
             {
-                ctx.drawImage(exports.Images.from, 17 + (y * 25), 30 + (x * 25));
+                ctx.drawImage(exports.Images.from, 17 + (x * 25), 30 + (y * 25));
             }
             if (game.highlight[1].some(h => h[0] == y && h[1] == x))
             {
-                ctx.drawImage(exports.Images.to, 17 + (y * 25), 30 + (x * 25));
+                ctx.drawImage(exports.Images.to, 17 + (x * 25), 30 + (y * 25));
             }
             if (game.board[y][x] !== false)
             {
-                ctx.drawImage(exports.Images[["blue", "white"][game.board[y][x]]], 17 + (y * 25), 30 + (x * 25));
+                ctx.drawImage(exports.Images[["blue", "white"][game.board[y][x]]], 17 + (x * 25), 30 + (y * 25));
             }
         }
     }
