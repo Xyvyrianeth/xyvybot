@@ -524,7 +524,7 @@ exports.takeTurn = function(channel, Move) {
         game.split = false;
     }
 
-    game.highlight = move;
+    game.highlight = Object.values(move);
       
     exports.nextTurn(channel, end);
 }
