@@ -117,14 +117,15 @@ exports.takeTurn = function(channel, Move) {
             from: [[Number(Move.split(' ')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].match(/[a-j]/i)[0])]],
             to:   [[Number(Move.split(' ')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[1].match(/[a-j]/i)[0])]]
         };
-        dir = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
+        let dir = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
+        let dis;
         if (dir == 8)
         {
-            return exports.say(JSON.parse(`{"${channel}":[]}`), "This won't move the stone, try again.");
+            return exports.say(channel, ["This won't move the stone, try again."]);
         }
         if (move.from[0][0] != move.to[0][0] && move.from[0][1] != move.to[0][1] && Math.abs(move.from[0][0] - move.to[0][0]) != Math.abs(move.from[0][1] - move.to[0][1]))
         {
-            return exports.say(JSON.parse(`{"${channel}":[]}`), "This move isn't in a diagonal or orthagonal direction!");
+            return exports.say(channel, ["This move isn't in a diagonal or orthagonal direction!"]);
         }
         if (move.from[0][1] == move.to[0][1])
         {
@@ -138,11 +139,11 @@ exports.takeTurn = function(channel, Move) {
         {
             if (i < dis && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][dir] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][dir] * i)] !== false)
             {
-                return exports.say(JSON.parse(`{"${channel}":[]}`), "There is a stone blocking this move!");
+                return exports.say(channel, ["There is a stone blocking this move!"]);
             }
             if (i == dis && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][dir] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][dir] * i)] === game.turn)
             {
-                return exports.say(JSON.parse(`{"${channel}":[]}`), "One of your own stones is in that spot!");
+                return exports.say(channel, ["One of your own stones is in that spot!"]);
             }
         }
     }
@@ -167,21 +168,21 @@ exports.takeTurn = function(channel, Move) {
         Stones = [];
         if (stones[0][0] == stones[1][0] && stones[0][1] == stones[1][1])
         {
-            return exports.say(JSON.parse(`{"${channel}":[]}`), "This is a singleton move, please use the singleton move format!");
+            return exports.say(channel, ["This is a singleton move, please use the singleton move format!"]);
         }
         if (stones[0][0] != stones[1][0] && stones[0][1] != stones[1][1])
         {
-            return exports.say(JSON.parse(`{"${channel}":[]}`), "Those stones are not aligned horizontally or vertically!");
+            return exports.say(channel, ["Those stones are not aligned horizontally or vertically!"]);
         }
         else
         if (stones[0][1] == stones[1][1] && (dir == 0 || dir == 2))
         {
-            return exports.say(JSON.parse(`{"${channel}":[]}`), "Stones aligned vertically cannot be moved vertically!");
+            return exports.say(channel, ["Stones aligned vertically cannot be moved vertically!"]);
         }
         else
         if (stones[0][0] == stones[1][0] && (dir == 1 || dir == 3))
         {
-            return exports.say(JSON.parse(`{"${channel}":[]}`), "Stones aligned horizontally cannot be moved horizontally!");
+            return exports.say(channel, ["Stones aligned horizontally cannot be moved horizontally!"]);
         }
         else
         if (stones[0][0] == stones[1][0])
@@ -219,7 +220,7 @@ exports.takeTurn = function(channel, Move) {
             (dir == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[wid][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false)))
         )
         {
-            return exports.say(JSON.parse(`{"${channel}":[]}`), "There is a stone blocking that movement!");
+            return exports.say(channel, ["There is a stone blocking that movement!"]);
         }
     }
     
@@ -274,7 +275,7 @@ exports.takeTurn = function(channel, Move) {
             game.board[move.from[i][0]][move.from[i][1]] = game.turn;
             game.board[move.to[i][0]][move.to[i][1]] = false;
         }
-        return exports.say(JSON.parse(`{"${channel}":[]}`), game.split ? "This move does not reconnect your stones!" : "This move would split your stones into more than one group!");
+        return exports.say(channel, [game.split ? "This move does not reconnect your stones!" : "This move would split your stones into more than one group!"]);
     }
     else
     if (game.board[[7, 0][game.turn]].some(p => p == game.turn))
@@ -559,9 +560,15 @@ exports.nextTurn = function(channel, end) {
 }
 
 exports.say = function(channels, message) {
-    for (let i in channels)
+    if (typeof channels == "string") {
+        client.channels.get(channels).send(message[0], message[1]);
+    }
+    else
     {
-        client.channels.get(i).send(message[0], message[1]);
+        for (let i in channels)
+        {
+            client.channels.get(i).send(message[0], message[1]);
+        }
     }
 }
 
