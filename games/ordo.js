@@ -74,15 +74,9 @@ exports.drawBoard = function(game, end) {
         ctx.drawImage(exports.Images.turn, 76 + (6 * game.turn), 4);
     }
     else
-    if (end === 1)
     {
         ctx.drawImage(exports.Images[["blue", "white"][game.winner] + "Text"], 20, 6);
         ctx.drawImage(exports.Images.win, 81 + (6 * game.winner), 6);
-    }
-    else
-    if (end === 2)
-    {
-        ctx.drawImage(exports.Images.tie, 20, 6);
     }
     
     for (let y = 0; y < 8; y++)
@@ -538,7 +532,7 @@ exports.nextTurn = function(channel, end) {
         game.winner = game.turn;
     }
 
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`, `${shortname}_${end}_${game.players[game.winner]}.png`][end]);
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 0 ? `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png` : `${shortname}_${end}_${game.players[game.winner]}.png`);
     for (let ch in game.channels)
     {
         for (let i = 0; i < game.channels[ch].length; i++)
