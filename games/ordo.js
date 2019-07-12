@@ -85,21 +85,21 @@ exports.drawBoard = function(game, end, highlight) {
         ctx.drawImage(exports.Images.tie, 20, 6);
     }
     
-    for (let x = 0; x < 10; x++)
+    for (let y = 0; y < 8; y++)
     {
-        for (let y = 0; y < 10; y++)
+        for (let x = 0; x < 10; x++)
         {
-            if (game.highlight[0].some(h => h[0] == x && h[1] == y))
+            if (game.highlight[0].some(h => h[0] == y && h[1] == x))
             {
                 ctx.drawImage(exports.Images.from, 17 + (y * 25), 30 + (x * 25));
             }
-            if (game.highlight[1].some(h => h[0] == x && h[1] == y))
+            if (game.highlight[1].some(h => h[0] == y && h[1] == x))
             {
                 ctx.drawImage(exports.Images.to, 17 + (y * 25), 30 + (x * 25));
             }
-            if (game.board[x][y] !== false)
+            if (game.board[y][x] !== false)
             {
-                ctx.drawImage(exports.Images[["blue", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
+                ctx.drawImage(exports.Images[["blue", "white"][game.board[y][x]]], 17 + (y * 25), 30 + (x * 25));
             }
         }
     }
