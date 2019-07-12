@@ -114,8 +114,8 @@ exports.takeTurn = function(channel, Move) {
     if (/^([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])$/i.test(Move))
     {
         move = {
-            from: [[Number(Move.split(' ')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].match(/[a-j]/)[0])]],
-            to:   [[Number(Move.split(' ')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[1].match(/[a-j]/)[0])]]
+            from: [[Number(Move.split(' ')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].match(/[a-j]/i)[0])]],
+            to:   [[Number(Move.split(' ')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[1].match(/[a-j]/i)[0])]]
         };
         dir = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
         if (dir == 8)
