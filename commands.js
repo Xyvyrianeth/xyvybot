@@ -1,4 +1,4 @@
-var version = "2.37.0.4";
+var version = "2.37.0.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -256,7 +256,7 @@ function bot(message) {
                 };
             }
             games.games.forEach((game, index) => {
-                if (game.channels.hasOwnProperty(message.channel.id))
+                if (game.games.hasOwnProperty(message.channel.id))
                 {
                     for (let i = 0; i < game.channels.length; i++)
                     {
@@ -359,7 +359,7 @@ function bot(message) {
     else
     if (games.games.filter(game => game.channels.hasOwnProperty(message.channel.id)).length == 1)
     {
-        let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id));
+        let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
         if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|Ordo|3D Tic Tac Toe)!/.test(message.content) || [
             "This column is full, please pick another!",
             "Someone has aleady played there, pick another space!",
