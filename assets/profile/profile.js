@@ -1,6 +1,6 @@
 const Canvas = require('canvas');
 const { Color } = require('/app/assets/misc/color.js');
-var titles = require('/app/assets/profiles/titles.json');
+var titles = require('/app/assets/profile/titles.json');
 
 
 exports.drawLeft = function(member, profile, avatar, background) {

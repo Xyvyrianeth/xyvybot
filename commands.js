@@ -1,4 +1,4 @@
-var version = "2.37.0.0";
+var version = "2.37.0.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -8,7 +8,7 @@ const nekos = require("nekos.life");
 var { client, config } = require("/app/Xyvy.js");
 var { Color } = require("/app/assets/misc/color.js");
 var { table } = require("/app/assets/misc/table.js");
-var Profile = require("/app/assets/misc/profile.js");
+var Profile = require("/app/assets/profile/profile.js");
 var titles = require("/app/assets/profile/titles.json");
 var images = require("/app/assets/backgrounds/images.json");
 
