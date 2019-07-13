@@ -1,4 +1,4 @@
-var version = "2.37.2.3";
+var version = "2.37.2.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -391,7 +391,7 @@ function bot(message) {
                         `   elo${result.game} = ${wins["elo" + result.game] + booty},`,
                         `   win${result.game} = ${wins["win" + result.game] + 1},`,
                         `   money = ${wins.money},`,
-                        `   titles = ARRAY[${JSON.stringify(wins.titles.concat(wits).replace(/"/g, "'"))}]`,
+                        `   titles = ARRAY${JSON.stringify(wins.titles.concat(wits)).replace(/"/g, "'")}`,
                         `WHERE id = '${wins.id}';`,
                         ``,
                         `UPDATE profiles`,
@@ -399,7 +399,7 @@ function bot(message) {
                         `   elo${result.game} = ${lose["elo" + result.game] - booty},`,
                         `   los${result.game} = ${lose["los" + result.game] + 1},`,
                         `   money = ${lose.money},`,
-                        `   titles = ARRAY[${JSON.stringify(lose.titles.concat(lits).replace(/"/g, "'"))}]`,
+                        `   titles = ARRAY${JSON.stringify(lose.titles.concat(lits)).replace(/"/g, "'")}`,
                         `WHERE id = '${lose.id}';`
                     ].join('\n');
                     db.query(query, function(err) {
