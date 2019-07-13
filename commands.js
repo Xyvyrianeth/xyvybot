@@ -970,7 +970,7 @@ var commands = {
                 });
             }
             else
-            if (!games.games.some(condition("quit")))
+            if (games.games.some(condition("quit")))
             {
                 games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0].forfeit = message.author.id;
             }
@@ -1604,7 +1604,7 @@ var commands = {
             embed.setDescription("A list of all commands supported by Xyvybot\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "\nFor more help about any specific command, do \"`x![command]` `help`\"");
             let helps;
             helps = [
-                    "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`\n***Related Commands***:\n`games`  `profile`\n***Unimplemented***:\n`ninemen`  `gonnect`",
+                    "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`\n__**Related Commands**__:\n`games`  `profile`\n__**Unimplemented**__:\n`ninemen`  `gonnect`",
                     "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`",
                     "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`  `minesweeper`"
             ];
@@ -1633,7 +1633,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setTitle(input.toUpperCase());
             embed.setDescription({
-                "games": "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`\n__Related Commands__:\n`games`  `profile`\n__Unimplemented__:\n`ordo`  `ninemen`  `gonnect`",
+                "games": "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`\n__**Related Commands**__:\n`games`  `profile`\n__**Unimplemented**__:\n`ordo`  `ninemen`  `gonnect`",
                 "utility": "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`" + (message.channel.type == "dm" ? "  `bugreport`  `request`" : "  `kick`  `ban`"),
                 "misc": "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`  `minesweeper`",
                 "nsfw": "`nsfw`\nThat's the only one. No need for multiple commands that do the same thing."
