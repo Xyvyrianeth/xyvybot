@@ -37,7 +37,7 @@ exports.newGame = function(channel, player, here) {
  
     game.timer = {
         time: 900,
-        message: `It appears nobody wants to play right now, <@${player1}>.`
+        message: `It appears nobody wants to play right now, <@${player}>.`
     }
 
     exports.say(game.channels, [`<@${player}> is now requesting a new game of ${gamename}!`, {}]);
