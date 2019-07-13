@@ -26,11 +26,6 @@ var timer = setInterval(function() {
             delete games[index];
             games.splice(index, 1);
         }
-        if (game.over)
-        {
-            delete games[index];
-            games.splice(index, 1);
-        }
     });
     db.query("SELECT * FROM games", function(err, res) {
         if (err)

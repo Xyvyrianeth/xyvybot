@@ -247,7 +247,7 @@ exports.nextTurn = function(channel, end) {
     }
     else
     {
-        game.over = true;
+        game.winner = game.score[0] > game.score[1] ? 0 : 1;
     }
 
     game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
@@ -260,7 +260,7 @@ exports.nextTurn = function(channel, end) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ? "Tie game, everyone loses!" : `<@${game.players[game.score[0] > game.score[1] ? 0 : 1]}> has won!`, game.buffer]);
+    exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ? "Tie game, everyone loses!" : `<@${game.players[game.winner]}> has won!`, game.buffer]);
 }
 
 exports.say = function(channels, message) {

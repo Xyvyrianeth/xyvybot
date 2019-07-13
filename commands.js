@@ -1,4 +1,4 @@
-var version = "2.37.1.4";
+var version = "2.37.1.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -262,7 +262,7 @@ function bot(message) {
                     {
                         client.channels.get(game.channels[0]).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough!```");
                     }
-                    delete game;
+                    delete games.games[index];
                     games.games.splice(index, 1);
                 }
             });

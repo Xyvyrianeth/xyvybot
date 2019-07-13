@@ -280,7 +280,7 @@ exports.nextTurn = function(channel, end, highlight) {
     }
     else
     {
-        game.over = true;
+        game.winner = game.turn;
     }
 
     game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);

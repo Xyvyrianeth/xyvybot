@@ -530,7 +530,6 @@ exports.nextTurn = function(channel, end) {
     }
     else
     {
-        game.over = true;
         game.winner = game.turn;
     }
 
