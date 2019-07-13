@@ -162,6 +162,10 @@ for (let d = 0; d < 4; d++)
                 ];
                 end = 1;
             }
+            if (end == 1)
+            {
+                break
+            }
         }
     }
 }
