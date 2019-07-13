@@ -36,7 +36,7 @@ exports.drawLeft = function(member, profile, avatar, background) {
     for (let img = 0; img < 7; img++)
     {
         let w = [154, 154, 48, 48, 1, 1, 134][img];
-        let h = [132, 132, 47, 47, 47, 47, 64][img]
+        let h = [142, 142, 47, 47, 47, 47, 89][img]
         let image = exports.Images.left[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
         let border = new Canvas.createCanvas(w, h);
         let bdrctx = border.getContext('2d');
@@ -177,7 +177,7 @@ exports.drawRight = function(member, profile, avatar, background) {
     for (let img = 0; img < 7; img++)
     {
         let w = [154, 154, 33, 33, 1, 1, 134][img];
-        let h = [142, 142, 47, 47, 47, 47, 64][img]
+        let h = [142, 142, 47, 47, 47, 47, 89][img]
         let image = exports.Images.right[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
         let border = new Canvas.createCanvas(w, h);
         let bdrctx = border.getContext('2d');
