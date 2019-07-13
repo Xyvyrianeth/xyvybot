@@ -12,7 +12,7 @@ var timer = setInterval(function() {
         {
             for (let ch in game.channels)
             {
-                client.channels.get(ch).send(game.timer.message, game.buffer);
+                client.channels.get(ch).send(game.timer.message);
             }
             delete games[index];
             games.splice(index, 1);
@@ -53,6 +53,6 @@ var timer = setInterval(function() {
             db.query("UPDATE games SET data = '[]'");
         }
     });
-}, 1000);
+}, 100);
 
 exports.games = games;
