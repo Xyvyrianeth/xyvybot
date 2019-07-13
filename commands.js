@@ -1,4 +1,4 @@
-var version = "2.37.1.2";
+var version = "2.37.1.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -960,9 +960,9 @@ var commands = {
                 return sendChat("There is not a game in this channel for you to quit!");
             }
             else
-            if (games.games.some(condition("participant")))
+            if (!games.games.some(condition("participant")))
             {
-                return sendChat(`You are not a participant of that game, <@${message.author.id}>!`);
+                return sendChat(`You are not a participant of this game!`);
             }
             else
             if (!games.games.some(condition("dontStart")))
