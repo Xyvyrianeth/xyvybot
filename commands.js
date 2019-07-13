@@ -256,7 +256,7 @@ function bot(message) {
                 };
             }
             games.games.forEach((game, index) => {
-                if (game.games.hasOwnProperty(message.channel.id))
+                if (game.channels.hasOwnProperty(message.channel.id))
                 {
                     for (let i = 0; i < game.channels.length; i++)
                     {
