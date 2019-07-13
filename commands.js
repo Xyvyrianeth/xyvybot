@@ -223,7 +223,7 @@ function other(message) {
                         errs.push(error.stack.split('\n')[i]);
                     }
                 }
-                return client.guilds.get("399327996076621825").channels.get("467902250128506880").send(botError(message, errs));
+                return client.channels.get("467902250128506880").send(botError(message, errs));
             }
         }
         if (["board", "showboard"].includes(message.content))
@@ -255,17 +255,6 @@ function bot(message) {
                     score: game.score
                 };
             }
-            games.games.forEach((game, index) => {
-                if (game.channels.hasOwnProperty(message.channel.id))
-                {
-                    for (let channel in game.channels)
-                    {
-                        client.channels.get(channel).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough!```");
-                    }
-                    delete games.games[index];
-                    games.games.splice(index, 1);
-                }
-            });
 
             if (result)
             {
