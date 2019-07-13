@@ -177,7 +177,7 @@ exports.takeTurn = function(channel, Move) {
 
     if (end == 1)
     {
-        game.winner = game.players[Math.floor(game.turn)];
+        game.winner = Math.floor(game.turn);
     }
      
     exports.nextTurn(channel, end);
