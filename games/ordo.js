@@ -114,6 +114,10 @@ exports.takeTurn = function(channel, Move) {
         };
         let dir = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
         let dis = move.from[0][1] == move.to[0][1] ? Math.abs(move.from[0][0] - move.to[0][0]) : Math.abs(move.from[0][1] - move.to[0][1]);
+        if (game.board[move.from[0][0]][move.from[0][1]] !== game.turn)
+        {
+            return exports.say(channel, ["You do not have a stone in this space!"]);
+        }
         if (dir == 8 || dis == 0)
         {
             return exports.say(channel, ["This won't move the stone, try again."]);
@@ -199,6 +203,10 @@ exports.takeTurn = function(channel, Move) {
         move = {
             from: Stones,
             to:   Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][dir] * dis), p[1] + ([0, 1, 0, -1][dir] * dis)])
+        }
+        if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
+        {
+            return exports.say(channel, ["One or more of the stones you're trying to move aren't yours!"]);
         }
         if (
             (dir == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[wid][1] && game.board[y][x] !== false))) ||
