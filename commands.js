@@ -307,14 +307,6 @@ function bot(message) {
                         lose = res.rows[0];
                         wins = newUser(result.winner, message);
                     }
-                    if (wins["win" + result.game] + wins["los" + result.game] == 0)
-                    {
-                        wins["elo" + result.game] = 1000;
-                    }
-                    if (lose["win" + result.game] + lose["los" + result.game] == 0)
-                    {
-                        lose["elo" + result.game] = 1000;
-                    }
                     if (lose["elo" + result.game] > wins["elo" + result.game])
                     {
                         lose.money += 100;
@@ -357,7 +349,7 @@ function bot(message) {
         }
     }
     else
-    if (games.games.filter(game => game.channels.hasOwnProperty(message.channel.id)).length == 1)
+    if (games.games.some(game => game.channels.hasOwnProperty(message.channel.id)))
     {
         let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
         if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo)!/.test(message.content) || [
@@ -376,7 +368,7 @@ function newUser(id, message) {
         `INSERT INTO profiles (`,
         `    id,       color,   title,      titles,             background,  backgrounds,         lefty,  money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
         `) VALUES (`,
-        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   500,    0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
+        `    '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   500,    1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
         `)`
     ].join('\n');
     db.query(query, function(err) {
@@ -677,7 +669,7 @@ var commands = {
                     }
                     else
                     {
-                        return sendChat("There are no scores for htis game. Nobody has played it, yet."); 
+                        return sendChat("There are no scores for this game. Nobody has played it, yet."); 
                     }
                 }
             });
