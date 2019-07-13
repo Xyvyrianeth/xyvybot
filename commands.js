@@ -1,4 +1,4 @@
-var version = "2.37.1.1";
+var version = "2.37.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -955,7 +955,7 @@ var commands = {
         }
         if (["quit", "forfeit", "leave"].includes(input)) 
         {
-            if (games.games.some(!condition("nothingHere")))
+            if (!games.games.some(condition("nothingHere")))
             {
                 return sendChat("There is not a game in this channel for you to quit!");
             }
