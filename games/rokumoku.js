@@ -180,10 +180,10 @@ exports.takeTurn = function(channel, Move) {
         game.winner = game.players[Math.floor(game.turn)];
     }
      
-    exports.nextTurn(channel, end, highlight, row);
+    exports.nextTurn(channel, end);
 }
  
-exports.nextTurn = function(channel, end, highlight, row) {
+exports.nextTurn = function(channel, end) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
     {
@@ -198,7 +198,7 @@ exports.nextTurn = function(channel, end, highlight, row) {
     {
         game.winner = game.turn;
     }
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight, row), end == 1 ? `${shortname}_${end}_${game.winner}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 1 ? `${shortname}_${end}_${game.winner}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
     for (let ch in game.channels)
     {
         for (let i = 0; i < game.channels[ch].length; i++)
