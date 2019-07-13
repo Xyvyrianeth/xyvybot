@@ -26,10 +26,10 @@ exports.newGame = function(channel, player, here) {
 
     let _ = false;
     game.board = [];
-    for (let i = 19; i--;)
+    for (let i = 12; i--;)
     {
         let row = [];
-        for (let i = 19; i--;)
+        for (let i = 12; i--;)
         {
             row.push(_);
         }
@@ -86,9 +86,9 @@ exports.drawBoard = function(game, end) {
         game.highlight = [];
     }
     
-    for (let x = 0; x < 10; x++)
+    for (let x = 0; x < 12; x++)
     {
-        for (let y = 0; y < 10; y++)
+        for (let y = 0; y < 12; y++)
         {
             for (let h = 0; h < game.highlight.length; h++)
             {
@@ -121,9 +121,9 @@ exports.takeTurn = function(channel, Move) {
     }
 
     let end = 1;
-    for (let y = 10; y--;)
+    for (let y = 12; y--;)
     {
-        for (let x = 10; x--;)
+        for (let x = 12; x--;)
         {
             if (game.board[y][x] === false)
             {
@@ -141,7 +141,7 @@ exports.takeTurn = function(channel, Move) {
     {
         for (let y = [5, 0, 0, 0][d]; y < [12, 12, 7, 7][d]; y++)
         {
-            for (let x = 0; d < [12, 7, 7, 12][d]; x++)
+            for (let x = 0; x < [12, 7, 7, 12][d]; x++)
             {
                 if (![
                     a[y][x],
