@@ -222,7 +222,7 @@ exports.drawRight = function(member, profile, avatar, background) {
 
     // Score
     let scores = [];
-    for (let y = 0; y < 7; y++)
+    for (let y = 0; y < 8; y++)
     {
         let score;
         if (y < 6)
