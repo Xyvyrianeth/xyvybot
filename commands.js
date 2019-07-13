@@ -1,4 +1,4 @@
-var version = "2.37.2.4";
+var version = "2.37.2.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -314,7 +314,7 @@ function bot(message) {
 
                     // Titles
                     let wits = [];
-                    if (wins["elo" + result.game] && !wins.titles.includes("2k_elo" + result.game))
+                    if (wins["elo" + result.game] >= 2000 && !wins.titles.includes("2k_elo" + result.game))
                     {
                         wits.push("2k_elo" + result.game);
                         if (result.game == 1)

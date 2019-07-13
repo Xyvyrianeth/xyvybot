@@ -71,12 +71,12 @@ exports.drawBoard = function(game, end) {
     if (end === 0)
     {
         ctx.drawImage(exports.Images[["blue", "white"][game.turn] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.turn, 76 + (6 * game.turn), 4);
+        ctx.drawImage(exports.Images.turn, 70 + (6 * game.turn), 4);
     }
     else
     {
         ctx.drawImage(exports.Images[["blue", "white"][game.winner] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.win, 81 + (6 * game.winner), 6);
+        ctx.drawImage(exports.Images.win, 75 + (6 * game.winner), 6);
     }
     
     for (let y = 0; y < 8; y++)
