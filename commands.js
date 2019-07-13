@@ -520,11 +520,12 @@ var commands = {
                 "squares": ["squares"],
                 "rokumoku": ["rokumoku", "gobang", "renju"],
                 "ttt3d": ["ttt3d", "3dttt", "3dtictactoe", "tictactoe3d", "ttt", "tictactoe"],
-                "connect4": ["connect4", "connectfour", "cfour", "c4"]
+                "connect4": ["connect4", "connectfour", "cfour", "c4"],
+                "ordo": ["ordo"]
             };
             if (!args[1])
             {
-                elos = "elo1 + elo2 + elo3 + elo4 + elo5";
+                elos = "round((elo1 + elo2 + elo3 + elo4 + elo5 + elo6) / 6)";
             }
             if (gms.othello.includes(args[1]))
             {
@@ -546,6 +547,10 @@ var commands = {
             {
                 elos = "elo5";
             }
+            if (gms.ordo.includes(args[1]))
+            {
+                elos = "elo6";
+            }
             if (!elos)
             {
                 return sendChat("Unknown game.");
@@ -553,10 +558,6 @@ var commands = {
             
             let wins = elos.replace(/elo/g, "win");
             let loss = elos.replace(/elo/g, "los");
-            if (!args[1])
-            {
-                elos = "round((" + elos + ") / 5)";
-            }
             let query = [
                 `SELECT`,
                 `    id,`,
@@ -1424,20 +1425,20 @@ var commands = {
                 }
                 return db.query([
                     `UPDATE profiles`,
-                    `SET lefty = '${res.rows[0].lorr == true ? false : true}'`,
+                    `SET lefty = '${res.rows[0].lefty ? false : true}'`,
                     `WHERE id = '${message.author.id}'`
                 ].join('\n'), function(err) {
                     if (err)
                     {
                         sqlError(message, err, [
                             `UPDATE profiles`,
-                            `SET lefty = '${res.rows[0].lorr == true ? false : true}'`,
+                            `SET lefty = '${res.rows[0].lefty ? false : true}'`,
                             `WHERE id = '${message.author.id}'`
                         ].join('\n'));
                     }
                     else
                     {
-                        return sendChat("Successfully updated your information display to the " + (res.rows[0].lorr == "left" ? "right" : "left") + " side!");
+                        return sendChat("Successfully updated your information display to the " + (res.rows[0].lefty ? "right" : "left") + " side!");
                     }
                 });
             });
