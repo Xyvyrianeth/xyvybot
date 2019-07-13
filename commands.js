@@ -558,10 +558,6 @@ var commands = {
             
             let wins = elos.replace(/elo/g, "win");
             let loss = elos.replace(/elo/g, "los");
-            if (!args[1])
-            {
-                elos = "round((" + elos + ") / 6)";
-            }
             let query = [
                 `SELECT`,
                 `    id,`,
