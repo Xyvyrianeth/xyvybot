@@ -1,11 +1,11 @@
 const Discord = require("discord.js");
 const { client, config } = require("/app/Xyvy.js");
 var db = require("/app/commands.js").db;
+
 var backup = true;
 
-var games = [];
-
 var timer = setInterval(function() {
+    let games = exports.games;
     games.forEach((game, index) => {
         game.timer.time--;
         if (game.timer.time == 0)
@@ -53,6 +53,7 @@ var timer = setInterval(function() {
             db.query("UPDATE games SET data = '[]'");
         }
     });
-}, 100);
+    exports.games = games;
+}, 1000);
 
-exports.games = games;
+exports.games = [];
