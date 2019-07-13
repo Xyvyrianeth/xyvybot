@@ -136,7 +136,7 @@ exports.takeTurn = function(channel, move) {
 
     if (game.board[X][Y][Z] !== false)
     {
-        return exports.say(game.channels, ["Someone has aleady played there, pick another spot!", {}]);
+        return exports.say(game.channels, ["Illegal move: this space is not empty.", {}]);
     }
     else
     {

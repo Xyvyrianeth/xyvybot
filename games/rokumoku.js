@@ -113,14 +113,14 @@ exports.takeTurn = function(channel, Move) {
 
     if (game.board[move[0]][move[1]] !== false)
     {
-        return exports.say(game.channels, ["Someone has aleady played there, pick another spot!", {}]);
+        return exports.say(game.channels, ["Illegal move: this space is not empty.", {}]);
     }
     else
     {
         game.board[move[0]][move[1]] = Math.floor(game.turn);
     }
 
-    let end = 1;
+    let end = 2;
     for (let y = 12; y--;)
     {
         for (let x = 12; x--;)

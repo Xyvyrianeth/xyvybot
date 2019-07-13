@@ -203,9 +203,9 @@ function other(message) {
                 games.games.forEach((game, index) => {
                     if (game.channels.hasOwnProperty(message.channel.id))
                     {
-                        for (let i = 0; i < game.channels.length; i++)
+                        for (let i in game.channels)
                         {
-                            client.channels.get(game.channels[0]).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough!```");
+                            client.channels.get(game.channels[i]).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough!```");
                         }
                         delete game;
                         games.games.splice(index, 1);
@@ -258,9 +258,9 @@ function bot(message) {
             games.games.forEach((game, index) => {
                 if (game.channels.hasOwnProperty(message.channel.id))
                 {
-                    for (let i = 0; i < game.channels.length; i++)
+                    for (let i in game.channels)
                     {
-                        client.channels.get(game.channels[0]).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough!```");
+                        client.channels.get(game.channels[i]).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough!```");
                     }
                     delete games.games[index];
                     games.games.splice(index, 1);
@@ -352,10 +352,11 @@ function bot(message) {
     if (games.games.some(game => game.channels.hasOwnProperty(message.channel.id)))
     {
         let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
-        if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo)!/.test(message.content) || [
-            "This column is full, please pick another!",
-            "Someone has aleady played there, pick another space!",
-        ].includes(message.content))
+        if (
+            /<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo)!/.test(message.content) || 
+            message.content.startsWith("Illegal move:") ||
+            message.content == "This is a singleton move, please use the singleton move format!"
+        )
         {
             game.channels[message.channel.id].push(message.id);
         }

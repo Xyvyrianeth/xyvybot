@@ -151,11 +151,11 @@ exports.takeTurn = function(channel, Move) {
     game.highlight = [];
     if (typeof game.board[move[0]][move[1]] !== "boolean")
     {
-        return exports.say(JSON.parse(`{"${channel}":[]}`), ["Someone has aleady played that space!", {}]);
+        return exports.say(JSON.parse(`{"${channel}":[]}`), ["Illegal move: this space is not empty.", {}]);
     }
     if (game.board[move[0]][move[1]] === false)
     {
-        return exports.say(JSON.parse(`{"${channel}":[]}`), ["That space cannot be played!", {}]);
+        return exports.say(JSON.parse(`{"${channel}":[]}`), ["Illegal move: playing in this space would not capture anything.", {}]);
     }
     for (let i = 0; i < possible.length; i++)
     {

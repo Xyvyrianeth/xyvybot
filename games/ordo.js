@@ -116,25 +116,25 @@ exports.takeTurn = function(channel, Move) {
         let dis = move.from[0][1] == move.to[0][1] ? Math.abs(move.from[0][0] - move.to[0][0]) : Math.abs(move.from[0][1] - move.to[0][1]);
         if (game.board[move.from[0][0]][move.from[0][1]] !== game.turn)
         {
-            return exports.say(channel, ["You do not have a stone in this space!"]);
+            return exports.say(channel, ["Illegal move: you do not have a stone in this spot"]);
         }
         if (dir == 8 || dis == 0)
         {
-            return exports.say(channel, ["This won't move the stone, try again."]);
+            return exports.say(channel, ["Illegal move: you actually have to mvoe the stone."]);
         }
         if (move.from[0][0] != move.to[0][0] && move.from[0][1] != move.to[0][1] && Math.abs(move.from[0][0] - move.to[0][0]) != Math.abs(move.from[0][1] - move.to[0][1]))
         {
-            return exports.say(channel, ["This move isn't in a diagonal or orthagonal direction!"]);
+            return exports.say(channel, ["Illegal move: attempted movement is neither diagonal nor orthagonal."]);
         }
         for (let i = 1; i <= dis; i++)
         {
             if (i < dis && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][dir] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][dir] * i)] !== false)
             {
-                return exports.say(channel, ["There is a stone blocking this move!"]);
+                return exports.say(channel, ["Illegal move: a stone is blocking this movement."]);
             }
             if (i == dis && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][dir] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][dir] * i)] === game.turn)
             {
-                return exports.say(channel, ["One of your own stones is in that spot!"]);
+                return exports.say(channel, ["Illegal move: you cannot capture your own stone."]);
             }
         }
     }
@@ -163,17 +163,12 @@ exports.takeTurn = function(channel, Move) {
         }
         if (stones[0][0] != stones[1][0] && stones[0][1] != stones[1][1])
         {
-            return exports.say(channel, ["Those stones are not aligned horizontally or vertically!"]);
+            return exports.say(channel, ["Illegal move: stones trying to be moved are not alligned orthagonally."]);
         }
         else
-        if (stones[0][1] == stones[1][1] && (dir == 0 || dir == 2))
+        if ((stones[0][1] == stones[1][1] && (dir == 0 || dir == 2)) || (stones[0][0] == stones[1][0] && (dir == 1 || dir == 3)))
         {
-            return exports.say(channel, ["Stones aligned vertically cannot be moved vertically!"]);
-        }
-        else
-        if (stones[0][0] == stones[1][0] && (dir == 1 || dir == 3))
-        {
-            return exports.say(channel, ["Stones aligned horizontally cannot be moved horizontally!"]);
+            return exports.say(channel, ["Illegal move: multiple stones cannot be moved single-file."]);
         }
         else
         if (stones[0][0] == stones[1][0])
@@ -206,7 +201,7 @@ exports.takeTurn = function(channel, Move) {
         }
         if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
         {
-            return exports.say(channel, ["One or more of the stones you're trying to move aren't yours!"]);
+            return exports.say(channel, ["Illegal move: one or more of the stones you're trying to move aren't yours."]);
         }
         if (
             (dir == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[wid][1] && game.board[y][x] !== false))) ||
@@ -215,7 +210,7 @@ exports.takeTurn = function(channel, Move) {
             (dir == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[wid][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false)))
         )
         {
-            return exports.say(channel, ["There is a stone blocking that movement!"]);
+            return exports.say(channel, ["Illegal move: a stone is blocking that movement"]);
         }
     }
     
@@ -270,7 +265,7 @@ exports.takeTurn = function(channel, Move) {
             game.board[move.from[i][0]][move.from[i][1]] = game.turn;
             game.board[move.to[i][0]][move.to[i][1]] = false;
         }
-        return exports.say(channel, [game.split ? "This move does not reconnect your stones!" : "This move would split your stones into more than one group!"]);
+        return exports.say(channel, [game.split ? "Illegal move: would not reconnect your stones into one group." : "Illegal move: would split your stones into more than one group."]);
     }
     else
     if (game.board[[7, 0][game.turn]].some(p => p === game.turn))
