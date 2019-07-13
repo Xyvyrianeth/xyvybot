@@ -216,7 +216,7 @@ exports.takeTurn = function(channel, Move) {
     else
     {
         game.highlight[0].push(move);
-        game.highlight[1] = games.highlight[1].concat(highlight);
+        game.highlight[1] = game.highlight[1].concat(highlight);
     }
     
     if (end !== 0)
