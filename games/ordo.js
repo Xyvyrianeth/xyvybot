@@ -126,7 +126,7 @@ exports.takeTurn = function(channel, Move) {
         {
             if (i < dis && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][dir] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][dir] * i)] !== false)
             {
-                return exports.say(channel, ["There is a stone blocking this move!\n" + dis]);
+                return exports.say(channel, ["There is a stone blocking this move!"]);
             }
             if (i == dis && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][dir] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][dir] * i)] === game.turn)
             {
@@ -544,7 +544,7 @@ exports.nextTurn = function(channel, end) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [[game.split ? `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.` : `It is <@${game.player}>'s turn.`, `<@${game.player}> has won by reaching the opponent's home row!`, `<@${game.player} has won by capturing all of the opponent's stones!`, `<@${game.player} has won by isolating their opponent's pieces!`][end], game.buffer]);
+    exports.say(game.channels, [[game.split ? `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.` : `It is <@${game.player}>'s turn.`, `<@${game.player}> has won by reaching the opponent's home row!`, `<@${game.player}> has won by capturing all of the opponent's stones!`, `<@${game.player}> has won by isolating their opponent's pieces!`][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {

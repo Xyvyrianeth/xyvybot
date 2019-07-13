@@ -81,16 +81,16 @@ exports.drawLeft = function(member, profile, avatar, background) {
 
     // Score
     let scores = [];
-    for (let y = 0; y < 7; y++)
+    for (let y = 0; y < 8; y++)
     {
         let score;
-        if (y < 5)
+        if (y < 6)
         {
             score = profile["elo" + (y + 1)];
         }
-        else if (y == 5)
+        else if (y == 6)
         {
-            score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"];
+            score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"] + profile["elo6"];
         }
         else
         {
@@ -99,7 +99,7 @@ exports.drawLeft = function(member, profile, avatar, background) {
         let Score = ' '.repeat(6 - JSON.stringify(score).length) + JSON.stringify(score);
         let canvas = new Canvas.createCanvas(47, 9);
         let ctx = canvas.getContext('2d');
-        for (let x = 0; x < 6; x++)
+        for (let x = 0; x < 7; x++)
         {
             if (Score[x] !== ' ')
             {
@@ -132,13 +132,13 @@ exports.drawLeft = function(member, profile, avatar, background) {
     {
         ctx.drawImage(texts[i], 47, (i == 1 ? 4 : 3) + (15 * i));
     }
-    for (let i = 0; i < 5; i++)
+    for (let i = 0; i < 6; i++)
     {
         ctx.drawImage(scores[i], 103, 64 + (10 * i));
     }
-    ctx.drawImage(scores[5], 103, 119);
-    ctx.drawImage(scores[6], 50, 119);
-    ctx.drawImage(assets[6], 16, 49);
+    ctx.drawImage(scores[6], 103, 129);
+    ctx.drawImage(scores[7], 50, 129);
+    ctx.drawImage(assets[6], 16, 59);
     ctx.drawImage(avatar, 2, 2, 43, 43);
 
     return canvas.toBuffer();
@@ -222,16 +222,16 @@ exports.drawRight = function(member, profile, avatar, background) {
 
     // Score
     let scores = [];
-    for (let y = 0; y < 6; y++)
+    for (let y = 0; y < 7; y++)
     {
         let score;
-        if (y < 5)
+        if (y < 6)
         {
             score = profile["elo" + (y + 1)];
         }
-        else if (y == 5)
+        else if (y == 6)
         {
-            score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"];
+            score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"] + profile["elo6"];
         }
         else
         {
@@ -240,7 +240,7 @@ exports.drawRight = function(member, profile, avatar, background) {
         let Score = ' '.repeat(6 - JSON.stringify(score).length) + JSON.stringify(score);
         let canvas = new Canvas.createCanvas(47, 9);
         let ctx = canvas.getContext('2d');
-        for (let x = 0; x < 6; x++)
+        for (let x = 0; x < 7; x++)
         {
             if (Score[x] !== ' ')
             {
@@ -274,13 +274,13 @@ exports.drawRight = function(member, profile, avatar, background) {
     {
         ctx.drawImage(texts[i], width - (47 + texts[i].width), (i == 1 ? 4 : 3) + (15 * i));
     }
-    for (let i = 0; i < 5; i++)
+    for (let i = 0; i < 6; i++)
     {
         ctx.drawImage(scores[i], width - 51, 64 + (10 * i));
     }
-    ctx.drawImage(scores[5], width - 51, 119);
-    ctx.drawImage(scores[6], width - 104, 119)
-    ctx.drawImage(assets[6], width - 150, 49);
+    ctx.drawImage(scores[6], width - 51, 129);
+    ctx.drawImage(scores[7], width - 104, 129)
+    ctx.drawImage(assets[6], width - 150, 59);
     ctx.drawImage(avatar, width - 45, 2, 43, 43);
 
     return canvas.toBuffer();

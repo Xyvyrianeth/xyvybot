@@ -1,10 +1,10 @@
 {
  "default": "Casual Gamer",
- "iamXyvy": "President King Xyvy",
+ "iamXyvy": "Xyvybot Creator",
 
  "PURCHASABLE": "Titles that can be purchased",
 
- "WINS": "Titles one obtains from having won so many games",
+ "WINS": "Titles one obtains from having won a lot of ELO",
  "7500elo": "Not trash, at least",
  "10k_elo": "Ready to Play",
  "15k_elo": "Master of Strategies",
@@ -14,7 +14,7 @@
  "75k_elo": "Tabletop Grand Master",
  "100kelo": "Tabletop God",
 
- "LOSE": "Titles one obtains from having lost so many games",
+ "LOSE": "Titles one obtains from having lost a lot of ELO",
  "2500elo": "Committed, at least",
  "2000elo": "The Easy Win",
  "1500elo": "Master of Sux",
@@ -26,10 +26,20 @@
 
  "ACHIEVEMENTS": "Titles one obtains by doing things",
  "beatRDB": "Connect 4 Legend",
+ "beatXAI": "Master of Robots",
  "25prcnt": "I <3 Board Games",
  "10prcnt": "Dedicated Strategist",
  "100sqrs": "Geometrist",
  "allBorW": "Eliminator",
  "winsIn4": "gg ez",
- "aCasual": "Plays for fun"
+ "aCasual": "Plays for fun",
+
+ "2000SERIES": "Titles one obtains by reaching 2000 ELO in any game",
+ "othello": "I love Othello!",
+ "reversi": "I love Reversi!",
+ "sixMoku": "I love Rokumoku!",
+ "squares": "I love Squares!",
+ "3DTTTer": "I love 3D Tic-Tac-Toe!",
+ "Ordoist": "I love Ordo!",
+ "conFour": "I love Connect Four!"
 }

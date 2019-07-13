@@ -1,4 +1,4 @@
-var version = "2.37.0.25";
+var version = "2.37.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -146,7 +146,7 @@ function command(message) {
                 errs.push(error.stack.split('\n')[i]);
             }
         }
-        message.channel.send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~```");
+        message.channel.send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!```");
         botError(message, errs);
     }
 }
@@ -205,7 +205,7 @@ function other(message) {
                     {
                         for (let i = 0; i < game.channels.length; i++)
                         {
-                            client.channels.get(game.channels[0]).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
+                            client.channels.get(game.channels[0]).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough!```");
                         }
                         delete game;
                         games.games.splice(index, 1);
@@ -260,7 +260,7 @@ function bot(message) {
                 {
                     for (let i = 0; i < game.channels.length; i++)
                     {
-                        client.channels.get(game.channels[0]).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now~\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough~```");
+                        client.channels.get(game.channels[0]).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough!```");
                     }
                     delete game;
                     games.games.splice(index, 1);
@@ -360,7 +360,7 @@ function bot(message) {
     if (games.games.filter(game => game.channels.hasOwnProperty(message.channel.id)).length == 1)
     {
         let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
-        if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|Ordo|3D Tic Tac Toe)!/.test(message.content) || [
+        if (/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo)!/.test(message.content) || [
             "This column is full, please pick another!",
             "Someone has aleady played there, pick another space!",
         ].includes(message.content))
@@ -1176,7 +1176,7 @@ var commands = {
             }
             else
             {
-                return sendChat("Cannot display other users' profiles in DMs, yet, sorry~");
+                return sendChat("Cannot display other users' profiles in DMs, yet, sorry!");
             }
   
             if (member == null)
@@ -1209,7 +1209,7 @@ var commands = {
                     profile = res.rows[0];
                 }
 
-                Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then(image1 => {
+                Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.${member.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then(image1 => {
                     Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then(image2 => {
                         return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"));
                     });
@@ -1467,7 +1467,7 @@ var commands = {
                     }
                     if (res.rows[0].titles.length == 1)
                     {
-                        return sendChat("The only title you own is the title you currently have equipped. Get some more and then check back with me, okay~?");
+                        return sendChat("The only title you own is the title you currently have equipped. Get some more and then check back with me, ok?");
                     }
                     let t1 = res.rows[0].titles;
                     let t2 = [];
@@ -1608,7 +1608,7 @@ var commands = {
         {
             let embed = new Discord.RichEmbed();
             embed.setTitle("Help");
-            embed.setDescription("A list of all commands supported by Bakeneko~\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "\nFor more help about any specific command, do \"`x![command]` `help`\"");
+            embed.setDescription("A list of all commands supported by Xyvybot\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "\nFor more help about any specific command, do \"`x![command]` `help`\"");
             let helps;
             helps = [
                     "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`\n***Related Commands***:\n`games`  `profile`\n***Unimplemented***:\n`ninemen`  `gonnect`",
@@ -1994,7 +1994,7 @@ var commands = {
                 Images.nekosLife
             );
             embed.setImage(neko.url);
-            embed.setDescription("Have a neko~!");
+            embed.setDescription("Have a neko!");
             embed.setFooter("Powered by Nekos.Life");
             embed.setColor(new Color().random());
             return sendChat({embed});
