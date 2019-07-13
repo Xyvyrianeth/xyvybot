@@ -133,38 +133,38 @@ exports.takeTurn = function(channel, Move) {
         }
     }
 
-    let a = game.board;
-    let b = Math.floor(game.turn);
-    let e = [-1, 0, 1, 1];
-    let f = [1, 1, 1, 0];
-    for (let d = 0; d < 4; d++)
+let a = game.board;
+let b = Math.floor(game.turn);
+let e = [-1, 0, 1, 1];
+let f = [1, 1, 1, 0];
+for (let d = 0; d < 4; d++)
+{
+    for (let y = [5, 0, 0, 0][d]; y < [12, 12, 7, 7][d]; y++)
     {
-        for (let y = [5, 0, 0, 0][d]; y < [12, 12, 7, 7][d]; y++)
+        for (let x = 0; x < [12, 7, 7, 12][d]; x++)
         {
-            for (let x = 0; x < [12, 7, 7, 12][d]; x++)
+            if (![
+                a[y][x],
+                a[y + (e[d] * 1)][x + (f[d] * 1)],
+                a[y + (e[d] * 2)][x + (f[d] * 2)],
+                a[y + (e[d] * 3)][x + (f[d] * 3)],
+                a[y + (e[d] * 4)][x + (f[d] * 4)],
+                a[y + (e[d] * 5)][x + (f[d] * 5)]
+            ].some(c => c != b))
             {
-                if (![
-                    a[y][x],
+                game.highlight = [
+                    a[y][x], // OH shit
                     a[y + (e[d] * 1)][x + (f[d] * 1)],
                     a[y + (e[d] * 2)][x + (f[d] * 2)],
                     a[y + (e[d] * 3)][x + (f[d] * 3)],
                     a[y + (e[d] * 4)][x + (f[d] * 4)],
                     a[y + (e[d] * 5)][x + (f[d] * 5)]
-                ].some(c => c != b))
-                {
-                    game.highlight = [
-                        a[y][x],
-                        a[y + (e[d] * 1)][x + (f[d] * 1)],
-                        a[y + (e[d] * 2)][x + (f[d] * 2)],
-                        a[y + (e[d] * 3)][x + (f[d] * 3)],
-                        a[y + (e[d] * 4)][x + (f[d] * 4)],
-                        a[y + (e[d] * 5)][x + (f[d] * 5)]
-                    ];
-                    end = 1;
-                }
+                ];
+                end = 1;
             }
         }
     }
+}
 
     if (game.turn == Math.floor(game.turn))
     {
