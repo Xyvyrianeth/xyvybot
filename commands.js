@@ -1,4 +1,4 @@
-var version = "2.37.2.0";
+var version = "2.37.2.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -311,28 +311,132 @@ function bot(message) {
                         lose.money += 25;
                         wins.money += 75;
                     }
+
+                    // Titles
+                    let wits = [];
+                    if (wins["elo" + result.game] && !wins.titles.includes("2k_elo" + result.game))
+                    {
+                        wits.push("2k_elo" + result.game);
+                        if (result.game == 1)
+                        {
+                            wits.push("2k_ELO1");
+                        }
+                    }
+                    if (result.game == 5 && lose.id == "238916443402534914" && !wins.titles.includes("beatRDB"))
+                    {
+                        wits.push("beatRDB");
+                    }
+                    if (result.game == 2 && lose.id == "561578790837289002" && !wins.titles.includes("beatXAI"))
+                    {
+                        wits.push("beatXAI");
+                    }
+                    for (let i = 0; i < 8; i++)
+                    {
+                        if (wins.elo1 + wins.elo2 + wins.elo3 + wins.elo4 + wins.elo5 + wins.elo6 >= [15E3, 2E4, 25E3, 3E4, 4E4, 5E4, 75E3, 1E5][i] && !wins.titles.includes([
+                            "15k_elo",
+                            "20k_elo",
+                            "25k_elo",
+                            "30k_elo",
+                            "40k_elo",
+                            "50k_elo",
+                            "75k_elo",
+                            "100kelo"
+                        ][i]))
+                        {
+                            wits.push([
+                                "15k_elo",
+                                "20k_elo",
+                                "25k_elo",
+                                "30k_elo",
+                                "40k_elo",
+                                "50k_elo",
+                                "75k_elo",
+                                "100kelo"
+                            ][i]);
+                        }
+                    }
+
+                    let lits = [];
+                    for (let i = 0; i < 8; i++)
+                    {
+                        if (lose.elo1 + lose.elo2 + lose.elo3 + lose.elo4 + lose.elo5 + lose.elo6 <= [2500, 2E3, 1500, 1E3, 750, 500, 250, 0][i] && !lose.titles.includes([
+                            "2500elo",
+                            "2000elo",
+                            "1500elo",
+                            "1000elo",
+                            "750_elo",
+                            "500_elo",
+                            "250_elo",
+                            "eloGone"
+                        ][i]))
+                        {
+                            lits.push([
+                                "2500elo",
+                                "2000elo",
+                                "1500elo",
+                                "1000elo",
+                                "750_elo",
+                                "500_elo",
+                                "250_elo",
+                                "eloGone"
+                            ][i]);
+                        }
+                    }
+
+
                     let booty = Math.ceil(lose["elo" + result.game] / 10);
                     let query = [
                         `UPDATE profiles`,
                         `SET`,
                         `   elo${result.game} = ${wins["elo" + result.game] + booty},`,
                         `   win${result.game} = ${wins["win" + result.game] + 1},`,
-                        `   money = ${wins.money}`,
+                        `   money = ${wins.money},`,
+                        `   titles = ARRAY[${JSON.stringify(wins.titles.concat(wits).replace(/"/g, "'"))}]`,
                         `WHERE id = '${wins.id}';`,
                         ``,
                         `UPDATE profiles`,
                         `SET`,
                         `   elo${result.game} = ${lose["elo" + result.game] - booty},`,
                         `   los${result.game} = ${lose["los" + result.game] + 1},`,
-                        `   money = ${lose.money}`,
+                        `   money = ${lose.money},`,
+                        `   titles = ARRAY[${JSON.stringify(lose.titles.concat(lits).replace(/"/g, "'"))}]`,
                         `WHERE id = '${lose.id}';`
                     ].join('\n');
-                    return db.query(query, function(err) {
+                    db.query(query, function(err) {
                         if (err)
                         {
                             return sqlError(message, err, query);
                         }
                     });
+                    if (wits.length > 0)
+                    {
+                        let text = '';
+                        for (let i = 0; i < wits.length; i++)
+                        {
+                            text += `[${titles[wits[i]]}](${wits[i]})\n`
+                        }
+                        client.users.get(wins.id).send(
+                            "You've just received the following titles to use for your `x!profile`:\n" +
+                            "```md\n" +
+                            text +
+                            "```\n" +
+                            "Use the command `x!profile titles` to see all your owned titles."
+                        );
+                    }
+                    if (lits.length > 0)
+                    {
+                        let text = '';
+                        for (let i = 0; i < lits.length; i++)
+                        {
+                            text += `[${titles[lits[i]]}](${lits[i]})\n`
+                        }
+                        client.users.get(lose.id).send(
+                            "You've just received the following titles to use for your `x!profile`:\n" +
+                            "```md\n" +
+                            text +
+                            "```"
+                        );
+                    }
                 });
             }
         }

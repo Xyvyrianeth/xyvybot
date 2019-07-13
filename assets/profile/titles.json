@@ -5,12 +5,12 @@
  "PURCHASABLE": "Titles that can be purchased",
 
  "WINS": "Titles one obtains from having won a lot of ELO",
- "7500elo": "Not trash, at least",
- "10k_elo": "Ready to Play",
- "15k_elo": "Master of Strategies",
- "20k_elo": "Serious Gamer",
- "25k_elo": "Tabletop Legend",
- "50k_elo": "Tabletop Champion",
+ "15k_elo": "Not trash, at least",
+ "20k_elo": "Ready to Play",
+ "25k_elo": "Master of Strategies",
+ "30k_elo": "Serious Gamer",
+ "40k_elo": "Tabletop Legend",
+ "50k_elo": "Tabletop Master",
  "75k_elo": "Tabletop Grand Master",
  "100kelo": "Tabletop God",
 
@@ -33,13 +33,14 @@
  "allBorW": "Eliminator",
  "winsIn4": "gg ez",
  "aCasual": "Plays for fun",
+ "allBack": "Fucking weeb",
 
  "2000SERIES": "Titles one obtains by reaching 2000 ELO in any game",
- "othello": "I love Othello!",
- "reversi": "I love Reversi!",
- "sixMoku": "I love Rokumoku!",
- "squares": "I love Squares!",
- "3DTTTer": "I love 3D Tic-Tac-Toe!",
- "Ordoist": "I love Ordo!",
- "conFour": "I love Connect Four!"
+ "2k_elo1": "I love Othello!",
+ "2k_ELO1": "I love Reversi!",
+ "2k_elo2": "I love Rokumoku!",
+ "2k_elo3": "I love Squares!",
+ "2k_elo4": "I love 3D Tic-Tac-Toe!",
+ "2k_elo5": "I love Ordo!",
+ "2k_elo6": "I love Connect Four!"
 }
