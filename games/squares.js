@@ -133,6 +133,7 @@ exports.drawBoard = function(game, end) {
             {
                 ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
             }
+            else
             if (game.highlight[1].some(h => h[0] == x && h[1] == y))
             {
                 ctx.drawImage(exports.Images.squareHighlight, 17 + (y * 25), 30 + (x * 25));

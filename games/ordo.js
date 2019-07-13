@@ -536,7 +536,7 @@ exports.nextTurn = function(channel, end) {
         game.winner = game.turn;
     }
 
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 0 ? `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png` : `${shortname}_${end}_${game.players[game.winner]}.png`);
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 0 ? `${shortname}_0_${game.players[0]}vs${game.players[1]}.png` : `${shortname}_1_${game.players[game.winner]}.png`);
     for (let ch in game.channels)
     {
         for (let i = 0; i < game.channels[ch].length; i++)
