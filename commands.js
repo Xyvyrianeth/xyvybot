@@ -560,7 +560,7 @@ var commands = {
             let loss = elos.replace(/elo/g, "los");
             if (!args[1])
             {
-                elos = "round((" + elos + ") / 5)";
+                elos = "round((" + elos + ") / 6)";
             }
             let query = [
                 `SELECT`,
