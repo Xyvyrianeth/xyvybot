@@ -1,4 +1,4 @@
-var version = "2.37.1.7";
+var version = "2.37.2.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1131,7 +1131,10 @@ var commands = {
             }
             embed.setColor(new Color().random());
             message.author.send({embed});
-            return sendChat("The rules for " + GameName + " have been sent to you via DMs!");
+            if (message.channel.type != "dm")
+            {
+                return sendChat("The rules for " + GameName + " have been sent to you via DMs!");
+            }
         }
         if (["tourney", "tournament"].includes(args[0]))
         {
@@ -2262,7 +2265,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "MineSweeper",
-                Images.minesweeper
+                exports.Images.minesweeper
             );
             embed.setDescription([
                 "You can control 3 aspects of a game: height, width, and the number of bombs. Here are the 3 possible syntaxes:",
@@ -2300,7 +2303,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "MineSweeper",
-                Images.minesweeper
+                exports.Images.minesweeper
             );
             embed.addField("5%", "`novice`\n`beginner`");
             embed.addField("10%", "`easy`\n`apprentice`");
@@ -2437,7 +2440,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "MineSweeper",
-                Images.minesweeper
+                exports.Images.minesweeper
             );
             embed.setDescription("||" + a.join("||\n||") + "||");
             embed.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d);
