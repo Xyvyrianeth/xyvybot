@@ -153,7 +153,7 @@ for (let d = 0; d < 4; d++)
             ].some(c => c != b))
             {
                 game.highlight = [
-                    a[y][x], // OH shit
+                    a[y][x], 
                     a[y + (e[d] * 1)][x + (f[d] * 1)],
                     a[y + (e[d] * 2)][x + (f[d] * 2)],
                     a[y + (e[d] * 3)][x + (f[d] * 3)],
