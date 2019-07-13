@@ -965,7 +965,7 @@ var commands = {
                 return sendChat(`You are not a participant of this game!`);
             }
             else
-            if (!games.games.some(condition("dontStart")))
+            if (games.games.some(condition("dontStart")))
             {
                 games.games.forEach((game, index) => {
                     if (game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && !game.started)
