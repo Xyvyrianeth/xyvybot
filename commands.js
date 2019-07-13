@@ -2479,7 +2479,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "x!nsfw",
-                Images.nekosLife
+                exports.Images.nekosLife
             );
             embed.setDescription(`Tag: \`${type}\` | Do \`x!nsfw ${type}\` to see more like this\nDo \`x!nsfw tags\` to see all tags`);
             embed.setFooter("Powered by Nekos.Life");
@@ -2497,7 +2497,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "x!nsfw",
-                Images.nekosLife
+                exports.Images.nekosLife
             );
             embed.setTitle("NSFW Tags");
             let joined = '';
@@ -2557,7 +2557,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "x!nsfw",
-                Images.nekosLife
+                exports.Images.nekosLife
             );
             embed.setDescription(`Tag: \`${type}\`\nSelected randomly from: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`);
             embed.setFooter("Powered by Nekos.Life");
@@ -2682,7 +2682,7 @@ var commands = {
                         let embed = new Discord.RichEmbed();
                         embed.setAuthor(
                             "x!nsfw",
-                            Images.nekosLife
+                            exports.Images.nekosLife
                         );
                         embed.setDescription(`Tags: [\`${queue.join('`, `')}\`]${types.length > 5 ? `\nMaximum of 5 tags allowed` : ''}\n\n[${Tags.join(']\n\n[')}]`);
                         embed.setFooter("Powered by Nekos.Life");
@@ -2713,7 +2713,7 @@ var commands = {
             let embed = new Discord.RichEmbed();
             embed.setAuthor(
                 "x!nsfw",
-                Images.nekosLife
+                exports.Images.nekosLife
             );
             embed.setDescription(`Tag: \`${type}\``);
             embed.setFooter("Powered by Nekos.Life");
