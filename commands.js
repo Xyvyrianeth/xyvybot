@@ -1,4 +1,4 @@
-var version = "2.37.4.1";
+var version = "2.37.4.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -250,7 +250,7 @@ function bot(message) {
             {
                 result = {
                     winner: game.players[game.winner],
-                    loser: game.players[game.winner == 0 ? 1 : 0],
+                    loser: game.players[[1, 0][game.winner]],
                     game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo"].indexOf(game.game) + 1),
                     score: game.score
                 };
