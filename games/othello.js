@@ -92,7 +92,7 @@ exports.drawBoard = function(game, end) {
 
     if (end === 0)
     {
-        ctx.drawImage(exports.Images[["black", "white"][Math.floor(game.turn)] + "Text"], 20, 6);
+        ctx.drawImage(exports.Images[["black", "white"][game.turn] + "Text"], 20, 6);
         ctx.drawImage(exports.Images.turn, 76, 4);
     }
     else
@@ -213,7 +213,7 @@ exports.checkPossible = function(game) {
     // If empty spaces are available, this finds spaces that can be played in
     game.possible = [];
     let a = game.turn; // Active players's stone
-    let b = game.turn === 0 ? 1 : 0; // Opponent's stone
+    let b = [1, 0][game.turn]; // Opponent's stone
     for (let y = 0; y < 8; y++)
     { // Goes through every space on the board...
         for (let x = 0; x < 8; x++)
@@ -235,7 +235,7 @@ exports.checkPossible = function(game) {
                         let x1 = x + d[i][1]; // X-coord of next space d
                         let p1 = 1; // How many stones in [d]irection?
 
-                        if (game.board[y1][x1] === a)
+                        if (game.board[y1][x1] === b)
                         { // If the first stone in [d]irection belongs to the opponent
 
                             let yx = true; // Can we keep going this way?
@@ -249,7 +249,7 @@ exports.checkPossible = function(game) {
                                 if (y1 < 8 && y1 > -1 && x1 < 8 && x1 > -1)
                                 { // Next space does not go off the endge
 
-                                    if (game.board[y1][x1] === b)
+                                    if (game.board[y1][x1] === a)
                                     { // Next space belongs to the active player
 
                                         p.push(d[i].concat(p1)); // Add this direction as well as the number of stones in this direction to this space for the possible list
