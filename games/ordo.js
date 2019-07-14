@@ -240,6 +240,7 @@ exports.takeTurn = function(channel, Move) {
     let count = 0;
     for (let P = 0; P < 2; P++)
     {
+        count = 0;
         for (let y = 0; y < 8; y++)
         {
             for (let x = 0; x < 10; x++)
@@ -253,7 +254,6 @@ exports.takeTurn = function(channel, Move) {
         }
         if (count == 0)
         {
-            console.log("Should be stopping");
             break;
         }
         else
