@@ -253,6 +253,7 @@ exports.takeTurn = function(channel, Move) {
         }
         if (count == 0)
         {
+            console.log("Should be stopping");
             break;
         }
         else
