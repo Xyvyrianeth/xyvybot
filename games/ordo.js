@@ -237,10 +237,9 @@ exports.takeTurn = function(channel, Move) {
     let queue = [[], []];
     let evaluating = [[], []];
     let confirmed = [[], []];
-    let count = 0;
     for (let P = 0; P < 2; P++)
     {
-        count = 0;
+        let count = 0;
         for (let y = 0; y < 8; y++)
         {
             for (let x = 0; x < 10; x++)
@@ -254,6 +253,7 @@ exports.takeTurn = function(channel, Move) {
         }
         if (count == 0)
         {
+            game.highlight = Object.values(move);
             return exports.nextTurn(channel, 2);
         }
         else
@@ -565,7 +565,7 @@ exports.nextTurn = function(channel, end) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [[game.split ? `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.` : `It is <@${game.player}>'s turn.`, `<@${game.player}> has won by reaching the opponent's home row!`, `<@${game.player}> has won by capturing all of the opponent's stones!`, `<@${game.player}> has won by isolating their opponent's pieces!`][end], game.buffer]);
+    exports.say(game.channels, [[game.split ? `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.` : `It is <@${game.player}>'s turn.`, `<@${game.player}> has won by reaching their opponent's home row!`, `<@${game.player}> has won by capturing all of their opponent's stones!`, `<@${game.player}> has won by isolating their opponent's pieces!`][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {

@@ -1,4 +1,4 @@
-var version = "2.37.4.4";
+var version = "2.37.4.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1237,7 +1237,7 @@ var commands = {
                         "Endgame",
                         "There are 3 conditions for ending the game:\n" +
                         " -A player moves a stone into any space in their opponent's \"home row\" (for blue it's Row 8, and for white it's Row 1). This player is the winner. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_1.png)\n" +
-                        // " -All of a player's stones have been captured and removed from the game. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_2.png)\n" +
+                        " -All of a player's stones have been captured and removed from the game. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_2.png)\n" +
                         " -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_3.png)"
                     );
                 }
