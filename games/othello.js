@@ -275,6 +275,10 @@ exports.checkPossible = function(game) {
             }
         }
     }
+    if (game.possible.length == 0)
+    {
+        game.possible = false;
+    }
 }
   
 exports.nextTurn = function(channel, End) {
