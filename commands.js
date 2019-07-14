@@ -1,4 +1,4 @@
-var version = "2.37.2.5";
+var version = "2.37.4.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1207,29 +1207,28 @@ var commands = {
                         "Singleton moves consist of one stone being moved in any direction, either diagonally or orthagonally, any number of spaces. These moves can end in either an empty space or on a space occupied by one of your opponent's stones (which effectively \"captures\" and removes that stone from the game).\n" +
                         "You make a singleton move by saying the row number and column letter of the stone you want to move followed by the row number and column letter of the space you wish to move it to; for example, say \"4C 7F\" to move a stone from Row 4–Column C to Row 7–Column F.\n" +
                         "Stones that have been moved will be highlighted in yellow with the space they were moved from being highlighted in red.\n" +
-                        "[Example .gif of a singleton move]()"
+                        "[Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/singleton_move.png)"
                     );
                     embed.addField(
                         "Ordo Moves",
                         "Ordo moves consist of multiple stones that are adjacent orthagonally from each other being moved in either perpendicular direction (if the stones being moved are aligned vertically, they can only be moved horizontally, and vice versa).\n" +
                         "You make an ordo move by saying the row number and column letter of the stones located at the ends of the line of stones you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many spaces you wish to move it in that direction; for example, say \"5A-7A left 4\" to move 3 stones aligned vertically in Column A to the left 4 spaces each.\n" +
                         "These moves cannot capture enemy stones.\n" +
-                        "[Example .gif of an ordo move]()"
+                        "[Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ordo_move.png)"
                     );
                     embed.addField(
                         "Groups",
                         "At the end of either player's turn, all of their stones must be connected into a single group where all stones are adjacent to at least one other, either diagonally or orthagonally. If a move is attempted and the moved stone(s) is not connected to the primary group, it is not a legal move.\n" +
                         "If a player were to make a move that would separate their opponent's stones into two or more groups, their opponent must immediately make a move that would reconnect their stones into a single group again.\n" +
                         "If a player's stones were to be split into two or more groups and that player cannot reconnect them into a single group again on their next turn, the game immediately ends.\n" +
-                        "[Example .gif of a group being separated and then reconnected]()"
+                        "[Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/group_split.png)"
                     );
                     embed.addField(
                         "Endgame",
                         "There are 3 conditions for ending the game:\n" +
-                        " -A player moves a stone into any space in their opponent's \"home row\" (for blue it's row 8, and for white it's row 1). This player is the winner. Both home rows have been highlighted in the color of which stone needs to be placed in it to end the game.\n" +
-                        " -All of a player's stones have been captured and removed from the game. This player is the loser.\n" +
-                        " -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser.\n" +
-                        "[Example .gif of all 3 scenarios]()"
+                        " -A player moves a stone into any space in their opponent's \"home row\" (for blue it's Row 8, and for white it's Row 1). This player is the winner. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_1.png)\n" +
+                        // " -All of a player's stones have been captured and removed from the game. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_2.png)\n" +
+                        " -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_3.png)"
                     );
                 }
             }

@@ -83,17 +83,31 @@ exports.drawBoard = function(game, end) {
     {
         for (let x = 0; x < 10; x++)
         {
-            if (game.highlight[0].some(h => h[0] == y && h[1] == x))
-            {
-                ctx.drawImage(exports.Images.from, 17 + (x * 25), 30 + (y * 25));
-            }
-            if (game.highlight[1].some(h => h[0] == y && h[1] == x))
-            {
-                ctx.drawImage(exports.Images.to, 17 + (x * 25), 30 + (y * 25));
-            }
+            let X = 17 + (x * 25);
+            let Y = 30 + (y * 25);
             if (game.board[y][x] !== false)
             {
-                ctx.drawImage(exports.Images[["blue", "white"][game.board[y][x]]], 17 + (x * 25), 30 + (y * 25));
+                ctx.drawImage(exports.Images[["blue", "white"][game.board[y][x]]], X, Y);
+            }
+
+            if (end > 0 && game.highlight[1].some(h => h[0] == y && h[1] == x))
+            {
+                ctx.drawImage(exports.Images.winHighlight, X, Y);
+            }
+            else
+            if (game.highlight[0].some(h => h[0] == y && h[1] == x))
+            {
+                ctx.drawImage(exports.Images.from, X, Y);
+            }
+            else
+            if (game.highlight[1].some(h => h[0] == y && h[1] == x))
+            {
+                ctx.drawImage(exports.Images.to, X, Y);
+            }
+            else
+            if (y == [7, 0][game.turn])
+            {
+                ctx.drawImage(exports.Images[["blue", "white"][game.turn] + "HomeRow"], X, Y);
             }
         }
     }
@@ -219,10 +233,11 @@ exports.takeTurn = function(channel, Move) {
         game.board[move.from[i][0]][move.from[i][1]] = false;
         game.board[move.to[i][0]][move.to[i][1]] = game.turn;
     }
-
+    
     let queue = [[], []];
     let evaluating = [[], []];
     let confirmed = [[], []];
+    let noMore = false;
     for (let P = 0; P < 2; P++)
     {
         for (let y = 0; y < 8; y++)
@@ -235,28 +250,40 @@ exports.takeTurn = function(channel, Move) {
                 }
             }
         }
-        evaluating[P].push(queue[P].shift());
-        while (evaluating[P].length != 0) {
-            let evaluated = evaluating[P];
-            evaluating[P] = [];
-            for (let i = 0; i < evaluated.length; i++)
-            {
-                confirmed[P].push(evaluated[i])
-                for (let d = 0; d < 8; d++)
+        if (queue[P].length == 0)
+        {
+            noMore = true;
+            break;
+        }
+        else
+        {
+            evaluating[P].push(queue[P].shift());
+            while (evaluating[P].length != 0) {
+                let evaluated = evaluating[P];
+                evaluating[P] = [];
+                for (let i = 0; i < evaluated.length; i++)
                 {
-                    Y = evaluated[i][0] + [-1, -1, 0, 1, 1, 1, 0, -1][d];
-                    X = evaluated[i][1] + [0, 1, 1, 1, 0, -1, -1, -1][d];
-                    if (Y != -1 && Y != 8 && X != -1 && Y != 10)
+                    confirmed[P].push(evaluated[i])
+                    for (let d = 0; d < 8; d++)
                     {
-                        if (queue[P].some(s => s[0] == Y && s[1] == X))
+                        Y = evaluated[i][0] + [-1, -1, 0, 1, 1, 1, 0, -1][d];
+                        X = evaluated[i][1] + [0, 1, 1, 1, 0, -1, -1, -1][d];
+                        if (Y != -1 && Y != 8 && X != -1 && Y != 10)
                         {
-                            evaluating[P].push([Y, X]);
-                            queue[P] = queue[P].filter(s => s[0] != Y || s[1] != X);
+                            if (queue[P].some(s => s[0] == Y && s[1] == X))
+                            {
+                                evaluating[P].push([Y, X]);
+                                queue[P] = queue[P].filter(s => s[0] != Y || s[1] != X);
+                            }
                         }
                     }
                 }
             }
         }
+    }
+    if (noMore)
+    {
+        end = 2;
     }
     if (queue[game.turn].length != 0)
     {
@@ -271,11 +298,6 @@ exports.takeTurn = function(channel, Move) {
     if (game.board[[7, 0][game.turn]].some(p => p === game.turn))
     {
         end = 1;
-    }
-    else
-    if (!game.board.some(y => y.includes([1, 0][game.turn])))
-    {
-        end = 2;
     }
     else
     if (queue[[1, 0][game.turn]].length > 0)
@@ -589,6 +611,12 @@ Canvas.loadImage("/app/assets/games/ordo/blueText.png").then(image => {
 });
 Canvas.loadImage("/app/assets/games/ordo/whiteText.png").then(image => {
     exports.Images.whiteText = image;
+});
+Canvas.loadImage("/app/assets/games/ordo/blueHomeRow.png").then(image => {
+    exports.Images.blueHomeRow = image;
+});
+Canvas.loadImage("/app/assets/games/ordo/whiteHomeRow.png").then(image => {
+    exports.Images.whiteHomeRow = image;
 });
 Canvas.loadImage("/app/assets/games/ordo/turn.png").then(image => {
     exports.Images.turn = image;
