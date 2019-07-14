@@ -99,7 +99,7 @@ exports.drawBoard = function(game, end) {
     if (end === 1)
     {
         ctx.drawImage(exports.Images[["black", "white"][game.winner] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.win, 76, 4);
+        ctx.drawImage(exports.Images.win, 81, 6);
     }
     else
     if (end === 2)
@@ -147,7 +147,6 @@ exports.takeTurn = function(channel, Move) {
     let move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-h]/)[0])];
   
     // Function will vary with game
-    possible = game.possible;
     game.highlight = [];
     if (typeof game.board[move[0]][move[1]] !== "boolean")
     {
@@ -157,21 +156,21 @@ exports.takeTurn = function(channel, Move) {
     {
         return exports.say(JSON.parse(`{"${channel}":[]}`), ["Illegal move: playing in this space would not capture anything.", {}]);
     }
-    for (let i = 0; i < possible.length; i++)
-    {
-        if (move[0] == possible[i][0] && move[1] == possible[i][1])
+    game.possible.forEach(p => {
+        
+        if (move[0] == p[0] && move[1] == p[1])
         {
             game.board[move[0]][move[1]] = game.turn;
-            for (let x = 0; x < possible[i][2].length; x++)
+            for (let x = 0; x < p[2].length; x++)
             {
-                for (let y = 1; y < possible[i][2][x][2]; y++)
+                for (let y = 1; y < p[2][x][2]; y++)
                 {
-                    game.board[move[0] + (possible[i][2][x][0] * y)][move[1] + (possible[i][2][x][1] * y)] = game.turn;
-                    game.highlight.push([move[0] + (possible[i][2][x][0] * y), move[1] + (possible[i][2][x][1] * y)]);
+                    game.board[move[0] + (p[2][x][0] * y)][move[1] + (p[2][x][1] * y)] = game.turn;
+                    game.highlight.push([move[0] + (p[2][x][0] * y), move[1] + (p[2][x][1] * y)]);
                 }
             }
         }
-    }
+    });
 
     game.highlight.unshift(move);
     
@@ -187,14 +186,11 @@ exports.takeTurn = function(channel, Move) {
         }
     }
 
-    game.turn = [1, 0][game.turn];
-
     exports.checkPossible(game);
     if (!game.possible)
     {
-        game.turn = [1, 0][game.turn];
         exports.checkPossible(game);
-        if (game.possible)
+        if (!game.possible)
         {
             exports.nextTurn(channel, true);
         }
@@ -210,8 +206,8 @@ exports.takeTurn = function(channel, Move) {
 }
 
 exports.checkPossible = function(game) {
-    // If empty spaces are available, this finds spaces that can be played in
     game.possible = [];
+    game.turn = [1, 0][game.turn]; // Changes active player
     let a = game.turn; // Active players's stone
     let b = [1, 0][game.turn]; // Opponent's stone
     for (let y = 0; y < 8; y++)
@@ -278,10 +274,6 @@ exports.checkPossible = function(game) {
                 }
             }
         }
-    }
-    if (game.possible.length == 0)
-    {
-        game.possible = false;
     }
 }
   
