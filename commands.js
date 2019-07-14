@@ -1,4 +1,4 @@
-var version = "2.37.4.0";
+var version = "2.37.4.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -254,6 +254,16 @@ function bot(message) {
                     game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo"].indexOf(game.game) + 1),
                     score: game.score
                 };
+            }
+            if (end !== '0')
+            {
+                games.games.forEach((game, index) => {
+                    if (game.channels.hasOwnProperty(message.channel.id))
+                    {
+                        delete games.games[index];
+                        games.games.splice(index, 1);
+                    }
+                });
             }
 
             if (result)

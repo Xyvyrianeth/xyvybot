@@ -237,7 +237,7 @@ exports.takeTurn = function(channel, Move) {
     let queue = [[], []];
     let evaluating = [[], []];
     let confirmed = [[], []];
-    let noMore = false;
+    let noMore = true;
     for (let P = 0; P < 2; P++)
     {
         for (let y = 0; y < 8; y++)
@@ -246,13 +246,13 @@ exports.takeTurn = function(channel, Move) {
             {
                 if (game.board[y][x] === P)
                 {
+                    noMore = false;
                     queue[P].push([y, x]);
                 }
             }
         }
-        if (queue[P].length == 0)
+        if (noMore)
         {
-            noMore = true;
             break;
         }
         else
