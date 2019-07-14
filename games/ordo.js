@@ -254,7 +254,7 @@ exports.takeTurn = function(channel, Move) {
         }
         if (count == 0)
         {
-            break;
+            return exports.nextTurn(channel, 2);
         }
         else
         {
@@ -281,10 +281,6 @@ exports.takeTurn = function(channel, Move) {
                 }
             }
         }
-    }
-    if (count == 0)
-    {
-        end = 2;
     }
     if (queue[game.turn].length != 0)
     {
