@@ -3,7 +3,14 @@ const client = new Discord.Client();
 
 client.login(process.env.TOKEN);
 client.on("ready", () => {
-    client.guilds.get("399327996076621825").channels.get("534567279891972097").send("Version " + commands.version + " published successfully!");
+    client.user.setPresence({
+        status: "online",
+        game: {
+            name: "version " + commands.version + "!",
+            type: "STREAMING",
+            url: "https://twitch.tv/Xyvyrianeth"
+        }
+    });
     setInterval(function() {
         let splash = [
             "version " + commands.version + "!",
@@ -26,7 +33,7 @@ client.on("ready", () => {
             "Yo' mixtape is trash.",
             "The best bot for playing Abstract Strategy Games that I know of!",
             "Don't bother clicking this link, I never stream anything. I don't have that kind of internet.",
-            "Somebody sent me a bunch of hentai one day. I have no idea why they would do such a thing. I'm a bot—I can't do anything with that. What a weird fella.",
+            "Somebody sent me a bunch of hentai one day. I have no idea why they would do such a thing. I'm a bot. I can't do anything with that. What a weird fella.",
             "If you're reading this, why?",
             "You can also play games via DMs! Someone else has to want to play somewhere else, though.",
             "Some day, I'll be a popular bot.",
@@ -38,7 +45,7 @@ client.on("ready", () => {
             "I'm setting up a public server for tourneys 'n' shit for these games (it'll actually become public once all the games I want are added and the back-up system works). Look forward to it!",
             "Now try Ordo!",
             "A new game has been added recently! Try it out!"
-        ].concat(require("/app/assets/misc/holidays.js").holidays(new Date()));
+        ];
         client.user.setPresence({
             status: "online",
             game: {
