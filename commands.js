@@ -1,4 +1,4 @@
-var version = "2.37.5.0";
+var version = "2.37.5.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1080,7 +1080,16 @@ var commands = {
             }
 
         }
-        if (["help", "rules", "howtoplay"].includes(args[0])) /** @TODO Make example .gifs */
+        /**
+            @TODO Make examples for...
+            [ ] othello
+            [ ] squares
+            [ ] rokumoku
+            [ ] ttt3d
+            [ ] connect4
+            [×] ordo
+        */
+        if (["help", "rules", "howtoplay"].includes(args[0]))
         {
             let wiki = {
                 asg: "[Abstract Strategy Game](https://wikipedia.org/wiki/Abstract_strategy_game)",
@@ -1100,7 +1109,7 @@ var commands = {
                     embed.addField(
                         "Stone Placement",
                         "In order to place a stone in an empty space, that space must be at the end of a line of your opponent's stones with one of your own stones at the other end of it. For simplicity, legal spaces will be highlighted in blue for you.\n" +
-                        "To place a stone on the board, simply say the row number and column letter of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
+                        "To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
                         "The stone placed on any given turn will be highlighted in yellow.\n" +
                         "[Example .gif of stone placements]()"
                     );
@@ -1127,7 +1136,7 @@ var commands = {
                     );
                     embed.addField(
                         "Stone Placement",
-                        "To place a stone on the board, simply say the row number and column letter of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
+                        "To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
                         "The stones placed on any given turn will be highlighted in yellow.\n" +
                         "[Example .gif of stone placement]()"
                     );
@@ -1154,7 +1163,7 @@ var commands = {
                     );
                     embed.addField(
                         "Stone Placement",
-                        "To place a stone on the board, simply say the row number and column letter of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
+                        "To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
                         "The stones placed on any given turn will be highlighted in yellow.\n" +
                         "[Example .gif of stone placement]()"
                     );
@@ -1168,20 +1177,20 @@ var commands = {
                 case "ttt3d":
                 {
                     embed.setDescription(
-                        `3D Tic Tac Toe is an ${wiki.asg} and, as the name suggests, a type of ${wiki.attt}. The game consists of stones, either X's or O's, and a 3-dimensional 4x4x4 playing area.\n` +
-                        "Players take turns placing 1 stone in an emtpy space on the 3-dimensional playing area until either the playing area is full or a player has created a line of 4 of their own stones through any number of planes in the playing area. X goes first.\n" +
+                        `3D Tic Tac Toe is an ${wiki.asg} and, as the name suggests, a type of ${wiki.attt}. The game consists of markers, either X's or O's, and a 3-dimensional 4x4x4 playing area.\n` +
+                        "Players take turns placing 1 marker in an emtpy space on the 3-dimensional playing area until either the playing area is full or a player has created a line of 4 of their own markers through any number of planes in the playing area. X goes first.\n" +
                         "The way the 3D Tic Tac Toe playing area is displayed might be confusing for some players. Traditionally, the 4 *y*-planes are displayed vertically, but to save space, the 2nd and 4th *y*-planes are to the right of the 1st and 3rd."
                     );
                     embed.addField(
-                        "Stone Placement",
-                        "To place a stone in the playing area, simply say which *y*-plane you wish to place in, followed by the row number and column letter of that *y*-plane; for example, say \"34C\" to place a stone in Row 4–Column C in the 3rd *y*-plane.\n" +
-                        "The stone placed on any given turn will be highlighted in yellow.\n" +
-                        "[Example .gif of stone placement]()"
+                        "Marker Placement",
+                        "To place a marker in the playing area, simply say which *y*-plane you wish to place in, followed by the location of that *y*-plane; for example, say \"34C\" to place a marker in Row 4–Column C in the 3rd *y*-plane.\n" +
+                        "The marker placed on any given turn will be highlighted in yellow.\n" +
+                        "[Example .gif of marker placement]()"
                     );
                     embed.addField(
                         "Endgame",
-                        "The game officially ends when either player has created a line of 4 of their own stones going across any number of planes.\n" +
-                        "Once this happens, the 4 stones that constitute the winning line will be highlighted in green.",
+                        "The game officially ends when either player has created a line of 4 of their own markers going across any number of planes.\n" +
+                        "Once this happens, the 4 markers that constitute the winning line will be highlighted in green.",
                         "[Example .gif of game ending]()"
                     );
                 }
@@ -1215,14 +1224,14 @@ var commands = {
                     embed.addField(
                         "Singleton Moves",
                         "Singleton moves consist of one stone being moved in any direction, either diagonally or orthagonally, any number of spaces. These moves can end in either an empty space or on a space occupied by one of your opponent's stones (which effectively \"captures\" and removes that stone from the game).\n" +
-                        "You make a singleton move by saying the row number and column letter of the stone you want to move followed by the row number and column letter of the space you wish to move it to; for example, say \"4C 7F\" to move a stone from Row 4–Column C to Row 7–Column F.\n" +
+                        "You make a singleton move by saying the location of the stone you want to move followed by the location of the space you wish to move it to; for example, say \"4C 7F\" to move a stone from Row 4–Column C to Row 7–Column F.\n" +
                         "Stones that have been moved will be highlighted in yellow with the space they were moved from being highlighted in red.\n" +
                         "[Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/singleton_move.png)"
                     );
                     embed.addField(
                         "Ordo Moves",
                         "Ordo moves consist of multiple stones that are adjacent orthagonally from each other being moved in either perpendicular direction (if the stones being moved are aligned vertically, they can only be moved horizontally, and vice versa).\n" +
-                        "You make an ordo move by saying the row number and column letter of the stones located at the ends of the line of stones you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many spaces you wish to move it in that direction; for example, say \"5A-7A left 4\" to move 3 stones aligned vertically in Column A to the left 4 spaces each.\n" +
+                        "You make an ordo move by saying the location of the stones located at the ends of the line of stones you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many spaces you wish to move it in that direction; for example, say \"5A-7A left 4\" to move 3 stones aligned vertically in Column A to the left 4 spaces each.\n" +
                         "These moves cannot capture enemy stones.\n" +
                         "[Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ordo_move.png)"
                     );
