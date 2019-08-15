@@ -1,4 +1,4 @@
-var version = "2.37.6.2";
+var version = "2.37.6.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2673,7 +2673,7 @@ var commands = {
 		}
 		else
 		{
-			let type = tags.map(tag => tag.toLowerCase()).includes(args[0].toLowerCase()) ?
+			let type = tags.some(tag => tag.toLowerCase() == args[0].toLowerCase()) ?
 				args[0] :
 			tags.some(tag => tag.toLowerCase().includes(args[0].toLowerCase())) ?
 				tags.filter(tag => tag.toLowerCase().includes(args[0].toLowerCase())).random() :
