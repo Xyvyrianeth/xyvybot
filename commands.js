@@ -1,4 +1,4 @@
-var version = "2.37.5.1";
+var version = "2.37.6.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -114,10 +114,6 @@ function command(message) {
         return;
     }
     let sendChat = function(content, options) {
-        if (typeof content == "string")
-        {
-            content = content.replace(/\$user\$/g, `<@${message.author.id}>`);
-        }
         if (options == undefined)
         {
             message.channel.send(content);
@@ -153,10 +149,6 @@ function command(message) {
    
 function other(message) {
     let sendChat = function(content, options) {
-        if (typeof content == "string")
-        {
-            content = content.replace(/\$user\$/g, `<@${message.author.id}>`);
-        }
         if (options == undefined)
         {
             message.channel.send(content);
@@ -969,10 +961,10 @@ var commands = {
                     return game.game == gameName && !game.started && !game.channels.hasOwnProperty(message.channel.id) && !game.here;
                 },
                 "playingYourself": function(game) {
-                    return game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName && !game.started;
+                    return game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName && !game.started && message.author.id !== "561578790837289002";
                 },
                 "somethingElseHere": function(game) {
-                    return game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game !== gameName && !game.started;
+                    return game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game !== gameName && !game.started && message.author.id !== "561578790837289002";
                 },
                 "someoneElseHere": function(game) {
                     return game.channels.hasOwnProperty(message.channel.id) && game.game !== gameName && !game.started;
@@ -981,7 +973,10 @@ var commands = {
                     return game.channels.hasOwnProperty(message.channel.id) && game.started;
                 },
                 "alreadyQueued": function(game) {
-                    return !game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName;
+                    return !game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.game == gameName && message.author.id !== "561578790837289002";
+                },
+                "alreadyPlaying": function(game) {
+                    return !game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.started && message.author.id !== "561578790837289002";
                 },
                 "nothingHere": function(game) {
                     return game.channels.hasOwnProperty(message.channel.id);
@@ -1002,6 +997,10 @@ var commands = {
             if (games.games.some(condition("alreadyQueued")))
             {
                 return sendChat("You are already queued for that game somewhere else!");
+            }
+            if (games.games.some(condition("alreadyPlaying")))
+            {
+                return sendChat("You are already playing a game in a different channel!");
             }
             if (games.games.some(condition("playingYourself")))
             {
@@ -1351,10 +1350,10 @@ var commands = {
                     }
                     if (res.rows[0].backgrounds.length == 1)
                     {
-                        return sendChat("This is your current background, $user$!\nTo get more backgrounds, do `x!profile background purchase` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 500 money.", new Discord.Attachment("./assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+                        return sendChat(`This is your current background, <@${message.author.id}>!\nTo get more backgrounds, do \`x!profile background purchase\` to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 500 money.`, new Discord.Attachment("./assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
                     }
 
-                    return sendChat("This is your current background, $user$! New backgrounds cost 500 money.\nDo `x!profile backgrounds` to view the other backgrounds you own.", new Discord.Attachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+                    return sendChat(`This is your current background, <@${message.author.id}>! New backgrounds cost 500 money.\nDo \`x!profile backgrounds\` to view the other backgrounds you own.`, new Discord.Attachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
                 });
             }
             else
