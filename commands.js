@@ -71,7 +71,7 @@ var games = {
 };
 
 function botError(message, err) {
-	return client.guilds.get("399327996076621825").channels.get("467902250128506880").send([
+	return client.channels.get("467902250128506880").send([
 		`\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})`,
 		`Channel: ${message.channel.name} (${message.channel.id})\`\`\``,
 		`\`\`\`User errored on:\`\`\`<@${message.author.id}>\n`,
