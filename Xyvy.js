@@ -83,9 +83,9 @@ client.on('message', message => {
     }
 });
 
-function messageReaction() {
-    console.log(messageReaction);
-    if (messageReaction.message.channel.id == "540749591084269568")
+function messageReaction(message) {
+    console.log(message);
+    if (message.message.channel.id == "540749591084269568")
     {
         client.channels.get("540749591084269568").send("A message reaction has been added or removed in this channel")
     }
