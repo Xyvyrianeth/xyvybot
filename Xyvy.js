@@ -82,3 +82,11 @@ client.on('message', message => {
         return commands.other(message, false);
     }
 });
+
+client.on('messageReactionAdd' | 'messageReactionRemove', messageReaction => {
+    console.log(messageReaction);
+    if (messageReaction.message.channel.id == "540749591084269568")
+    {
+        client.channels.get("540749591084269568").send("A message reaction has been added or removed in this channel")
+    }
+});
