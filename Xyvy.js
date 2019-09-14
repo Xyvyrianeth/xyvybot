@@ -65,12 +65,46 @@ var config = {
 };
 exports.config = config;
 
-var commands = require("/app/commands.js");
+var commands = require("/app/commands.js"); /*
+
+var reactions = [];
+setInterval(function() {
+    reactions.forEach((m, i) => {
+        if (new Date().getTime() - m[1].createdTimestamp >= 5 * 60 * 1000)
+        {
+            delete reactions[i];
+            reactions.splice(i, 1);
+        }
+    });
+}, 1000);
+function messageReaction(reaction) {
+    if (reaction.message.channel.id == "540749591084269568" && reaction.count >= 2)
+    {
+        let starboard = reaction.message.guild.channels.find("name", "pins");
+        if (starboard == null)
+        {
+            return;
+        }
+        if (reaction.count)
+        {
+
+        }
+    }
+}
+client.on('messageReactionAdd', messageReaction);
+client.on('messageReactionRemove', messageReaction); */
 
 client.on('message', message => {
     if (message.author.bot && message.author.id == client.user.id)
-    {
-        return commands.bot(message);
+    { /*
+        if (message.channel.name == "pins")
+        {
+            reactions.push([messagemessage]);
+        }
+        else
+        { */
+            return commands.bot(message);
+        // }
     }
     if (message.content.startsWith("x!"))
     {

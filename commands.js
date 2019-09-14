@@ -1,4 +1,4 @@
-var version = "2.37.6.4";
+var version = "2.37.7.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2061,7 +2061,7 @@ var commands = {
 			// Draw blank graph
 			canvas = new Canvas.createCanvas(301, 301);
 			ctx = canvas.getContext('2d');
-			ctx.drawImage(Images.graph, 0, 0);
+			ctx.drawImage(exports.Images.graph, 0, 0);
 			ctx.translate(150.5, 150.5);
 			e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
 			input = input.split('\n');
@@ -2264,7 +2264,7 @@ var commands = {
 	"ai": function(cmd, args, input, message, sendChat) {
 		let embed = new Discord.RichEmbed()
 			.setDescription("One day I needed to test a change I made to Squares, but I had nobody to test it with, so I created another bot to play the game with me and holy shit it kicks ass.\n\nI decided to make this new bot as public as Xyvybot so that other people can play against it, too! [Click here to invite it to your server](https://discordapp.com/oauth2/authorize?client_id=561578790837289002&scope=bot&permissions=3072)! Once you have it, just request a game with Xyvybot and then ping it!\nNote that this bot is completely useless if your server does not also have Xyvybot in it.\nAlso, the only game it can play right now is Squares. I haven't gotten around to letting it play other games, yet.")
-			.setAuthor("Xyvybot - AI", Images.AIvatar)
+			.setAuthor("Xyvybot - AI", exports.Images.AIvatar)
 			.setColor(new Color().random());
 		return sendChat({embed});
 	},
