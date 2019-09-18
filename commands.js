@@ -1,4 +1,4 @@
-var version = "2.37.7.0";
+var version = "2.37.7.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1919,7 +1919,9 @@ var commands = {
 			else
 			{
 				sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
-	}	}); },
+			}
+		});
+	},
 
 	"guild": function(cmd, args, input, message, sendChat) {
 		if (!input)
@@ -2985,6 +2987,10 @@ function equ(equation, x) {
 				}
 			}
 		}
+		for (let i = 0; i < methods.length; i++)
+		{
+			equation = equation.replace(methods[i][0], methods[i][1]);
+		}
 		if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
@@ -2995,10 +3001,6 @@ function equ(equation, x) {
 					equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 				}
 			}
-		}
-		for (let i = 0; i < methods.length; i++)
-		{
-			equation = equation.replace(methods[i][0], methods[i][1]);
 		}
 		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation))
 		{
