@@ -13,10 +13,8 @@ exports.newGame = function(channel, player, here) {
 		game: shortname,
 		here: here,
 		highlight: false,
-		over: false,
 		player: false,
 		players: [player],
-		score: [0, 0],
 		started: false,
 		turn: 0
 	};
@@ -86,10 +84,8 @@ exports.newTourney = function(channel, player1, player2) {
 		game: shortname,
 		highlight: false,
 		lastmove: '',
-		over: false,
 		player: false,
 		players: [player1, player2],
-		score: [0, 0],
 		started: false,
 		turn: 0
 	};
@@ -276,10 +272,6 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 			message: `Whoops, it looks like <@${game.players[game.turn]}> has run out of time, so the game is over!`
 		}
 	}
-	else
-	{
-		game.over = true;
-	}
 
 	game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
 	for (let ch in game.channels)
@@ -291,7 +283,7 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 		game.channels[ch] = [];
 	}
 
-	exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ? "Tie game, everyone loses!" : `<@${game.players[game.score[0] > game.score[1] ? 0 : 1]}> has won!`, game.buffer]);
+	exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ? `<@${game.winner}> has won because <@${game.player}> got the ball stuck!` : `<@${game.players[game.score[0] > game.score[1] ? 0 : 1]}> has won!`, game.buffer]);
 }
 
 exports.say = function(channels, message) {
