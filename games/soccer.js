@@ -57,7 +57,7 @@ exports.newGame = function(channel, player) {
 		time: 900,
 		message: `It appears nobody wants to play right now, <@${player}>.`
 	}
-	exports.say(game.channels, [`<@${player}> is now requesting a new game of ${soccer}!`, game.buffer]);
+	exports.say(game.channels, [`<@${player}> is now requesting a new game of ${gamename}!`, game.buffer]);
 }
   
 exports.startGame = function(channel1, channel2, player2) {
