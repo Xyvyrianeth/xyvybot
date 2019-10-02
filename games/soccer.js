@@ -220,19 +220,27 @@ exports.takeTurn = function(channel, Move) {
 		return exports.say(channel, ["Illegal Move: This move will cross a path that has already been used."]);
 	}
 
+	Y += yy;
+	X -= xx;
+	if (tempboard.paths[Y][X].includes(1) || tempboard.paths[Y - 1][X -1][move % 4] == 1 || tempboard.paths[Y][X - 1][move % 4] == 1 || tempboard.paths[Y + 1][X - 1][move % 4] == 1 || tempboard.paths[Y + 1][X][move % 4] == 1 )
+	{ // Go again?
+		goagain = true;
+	}
+
 	// Move is legal
 	if (move > 3) // Update board
-	{
-		tempboard.paths[Y + yy][X - xx][move % 4] = 1;
-		tempboard.paths[Y + yy][X - xx][move % 4] = game.turn + 1;
-	}
-	else
 	{
 		tempboard.paths[Y][X][move] = 1;
 		tempboard.color[Y][X][move] = game.turn + 1;
 	}
-	Y += yy;
-	X -= xx;
+	else
+	{
+		tempboard.paths[Y - yy][X + xx][move % 4] = 1;
+		tempboard.paths[Y - yy][X + xx][move % 4] = game.turn + 1;
+	}
+	tempboard.ball[0] += [-1, -1, 0, 1, 1, 1, 0, -1][move];
+	tempboard.ball[1] += [0, -1, -1, -1, 0, 1, 1, 1][move];
+
 
 	if ((X == 0 || X == 12) && (Y == 4 || Y == 5 || Y == 6))
 	{ // Winner winner chicken dinner?
@@ -242,11 +250,6 @@ exports.takeTurn = function(channel, Move) {
 	if ((Y == 1 && (X == 1 || X == 11)) || (Y == 9 && (X == 1 || X == 11)) || (Y == 1 && tempboard.paths[Y][X][3] == 1 && tempboard.paths[Y + 1][X][0] == 1 && tempboard.paths[Y + 1][X - 1][1] == 1) || (Y == 9 && tempboard.paths[Y][X][0] == 1 && tempboard.paths[Y][X][1] == 1 && tempboard.paths[Y - 1][X - 1][3] == 1) || (X == 1 && (Y == 2 || Y == 3 || Y == 7 || Y == 8) && !JSON.parse(JSON.stringify(tempboard.paths[Y][X])).splice(1, 3).includes(0)) || (X == 11 && (Y == 2 || Y == 3 || Y == 7 || Y == 8) && ![tempboard.paths[Y - 1][X - 1][3], tempboard.paths[Y][X - 1][2], tempboard.paths[Y + 1][X - 1][1]].includes(0)) || (!tempboard.paths[Y][X].concat([tempboard.paths[Y - 1][X - 1][3], tempboard.paths[Y][X - 1][2], tempboard.paths[Y + 1][X - 1][1], tempboard.paths[Y + 1][X][0]]).includes(0)))
 	{ // Tie game?
 		end = 2;
-	}
-	else
-	if (tempboard.paths[Y][X].includes(1) || tempboard.paths[Y - 1][X -1][move % 4] == 1 || tempboard.paths[Y][X - 1][move % 4] == 1 || tempboard.paths[Y + 1][X - 1][move % 4] == 1 || tempboard.paths[Y + 1][X][move % 4] == 1 )
-	{ // Go again?
-		goagain = true;
 	}
 
 	game.board = tempboard;
