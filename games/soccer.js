@@ -164,13 +164,13 @@ exports.drawBoard = function(game, end, highlight) {
 		ctx.drawImage(exports.Images.tie, 20, 6);
 	}
 
-	for (let y = 0; y < 10; y++)
+	for (let y = 0; y < 11; y++)
 	{
-		for (let x = 0; x < 12; x++)
+		for (let x = 0; x < 13; x++)
 		{
 			for (let i = 0; i < 4; i++)
 			{
-				if (game.board.paths[y][x][i] == 1)
+	if (game.board.paths[y][x][i] == 1)
 				{
 					ctx.drawImage(exports.Images[["blue", "red", "black"][game.board.colors[y][x][i] - 1] + "line" + i], x * 25 + 4, (y - 1) * 25 + 3);
 				}
