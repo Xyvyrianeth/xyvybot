@@ -153,6 +153,8 @@ exports.drawBoard = function(game, end, highlight) {
 		ctx.drawImage(exports.Images.win, 81 - (19 * Math.floor(game.turn)), 6);
 	}
 
+	let lines = new Canvas.createCanvas(311, 235);
+	let ltx = lines.getContext('2d');
 	for (let y = 0; y <= 10; y++)
 	{
 		for (let x = 0; x <= 12; x++)
@@ -161,13 +163,19 @@ exports.drawBoard = function(game, end, highlight) {
 			{
 				if (game.board.paths[y][x][i] == 1)
 				{
-					let image = exports.Images[["blue", "red", "black"][game.board.color[y][x][i] - 1] + "line" + i];
-					if (typeof image != "object") console.log(game.board, x, y);
-					else ctx.drawImage(image, x * 25 + 4, (y - 1) * 25 + 3);
+					ltx.drawImage(image, x * 25 + 4, (y - 1) * 25 + 3);
 				}
 			}
 		}
 	}
+	let data = ltx.getImageData(0, 0, 311, 235);
+	for (let i = 0; i < data.data.length; i += 4)
+	{
+		data.data[i + 3] *= 2;
+	}
+	ltx.putImageData(data, 0, 0);
+
+	ctx.drawImage(lines, 0, 0);
 	ctx.drawImage(exports.Images.ball, game.board.ball[1] * 25 + 1, game.board.ball[0] * 25);
 
 	// ....
