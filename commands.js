@@ -1,4 +1,4 @@
-var version = "2.39.1.2";
+var version = "2.39.1.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1690,7 +1690,7 @@ var commands = {
 			let embed = new Discord.RichEmbed()
 				.setTitle(input.toUpperCase())
 				.setDescription(
-					{	"games": "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`\n__**Related Commands**__:\n`games`  `profile`\n__**Unimplemented**__:\n`ordo`  `ninemen`  `gonnect`",
+					{	"games": "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__**Related Commands**__:\n`games`  `profile`\n__**Possible Future Releases**__:\n`ninemen`  `gonnect`",
 						"utility": "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`" + (message.channel.type == "dm" ? "  `bugreport`  `request`" : "  `kick`  `ban`"),
 						"misc": "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`  `minesweeper`",
 						"nsfw": "`nsfw`\nThat's the only one. No need for multiple commands that do the same thing."}[input])
