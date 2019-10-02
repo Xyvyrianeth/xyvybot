@@ -172,7 +172,7 @@ exports.drawBoard = function(game, end, highlight) {
 			{
 	if (game.board.paths[y][x][i] == 1)
 				{
-					ctx.drawImage(exports.Images[["blue", "red", "black"][game.board.colors[y][x][i] - 1] + "line" + i], x * 25 + 4, (y - 1) * 25 + 3);
+					ctx.drawImage(exports.Images[["blue", "red", "black"][game.board.color[y][x][i] - 1] + "line" + i], x * 25 + 4, (y - 1) * 25 + 3);
 				}
 			}
 		}
