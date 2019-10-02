@@ -1,4 +1,4 @@
-var version = "2.37.7.1";
+var version = "2.39.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -67,11 +67,12 @@ var games = {
 	rokumoku: require("/app/games/rokumoku.js"),
 	ttt3d: require("/app/games/3dttt.js"),
 	connect4: require("/app/games/connect4.js"),
-	ordo: require("/app/games/ordo.js")
+	ordo: require("/app/games/ordo.js"),
+	soccer: require("/app/games/soccer.js")
 };
 
 function botError(message, err) {
-	return client.guilds.get("399327996076621825").channels.get("467902250128506880").send([
+	return client.channels.get("467902250128506880").send([
 		`\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})`,
 		`Channel: ${message.channel.name} (${message.channel.id})\`\`\``,
 		`\`\`\`User errored on:\`\`\`<@${message.author.id}>\n`,
@@ -185,7 +186,8 @@ function other(message) {
 			"rokumoku": /^([a-s] ?1?[0-9]{1,}|1?[0-9]{1,} ?[a-s])$/i,
 			"connect4": /^[1-7]$/,
 			"ttt3d": /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,
-			"ordo": /^(([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])|([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9])$/i
+			"ordo": /^(([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])|([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9])$/i,
+			"soccer": /^([0-7]|([ns][ew]?|[ew][ns]?))$/i
 		}[game.game].test(message.content))
 		{
 			if (message.channel.type !== "dm")
@@ -237,7 +239,7 @@ function bot(message) {
 	if (message.attachments.array().length != 0)
 	{
 		let img = message.attachments.first().filename;
-		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
+		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
 		{
 			let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
 			let end = img.match(/_[0-2]_/)[0].substring(1, 2);
@@ -251,7 +253,7 @@ function bot(message) {
 				result = {
 					winner: game.players[game.winner],
 					loser: game.players[[1, 0][game.winner]],
-					game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo"].indexOf(game.game) + 1),
+					game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer"].indexOf(game.game) + 1),
 					score: game.score
 				};
 			}
@@ -340,7 +342,7 @@ function bot(message) {
 					}
 					for (let i = 0; i < 8; i++)
 					{
-						if (wins.elo1 + wins.elo2 + wins.elo3 + wins.elo4 + wins.elo5 + wins.elo6 >= [15E3, 2E4, 25E3, 3E4, 4E4, 5E4, 75E3, 1E5][i] && !wins.titles.includes(
+						if (wins.elo1 + wins.elo2 + wins.elo3 + wins.elo4 + wins.elo5 + wins.elo6 + wins.elo7 >= [15E3, 2E4, 25E3, 3E4, 4E4, 5E4, 75E3, 1E5][i] && !wins.titles.includes(
 							[	"15k_elo",
 								"20k_elo",
 								"25k_elo",
@@ -365,7 +367,7 @@ function bot(message) {
 					let lits = [];
 					for (let i = 0; i < 8; i++)
 					{
-						if (lose.elo1 + lose.elo2 + lose.elo3 + lose.elo4 + lose.elo5 + lose.elo6 <= [2500, 2E3, 1500, 1E3, 750, 500, 250, 0][i] && !lose.titles.includes(
+						if (lose.elo1 + lose.elo2 + lose.elo3 + lose.elo4 + lose.elo5 + lose.elo6 + lose.elo7 <= [2500, 2E3, 1500, 1E3, 750, 500, 250, 0][i] && !lose.titles.includes(
 							[	"2500elo",
 								"2000elo",
 								"1500elo",
@@ -450,7 +452,7 @@ function bot(message) {
 	{
 		let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
 		if (
-			/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo)!/.test(message.content) ||
+			/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo|Paper Soccer)!/.test(message.content) ||
 			message.content.startsWith("Illegal move:") ||
 			message.content == "This is a singleton move, please use the singleton move format!"
 		)
@@ -466,7 +468,7 @@ function newUser(id, message) {
 		`INSERT INTO profiles (`,
 		`   id,       color,   title,      titles,             background,  backgrounds,         lefty,  money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7`,
 		`) VALUES (`,
-		`   '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   500,    1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
+		`   '${id}',  '#aaa',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   500,    1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0`,
 		`)`
 	].join('\n');
 	db.query(query, function(err) {
@@ -518,6 +520,7 @@ var aliases = {
 		"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
 		"connect4": ["connectfour", "connect4", "cfour", "c4"],
 		"ordo": ["ordo"],
+		"soccer": ["soccer", "papersoccer", "psoccer"],
 		"profile": ["profile", "scorecard", "prof"],
 
 		// Utility
@@ -556,6 +559,7 @@ var aliases = {
 		"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
 		"connect4": ["connectfour", "connect4", "cfour", "c4"],
 		"ordo": ["ordo"],
+		"soccer": ["soccer", "papersoccer", "psoccer"],
 		"profile": ["profile", "scorecard", "prof"],
 
 		// Utility
@@ -607,18 +611,20 @@ var commands = {
 			let gms = {
 				"othello": ["othello", "reversi"],
 				"squares": ["squares"],
-				"rokumoku": ["rokumoku", "gobang", "renju"],
-				"ttt3d": ["ttt3d", "3dttt", "3dtictactoe", "tictactoe3d", "ttt", "tictactoe"],
-				"connect4": ["connect4", "connectfour", "cfour", "c4"],
-				"ordo": ["ordo"]
+				"rokumoku": ["rokumoku", "connect6", "connectsix"],
+				"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
+				"connect4": ["connectfour", "connect4", "cfour", "c4"],
+				"ordo": ["ordo"],
+				"soccer": ["soccer", "papersoccer", "psoccer"]
 			};
-			let elos = !args[1] ?			 "elo1 + elo2 + elo3 + elo4 + elo5 + elo6" :
+			let elos = !args[1] ?			 "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7" :
 			gms.othello.includes(args[1]) ?	 "elo1" :
 			gms.squares.includes(args[1]) ?	 "elo2" :
 			gms.rokumoku.includes(args[1]) ? "elo3" :
 			gms.ttt3d.includes(args[1]) ?	 "elo4" :
 			gms.connect4.includes(args[1]) ? "elo5" :
-			gms.ordo.includes(args[1]) ?	 "elo6" : false;
+			gms.ordo.includes(args[1]) ?	 "elo6" : 
+			gms.soccer.includes(args[1]) ?   "elo7" : false;
 			if (!elos)
 			{
 				return sendChat("Unknown game.");
@@ -668,7 +674,7 @@ var commands = {
 					}
 					else
 					{
-						game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four"][elos[3] - 1];
+						game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][elos[3] - 1];
 					}
 
 					let users = [];
@@ -735,11 +741,13 @@ var commands = {
 			let gms = {
 				"othello": ["othello", "reversi"],
 				"squares": ["squares"],
-				"rokumoku": ["rokumoku", "gobang", "renju"],
-				"ttt3d": ["ttt3d", "3dttt", "3dtictactoe", "tictactoe3d", "ttt", "tictactoe"],
-				"connect4": ["connect4", "connectfour", "cfour", "c4"]
+				"rokumoku": ["rokumoku", "connect6", "connectsix"],
+				"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
+				"connect4": ["connectfour", "connect4", "cfour", "c4"],
+				"ordo": ["ordo"],
+				"soccer": ["soccer", "papersoccer", "psoccer"]
 			};
-			let Games = [].concat(gms.othello, gms.squares, gms.rokumoku, gms.ttt3d, gms.connect4);
+			let Games = [].concat(gms.othello, gms.squares, gms.rokumoku, gms.ttt3d, gms.connect4, gms.ordo, gms.soccer);
 			if (args.length == 2)
 			{
 				if (/^[0-9]{1,}$/.test(args[1]) || /^<@[0-9]{1,}>$/.test(args[1]))
@@ -812,7 +820,7 @@ var commands = {
 					}
 
 					let embed = new Discord.RichEmbed()
-						.setTitle("User Statistics for " + (Gm == "all" ? "all games" : ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four"][Gm - 1]))
+						.setTitle("User Statistics for " + (Gm == "all" ? "all games" : ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][Gm - 1]))
 						.setColor(new Color().random());
 
 					if (Gm == "all")
@@ -820,7 +828,7 @@ var commands = {
 						let ok = [];
 						for (let i = 0; i < 5; i++)
 						{
-							let game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four"][i];
+							let game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][i];
 							let elo = user["elo" + (i + 1)];
 							let win = user["win" + (i + 1)];
 							let los = user["los" + (i + 1)];
@@ -831,7 +839,7 @@ var commands = {
 					}
 					else
 					{
-						embed.setDescription("**User**: <@" + id + ">\n**__Game__: " + ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four"][Gm - 1] + "\n__Elo__: " + user["elo" + Gm] + "\n__W/L (%)__: " + user["win" + Gm] + "/" + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? Math.round(user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) * 10000) / 100 : "N/A") + "%)**");
+						embed.setDescription("**User**: <@" + id + ">\n**__Game__: " + ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][Gm - 1] + "\n__Elo__: " + user["elo" + Gm] + "\n__W/L (%)__: " + user["win" + Gm] + "/" + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? Math.round(user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) * 10000) / 100 : "N/A") + "%)**");
 					}
 
 					return sendChat({embed});
@@ -859,7 +867,7 @@ var commands = {
 		if (["games"].includes(args[0]))
 		{
 			let embed = new Discord.RichEmbed()
-				.setDescription("I currently have 4 games, and plan to add more.\n\n**Games**: Othello, Squares, 3D Tic-Tac-Toe, Connect Four\n**Planned**: Rokumoku\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).")
+				.setDescription("I currently have 7 games, and plan to add more.\n\n**Games**: Othello, Squares, Rokumoku, 3D Tic-Tac-Toe, Connect Four, Ordo, Paper Soccer\n**Planned**: Rokumoku\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).")
 				.setColor(new Color().random());
 			sendChat({embed});
 		}
@@ -889,6 +897,10 @@ var commands = {
 		return commands.game("ordo", args, input, message, sendChat);
 	},
 
+	"soccer": function(cmd, args, input, message, sendChat) {
+		return commands.game("soccer", args, input, message, sendChat);
+	},
+
 	"game": function(cmd, args, input, message, sendChat) {
 		let gameName = cmd;
 		let GameName = {
@@ -897,7 +909,8 @@ var commands = {
 			"rokumoku": "Rokumoku",
 			"ttt3d": "3D Tic Tac Toe",
 			"connect4": "Connect Four",
-			"ordo": "Ordo"
+			"ordo": "Ordo",
+			"soccer": "Paper Soccer"
 		}[gameName];
 		if (!input)
 		{
@@ -1028,15 +1041,6 @@ var commands = {
 				games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0].forfeit = message.author.id;
 			}
 		}
-		/**
-			@TODO Make examples for...
-			[ ] othello
-			[ ] squares
-			[ ] rokumoku
-			[ ] ttt3d
-			[ ] connect4
-			[×] ordo
-		*/
 		if (["help", "rules", "howtoplay"].includes(args[0]))
 		{
 			let wiki = {
@@ -1047,6 +1051,16 @@ var commands = {
 				.setTitle("How to play: " + GameName);
 			switch (gameName)
 			{
+				/**
+					@TODO Make examples for...
+					[ ] othello
+					[ ] squares
+					[ ] rokumoku
+					[ ] ttt3d
+					[ ] connect4
+					[×] ordo
+					[ ] soccer
+				*/
 				case "othello":
 				{
 					embed.setDescription(
@@ -1175,6 +1189,15 @@ var commands = {
 							" -A player moves a stone into any space in their opponent's \"home row\" (for blue it's Row 8, and for white it's Row 1). This player is the winner. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_1.png)",
 							" -All of a player's stones have been captured and removed from the game. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_2.png)",
 							" -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_3.png)"].join('\n'));
+				}
+				case "soccer":
+				{
+					embed.setDescription(
+						[	`Paper Soccer is an ${wiki.asg} that can also be played with paper and pencil.`]
+					)
+					.addField()
+					.addField()
+					.addField()
 				}
 			}
 			embed.setColor(new Color().random());
@@ -1635,7 +1658,7 @@ var commands = {
 		{
 			let helps;
 			helps = [
-				"`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`\n__**Related Commands**__:\n`games`  `profile`\n__**Unimplemented**__:\n`ninemen`  `gonnect`",
+				"`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo` `papersoccer`\n__**Related Commands**__:\n`games`  `profile`\n__**Possible Future Releases**__:\n`ninemen`  `gonnect`",
 				"`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`",
 				"`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`  `minesweeper`"
 			];
@@ -1687,6 +1710,8 @@ var commands = {
 						["x!rokumoku [start|rules]", "Rokumoku is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!rokumoku start"],
 						["x!ttt3d [start|rules]", "3D Tic Tac Toe is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!ttt3d start"],
 						["x!connect4 [start|rules]", "Connect Four, or Vertical Checkers, is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!connect4 start"],
+						["x!ordo [start|rules]", "Ordo is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!ordo start"],
+						["x!papersoccer [start|rules]", "Paper Soccer is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!papersoccer start"],
 						["x!profile (user)", "Show of your own profile card that shows your game stats and rank. It has a customizable background and overlay color.", "x!profile 357700219825160194"],
 						["x!about", "Just a bit of information about what this bot does and some history about it.", "x!about"],
 						["x!help [command]", "Generates a list of commands, or gives a short description about a specific command.", "x!help help"],
@@ -1757,7 +1782,7 @@ var commands = {
 		let embed = new Discord.RichEmbed()
 			.setTitle(
 				"About me",
-				Images.avatar)
+				exports.Images.avatar)
 			.setDescription(
 				"Let's start off by saying that the only reason this bot exists is because someone else told me I should make it. Not for any reason in particular, they were just testing me to see if I could do it.\n" +
 				"Well, I did it, and then I found I enjoyed making it, so I kept building on it. It's still kinda rough on the edges, but it works, and that's all that matters, right?\n" +
@@ -1775,7 +1800,7 @@ var commands = {
 		let embed = new Discord.RichEmbed()
 			.setTitle(
 				"Credits",
-				Images.avatar)
+				exports.Images.avatar)
 			.addField(
 				"Created, Authored, and Primarily Tested by",
 				"Xyvyrianeth")
@@ -2002,7 +2027,7 @@ var commands = {
 	"nekos": function(cmd, args, input, message, sendChat) {
 		Nekos.sfw.neko().then(neko => {
 			let embed = new Discord.RichEmbed()
-				.setAuthor("x!nsfw", Images.nekosLife)
+				.setAuthor("x!nsfw", exports.Images.nekosLife)
 				.setImage(neko.url)
 				.setDescription("Have a neko!")
 				.setFooter("Powered by Nekos.Life")
@@ -2606,7 +2631,7 @@ var commands = {
 				}
 			}
 			let embed = new Discord.RichEmbed()
-				.setAuthor("x!nsfw", Images.nekosLife)
+				.setAuthor("x!nsfw", exports.Images.nekosLife)
 				.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`)
 				.setFooter("Powered by Nekos.Life")
 				.setColor(new Color().random());
