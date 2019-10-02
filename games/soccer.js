@@ -283,7 +283,7 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 		game.channels[ch] = [];
 	}
 
-	exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ? `<@${game.winner}> has won because <@${game.player}> got the ball stuck!` : `<@${game.players[game.score[0] > game.score[1] ? 0 : 1]}> has won!`, game.buffer]);
+	exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ? `<@${game.players[game.winner]}> has won because <@${game.player}> got the ball stuck!` : `<@${game.players[game.winner]}> has won!`, game.buffer]);
 }
 
 exports.say = function(channels, message) {
