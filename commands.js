@@ -1,4 +1,4 @@
-var version = "2.39.1.2";
+var version = "2.39.3.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -187,7 +187,7 @@ function other(message) {
 			"connect4": /^[1-7]$/,
 			"ttt3d": /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,
 			"ordo": /^(([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])|([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9])$/i,
-			"soccer": /^([0-7]|([ns][ew]?|[ew][ns]?))$/i
+			"soccer": /^([0-7]|([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?))$/i
 		}[game.game].test(message.content))
 		{
 			if (message.channel.type !== "dm")
@@ -1153,12 +1153,12 @@ var commands = {
 						[	"To place a stone on the board, simply say the column number of the empty space you wish to play in; for example, say \"4\" to place a stone in Column 4.",
 							"When placing a stone, it will automatically be placed in the lowest empty space of the column you placed it in.",
 							"The stone placed on any given turn will be highlighted in yellow.",
-							"[Example .gif of stone placement]()"].join('\n'))
+							"[Example image coming soon]()"].join('\n'))
 					.addField(
 						"Endgame",
 						[	"The game officially ends when either player has create a line of 4 of their own stones, either diagonally or orthagonally.",
 							"Once this happens, the 4 stones that constitute the winning line will be highlighted in green.",
-							"[Example .gif of game ending]()"].join('\n'));
+							"[Example image coming soon]()"].join('\n'));
 				}
 				case "ordo":
 				{
@@ -1168,13 +1168,13 @@ var commands = {
 					.addField(
 						"Singleton Moves",
 						[	"Singleton moves consist of one stone being moved in any direction, either diagonally or orthagonally, any number of spaces. These moves can end in either an empty space or on a space occupied by one of your opponent's stones (which effectively \"captures\" and removes that stone from the game).",
-							"You make a singleton move by saying the location of the stone you want to move followed by the location of the space you wish to move it to; for example, say \"4C 7F\" to move a stone from Row 4–Column C to Row 7–Column F.",
+							"You make a singleton move by saying the coordinates of the stone you want to move followed by the coordinates of the space you wish to move it to; for example, say \"4C 7F\" to move a stone from Row 4–Column C to Row 7–Column F.",
 							"Stones that have been moved will be highlighted in yellow with the space they were moved from being highlighted in red.",
 							"[Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/singleton_move.png)"].join('\n'))
 					.addField(
 						"Ordo Moves",
 						[	"Ordo moves consist of multiple stones that are adjacent orthagonally from each other being moved in either perpendicular direction (if the stones being moved are aligned vertically, they can only be moved horizontally, and vice versa).",
-							"You make an ordo move by saying the location of the stones located at the ends of the line of stones you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many spaces you wish to move it in that direction; for example, say \"5A-7A left 4\" to move 3 stones aligned vertically in Column A to the left 4 spaces each.",
+							"You make an ordo move by saying the 2 coordinates of the stones located at both ends of the line of stones you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many spaces you wish to move it in that direction; for example, say \"5A-7A left 4\" to move 3 stones aligned vertically in Column A to the left 4 spaces each.",
 							"These moves cannot capture enemy stones.",
 							"[Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ordo_move.png)"].join('\n'))
 					.addField(
@@ -1193,11 +1193,19 @@ var commands = {
 				case "soccer":
 				{
 					embed.setDescription(
-						[	`Paper Soccer is an ${wiki.asg} that can also be played with paper and pencil.`]
-					)
-					.addField()
-					.addField()
-					.addField()
+						[	`Paper Soccer is an ${wiki.asg} that can also be played with paper and pencil. The game consists of a 8x10 grid with 1x2 "goals" on either end, with a "ball" starting in the middle.`,
+							"Two players take turns \"kicking\" the ball around along the gridlines, leaving \"trails\" where they go, until the ball enters one of the goals, which are colored based on which player wins if the ball enters it."])
+					.addField(
+						"Movement",
+						[	"On a player's turn, they can move the ball to an adjacent gridpoint both diagonally and orthagonally. Doing so marks the path between the two points, and that path cannot be taken again for the rest of the game.",
+							"If a player moves the ball to a gridpoint that has a path connected to it (not including the path that was taken to get to that point), the player gets to go again. If the player touches the edge of the board, they also get to go again, but they cannot move along the edge of the board, they have to bounce off of it.",
+							"You move the ball by saying the direction you wish to move it. The bot accepts combinations of up/down/left/right, north/south/east/west, or a simple digit with 0 being north, 1 being northeast, etc.",
+							"[Example image coming soon]()"].join('\n'))
+					.addField(
+						"Endgame",
+						[	"There are two possible ways to end the game:",
+							" -The ball enters one of the two goals located at either ends of the board The winner is whoever owns the goal the ball went into, even if the other player put it there. [Example image coming soon]()",
+							" -The ball becomes immovable, which can be achieved by having all 8 directions blocked by previous movements or the edge(s) of the board. In this situation, the player who didn't get the ball stuck wins. [Example image coming soon]()"].join('\n'))
 				}
 			}
 			embed.setColor(new Color().random());
@@ -1690,7 +1698,7 @@ var commands = {
 			let embed = new Discord.RichEmbed()
 				.setTitle(input.toUpperCase())
 				.setDescription(
-					{	"games": "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`\n__**Related Commands**__:\n`games`  `profile`\n__**Unimplemented**__:\n`ordo`  `ninemen`  `gonnect`",
+					{	"games": "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__**Related Commands**__:\n`games`  `profile`\n__**Possible Future Releases**__:\n`ninemen`  `gonnect`",
 						"utility": "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`" + (message.channel.type == "dm" ? "  `bugreport`  `request`" : "  `kick`  `ban`"),
 						"misc": "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`  `minesweeper`",
 						"nsfw": "`nsfw`\nThat's the only one. No need for multiple commands that do the same thing."}[input])
@@ -1944,7 +1952,9 @@ var commands = {
 			else
 			{
 				sendChat("You are not allowed to use this command, since you thought you were funny and tried to spam it at some point. Way to go, you're a dick. You should feel proud.");
-	}	}); },
+			}
+		});
+	},
 
 	"guild": function(cmd, args, input, message, sendChat) {
 		if (!input)
@@ -3010,6 +3020,10 @@ function equ(equation, x) {
 				}
 			}
 		}
+		for (let i = 0; i < methods.length; i++)
+		{
+			equation = equation.replace(methods[i][0], methods[i][1]);
+		}
 		if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
@@ -3020,10 +3034,6 @@ function equ(equation, x) {
 					equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 				}
 			}
-		}
-		for (let i = 0; i < methods.length; i++)
-		{
-			equation = equation.replace(methods[i][0], methods[i][1]);
 		}
 		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation))
 		{
