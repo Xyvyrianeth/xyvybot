@@ -57,7 +57,7 @@ exports.newGame = function(channel, player) {
 		time: 900,
 		message: `It appears nobody wants to play right now, <@${player}>.`
 	}
-	exports.say(game.channels, [`<@${player}> is now requesting a new game of ${gamename}!`, game.buffer]);
+	exports.say(game.channels, [`<@${player}> is now requesting a new game of ${soccer}!`, game.buffer]);
 }
   
 exports.startGame = function(channel1, channel2, player2) {
@@ -299,42 +299,42 @@ exports.say = function(channels, message) {
 
 exports.Images = {};
 
-Canvas.loadImage("/app/assets/games/gamename/board.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/board.png").then(image => {
 	exports.Images.board = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/blackline0.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/blackline0.png").then(image => {
 	exports.Images.blackline0 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/blackline1.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/blackline1.png").then(image => {
 	exports.Images.blackline1 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/blackline2.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/blackline2.png").then(image => {
 	exports.Images.blackline2 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/blackline3.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/blackline3.png").then(image => {
 	exports.Images.blackline3 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/blueline0.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/blueline0.png").then(image => {
 	exports.Images.blueline0 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/blueline1.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/blueline1.png").then(image => {
 	exports.Images.blueline1 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/blueline2.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/blueline2.png").then(image => {
 	exports.Images.blueline2 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/blueline3.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/blueline3.png").then(image => {
 	exports.Images.blueline3 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/redline0.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/redline0.png").then(image => {
 	exports.Images.redline0 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/redline1.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/redline1.png").then(image => {
 	exports.Images.redline1 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/redline2.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/redline2.png").then(image => {
 	exports.Images.redline2 = image;
 });
-Canvas.loadImage("/app/assets/games/gamename/redline3.png").then(image => {
+Canvas.loadImage("/app/assets/games/soccer/redline3.png").then(image => {
 	exports.Images.redline3 = image;
 });
