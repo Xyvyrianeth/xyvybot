@@ -172,7 +172,9 @@ exports.drawBoard = function(game, end, highlight) {
 			{
 				if (game.board.paths[y][x][i] == 1)
 				{
-					ctx.drawImage(exports.Images[["blue", "red", "black"][game.board.color[y][x][i] - 1] + "line" + i], x * 25 + 4, (y - 1) * 25 + 3);
+					let image = exports.Images[["blue", "red", "black"][game.board.color[y][x][i] - 1] + "line" + i];
+					if (typeof image != "object") console.log(game.board, x, y);
+					else ctx.drawImage(image, x * 25 + 4, (y - 1) * 25 + 3);
 				}
 			}
 		}
