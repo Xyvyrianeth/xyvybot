@@ -239,7 +239,7 @@ exports.takeTurn = function(channel, Move) {
 	else
 	{
 		tempboard.paths[Y - yy][X - xx][move] = 1;
-		tempboard.paths[Y - yy][X - xx][move] = game.turn + 1;
+		tempboard.color[Y - yy][X - xx][move] = game.turn + 1;
 	}
 	tempboard.ball[0] = Y;
 	tempboard.ball[1] = X;
