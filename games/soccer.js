@@ -237,7 +237,7 @@ exports.takeTurn = function(channel, Move) {
 		end = 1;
 	}
 	else
-	if ((Y == 1 && (X == 1 || X == 11)) || (Y == 9 && (X == 1 || X == 11)) || (Y == 1 && tempboard.paths[Y][X][3] == 1 && tempboard.paths[Y + 1][X][0] == 1 && tempboard.paths[Y + 1][X - 1][1] == 1) || (Y == 9 && tempboard.paths[Y][X][0] == 1 && tempboard.paths[Y][X][1] == 1 && tempboard.paths[Y - 1][X - 1][3] == 1) || (X == 1 && (Y == 2 || Y == 3 || Y == 7 || Y == 8) && !JSON.parse(JSON.stringify(tempboard.paths[Y][X])).splice(1, 3).includes(0)) || (X == 11 && (Y == 2 || Y == 3 || Y == 7 || Y == 8) && ![tempboard[Y - 1][X - 1][3], tempboard[Y][X - 1][2], tempboard[Y + 1][X - 1][1]].includes(0)) || (!tempboard.paths[Y][X].concat([tempboard[Y - 1][X - 1][3], tempboard[Y][X - 1][2], tempboard[Y + 1][X - 1][1], tempboard[Y + 1][X][0]]).includes(0)))
+	if ((Y == 1 && (X == 1 || X == 11)) || (Y == 9 && (X == 1 || X == 11)) || (Y == 1 && tempboard.paths[Y][X][3] == 1 && tempboard.paths[Y + 1][X][0] == 1 && tempboard.paths[Y + 1][X - 1][1] == 1) || (Y == 9 && tempboard.paths[Y][X][0] == 1 && tempboard.paths[Y][X][1] == 1 && tempboard.paths[Y - 1][X - 1][3] == 1) || (X == 1 && (Y == 2 || Y == 3 || Y == 7 || Y == 8) && !JSON.parse(JSON.stringify(tempboard.paths[Y][X])).splice(1, 3).includes(0)) || (X == 11 && (Y == 2 || Y == 3 || Y == 7 || Y == 8) && ![tempboard.paths[Y - 1][X - 1][3], tempboard.paths[Y][X - 1][2], tempboard.paths[Y + 1][X - 1][1]].includes(0)) || (!tempboard.paths[Y][X].concat([tempboard.paths[Y - 1][X - 1][3], tempboard.paths[Y][X - 1][2], tempboard.paths[Y + 1][X - 1][1], tempboard.paths[Y + 1][X][0]]).includes(0)))
 	{ // Tie game?
 		end = 2;
 	}
