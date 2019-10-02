@@ -143,14 +143,13 @@ exports.drawBoard = function(game, end, highlight) {
 	if
 	(end === 0)
 	{
-		ctx.drawImage(exports.Images[["blue", "red"][Math.floor(game.turn)] + "Text"], 20, 6);
+		ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 20, 6);
 		ctx.drawImage(exports.Images.turn, 76 - (19 * Math.floor(game.turn)), 4);
 	}
 	else
-	(end === 1)
 	{
 		ctx.drawImage(exports.Images[["blue", "red"][game.winner] + "Text"], 20, 6);
-		ctx.drawImage(exports.Images.win, 81 - (19 * Math.floor(game.turn)), 6);
+		ctx.drawImage(exports.Images.win, 81 - (19 * game.turn), 6);
 	}
 
 	let lines = new Canvas.createCanvas(311, 235);
