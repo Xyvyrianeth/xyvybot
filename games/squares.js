@@ -108,37 +108,45 @@ exports.drawBoard = function(game, end) {
       
     ctx.drawImage(exports.Images.board, 0, 0);
 
-    if (end === 0)
+    if
+    (end === 0)
     {
         ctx.drawImage(exports.Images[["black", "red"][Math.floor(game.turn)] + "Text"], 20, 6);
         ctx.drawImage(exports.Images.turn, 76 - (19 * Math.floor(game.turn)), 4);
     }
     else
-    if (end === 1)
+    if
+    (end === 1)
     {
         ctx.drawImage(exports.Images[["black", "red"][game.winner] + "Text"], 20, 6);
         ctx.drawImage(exports.Images.win, 81 - (19 * Math.floor(game.turn)), 6);
     }
     else
-    if (end === 2)
+    if
+    (end === 2)
     {
         ctx.drawImage(exports.Images.tie, 20, 6);
     }
     
-    for (let x = 0; x < 10; x++)
+    for
+    (let x = 0; x < 10; x++)
     {
-        for (let y = 0; y < 10; y++)
+        for
+        (let y = 0; y < 10; y++)
         {
-            if (game.highlight[0].some(h => h[0] == x && h[1] == y))
+            if
+            (game.highlight[0].some(h => h[0] == x && h[1] == y))
             {
                 ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
             }
             else
-            if (game.highlight[1].some(h => h[0] == x && h[1] == y))
+            if
+            (game.highlight[1].some(h => h[0] == x && h[1] == y))
             {
                 ctx.drawImage(exports.Images.squareHighlight, 17 + (y * 25), 30 + (x * 25));
             }
-            if (game.board[x][y] !== false)
+            if
+            (game.board[x][y] !== false)
             {
                 ctx.drawImage(exports.Images[["black", "red"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
             }
