@@ -1,4 +1,4 @@
-var version = "2.38.1.0";
+var version = "2.39.0.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -67,7 +67,8 @@ var games = {
 	rokumoku: require("/app/games/rokumoku.js"),
 	ttt3d: require("/app/games/3dttt.js"),
 	connect4: require("/app/games/connect4.js"),
-	ordo: require("/app/games/ordo.js")
+	ordo: require("/app/games/ordo.js"),
+	soccer: require("/app/games/soccer.js")
 };
 
 function botError(message, err) {
