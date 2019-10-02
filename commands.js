@@ -1,4 +1,4 @@
-var version = "2.39.0.4";
+var version = "2.39.0.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -239,7 +239,7 @@ function bot(message) {
 	if (message.attachments.array().length != 0)
 	{
 		let img = message.attachments.first().filename;
-		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
+		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
 		{
 			let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
 			let end = img.match(/_[0-2]_/)[0].substring(1, 2);
@@ -342,7 +342,7 @@ function bot(message) {
 					}
 					for (let i = 0; i < 8; i++)
 					{
-						if (wins.elo1 + wins.elo2 + wins.elo3 + wins.elo4 + wins.elo5 + wins.elo6 >= [15E3, 2E4, 25E3, 3E4, 4E4, 5E4, 75E3, 1E5][i] && !wins.titles.includes(
+						if (wins.elo1 + wins.elo2 + wins.elo3 + wins.elo4 + wins.elo5 + wins.elo6 + wins.elo7 >= [15E3, 2E4, 25E3, 3E4, 4E4, 5E4, 75E3, 1E5][i] && !wins.titles.includes(
 							[	"15k_elo",
 								"20k_elo",
 								"25k_elo",
@@ -367,7 +367,7 @@ function bot(message) {
 					let lits = [];
 					for (let i = 0; i < 8; i++)
 					{
-						if (lose.elo1 + lose.elo2 + lose.elo3 + lose.elo4 + lose.elo5 + lose.elo6 <= [2500, 2E3, 1500, 1E3, 750, 500, 250, 0][i] && !lose.titles.includes(
+						if (lose.elo1 + lose.elo2 + lose.elo3 + lose.elo4 + lose.elo5 + lose.elo6 + lose.elo7 <= [2500, 2E3, 1500, 1E3, 750, 500, 250, 0][i] && !lose.titles.includes(
 							[	"2500elo",
 								"2000elo",
 								"1500elo",

@@ -5,14 +5,14 @@ const { client } = require("/app/Xyvy.js");
 var gamename = "Paper Soccer";
 var shortname = "soccer";
   
-exports.newGame = function(channel, player) {
+exports.newGame = function(channel, player, here) {
 	let game = {
 		buffer: {},
 		channels: {},
 		forfeit: false,
 		game: shortname,
+		here: here,
 		highlight: false,
-		lastmove: '',
 		over: false,
 		player: false,
 		players: [player],
@@ -66,7 +66,7 @@ exports.startGame = function(channel1, channel2, player2) {
 	game.players[1] = player2;
 	game.started = true;
   
-	if ((Math.random() * 2 | 0) == 0) game.players.push(game.players.shift()); // Makes player one random instead of always the challenger
+	if ((Math.random() * 2 | 0) == 0) game.players.push(game.players.shift());
 	game.player = game.players[0];
   
 	game.timer = {
@@ -88,7 +88,7 @@ exports.newTourney = function(channel, player1, player2) {
 		lastmove: '',
 		over: false,
 		player: false,
-		players: [player],
+		players: [player1, player2],
 		score: [0, 0],
 		started: false,
 		turn: 0
@@ -126,46 +126,47 @@ exports.newTourney = function(channel, player1, player2) {
 		ball: [5, 6]
 	};
   
-    if ((Math.random() * 2 | 0) == 0) game.players.reverse();
-    game.player = game.players[0];
+	if ((Math.random() * 2 | 0) == 0) game.players.reverse();
+	game.player = game.players[0];
   
-    game.timer = {
-        time: 600,
-        message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
-    }
-    
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
-    exports.say(game.channels, [`A tourney match has been started between <@${game.players[0]}> and <@${game.players[1]}>!\n<@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be Red!`, game.buffer]);
+	game.timer = {
+		time: 600,
+		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
+	}
+	
+	game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+	exports.say(game.channels, [`A tourney match has been started between <@${game.players[0]}> and <@${game.players[1]}>!\n<@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be Red!`, game.buffer]);
 }
   
 exports.drawBoard = function(game, end, highlight) {
 	let canvas = new Canvas.createCanvas(235, 311);
 	let ctx = canvas.getContext('2d');
+	
 	ctx.drawImage(exports.Images.board, 0, 0);
 
-    if
-    (end === 0)
-    {
-        ctx.drawImage(exports.Images[["blue", "red"][Math.floor(game.turn)] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.turn, 76 - (19 * Math.floor(game.turn)), 4);
-    }
-    else
-    if
-    (end === 1)
-    {
-        ctx.drawImage(exports.Images[["blue", "red"][game.winner] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.win, 81 - (19 * Math.floor(game.turn)), 6);
-    }
-    else
-    if
-    (end === 2)
-    {
-        ctx.drawImage(exports.Images.tie, 20, 6);
-    }
-
-	for (let y = 0; y < 12; y++)
+	if
+	(end === 0)
 	{
-		for (let x = 0; x < 10; x++)
+		ctx.drawImage(exports.Images[["blue", "red"][Math.floor(game.turn)] + "Text"], 20, 6);
+		ctx.drawImage(exports.Images.turn, 76 - (19 * Math.floor(game.turn)), 4);
+	}
+	else
+	if
+	(end === 1)
+	{
+		ctx.drawImage(exports.Images[["blue", "red"][game.winner] + "Text"], 20, 6);
+		ctx.drawImage(exports.Images.win, 81 - (19 * Math.floor(game.turn)), 6);
+	}
+	else
+	if
+	(end === 2)
+	{
+		ctx.drawImage(exports.Images.tie, 20, 6);
+	}
+
+	for (let y = 0; y < 10; y++)
+	{
+		for (let x = 0; x < 12; x++)
 		{
 			for (let i = 0; i < 4; i++)
 			{
