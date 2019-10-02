@@ -164,7 +164,7 @@ exports.takeTurn = function(channel, Move) {
 
 	if (game.board[move[0]][move[1]] !== false)
 	{
-		return exports.say(game.channels, ["Illegal move: this space is not empty.", {}]);
+		return exports.say(channel ["Illegal move: this space is not empty.", {}]);
 	}
 	else
 	{
@@ -268,10 +268,16 @@ exports.nextTurn = function(channel, end) {
 }
 
 exports.say = function(channels, message) {
-	for (let i in channels)
-	{
-		client.channels.get(i).send(message[0], message[1]);
-	}
+    if (typeof channels == "string") {
+        client.channels.get(channels).send(message[0], message[1]);
+    }
+    else
+    {
+        for (let i in channels)
+        {
+            client.channels.get(i).send(message[0], message[1]);
+        }
+    }
 }
 
 exports.Images = {};
