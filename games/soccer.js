@@ -230,13 +230,13 @@ exports.takeTurn = function(channel, Move) {
 	// Move is legal
 	if (move > 3) // Update board
 	{
-		tempboard.paths[Y][X][move] = 1;
-		tempboard.color[Y][X][move] = game.turn + 1;
+		tempboard.paths[Y][X][move % 4] = 1;
+		tempboard.color[Y][X][move % 4] = game.turn + 1;
 	}
 	else
 	{
-		tempboard.paths[Y - yy][X + xx][move % 4] = 1;
-		tempboard.paths[Y - yy][X + xx][move % 4] = game.turn + 1;
+		tempboard.paths[Y - yy][X + xx][move] = 1;
+		tempboard.paths[Y - yy][X + xx][move] = game.turn + 1;
 	}
 	tempboard.ball[0] += [-1, -1, 0, 1, 1, 1, 0, -1][move];
 	tempboard.ball[1] += [0, -1, -1, -1, 0, 1, 1, 1][move];
