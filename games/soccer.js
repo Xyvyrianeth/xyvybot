@@ -204,7 +204,7 @@ exports.takeTurn = function(channel, Move) {
 	let Y = tempboard.ball[0];
 	let X = tempboard.ball[1];
 	let yy = [-1, -1, 0, 1, 1, 1, 0, -1][move];
-	let xx = [0, -1, -1, -1, 0, 1, 1, 1][move];
+	let xx = [0, 1, 1, 1, 0, -1, -1, -1][move];
 
 	// Checking for legality
 	if (((move < 2 || move == 7) && Y == 1) || (move > 2 && move < 6 && Y == 9) || (move > 4 && X == 1 && ((Y == 4 && move != 5) && (Y == 6 && move != 7) && Y != 5)) || (move < 4 && move > 0 && X == 11 && ((Y == 4 && move != 3) && (Y == 6 && move != 1) && Y != 5)))
@@ -215,16 +215,16 @@ exports.takeTurn = function(channel, Move) {
 	{
 		return exports.say(channel, ["Illegal Move: You cannot move the ball along the edge of the field, you have to bounce off."]);
 	}
-	if ((move < 4 && tempboard.paths[Y][X][move] != 0) || (move > 3 && tempboard.paths[Y + yy][X - xx][move % 4] != 0)) 
+	if ((move < 4 && tempboard.paths[Y][X][move] != 0) || (move > 3 && tempboard.paths[Y + yy][X + xx][move % 4] != 0)) 
 	{
 		return exports.say(channel, ["Illegal Move: This move will cross a path that has already been used."]);
 	}
 
 	Y += yy;
-	X -= xx;
+	X += xx;
 
-	if (tempboard.paths[Y][X].includes(1) || tempboard.paths[Y - 1][X -1][move % 4] == 1 || tempboard.paths[Y][X - 1][move % 4] == 1 || tempboard.paths[Y + 1][X - 1][move % 4] == 1 || tempboard.paths[Y + 1][X][move % 4] == 1 )
-	{ // Go again?
+	if (tempboard.paths[Y][X].includes(1) || tempboard.paths[Y + 1][X][0] == 1 || tempboard.paths[Y + 1][X - 1][1] == 1 || tempboard.paths[Y][X - 1][2] == 1 || tempboard.paths[Y - 1][X - 1][3] == 1)
+	{ // Go again? (Checking this before actually updating the paths so that I don't have to add extra steps to ignore the path that was just created)
 		goagain = true;
 	}
 
@@ -239,9 +239,8 @@ exports.takeTurn = function(channel, Move) {
 		tempboard.paths[Y - yy][X + xx][move] = 1;
 		tempboard.paths[Y - yy][X + xx][move] = game.turn + 1;
 	}
-	tempboard.ball[0] += yy;
-	tempboard.ball[1] += xx;
-
+	tempboard.ball[0] = Y;
+	tempboard.ball[1] = X;
 
 	if ((X == 0 || X == 12) && (Y == 4 || Y == 5 || Y == 6))
 	{ // Winner winner chicken dinner?
