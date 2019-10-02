@@ -229,8 +229,8 @@ exports.takeTurn = function(channel, Move) {
 	{
 		tempboard.paths[Y][X][move] = 1;
 	}
-	Y += YY;
-	X -= XX;
+	Y += yy;
+	X -= xx;
 
 	if ((X == 0 || X == 12) && (Y == 4 || Y == 5 || Y == 6))
 	{ // Winner winner chicken dinner?
