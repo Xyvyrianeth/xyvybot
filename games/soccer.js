@@ -139,7 +139,7 @@ exports.newTourney = function(channel, player1, player2) {
 }
   
 exports.drawBoard = function(game, end, highlight) {
-	let canvas = new Canvas.createCanvas(235, 311);
+	let canvas = new Canvas.createCanvas(311, 235);
 	let ctx = canvas.getContext('2d');
 	
 	ctx.drawImage(exports.Images.board, 0, 0);
