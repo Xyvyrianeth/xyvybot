@@ -177,7 +177,7 @@ exports.drawBoard = function(game, end, highlight) {
 			}
 		}
 	}
-	ctx.drawImage(exports.Images.ball, x * 25 + 1, y * 25);
+	ctx.drawImage(exports.Images.ball, game.board.ball[1] * 25 + 1, game.board.ball[0] * 25);
 
 	// ....
 
