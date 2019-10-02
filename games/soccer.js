@@ -203,8 +203,8 @@ exports.takeTurn = function(channel, Move) {
 
 	let Y = tempboard.ball[0];
 	let X = tempboard.ball[1];
-	let yy = [0, 0, 0, 0, 1, 1, 0, -1][move];
-	let xx = [0, 0, 0, 0, 0, 1, 1, 1][move];
+	let yy = [-1, -1, 0, 1, 1, 1, 0, -1][move];
+	let xx = [0, -1, -1, -1, 0, 1, 1, 1][move];
 
 	// Checking for legality
 	if (((move < 2 || move == 7) && Y == 1) || (move > 2 && move < 6 && Y == 9) || (move > 4 && X == 1 && ((Y == 4 && move != 5) && (Y == 6 && move != 7) && Y != 5)) || (move < 4 && move > 0 && X == 11 && ((Y == 4 && move != 3) && (Y == 6 && move != 1) && Y != 5)))
@@ -222,6 +222,7 @@ exports.takeTurn = function(channel, Move) {
 
 	Y += yy;
 	X -= xx;
+
 	if (tempboard.paths[Y][X].includes(1) || tempboard.paths[Y - 1][X -1][move % 4] == 1 || tempboard.paths[Y][X - 1][move % 4] == 1 || tempboard.paths[Y + 1][X - 1][move % 4] == 1 || tempboard.paths[Y + 1][X][move % 4] == 1 )
 	{ // Go again?
 		goagain = true;
@@ -238,8 +239,8 @@ exports.takeTurn = function(channel, Move) {
 		tempboard.paths[Y - yy][X + xx][move] = 1;
 		tempboard.paths[Y - yy][X + xx][move] = game.turn + 1;
 	}
-	tempboard.ball[0] += [-1, -1, 0, 1, 1, 1, 0, -1][move];
-	tempboard.ball[1] += [0, -1, -1, -1, 0, 1, 1, 1][move];
+	tempboard.ball[0] += yy;
+	tempboard.ball[1] += xx;
 
 
 	if ((X == 0 || X == 12) && (Y == 4 || Y == 5 || Y == 6))
