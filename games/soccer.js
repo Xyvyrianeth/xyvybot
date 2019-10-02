@@ -230,9 +230,8 @@ exports.takeTurn = function(channel, Move) {
 		goagain = true;
 	}
 
-	// Move is legal
-	if (move > 3) // Update board
-	{
+	if (move > 3)
+	{ // Update board
 		tempboard.paths[Y][X][move % 4] = 1;
 		tempboard.color[Y][X][move % 4] = game.turn + 1;
 	}
@@ -241,17 +240,20 @@ exports.takeTurn = function(channel, Move) {
 		tempboard.paths[Y - yy][X - xx][move] = 1;
 		tempboard.color[Y - yy][X - xx][move] = game.turn + 1;
 	}
+	// Update ball position
 	tempboard.ball[0] = Y;
 	tempboard.ball[1] = X;
 
 	if ((X == 0 || X == 12) && (Y == 4 || Y == 5 || Y == 6))
 	{ // Winner winner chicken dinner?
 		end = 1;
+		game.winner = game.turn;
 	}
 	else
 	if ((Y == 1 && (X == 1 || X == 11)) || (Y == 9 && (X == 1 || X == 11)) || (Y == 1 && tempboard.paths[Y][X][3] == 1 && tempboard.paths[Y + 1][X][0] == 1 && tempboard.paths[Y + 1][X - 1][1] == 1) || (Y == 9 && tempboard.paths[Y][X][0] == 1 && tempboard.paths[Y][X][1] == 1 && tempboard.paths[Y - 1][X - 1][3] == 1) || (X == 1 && (Y == 2 || Y == 3 || Y == 7 || Y == 8) && !JSON.parse(JSON.stringify(tempboard.paths[Y][X])).splice(1, 3).includes(0)) || (X == 11 && (Y == 2 || Y == 3 || Y == 7 || Y == 8) && ![tempboard.paths[Y - 1][X - 1][3], tempboard.paths[Y][X - 1][2], tempboard.paths[Y + 1][X - 1][1]].includes(0)) || (!tempboard.paths[Y][X].concat([tempboard.paths[Y - 1][X - 1][3], tempboard.paths[Y][X - 1][2], tempboard.paths[Y + 1][X - 1][1], tempboard.paths[Y + 1][X][0]]).includes(0)))
-	{ // Tie game?
+	{ // Game ended because ball became immovable?
 		end = 2;
+		game.winner = [1, 0][game.turn];
 	}
 
 	game.board = tempboard;
