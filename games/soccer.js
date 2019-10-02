@@ -247,10 +247,6 @@ exports.takeTurn = function(channel, Move) {
 		goagain = true;
 	}
 	
-	if (End)
-	{
-		break;
-	}
 	game.board = tempboard;
 	// .....
 	  
