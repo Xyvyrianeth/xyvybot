@@ -302,6 +302,9 @@ exports.Images = {};
 Canvas.loadImage("/app/assets/games/soccer/board.png").then(image => {
 	exports.Images.board = image;
 });
+Canvas.loadImage("/app/assets/games/soccer/ball.png").then(image => {
+	exports.Images.ball = image;
+});
 Canvas.loadImage("/app/assets/games/soccer/blackline0.png").then(image => {
 	exports.Images.blackline0 = image;
 });
@@ -337,4 +340,19 @@ Canvas.loadImage("/app/assets/games/soccer/redline2.png").then(image => {
 });
 Canvas.loadImage("/app/assets/games/soccer/redline3.png").then(image => {
 	exports.Images.redline3 = image;
+});
+Canvas.loadImage("/app/assets/games/soccer/blueText.png").then(image => {
+	exports.Images.blueText = image;
+});
+Canvas.loadImage("/app/assets/games/soccer/redText.png").then(image => {
+	exports.Images.redText = image;
+});
+Canvas.loadImage("/app/assets/games/soccer/tie.png").then(image => {
+	exports.Images.tie = image;
+});
+Canvas.loadImage("/app/assets/games/soccer/turn.png").then(image => {
+	exports.Images.turn = image;
+});
+Canvas.loadImage("/app/assets/games/soccer/win.png").then(image => {
+	exports.Images.win = image;
 });
