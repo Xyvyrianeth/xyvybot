@@ -213,7 +213,7 @@ exports.takeTurn = function(channel, Move) {
 	{
 		return exports.say(channel, ["Illegal Move: You cannot move the ball off of the board."]);
 	}
-	if (((move == 2 || move == 6) && (Y == 1 || Y == 9)) || (((move == 0 && Y > 6 && Y < 5) || (move == 4 && Y > 5 && Y < 4)) && (X == 1 || X == 11)))
+	if (((move == 2 || move == 6) && (Y == 1 || Y == 9)) || (((move == 0 && (Y > 6 || Y < 5)) || (move == 4 && (Y > 5 || Y < 4))) && (X == 1 || X == 11)))
 	{
 		return exports.say(channel, ["Illegal Move: You cannot move the ball along the edge of the field, you have to bounce off."]);
 	}
