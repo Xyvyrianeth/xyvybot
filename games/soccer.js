@@ -147,17 +147,10 @@ exports.drawBoard = function(game, end, highlight) {
 		ctx.drawImage(exports.Images.turn, 76 - (19 * Math.floor(game.turn)), 4);
 	}
 	else
-	if
 	(end === 1)
 	{
 		ctx.drawImage(exports.Images[["blue", "red"][game.winner] + "Text"], 20, 6);
 		ctx.drawImage(exports.Images.win, 81 - (19 * Math.floor(game.turn)), 6);
-	}
-	else
-	if
-	(end === 2)
-	{
-		ctx.drawImage(exports.Images.tie, 20, 6);
 	}
 
 	for (let y = 0; y <= 10; y++)
