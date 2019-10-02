@@ -170,7 +170,7 @@ exports.drawBoard = function(game, end, highlight) {
 		{
 			for (let i = 0; i < 4; i++)
 			{
-	if (game.board.paths[y][x][i] == 1)
+				if (game.board.paths[y][x][i] == 1)
 				{
 					ctx.drawImage(exports.Images[["blue", "red", "black"][game.board.color[y][x][i] - 1] + "line" + i], x * 25 + 4, (y - 1) * 25 + 3);
 				}
@@ -224,10 +224,12 @@ exports.takeTurn = function(channel, Move) {
 	if (move > 3) // Update board
 	{
 		tempboard.paths[Y + yy][X - xx][move % 4] = 1;
+		tempboard.paths[Y + yy][X - xx][move % 4] = game.turn + 1;
 	}
 	else
 	{
 		tempboard.paths[Y][X][move] = 1;
+		tempboard.color[Y][X][move] = game.turn + 1;
 	}
 	Y += yy;
 	X -= xx;
