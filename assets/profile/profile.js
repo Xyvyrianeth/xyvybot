@@ -36,7 +36,7 @@ exports.drawLeft = function(member, profile, avatar, background) {
     for (let img = 0; img < 7; img++)
     {
         let w = [154, 154, 48, 48, 1, 1, 134][img];
-        let h = [152, 152, 47, 47, 47, 47, 99][img]
+        let h = [152, 152, 47, 47, 47, 47, 99][img]; // UPDATE WITH NEW GAMES (First two and last one)
         let image = exports.Images.left[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
         let border = new Canvas.createCanvas(w, h);
         let bdrctx = border.getContext('2d');
@@ -81,14 +81,14 @@ exports.drawLeft = function(member, profile, avatar, background) {
 
     // Score
     let scores = [];
-    for (let y = 0; y < 9; y++)
+    for (let y = 0; y < 9; y++) // UPDATE WITH NEW GAMES
     {
         let score;
-        if (y < 7)
+        if (y < 7) // UPDATE WITH NEW GAMES
         {
             score = profile["elo" + (y + 1)];
         }
-        else if (y == 7)
+        else if (y == 7) // UPDATE WITH NEW GAMES
         {
             score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"] + profile["elo6"] + profile["elo7"];
         }
@@ -97,10 +97,9 @@ exports.drawLeft = function(member, profile, avatar, background) {
             score = profile["money"];
         }
         let Score = ' '.repeat(6 - JSON.stringify(score).length) + JSON.stringify(score);
-        console.log(Score);
         let canvas = new Canvas.createCanvas(47, 9);
         let ctx = canvas.getContext('2d');
-        for (let x = 0; x < 7; x++)
+        for (let x = 0; x < 6; x++) // DO NOT CHANGE WITH ADDITION TO NEW GAMES
         {
             if (Score[x] !== ' ')
             {
@@ -133,12 +132,12 @@ exports.drawLeft = function(member, profile, avatar, background) {
     {
         ctx.drawImage(texts[i], 47, (i == 1 ? 4 : 3) + (15 * i));
     }
-    for (let i = 0; i < 7; i++)
+    for (let i = 0; i < 7; i++) // UPDATE WITH NEW GAMES
     {
         ctx.drawImage(scores[i], 103, 64 + (10 * i));
     }
-    ctx.drawImage(scores[7], 103, 139);
-    ctx.drawImage(scores[8], 50, 139);
+    ctx.drawImage(scores[7], 103, 139); // UPDATE WITH NEW GAMES
+    ctx.drawImage(scores[8], 50, 139); // UPDATE WITH NEW GAMES
     ctx.drawImage(assets[6], 4, 49);
     ctx.drawImage(avatar, 2, 2, 43, 43);
 
@@ -178,7 +177,7 @@ exports.drawRight = function(member, profile, avatar, background) {
     for (let img = 0; img < 7; img++)
     {
         let w = [154, 154, 33, 33, 1, 1, 134][img];
-        let h = [152, 152, 47, 47, 47, 47, 99][img]
+        let h = [152, 152, 47, 47, 47, 47, 99][img]; // UPDATE WITH NEW GAMES (First two and last one)
         let image = exports.Images.right[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]];
         let border = new Canvas.createCanvas(w, h);
         let bdrctx = border.getContext('2d');
@@ -223,14 +222,14 @@ exports.drawRight = function(member, profile, avatar, background) {
 
     // Score
     let scores = [];
-    for (let y = 0; y < 9; y++)
+    for (let y = 0; y < 9; y++) // UPDATE WITH NEW GAMES
     {
         let score;
-        if (y < 7)
+        if (y < 7) // UPDATE WITH NEW GAMES
         {
             score = profile["elo" + (y + 1)];
         }
-        else if (y == 7)
+        else if (y == 7) // UPDATE WITH NEW GAMES
         {
             score = profile["elo1"] + profile["elo2"] + profile["elo3"] + profile["elo4"] + profile["elo5"] + profile["elo6"] + profile["elo7"];
         }
@@ -241,7 +240,7 @@ exports.drawRight = function(member, profile, avatar, background) {
         let Score = ' '.repeat(6 - JSON.stringify(score).length) + JSON.stringify(score);
         let canvas = new Canvas.createCanvas(47, 9);
         let ctx = canvas.getContext('2d');
-        for (let x = 0; x < 7; x++)
+        for (let x = 0; x < 6; x++) // DO NOT CHANGE WITH ADDITION TO NEW GAMES
         {
             if (Score[x] !== ' ')
             {
@@ -275,12 +274,12 @@ exports.drawRight = function(member, profile, avatar, background) {
     {
         ctx.drawImage(texts[i], width - (47 + texts[i].width), (i == 1 ? 4 : 3) + (15 * i));
     }
-    for (let i = 0; i < 7; i++)
+    for (let i = 0; i < 7; i++) // UPDATE WITH NEW GAMES
     {
         ctx.drawImage(scores[i], width - 51, 64 + (10 * i));
     }
-    ctx.drawImage(scores[7], width - 51, 139);
-    ctx.drawImage(scores[8], width - 104, 139)
+    ctx.drawImage(scores[7], width - 51, 139); // UPDATE WITH NEW GAMES
+    ctx.drawImage(scores[8], width - 104, 139); // UPDATE WITH NEW GAMES
     ctx.drawImage(assets[6], width - 150, 49);
     ctx.drawImage(avatar, width - 45, 2, 43, 43);
 
