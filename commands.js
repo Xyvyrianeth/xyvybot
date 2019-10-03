@@ -1,4 +1,4 @@
-var version = "2.39.3.3";
+var version = "2.39.4.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -89,6 +89,7 @@ function sqlError(message, err, res) {
 	if (query == "Check console")
 	{
 		console.log(res);
+		console.log("If you can't see all of this, it'll post again in one minute.");
 		setTimeout(function() {
 			console.log(res);
 		}, 60000);
@@ -2107,7 +2108,7 @@ var commands = {
 			}
 			if (e.length > colors.length)
 			{
-				console.log("`Too many equations!`");
+				return sendChat("`Too many equations!`");
 			}
 			let display = [];
 
@@ -2236,7 +2237,7 @@ var commands = {
 							}
 							else
 							{
-								console.log(result[i]);
+								display.push(result[i]);
 							}
 							if (result[i][0].startsWith('>'))
 							{

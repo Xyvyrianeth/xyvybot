@@ -262,7 +262,6 @@ exports.drawRight = function(member, profile, avatar, background) {
     ctx.drawImage(background, 0, 0, width, height);
     ctx.drawImage(assets[0], width - 154, 0);
     ctx.drawImage(assets[1], width - 154, 0);
-    console.log(h);
     for (let i = 0; i < h; i++)
     {
         ctx.drawImage(assets[4], width - (153 + i), 0);
