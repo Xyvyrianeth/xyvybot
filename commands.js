@@ -1,4 +1,4 @@
-var version = "2.39.4.1";
+var version = "2.39.4.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1085,6 +1085,7 @@ var commands = {
 						[	"The game officially ends when both players can no longer make a legal move to capture their opponent's stones.",
 							"Once this happens, all stones on the board are counted that the player with the most stones is declared the winner.",
 							"[Example .gif of game ending]()"].join('\n'));
+						break;
 				}
 				case "squares":
 				{
@@ -1108,6 +1109,7 @@ var commands = {
 						[	"The game officially ends when there are no longer any empty spaces on the board.",
 							"Once this happens, all squares are counted and the player with the most squares is declared the winner.",
 							"[Example .gif of game ending]()"].join('\n'));
+						break;
 				}
 				case "rokumoku":
 				{
@@ -1125,6 +1127,7 @@ var commands = {
 						[	"The game officially ends when either player has created a line of 6 of their own stones, either diagonally or orthagonally.",
 							"Once this happens, the 6 stones that constitute the winning line will be highlighted in green.",
 							"[Example .gif of game ending]()"].join('\n'));
+						break;
 				}
 				case "ttt3d":
 				{
@@ -1142,6 +1145,7 @@ var commands = {
 						[	"The game officially ends when either player has created a line of 4 of their own markers going across any number of planes.",
 							"Once this happens, the 4 markers that constitute the winning line will be highlighted in green.",
 							"[Example .gif of game ending]()"].join('\n'));
+						break;
 				}
 				case "connect4":
 				{
@@ -1160,6 +1164,7 @@ var commands = {
 						[	"The game officially ends when either player has create a line of 4 of their own stones, either diagonally or orthagonally.",
 							"Once this happens, the 4 stones that constitute the winning line will be highlighted in green.",
 							"[Example image coming soon]()"].join('\n'));
+						break;
 				}
 				case "ordo":
 				{
@@ -1190,6 +1195,7 @@ var commands = {
 							" -A player moves a stone into any space in their opponent's \"home row\" (for blue it's Row 8, and for white it's Row 1). This player is the winner. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_1.png)",
 							" -All of a player's stones have been captured and removed from the game. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_2.png)",
 							" -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_3.png)"].join('\n'));
+						break;
 				}
 				case "soccer":
 				{
@@ -1206,7 +1212,8 @@ var commands = {
 						"Endgame",
 						[	"There are two possible ways to end the game:",
 							" -The ball enters one of the two goals located at either ends of the board The winner is whoever owns the goal the ball went into, even if the other player put it there. [Example image coming soon]()",
-							" -The ball becomes immovable, which can be achieved by having all 8 directions blocked by previous movements or the edge(s) of the board. In this situation, the player who didn't get the ball stuck wins. [Example image coming soon]()"].join('\n'))
+							" -The ball becomes immovable, which can be achieved by having all 8 directions blocked by previous movements or the edge(s) of the board. In this situation, the player who didn't get the ball stuck wins. [Example image coming soon]()"].join('\n'));
+						break;
 				}
 			}
 			embed.setColor(new Color().random());
