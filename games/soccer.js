@@ -169,6 +169,21 @@ exports.drawBoard = function(game, end, highlight) {
 	let data = ltx.getImageData(0, 0, 311, 235);
 	for (let i = 0; i < data.data.length; i += 4)
 	{
+		if (data.data[i] != 0 && data.data[i + 2] == 0)
+		{
+			data.data[i] = 255;
+		}
+		else
+		if (data.data[i + 2] != 0 && data.data[i] == 0)
+		{
+			data.data[i + 2] = 255;
+		}
+		else
+		if (data.data[i] != 0 && data.data[i + 2] != 0)
+		{
+			data.data[i] = 150;
+			data.data[i + 2] = 150;
+		}
 		data.data[i + 3] *= 4;
 	}
 	ltx.putImageData(data, 0, 0);
