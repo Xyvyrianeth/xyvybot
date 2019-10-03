@@ -97,6 +97,7 @@ exports.drawLeft = function(member, profile, avatar, background) {
             score = profile["money"];
         }
         let Score = ' '.repeat(6 - JSON.stringify(score).length) + JSON.stringify(score);
+        console.log(Score);
         let canvas = new Canvas.createCanvas(47, 9);
         let ctx = canvas.getContext('2d');
         for (let x = 0; x < 7; x++)
