@@ -1,4 +1,4 @@
-var version = "2.39.4.2";
+var version = "2.39.4.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1053,7 +1053,7 @@ var commands = {
 			switch (gameName)
 			{
 				/**
-					@TODO Make examples for...
+					@TODO Make example images for...
 					[ ] othello
 					[ ] squares
 					[ ] rokumoku
@@ -1073,18 +1073,18 @@ var commands = {
 						[	"In order to place a stone in an empty space, that space must be at the end of a line of your opponent's stones with one of your own stones at the other end of it. For simplicity, legal spaces will be highlighted in blue for you.",
 							"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.",
 							"The stone placed on any given turn will be highlighted in yellow.",
-							"[Example .gif of stone placements]()"].join('\n'))
+							"[Example image coming soon]()"].join('\n'))
 					.addField(
 						"Capturing Stones",
 						[	"Once you place a stone, all lines of your opponent's stones that have the stone you just placed at one end with one of your other stones at the other end are \"captured\" and will immediately turn into your stones.",
 							"Placing a stone can capture your opponent's stones in any diagonal and orthagonal direction. You can also capture in multiple directions at once.",
 							"Stones that have been captured on any given turn will be highlighted in green.",
-							"[Example .gif of capturing stones in multiple directions]()"].join('\n'))
+							"[Example image coming soon]()"].join('\n'))
 					.addField(
 						"Endgame",
 						[	"The game officially ends when both players can no longer make a legal move to capture their opponent's stones.",
 							"Once this happens, all stones on the board are counted that the player with the most stones is declared the winner.",
-							"[Example .gif of game ending]()"].join('\n'));
+							"[Example image coming soon]()"].join('\n'));
 						break;
 				}
 				case "squares":
@@ -1097,18 +1097,18 @@ var commands = {
 						"Stone Placement",
 						[	"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.",
 							"The stones placed on any given turn will be highlighted in yellow.",
-							"[Example .gif of stone placement]()"].join('\n'))
+							"[Example image coming soon]()"].join('\n'))
 					.addField(
 						"Creating Squares",
 						[	"For every set of 4 stones of the same color that are arranged into a perfect square, the player of that color gets 1 point.",
 							"When a player places a stone that completes a square, the other 3 stones of that square will be highlighted in green.",
 							"A single stone can contribute to multiple squares.",
-							"[Example .gif of square creation]()"].join('\n'))
+							"[Example image coming soon]()"].join('\n'))
 					.addField(
 						"Endgame",
 						[	"The game officially ends when there are no longer any empty spaces on the board.",
 							"Once this happens, all squares are counted and the player with the most squares is declared the winner.",
-							"[Example .gif of game ending]()"].join('\n'));
+							"[Example image coming soon]()"].join('\n'));
 						break;
 				}
 				case "rokumoku":
@@ -1121,12 +1121,12 @@ var commands = {
 						"Stone Placement",
 						[	"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.",
 							"The stones placed on any given turn will be highlighted in yellow.",
-							"[Example .gif of stone placement]()"].join('\n'))
+							"[Example image coming soon]()"].join('\n'))
 					.addField(
 						"Endgame",
 						[	"The game officially ends when either player has created a line of 6 of their own stones, either diagonally or orthagonally.",
 							"Once this happens, the 6 stones that constitute the winning line will be highlighted in green.",
-							"[Example .gif of game ending]()"].join('\n'));
+							"[Example image coming soon]()"].join('\n'));
 						break;
 				}
 				case "ttt3d":
@@ -1139,12 +1139,12 @@ var commands = {
 						"Marker Placement",
 						[	"To place a marker in the playing area, simply say which *y*-plane you wish to place in, followed by the location of that *y*-plane; for example, say \"34C\" to place a marker in Row 4–Column C in the 3rd *y*-plane.",
 							"The marker placed on any given turn will be highlighted in yellow.",
-							"[Example .gif of marker placement]()"].join('\n'))
+							"[Example image coming soon]()"].join('\n'))
 					.addField(
 						"Endgame",
 						[	"The game officially ends when either player has created a line of 4 of their own markers going across any number of planes.",
 							"Once this happens, the 4 markers that constitute the winning line will be highlighted in green.",
-							"[Example .gif of game ending]()"].join('\n'));
+							"[Example image coming soon]()"].join('\n'));
 						break;
 				}
 				case "connect4":
