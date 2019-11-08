@@ -169,6 +169,21 @@ exports.drawBoard = function(game, end, highlight) {
 	let data = ltx.getImageData(0, 0, 311, 235);
 	for (let i = 0; i < data.data.length; i += 4)
 	{
+		if (data.data[i] != 0 && data.data[i + 2] == 0)
+		{
+			data.data[i] = 255;
+		}
+		else
+		if (data.data[i + 2] != 0 && data.data[i] == 0)
+		{
+			data.data[i + 2] = 255;
+		}
+		else
+		if (data.data[i] != 0 && data.data[i + 2] != 0)
+		{
+			data.data[i] = 150;
+			data.data[i + 2] = 150;
+		}
 		data.data[i + 3] *= 4;
 	}
 	ltx.putImageData(data, 0, 0);
@@ -193,12 +208,14 @@ exports.takeTurn = function(channel, Move) {
 	else
 	if (/([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?)/.test(Move))
 	{
-		move = [	"n", "ne", "e", "se", "s", "sw", "w", "nw",
-					"n", "en", "e", "es", "s", "ws", "w", "wn",
-					"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest",
+		move = [	"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest",
+					"n", "ne", "e", "se", "s", "sw", "w", "nw",
 					"north", "eastnorth", "east", "eastsouth", "south", "westsouth", "west", "westnorth",
+					"n", "en", "e", "es", "s", "ws", "w", "wn",
 					"up", "upright", "right", "downright", "down", "downleft", "left", "upleft",
-					"up", "rightup", "right", "rightdown", "down", "leftdown", "left", "leftup"].indexOf(Move.replace(/\s{1,}/, '')) % 8
+					"u", "ur", "r", "dr", "d", "dl", "l", "ul",
+					"up", "rightup", "right", "rightdown", "down", "leftdown", "left", "leftup",
+					"u", "ru", "r", "rd", "d", "ld", "l", "lu"].indexOf(Move.replace(/\s{1,}/, '')) % 8
 	}
 	let highlight = move;
 	let tempboard = JSON.parse(JSON.stringify(game.board));

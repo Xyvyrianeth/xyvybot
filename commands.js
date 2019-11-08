@@ -89,6 +89,7 @@ function sqlError(message, err, res) {
 	if (query == "Check console")
 	{
 		console.log(res);
+		console.log("If you can't see all of this, it'll post again in one minute.");
 		setTimeout(function() {
 			console.log(res);
 		}, 60000);
@@ -1053,7 +1054,7 @@ var commands = {
 			switch (gameName)
 			{
 				/**
-					@TODO Make examples for...
+					@TODO Make example images for...
 					[ ] othello
 					[ ] squares
 					[ ] rokumoku
@@ -1073,31 +1074,19 @@ var commands = {
 						[	"In order to place a stone in an empty space, that space must be at the end of a line of your opponent's stones with one of your own stones at the other end of it. For simplicity, legal spaces will be highlighted in blue for you.",
 							"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.",
 							"The stone placed on any given turn will be highlighted in yellow.",
-<<<<<<< Updated upstream
-							"[Example .gif of stone placements]()"].join('\n'))
-=======
 							`[Example](${wiki.ghuc}/othello/placement.png)`].join('\n'))
->>>>>>> Stashed changes
 					.addField(
 						"Capturing Stones",
 						[	"Once you place a stone, all lines of your opponent's stones that have the stone you just placed at one end with one of your other stones at the other end are \"captured\" and will immediately turn into your stones.",
 							"Placing a stone can capture your opponent's stones in any diagonal and orthagonal direction. You can also capture in multiple directions at once.",
 							"Stones that have been captured on any given turn will be highlighted in green.",
-<<<<<<< Updated upstream
-							"[Example .gif of capturing stones in multiple directions]()"].join('\n'))
-=======
 							`[Example](${wiki.ghuc}/othello/scoring.png)`].join('\n'))
->>>>>>> Stashed changes
 					.addField(
 						"Endgame",
 						[	"The game officially ends when both players can no longer make a legal move to capture their opponent's stones.",
 							"Once this happens, all stones on the board are counted that the player with the most stones is declared the winner.",
-<<<<<<< Updated upstream
-							"[Example .gif of game ending]()"].join('\n'));
-=======
 							`[Example](${wiki.ghuc}/othello/winning.png)`].join('\n'));
 						break;
->>>>>>> Stashed changes
 				}
 				case "squares":
 				{
@@ -1109,31 +1098,19 @@ var commands = {
 						"Stone Placement",
 						[	"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.",
 							"The stones placed on any given turn will be highlighted in yellow.",
-<<<<<<< Updated upstream
-							"[Example .gif of stone placement]()"].join('\n'))
-=======
 							`[Example](${wiki.ghuc}/squares/placement.png)`].join('\n'))
->>>>>>> Stashed changes
 					.addField(
 						"Creating Squares",
 						[	"For every set of 4 stones of the same color that are arranged into a perfect square, the player of that color gets 1 point.",
 							"When a player places a stone that completes a square, the other 3 stones of that square will be highlighted in green.",
 							"A single stone can contribute to multiple squares.",
-<<<<<<< Updated upstream
-							"[Example .gif of square creation]()"].join('\n'))
-=======
 							`[Example](${wiki.ghuc}/squares/scoring.png)`].join('\n'))
->>>>>>> Stashed changes
 					.addField(
 						"Endgame",
 						[	"The game officially ends when there are no longer any empty spaces on the board.",
 							"Once this happens, all squares are counted and the player with the most squares is declared the winner.",
-<<<<<<< Updated upstream
-							"[Example .gif of game ending]()"].join('\n'));
-=======
 							`[Example](${wiki.ghuc}/squares/winning.png)`].join('\n'));
 						break;
->>>>>>> Stashed changes
 				}
 				case "rokumoku":
 				{
@@ -1145,21 +1122,13 @@ var commands = {
 						"Stone Placement",
 						[	"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.",
 							"The stones placed on any given turn will be highlighted in yellow.",
-<<<<<<< Updated upstream
-							"[Example .gif of stone placement]()"].join('\n'))
-=======
 							`[Example](${wiki.ghuc}/rokumoku/placement.png)`].join('\n'))
->>>>>>> Stashed changes
 					.addField(
 						"Endgame",
 						[	"The game officially ends when either player has created a line of 6 of their own stones, either diagonally or orthagonally.",
 							"Once this happens, the 6 stones that constitute the winning line will be highlighted in green.",
-<<<<<<< Updated upstream
-							"[Example .gif of game ending]()"].join('\n'));
-=======
 							`[Example](${wiki.ghuc}/rokumoku/winning.png)`].join('\n'));
 						break;
->>>>>>> Stashed changes
 				}
 				case "ttt3d":
 				{
@@ -1171,21 +1140,13 @@ var commands = {
 						"Marker Placement",
 						[	"To place a marker in the playing area, simply say which *y*-plane you wish to place in, followed by the location of that *y*-plane; for example, say \"34C\" to place a marker in Row 4–Column C in the 3rd *y*-plane.",
 							"The marker placed on any given turn will be highlighted in yellow.",
-<<<<<<< Updated upstream
-							"[Example .gif of marker placement]()"].join('\n'))
-=======
 							`[Example](${wiki.ghuc}/3dttt/placement.png)`].join('\n'))
->>>>>>> Stashed changes
 					.addField(
 						"Endgame",
 						[	"The game officially ends when either player has created a line of 4 of their own markers going across any number of planes.",
 							"Once this happens, the 4 markers that constitute the winning line will be highlighted in green.",
-<<<<<<< Updated upstream
-							"[Example .gif of game ending]()"].join('\n'));
-=======
 							`[Example](${wiki.ghuc}/3dttt/winning.png)`].join('\n'));
 						break;
->>>>>>> Stashed changes
 				}
 				case "connect4":
 				{
@@ -1203,12 +1164,8 @@ var commands = {
 						"Endgame",
 						[	"The game officially ends when either player has create a line of 4 of their own stones, either diagonally or orthagonally.",
 							"Once this happens, the 4 stones that constitute the winning line will be highlighted in green.",
-<<<<<<< Updated upstream
-							"[Example image coming soon]()"].join('\n'));
-=======
 							`[Example](${wiki.ghuc}/connect4/winning.png)`].join('\n'));
 						break;
->>>>>>> Stashed changes
 				}
 				case "ordo":
 				{
@@ -1236,16 +1193,10 @@ var commands = {
 					.addField(
 						"Endgame",
 						[	"There are 3 conditions for ending the game:",
-<<<<<<< Updated upstream
-							" -A player moves a stone into any space in their opponent's \"home row\" (for blue it's Row 8, and for white it's Row 1). This player is the winner. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_1.png)",
-							" -All of a player's stones have been captured and removed from the game. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_2.png)",
-							" -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser. [Example](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/ordo/ending_3.png)"].join('\n'));
-=======
 							` -A player moves a stone into any space in their opponent's \"home row\" (for blue it's Row 8, and for white it's Row 1). This player is the winner. [Example](${wiki.ghuc}ordo/ending_1.png)`,
 							` -All of a player's stones have been captured and removed from the game. This player is the loser. [Example](${wiki.ghuc}ordo/ending_2.png)`,
 							` -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser. [Example](${wiki.ghuc}ordo/ending_3.png)`].join('\n'));
 						break;
->>>>>>> Stashed changes
 				}
 				case "soccer":
 				{
@@ -1261,14 +1212,10 @@ var commands = {
 					.addField(
 						"Endgame",
 						[	"There are two possible ways to end the game:",
-<<<<<<< Updated upstream
-							" -The ball enters one of the two goals located at either ends of the board The winner is whoever owns the goal the ball went into, even if the other player put it there. [Example image coming soon]()",
 							" -The ball becomes immovable, which can be achieved by having all 8 directions blocked by previous movements or the edge(s) of the board. In this situation, the player who didn't get the ball stuck wins. [Example image coming soon]()"].join('\n'))
-=======
 							` -The ball enters one of the two goals located at either ends of the board The winner is whoever owns the goal the ball went into, even if the other player put it there. [Example](${wiki.ghuc}/soccer/winning.png)`,
 							` -The ball becomes immovable, which can be achieved by having all 8 directions blocked by previous movements or the edge(s) of the board. In this situation, the player who didn't get the ball stuck wins. [Example](${wiki.ghuc}/soccer/losing.png)`].join('\n'));
 						break;
->>>>>>> Stashed changes
 				}
 			}
 			embed.setColor(new Color().random());
@@ -2170,7 +2117,7 @@ var commands = {
 			}
 			if (e.length > colors.length)
 			{
-				console.log("`Too many equations!`");
+				return sendChat("`Too many equations!`");
 			}
 			let display = [];
 
@@ -2299,7 +2246,7 @@ var commands = {
 							}
 							else
 							{
-								console.log(result[i]);
+								display.push(result[i]);
 							}
 							if (result[i][0].startsWith('>'))
 							{
