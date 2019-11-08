@@ -1,4 +1,4 @@
-var version = "2.39.5.1";
+var version = "2.39.5.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1212,7 +1212,6 @@ var commands = {
 					.addField(
 						"Endgame",
 						[	"There are two possible ways to end the game:",
-							" -The ball becomes immovable, which can be achieved by having all 8 directions blocked by previous movements or the edge(s) of the board. In this situation, the player who didn't get the ball stuck wins. [Example image coming soon]()"].join('\n'))
 							` -The ball enters one of the two goals located at either ends of the board The winner is whoever owns the goal the ball went into, even if the other player put it there. [Example](${wiki.ghuc}/soccer/winning.png)`,
 							` -The ball becomes immovable, which can be achieved by having all 8 directions blocked by previous movements or the edge(s) of the board. In this situation, the player who didn't get the ball stuck wins. [Example](${wiki.ghuc}/soccer/losing.png)`].join('\n'));
 						break;
