@@ -134,7 +134,7 @@ exports.takeTurn = function(channel, Move) {
         }
         if (dir == 8 || dis == 0)
         {
-            return exports.say(channel, ["Illegal move: you actually have to mvoe the stone."]);
+            return exports.say(channel, ["Illegal move: you actually have to move the stone."]);
         }
         if (move.from[0][0] != move.to[0][0] && move.from[0][1] != move.to[0][1] && Math.abs(move.from[0][0] - move.to[0][0]) != Math.abs(move.from[0][1] - move.to[0][1]))
         {
@@ -228,6 +228,7 @@ exports.takeTurn = function(channel, Move) {
         }
     }
     
+    piece = game.board[move.from[i][0]][move.from[i][1]];
     for (let i = 0; i < move.from.length; i++)
     {
         game.board[move.from[i][0]][move.from[i][1]] = false;
@@ -287,7 +288,7 @@ exports.takeTurn = function(channel, Move) {
         for (let i = 0; i < move.from.length; i++)
         {
             game.board[move.from[i][0]][move.from[i][1]] = game.turn;
-            game.board[move.to[i][0]][move.to[i][1]] = false;
+            game.board[move.to[i][0]][move.to[i][1]] = piece;
         }
         return exports.say(channel, [game.split ? "Illegal move: would not reconnect your stones into one group." : "Illegal move: would split your stones into more than one group."]);
     }
