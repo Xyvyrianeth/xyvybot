@@ -1,4 +1,4 @@
-var version = "2.39.5.4";
+var version = "2.40.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -624,7 +624,7 @@ var commands = {
 			gms.rokumoku.includes(args[1]) ? "elo3" :
 			gms.ttt3d.includes(args[1]) ?	 "elo4" :
 			gms.connect4.includes(args[1]) ? "elo5" :
-			gms.ordo.includes(args[1]) ?	 "elo6" : 
+			gms.ordo.includes(args[1]) ?	 "elo6" :
 			gms.soccer.includes(args[1]) ?   "elo7" : false;
 			if (!elos)
 			{
@@ -1285,7 +1285,14 @@ var commands = {
 
 				Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.${member.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then(image1 => {
 					Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then(image2 => {
-						return sendChat(`Profile for **${member.username}**:`, new Discord.Attachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"));
+						let embed = new Discord.RichEmbed()
+							.setTitle("User Profile")
+							.setDescription(`<@${member.id}>`)
+							.attachFile(new Discord.Attachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
+							.setImage("attachment://profile.png")
+							.setTimestamp()
+							.setColor(new Color().random());
+						return sendChat({embed});
 					});
 				}).catch(err => sendChat("```" + err + "```"));
 			});
@@ -2301,7 +2308,13 @@ var commands = {
 				display.push(input[i].split(';')[0] + " - " + result_);
 			}
 			let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
-			sendChat("```\n" + text + "```", new Discord.Attachment(canvas.toBuffer()));
+			let embed = new Discord.RichEmbed()
+				.setTitle("x!graph")
+				.setDescription("```\n" + text + "```")
+				.attachFile(new Discord.Attachment(canvas.toBuffer()), "graph.png")
+				.setImage("attachment://graph.png")
+				.setColor(new Color().random());
+			return sendChat({embed});
 		}
 	},
 
@@ -2902,6 +2915,22 @@ Math.prod = function(n, a, b) {
 	}
 	return c;
 }
+function fraction(x) {
+	let gcd = function(a, b) {
+		if (!b) return a;
+		return gcd(b, a % b);
+	}
+
+	let len = x.toString().length - 2;
+	let den = Math.pow(10, len);
+	let num = x * den;
+	let div = gcd(num, den);
+
+	num /= div;
+	den /= div;
+
+	return [num, den, num + '/' + den];
+};
 function equ(equation, x) {
 	if (x !== undefined)
 	{
@@ -2948,12 +2977,17 @@ function equ(equation, x) {
 		], [// If the radicand is positive
 			// \rt[2](5)
 			/(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g,
-			"Math.pow($2,(1/Math.round($1)))"
+			"Math.pow($2,(1/$1))"
 
 		], [// If the radicand is negative and the radical is odd
 			// \rt[3](-5)
 			/(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
-			"-Math.pow($2$3,(1/Math.round($1)))"
+			"-Math.pow($2$3,(1/$1))"
+
+		], [// If the radicand is negative and the radical is not an integer
+			// \rt[1.5](-5)
+			/(?:\\rt|√)\[(-?[0-9.]{1,2}[0-9]{1,})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
+			"Math.pow(Math.pow($2, fraction($1)[0]),(1/fraction($1)[1]))"
 
 		], [// If the radicand is negative and the radical is even
 			// \rt[2](-5)
@@ -2962,8 +2996,8 @@ function equ(equation, x) {
 
 		], [// A number number to the power of another number
 			// 5^7
-			/(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\(-?[0-9]{1,}\)|-?[0-9]{1,})/g,
-			"(Math.pow($1,Math.round($2)))"
+			/(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\((-?)[0-9.]{1,}\)|-?[0-9.]{1,})/g,
+			"Math.pow($1,$2)"
 
 		], [// Summation function
 			// \sum[n=0](5)5
@@ -3005,19 +3039,6 @@ function equ(equation, x) {
 	for (let i = 0; i < 1; i++)
 	{
 		lastEquation = equation;
-		if (/\(Math.(PI|Infinity)\)/g.test(equation))
-		{
-			equation = equation.replace(/\(Math.PI\)/g, Math.PI);
-			equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
-		}
-		if (/(?![0-9)])-\(-[0-9.]{1,}\)/g.test(equation))
-		{
-			equation = equation.replace(/(?![0-9)])-\(-([0-9.]{1,})\)/g, "$1");
-		}
-		if (/([0-9)])-\(-[0-9.]{1,}\)/g.test(equation))
-		{
-			equation = equation.replace(/([0-9)])-\(-([0-9.]{1,})\)/g, "$1+$2");
-		}
 		if (/\([0-9.+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
@@ -3029,9 +3050,11 @@ function equ(equation, x) {
 				}
 			}
 		}
+		console.log(equation);
 		for (let i = 0; i < methods.length; i++)
 		{
 			equation = equation.replace(methods[i][0], methods[i][1]);
+			console.log(equation);
 		}
 		if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
 		{
@@ -3044,6 +3067,7 @@ function equ(equation, x) {
 				}
 			}
 		}
+		console.log(equation);
 		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation))
 		{
 			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g);
@@ -3052,18 +3076,30 @@ function equ(equation, x) {
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			}
 		}
+		if (/fraction\([0-9.]{1,}\)\[[01]\]/g.test(equation))
+		{
+			equate = equation.match(/fraction\([0-9.]{1,}\)\[[01]\]/g);
+			for (let i = 0; i < equate.length; i++)
+			{
+				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+			}
+		}
+		console.log(equation);
 		if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation)) {
 			equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
 			equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
 		}
+		console.log(equation);
 		if (/\(-?[0-9.]{1,}\)/g.test(equation))
 		{
 			equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
 		}
+		console.log(equation);
 		if (equation != lastEquation)
 		{
 			i--;
 		}
+		console.log(equation);
 	}
 	try
 	{
