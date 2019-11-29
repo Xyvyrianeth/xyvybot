@@ -2309,6 +2309,7 @@ var commands = {
 				display.push(input[i].split(';')[0] + " - " + result_);
 			}
 			let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
+			console.log(text);
 			let embed = new Discord.RichEmbed()
 				.setTitle("x!graph")
 				.setDescription("```\n" + text + "```")
