@@ -92,7 +92,7 @@ function messageReaction(reaction) {
     }
 }
 client.on('messageReactionAdd', messageReaction);
-client.on('messageReactionRemove', messageReaction); */
+client.on('messageReactionRemove', messageReaction); 
 
 var reactions = [];
 setInterval(function() {
@@ -119,7 +119,7 @@ function messageReaction(reaction) {
     }
 }
 client.on('messageReactionAdd', messageReaction);
-client.on('messageReactionRemove', messageReaction);
+client.on('messageReactionRemove', messageReaction); */
 
 client.on('message', message => {
     if (message.author.bot && message.author.id == client.user.id)
@@ -144,6 +144,8 @@ client.on('message', message => {
     }
 });
 
+/*
+
 function messageReaction(message) {
     console.log(message);
     if (message.message.channel.id == "540749591084269568")
@@ -152,4 +154,4 @@ function messageReaction(message) {
     }
 }
 client.on('messageReactionAdd', messageReaction);
-client.on('messageReactionRemove', messageReaction);
+client.on('messageReactionRemove', messageReaction); */
