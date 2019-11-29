@@ -2191,7 +2191,7 @@ var commands = {
 						let ans1 = equ(y, x - 0.5);
 						let ans2 = equ(y, x + 0.5);
 						let ans3 = equ(y, x);
-						if (x > 10) console(ans1, ans2, ans3);
+						if (x > 10) console.log(ans1, ans2, ans3);
 						if (ans1[0] == "error")
 						{
 							result = ans1[1];
