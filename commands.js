@@ -2191,6 +2191,7 @@ var commands = {
 						let ans1 = equ(y, x - 0.5);
 						let ans2 = equ(y, x + 0.5);
 						let ans3 = equ(y, x);
+						if (x > 10) console(ans1, ans2, ans3);
 						if (ans1[0] == "error")
 						{
 							result = ans1[1];
@@ -2915,7 +2916,7 @@ Math.prod = function(n, a, b) {
 	}
 	return c;
 }
-function fraction(x) {
+Math.fraction = function(x) {
 	let gcd = function(a, b) {
 		if (!b) return a;
 		return gcd(b, a % b);
@@ -2987,7 +2988,7 @@ function equ(equation, x) {
 		], [// If the radicand is negative and the radical is not an integer
 			// \rt[1.5](-5)
 			/(?:\\rt|√)\[(-?[0-9.]{1,2}[0-9]{1,})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
-			"Math.pow(Math.pow($2, fraction($1)[0]),(1/fraction($1)[1]))"
+			"Math.pow(Math.pow($2, Math.fraction($1)[0]),(1/Math.fraction($1)[1]))"
 
 		], [// If the radicand is negative and the radical is even
 			// \rt[2](-5)
@@ -3050,11 +3051,9 @@ function equ(equation, x) {
 				}
 			}
 		}
-		console.log(equation);
 		for (let i = 0; i < methods.length; i++)
 		{
 			equation = equation.replace(methods[i][0], methods[i][1]);
-			console.log(equation);
 		}
 		if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
 		{
@@ -3067,7 +3066,6 @@ function equ(equation, x) {
 				}
 			}
 		}
-		console.log(equation);
 		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation))
 		{
 			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g);
@@ -3076,30 +3074,26 @@ function equ(equation, x) {
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			}
 		}
-		if (/fraction\([0-9.]{1,}\)\[[01]\]/g.test(equation))
+		if (/Math.fraction\([0-9.]{1,}\)\[[01]\]/g.test(equation))
 		{
-			equate = equation.match(/fraction\([0-9.]{1,}\)\[[01]\]/g);
+			equate = equation.match(/Math.fraction\([0-9.]{1,}\)\[[01]\]/g);
 			for (let i = 0; i < equate.length; i++)
 			{
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			}
 		}
-		console.log(equation);
 		if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation)) {
 			equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
 			equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
 		}
-		console.log(equation);
 		if (/\(-?[0-9.]{1,}\)/g.test(equation))
 		{
 			equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
 		}
-		console.log(equation);
 		if (equation != lastEquation)
 		{
 			i--;
 		}
-		console.log(equation);
 	}
 	try
 	{
