@@ -2191,7 +2191,6 @@ var commands = {
 						let ans1 = equ(y, x - 0.5);
 						let ans2 = equ(y, x + 0.5);
 						let ans3 = equ(y, x);
-						if (x > 10) console.log(ans1, ans2, ans3);
 						if (ans1[0] == "error")
 						{
 							result = ans1[1];
@@ -2252,9 +2251,6 @@ var commands = {
 								ctx.stroke();
 							}
 							else
-							{
-								display.push(result[i]);
-							}
 							if (result[i][0].startsWith('>'))
 							{
 								let c = new Color(color);
@@ -2309,11 +2305,10 @@ var commands = {
 				display.push(input[i].split(';')[0] + " - " + result_);
 			}
 			let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
-			console.log(text);
 			let embed = new Discord.RichEmbed()
 				.setTitle("x!graph")
 				.setDescription("```\n" + text + "```")
-				.attachFile(new Discord.Attachment(canvas.toBuffer()), "graph.png")
+				.attachFile(new Discord.Attachment(canvas.toBuffer(), "graph.png"))
 				.setImage("attachment://graph.png")
 				.setColor(new Color().random());
 			return sendChat({embed});
