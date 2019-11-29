@@ -1,7 +1,7 @@
 {
 	"name": "xyvybot",
 	"author": "Xyvyrianeth",
-	"version": "v2.40.1",
+	"version": "v2.40.0",
 	"scripts": {
 		"start": "node Xyvy.js --harmony"
 	},
@@ -13,7 +13,6 @@
 		"canvas": "2.5.0",
 		"discord.js": "11.5.1",
 		"nekos.life": "2.0.4",
-		"pg": "7.11.0",
-		"gif": "2.0.2"
+		"pg": "7.11.0"
 	}
 }
