@@ -3088,9 +3088,9 @@ function equ(equation, x) {
 			equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
 			equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
 		}
-		if (/\(\(-?[0-9.]{1,}\)\)/g.test(equation))
+		if (/(?!\])\(-?[0-9.]{1,}\)/g.test(equation))
 		{
-			equation = equation.replace(/\((\(-?[0-9.]{1,}\))\)/g, "$1");
+			equation = equation.replace(/(?!\])\((-?[0-9.]{1,})\)/g, "$1");
 		}
 		if (equation != lastEquation)
 		{
