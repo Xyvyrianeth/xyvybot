@@ -1,4 +1,4 @@
-var version = "2.40.1.3";
+var version = "2.40.1.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -3050,14 +3050,6 @@ function equ(equation, x) {
 			equation = equation.replace(/\(Math.PI\)/g, Math.PI);
 			equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
 		}
-		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g.test(equation))
-		{
-			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g);
-			for (let i = 0; i < equate.length; i++)
-			{
-				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-			}
-		}
 		if (/\([0-9.+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
@@ -3084,13 +3076,21 @@ function equ(equation, x) {
 				}
 			}
 		}
+		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g.test(equation))
+		{
+			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g);
+			for (let i = 0; i < equate.length; i++)
+			{
+				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+			}
+		}
 		if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation)) {
 			equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
 			equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
 		}
-		if (/\(-?[0-9.]{1,}\)/g.test(equation))
+		if (/\(\(-?[0-9.]{1,}\)\)/g.test(equation))
 		{
-			equation = equation.replace(/\((-?[0-9.]{1,})\)/g, "$1");
+			equation = equation.replace(/\((\(-?[0-9.]{1,}\))\)/g, "$1");
 		}
 		if (equation != lastEquation)
 		{
