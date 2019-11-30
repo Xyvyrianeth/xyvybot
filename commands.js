@@ -1,4 +1,4 @@
-var version = "2.40.1.7";
+var version = "2.40.1.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2990,9 +2990,9 @@ function equ(equation, x) {
 			/(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
 			"-Math.pow($2$3,(1/$1))"
 
-		], [// If the radicand is negative and the radical is not an integer
+		], [// If the radical is not an integer
 			// \rt[1.5](-5)
-			/(?:\\rt|√)\[(-?[0-9]{1,}\.[0-9]{1,})\](\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
+			/(?:\\rt|√)\[(-?[0-9]{1,}\.[0-9]{1,})\](\(-?[0-9.]{1,}\)|-?[0-9.]{1,})/g,
 			"Math.pow(Math.pow($2,Math.fraction($1,0)),(1/Math.fraction($1,1)))"
 
 		], [// If the radicand is negative and the radical is even
@@ -3050,7 +3050,7 @@ function equ(equation, x) {
 			equation = equation.replace(/\(Math.PI\)/g, Math.PI);
 			equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
 		}
-		console.log(equation, x);
+		console.log(equation, x, "pi infinity");
 		if (/\([0-9.+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
@@ -3062,12 +3062,12 @@ function equ(equation, x) {
 				}
 			}
 		}
-		console.log(equation, x);
+		console.log(equation, x, "arithmatic");
 		for (let i = 0; i < methods.length; i++)
 		{
 			equation = equation.replace(methods[i][0], methods[i][1]);
 		}
-		console.log(equation, x);
+		console.log(equation, x, "methods");
 		if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
@@ -3079,7 +3079,7 @@ function equ(equation, x) {
 				}
 			}
 		}
-		console.log(equation, x);
+		console.log(equation, x, "arithmatic in parentheses");
 		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g.test(equation))
 		{
 			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g);
@@ -3088,22 +3088,21 @@ function equ(equation, x) {
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			}
 		}
-		console.log(equation, x);
+		console.log(equation, x, "Math.something");
 		if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation)) {
 			equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
 			equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
 		}
-		console.log(equation, x);
+		console.log(equation, x, "parentheses * parentheses");
 		if (/(?<!\])\(-?[0-9.]{1,}\)/g.test(equation))
 		{
 			equation = equation.replace(/(?!\])\((-?[0-9.]{1,})\)/g, "$1");
 		}
-		console.log(equation, x);
+		console.log(equation, x, "remove parentheses");
 		if (equation != lastEquation)
 		{
 			i--;
 		}
-		console.log(equation, x);
 	}
 	try
 	{
