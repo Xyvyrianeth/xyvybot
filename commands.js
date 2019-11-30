@@ -1,4 +1,4 @@
-var version = "2.40.1.4";
+var version = "2.40.1.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -3093,11 +3093,11 @@ function equ(equation, x) {
 			equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
 			equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
 		}
-		console.log(equation, x);
+		console.log(equation, x); /*
 		if (/(?!\])\(-?[0-9.]{1,}\)/g.test(equation))
 		{
 			equation = equation.replace(/(?!\])\((-?[0-9.]{1,})\)/g, "$1");
-		}
+		} */
 		console.log(equation, x);
 		if (equation != lastEquation)
 		{
