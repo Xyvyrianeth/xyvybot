@@ -2922,8 +2922,13 @@ Object.defineProperty(Math, 'prod', {
 Object.defineProperty(Math, 'fraction', {
 	value: function(x, n) {
 		let gcd = function(a, b) {
-			if (!b) return a;
-			return gcd(b, a % b);
+			if (!b) {
+				return a;
+			}
+			else
+			{
+				return gcd(b, a % b);
+			}
 		}
 
 		let len = x.toString().length - 2;
@@ -2934,7 +2939,14 @@ Object.defineProperty(Math, 'fraction', {
 		num /= div;
 		den /= div;
 
-		return [num, den, num + '/' + den][n];
+		if (!n)
+		{
+			return [num, den, num + '/' + den];
+		}
+		else
+		{
+			return [num, den, num + '/' + den][n];
+		}
 	}
 });
 function equ(equation, x) {
@@ -2942,104 +2954,67 @@ function equ(equation, x) {
 	{
 		equation = equation.replace(/x/g, '(' + x + ')');
 	}
-	let terms = [ [
-			/(pi|π)/g,
-			"(Math.PI)"
-		], [
-			/(infinity|∞)/g,
-			"(Math.Infinity)"
-		]
+	let terms = [
+		[ /(pi|π)/g,
+			"(Math.PI)" ],
+		[ /(infinity|∞)/g,
+			"(Math.Infinity)" ]
 	];
 	for (let i = 0; i < terms.length; i++)
 	{
 		equation = equation.replace(terms[i][0], terms[i][1]);
 	}
 	let methods = [
-		[// Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
-			// \sin(5)
-			/\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-			"Math.$1($2)"
+		[ /\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
+			"Math.$1($2)" ], // \sin(5)
 
-		], [// Asin, Acos, or Atan of a number
-			// \asin(5)
-			/\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-			"Math.a$1($2)"
+		[ /\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Asin, Acos, or Atan of a number
+			"Math.a$1($2)" ], // \asin(5)
 
-		], [// Sinh, Cosh, or Tanh of a number
-			// \sinh(5)
-			/\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-			"Math.$1h($2)"
+		[ /\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Sinh, Cosh, or Tanh of a number
+			"Math.$1h($2)" ], // \sinh(5)
 
-		], [// Asinh, Acosh, or Atanh of a number
-			// \asinh(5)
-			/\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-			"Math.a$1h($2)"
+		[ /\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Asinh, Acosh, or Atanh of a number
+			"Math.a$1h($2)" ], // \asinh(5)
 
-		], [// Root of a number, if the radicand is a real number and the radical is 2
-			// \sqrt(5)
-			/(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g,
-			"Math.sqrt($1)"
+		[ /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g, // Root of a number, if the radicand is a real number and the radical is 2
+			"Math.sqrt($1)" ], // \sqrt(5)
 
-		], [// If the radicand is positive
-			// \rt[2](5)
-			/(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g,
-			"Math.pow($2,(1/$1))"
+		[ /(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g, // If the radicand is positive
+			"Math.pow($2,(1/$1))" ], // \rt[2](5)
 
-		], [// If the radicand is negative and the radical is odd
-			// \rt[3](-5)
-			/(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
-			"-Math.pow($2$3,(1/$1))"
+		[ /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g, // If the radicand is negative and the radical is odd
+			"-Math.pow($2$3,(1/$1))" ], // \rt[3](-5)
 
-		], [// If the radical is not an integer
-			// \rt[1.5](-5)
-			/(?:\\rt|√)\[(-?[0-9]{1,}\.[0-9]{1,})\](\(-?[0-9.]{1,}\)|-?[0-9.]{1,})/g,
-			"Math.pow(Math.pow($2,Math.fraction($1,0)),(1/Math.fraction($1,1)))"
+		[ /(?:\\rt|√)\[(-?[0-9]{1,}\.[0-9]{1,})\](\(-?[0-9.]{1,}\)|-?[0-9.]{1,})/g, // If the radical is not an integer
+			"Math.pow(Math.pow($2,Math.fraction($1,0)),(1/Math.fraction($1,1)))" ], // \rt[1.5](-5)
 
-		], [// If the radicand is negative and the radical is even
-			// \rt[2](-5)
-			/(?:\\rt|√)\[-?[0-9]{0,}[02468]{1}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
-			"NaN"
+		[ /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g, // If the radicand is negative and the radical is even
+			"NaN" ], // \rt[2](-5)
 
-		], [// A number number to the power of another number
-			// 5^7
-			/(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\((-?)[0-9.]{1,}\)|-?[0-9.]{1,})/g,
-			"Math.pow($1,$2)"
+		[ /(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\((-?)[0-9.]{1,}\)|-?[0-9.]{1,})/g, // A number number to the power of another number
+			"Math.pow($1,$2)" ], // 5^7
 
-		], [// Summation function
-			// \sum[n=0](5)5
-			/(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g,
-			"Math.sum($1, $2, $3)"
+		[ /(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g, // Summation function
+			"Math.sum($1, $2, $3)" ], // \sum[n=0](5)5
 
-		], [// Product function
-			// \prod[n=0](5)5
-			/(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g,
-			"Math.prod($1, $2, $3)"
+		[ /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Product function
+			"Math.prod($1, $2, $3)" ], // \prod[n=0](5)5
 
-		], [// The absolute value of a number
-			// |-5|
-			/\|(-?[0-9.+\-/*()]{1,})\|/g,
-			"Math.abs($1)"
+		[ /\|(-?[0-9.+\-/*()]{1,})\|/g, // The absolute value of a number
+			"Math.abs($1)" ], // |-5|
 
-		], [// A number against a parentheses sequence
-			// 5(7)
-			/([0-9.])\(/g,
-			"$1*("
+		[ /([0-9.])\(/g, // A number against a parentheses sequence
+			"$1*(" ], // 5(7)
 
-		], [// Same but reversed
-			// (7)5
-			/\)([0-9.])/,
-			")*$1"
+		[ /\)([0-9.])/, // Same but reversed
+			")*$1" ], // (7)5
 
-		], [// A number against a Javascript Math function
-			// 5Math.sin(7)
-			/([0-9.])M/g,
-			"$1*M"
+		[ /([0-9.])M/g, // A number against a Javascript Math function
+			"$1*M" ], // 5Math.sin(7)
 
-		], [// Parentheses sequence against parentheses sequence
-			// (5)(7)
-			/\)\(/g,
-			")*("
-		]
+		[ /\)\(/g, // Parentheses sequence against parentheses sequence
+			")*(" ] // (5)(7)
 	];
 	let lastEquation;
 	for (let i = 0; i < 1; i++)
@@ -3050,6 +3025,7 @@ function equ(equation, x) {
 			equation = equation.replace(/\(Math.PI\)/g, Math.PI);
 			equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
 		}
+		console.log(equation, x, "pi infinity");
 		if (/\([0-9.+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
@@ -3061,10 +3037,12 @@ function equ(equation, x) {
 				}
 			}
 		}
+		console.log(equation, x, "arithmatic");
 		for (let i = 0; i < methods.length; i++)
 		{
 			equation = equation.replace(methods[i][0], methods[i][1]);
 		}
+		console.log(equation, x, "methods");
 		if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
@@ -3076,6 +3054,7 @@ function equ(equation, x) {
 				}
 			}
 		}
+		console.log(equation, x, "arithmatic in parentheses");
 		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g.test(equation))
 		{
 			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g);
@@ -3084,14 +3063,18 @@ function equ(equation, x) {
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			}
 		}
-		if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation)) {
+		console.log(equation, x, "Math.something");
+		if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation))
+		{
 			equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
 			equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
 		}
+		console.log(equation, x, "parentheses * parentheses");
 		if (/(?<!\])\(-?[0-9.]{1,}\)/g.test(equation))
 		{
 			equation = equation.replace(/(?!\])\((-?[0-9.]{1,})\)/g, "$1");
 		}
+		console.log(equation, x, "remove parentheses");
 		if (equation != lastEquation)
 		{
 			i--;
@@ -3099,12 +3082,12 @@ function equ(equation, x) {
 	}
 	try
 	{
-		return ["equated", eval(equation)];
+		return [ "equated", eval(equation) ];
 	}
 	catch (err)
 	{
 		console.log(equation, x);
-		return ["error", err];
+		return [ "error", err ];
 	}
 }
 
