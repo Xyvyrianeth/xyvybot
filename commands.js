@@ -1,4 +1,4 @@
-var version = "2.40.1.1";
+var version = "2.40.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2992,7 +2992,7 @@ function equ(equation, x) {
 
 		], [// If the radicand is negative and the radical is not an integer
 			// \rt[1.5](-5)
-			/(?:\\rt|√)\[(-?[0-9.]{1,2}[0-9]{1,})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
+			/(?:\\rt|√)\[(-?[0-9.]{1,2}[0-9]{1,})\](\(-[0-9.]{1,}\)|-[0-9.]{1,})/g,
 			"Math.pow(Math.pow($2,Math.fraction($1,0)),(1/Math.fraction($1,1)))"
 
 		], [// If the radicand is negative and the radical is even
