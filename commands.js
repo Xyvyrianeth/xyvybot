@@ -2919,22 +2919,24 @@ Object.defineProperty(Math, 'prod', {
 		return c;
 	}
 });
+Object.defineProperty(Math, 'gcd', {
+	value: function(a, b) {
+		if (!b) {
+			return a;
+		}
+		else
+		{
+			return Math.gcd(b, a % b);
+		}
+	}
+});
 Object.defineProperty(Math, 'fraction', {
 	value: function(x, n) {
-		let gcd = function(a, b) {
-			if (!b) {
-				return a;
-			}
-			else
-			{
-				return gcd(b, a % b);
-			}
-		}
 
 		let len = x.toString().length - 2;
 		let den = Math.pow(10, len);
 		let num = x * den;
-		let div = gcd(num, den);
+		let div = Math.gcd(num, den);
 
 		num /= div;
 		den /= div;

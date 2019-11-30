@@ -2,173 +2,364 @@
 <html>
     <head>
         <title>Other Canvas Testing</title>
-        <img id="border" src="border.png">
-        <img id="borderback" src="borderback.png">
-        <img id="corner" src="corner.png">
-        <img id="cornerback" src="cornerback.png">
-        <img id="extend" src="extend.png">
-        <img id="extendback" src="extendback.png">
-        <img id="alphabet" src="alphabet.png">
+        <script src="../assets/misc/Color.js"></script>
     </head>
     <body style="background-color: #435">
-        <canvas id="thing" width="316" height="230" style="border:1px solid #fff"></canvas>
+        <img id="background" style="visibility: hidden; height: 0px;" src="../assets/misc/graph.png"></img>
+        <canvas id="thing" width="601" height="601" style="border:1px solid #fff"></canvas>
+        <button onclick="graph()">Graph</button>
+        <textarea id="text" style="width: 300px;"></textarea>
         <script>
-            setTimeout(function() {
-                var canvas = document.getElementById("thing");
-                var ctx = canvas.getContext('2d');
-
-                var assets = [];
-                for (let img = 0; img < 6; img++)
+            CONSOLE = false;
+            canvas = document.getElementById("thing");
+            ctx = canvas.getContext('2d');
+            //ctx.drawImage(document.getElementById("background"), 0, 0);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, 601, 601);
+            ctx.translate(300.5, 300.5);
+            function graph() {
+                ctx.translate(-300.5, -300.5);
+                //ctx.drawImage(document.getElementById("background"), 0, 0);
+                ctx.fillRect(0, 0, 601, 601);
+                ctx.translate(300.5, 300.5);
+                input = document.getElementById("text").value;
+                e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
+                input = input.split('\n');
+                colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
+                if (/;$/.test(input))
                 {
-                    let image = document.getElementById(["border", "borderback", "corner", "cornerback", "extend", "extendback"][img]).cloneNode();
-                    let can = document.createElement("canvas");
-                    let cantx = can.getContext('2d');
-                    cantx.drawImage(image, 0, 0);
-                    
-                    let border = cantx.getImageData(0, 0, image.width, image.height);
-                    for (let i = 0; i < border.data.length; i += 4)
+                    e.pop();
+                }
+                if (e.length > colors.length)
+                {
+                    alert("Too many equations");
+                }
+                let display = [];
+
+                for (let i = 0; i < e.length; i++)
+                {
+                    // decide color
+                    let ic = e[i].split(';');
+                    let color = colors[i];
+                    let y = ic[0];
+                    if (ic.length == 2)
                     {
-                        if (img % 2 == 0)
+                        if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase()))
                         {
-                            border.data[i] = Math.floor(color.r >= 127.5 ? color.r - ((color.r - 127.5) / 2) : color.r) - 20;
-                            border.data[i + 1] = Math.floor(color.g >= 127.5 ? color.g - ((color.g - 127.5) / 2) : color.g) - 20;
-                            border.data[i + 2] = Math.floor(color.b >= 127.5 ? color.b - ((color.b - 127.5) / 2) : color.b) - 20;
-                            border.data[i + 3] /= 2;
+                            color = ic[1].toLowerCase();
+                        }
+                        if (/^(red|orange|yellow|(?:light||blue)green|blue|purple|brown|pink)$/i.test(ic[1]))
+                        {
+                            color = {
+                                "red": "#ff0000",
+                                "orange": "#ff7F00",
+                                "yellow": "#fefe33",
+                                "lightgreen": "00ff00",
+                                "green": "#008000",
+                                "bluegreen": "#0d98ba",
+                                "blue": "#0000ff",
+                                "purple": "#a020f0",
+                                "brown": "#964b00",
+                                "pink": "#ffc0cb"
+                            }[ic[1].toLowerCase()];
+                        }
+                    }
+                    Y = y.match(/^y(=|(>=?|≥)|(<=?|≤))/);
+                    if (Y != null)
+                    {
+                        y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
+                        egl = Y[0].substring(1);
+                        switch (egl)
+                        {
+                            case '=': egl = 0;
+                            case '≤': egl = 1;
+                            case '≥': egl = 2;
+                            case '<': egl = 3;
+                            case '>': egl = 4;
+                        }
+                    }
+                    else
+                    {
+                        egl = 0;
+                    }
+
+                    // start graphing
+                    let canEquate = true;
+                    let result;
+
+                    if (y.includes('y') && !y.includes("infinity"))
+                    {
+                        canEquate = false;
+                        result = "Output (*y*) must remain isolated in all equations.";
+                    }
+                    else
+                    {
+                        result = [];
+                        for (let x = -300; x < -301; x++)
+                        {
+                            let Y = equ(y, x);
+                            if (Y[0] != "err")
+                            {
+                                result = [false, Y[1]];
+                                break;
+                            }
+                            else
+                            {
+                                result.push([x, Y[1]]);
+                            }
+                        }
+                        if (result[0] === false) {
+                            display.push('y ' + ['=', '≤', '≥'][egl] + ' ' + y + '  -  ' + result[1]);
                         }
                         else
                         {
-                            border.data[i] = Math.floor(color.r <= 127.5 ? color.r + ((127.5 - color.r) / 2) : color.r);
-                            border.data[i + 1] = Math.floor(color.g <= 127.5 ? color.g + ((127.5 - color.g) / 2) : color.g);
-                            border.data[i + 2] = Math.floor(color.b <= 127.5 ? color.b + ((127.5 - color.b) / 2) : color.b);
-                            border.data[i + 3] /= 2;
+                            display.push('y ' + ['=', '≤', '≥'][egl] + ' ' + y + '  -  ' + new Color(color).getName());
+                            for (let i = 0; i < result.length; i++)
+                            {
+                                XY = result[i];
+                                let c = new Color(color);
+                                if (egl <= 2)
+                                {
+                                    ctx.strokeStyle = color;
+                                    ctx.beginPath();
+                                    ctx.moveTo(XY[0], XY[1]);
+                                    ctx.lineTo(XY[0], XY[1]);
+                                    ctx.stroke();
+                                }
+                                if (egl > 0)
+                                {
+                                    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
+                                    ctx.beginPath();
+                                    ctx.moveTo(XY[0], XY[1]);
+                                    ctx.lineTo(XY[0], [305, -305][egl % 2]);
+                                    ctx.stroke();
+                                }
+                            }
                         }
                     }
-                    assets.push(border);
                 }
+            }
+            Object.defineProperty(Math, 'sum', {
+                value: function(n, a, b) {
+                    n = Math.round(n);
+                    a = Math.round(a);
+                    c = 0;
+                    for (let i = n; i <= a; i++)
+                    {
+                        c += b;
+                    }
+                    return c;
+                }
+            });
+            Object.defineProperty(Math, 'prod', {
+                value: function(n, a, b) {
+                    n = Math.round(n);
+                    a = Math.round(a);
+                    c = 0;
+                    for (let i = n; i <= a; i++)
+                    {
+                        c *= b;
+                    }
+                    return c;
+                }
+            });
+            Object.defineProperty(Math, 'gcd', {
+                value: function(a, b) {
+                    if (!b) {
+                        return a;
+                    }
+                    else
+                    {
+                        return Math.gcd(b, a % b);
+                    }
+                }
+            });
+            Object.defineProperty(Math, 'fraction', {
+                value: function(x, n) {
 
-                function getWidth(text) {
-                    let Alphabet = document.createElement("canvas").getContext("2d").drawImage(document.getElementById("alphabet"), 0, 0);
-                    let canvas = document.createElement("canvas");
-                    canvas.width = 334;
-                    canvas.height = 11;
-                    let ctx = canvas.getContext('2d');
-                    let h = 0;
+                    let y = x;
+                    let num, den;
+                    do {
+                        y += x;
+                    } while (y != Math.round(y))
+                    let z = y / x;
+                    if (z == Math.round(z))
+                    {
+                        num = y;
+                        den = z;
+                    }
+                    else
+                    {
+                        let len = x.toString().substring(0, 7).length - 2;
+                        den = Math.pow(10, len);
+                        num = x * den;
+                        let div = Math.gcd(num, den);
 
-                    let alphabet = {
-                        'A': [0, 0, 7, false],
-                        'B': [1, 0, 7, false],
-                        'C': [2, 0, 7, false],
-                        'D': [3, 0, 7, false],
-                        'E': [4, 0, 7, false],
-                        'F': [5, 0, 7, false],
-                        'G': [6, 0, 7, false],
-                        'H': [7, 0, 7, false],
-                        'I': [0, 1, 4, false],
-                        'J': [1, 1, 7, false],
-                        'K': [2, 1, 7, false],
-                        'L': [3, 1, 7, false],
-                        'M': [4, 1, 8, false],
-                        'N': [5, 1, 8, false],
-                        'O': [6, 1, 7, false],
-                        'P': [7, 1, 7, false],
-                        'Q': [0, 2, 7, false],
-                        'R': [1, 2, 7, false],
-                        'S': [2, 2, 7, false],
-                        'T': [3, 2, 6, false],
-                        'U': [4, 2, 7, false],
-                        'V': [5, 2, 7, false],
-                        'W': [6, 2, 8, false],
-                        'X': [7, 2, 7, false],
-                        'Y': [0, 3, 6, false],
-                        'Z': [1, 3, 7, false],
-                        'a': [0, 4, 7, false],
-                        'b': [1, 4, 7, false],
-                        'c': [2, 4, 7, false],
-                        'd': [3, 4, 7, false],
-                        'e': [4, 4, 7, false],
-                        'f': [5, 4, 5, false],
-                        'g': [6, 4, 7, false],
-                        'h': [7, 4, 7, false],
-                        'i': [0, 5, 2, false],
-                        'j': [1, 5, 3, true],
-                        'k': [2, 5, 6, false],
-                        'l': [3, 5, 2, false],
-                        'm': [4, 5, 8, false],
-                        'n': [5, 5, 7, false],
-                        'o': [6, 5, 7, false],
-                        'p': [7, 5, 7, false],
-                        'q': [0, 6, 7, false],
-                        'r': [1, 6, 6, false],
-                        's': [2, 6, 7, false],
-                        't': [3, 6, 4, false],
-                        'u': [4, 6, 7, false],
-                        'v': [5, 6, 7, false],
-                        'w': [6, 6, 8, false],
-                        'x': [7, 6, 7, false],
-                        'y': [0, 7, 7, false],
-                        'z': [1, 7, 7, false],
-                        '0': [2, 3, 7, false],
-                        '1': [3, 3, 4, false],
-                        '2': [4, 3, 7, false],
-                        '3': [5, 3, 7, false],
-                        '4': [6, 3, 7, false],
-                        '5': [2, 7, 7, false],
-                        '6': [3, 7, 7, false],
-                        '7': [4, 7, 7, false],
-                        '8': [5, 7, 7, false],
-                        '9': [6, 7, 7, false],
-                        '—': [7, 3, 6, false],
-                        '–': [7, 3, 5, false],
-                        '-': [7, 3, 3, false],
-                        '_': [7, 7, 6, false],
-                        '!': [0, 8, 2, false],
-                        '?': [1, 8, 6, false],
-                        '.': [2, 8, 2, false],
-                        ',': [3, 8, 3, true],
-                        ':': [4, 8, 2, false],
-                        ';': [5, 8, 3, true],
-                        '/': [6, 8, 7, false],
-                        '\\': [7, 8,74, false],
-                        '(': [0, 9, 4, false],
-                        ')': [1, 9, 4, false],
-                        '[': [2, 9, 4, false],
-                        ']': [3, 9, 4, false],
-                        '{': [4, 9, 4, false],
-                        '}': [5, 9, 4, false],
-                        '|': [6, 9, 2, false],
-                        '~': [7, 9, 7, false],
-                        '+': [0, 10, 6, false],
-                        '×': [1, 10, 6, false],
-                        '@': [2, 10, 7, false],
-                        '#': [3, 10, 7, false],
-                        '$': [4, 10, 7, false],
-                        '%': [5, 10, 8, false],
-                        '^': [6, 10, 6, false],
-                        '&': [7, 10, 8, false],
-                        '*': [0, 11, 5, false],
-                        '÷': [1, 11, 6, false],
-                        '=': [2, 11, 4, false],
-                        '\'': [3, 11, 1, false],
-                        '"': [4, 11, 3, false],
-                        '<': [5, 11, 4, false],
-                        '>': [6, 11, 4, false],
-                        '`': [7, 11, 4, false],
-                    };
+                        num /= div;
+                        den /= div;
+                    }
+                    if (n == undefined)
+                    {
+                        return [num, den, num + '/' + den];
+                    }
+                    else
+                    {
+                        return [num, den, num + '/' + den][n];
+                    }
+                }
+            });
+            function equ(equation, x, a) {
+                if (x !== undefined)
+                {
+                    equation = equation.replace(/x/g, '(' + x + ')');
+                }
+                let terms = [
+                    [ /(pi|π)/g,
+                        "(Math.PI)" ],
+                    [ /(infinity|∞)/g,
+                        "(Math.Infinity)" ]
+                ];
+                for (let i = 0; i < terms.length; i++)
+                {
+                    equation = equation.replace(terms[i][0], terms[i][1]);
+                }
+                let methods = [
+                    [ /\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
+                        "Math.$1($2)" ], // \sin(5)
 
-                    for (let i = 0; i < a.length; i++) {
-                        let a = text.split('')[i];
-                        if (alphabet.hasOwnProperty(a))
+                    [ /\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Asin, Acos, or Atan of a number
+                        "Math.a$1($2)" ], // \asin(5)
+
+                    [ /\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Sinh, Cosh, or Tanh of a number
+                        "Math.$1h($2)" ], // \sinh(5)
+
+                    [ /\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Asinh, Acosh, or Atanh of a number
+                        "Math.a$1h($2)" ], // \asinh(5)
+
+                    [ /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g, // Root of a number, if the radicand is a real number and the radical is 2
+                        "Math.sqrt($1)" ], // \sqrt(5)
+
+                    [ /(?:\\rt|√)\[(\(-?[0-9]{1,}\)|-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g, // If the radicand is positive
+                        "Math.pow($2,(1/$1))" ], // \rt[2](5)
+
+                    [ /(?:\\rt|√)\[(\(\-?[0-9]{0,}[13579]{1}\)|\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g, // If the radicand is negative and the radical is odd
+                        "-Math.pow($2$3,(1/$1))" ], // \rt[3](-5)
+
+                    [ /(?:\\rt|√)\[(\(-?[0-9]{1,}\.[0-9]{1,}\)|-?[0-9]{1,}\.[0-9]{1,})\](\(-?[0-9.]{1,}\)|-?[0-9.]{1,})/g, // If the radical is not an integer
+                        "Math.pow(Math.pow($2,Math.fraction($1,1)),(1/Math.fraction($1,0)))" ], // \rt[1.5](-5)
+
+                    [ /(?:\\rt|√)\[(?:\(-?[0-9]{0,}[02468]{1}\)|-?[0-9]{0,}[02468]{1})\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g, // If the radicand is negative and the radical is even
+                        "NaN" ], // \rt[2](-5)
+
+                    [ /(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\((-?)[0-9.]{1,}\)|-?[0-9.]{1,})/g, // A number number to the power of another number
+                        "Math.pow($1,$2)" ], // 5^7
+
+                    [ /(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g, // Summation function
+                        "Math.sum($1, $2, $3)" ], // \sum[n=0](5)5
+
+                    [ /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Product function
+                        "Math.prod($1, $2, $3)" ], // \prod[n=0](5)5
+
+                    [ /\|(-?[0-9.+\-/*()]{1,})\|/g, // The absolute value of a number
+                        "Math.abs($1)" ], // |-5|
+
+                    [ /([0-9.])\(/g, // A number against a parentheses sequence
+                        "$1*(" ], // 5(7)
+
+                    [ /\)([0-9.])/, // Same but reversed
+                        ")*$1" ], // (7)5
+
+                    [ /([0-9.])M/g, // A number against a Javascript Math function
+                        "$1*M" ], // 5Math.sin(7)
+
+                    [ /\)\(/g, // Parentheses sequence against parentheses sequence
+                        ")*(" ] // (5)(7)
+                ];
+                let lastEquation;
+                for (let i = 0; i < 1; i++)
+                {
+                    lastEquation = equation;
+                    if (/\(Math.(PI|Infinity)\)/g.test(equation))
+                    {
+                        equation = equation.replace(/\(Math.PI\)/g, Math.PI);
+                        equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+                    }
+                    if (a) console.log(x, equation);
+                    if (/\([0-9.+\-/*]{1,}\)/.test(equation))
+                    {
+                        equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
+                        for (let i = 0; i < equate.length; i++)
                         {
-                            let A = alphabet[a];
-                            Alphabet.getImageData(A[0] * 8, A[1] * 11, A[2], 11);
-                            if (A[3]) h -= 1;
-                            ctx.putImageData(0, h, A[2], 11);
-                            h += A[2];
+                            if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
+                            {
+                                equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                            }
                         }
                     }
-                    return [ctx.getImageData(0, 0, 11, 334), h];
+                    if (a) console.log(x, equation);
+                    for (let i = 0; i < methods.length; i++)
+                    {
+                        equation = equation.replace(methods[i][0], methods[i][1]);
+                    }
+                    if (a) console.log(x, equation);
+                    if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
+                    {
+                        equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
+                        for (let i = 0; i < equate.length; i++)
+                        {
+                            if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
+                            {
+                                equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                            }
+                        }
+                    }
+                    if (a) console.log(x, equation);
+                    if (/\[[0-9.()+\-/*]{1,}\]/.test(equation))
+                    {
+                        equate = equation.match(/\[[0-9.()+\-/*]{1,}\]/g);
+                        for (let i = 0; i < equate.length; i++)
+                        {
+                            if (/\[/.test(equate[i]) && /\]/.test(equate[i]) && equate[i].match(/\[/g).length == equate[i].match(/\]/g).length)
+                            {
+                                equation = equation.replace(equate[i], '[' + eval(equate[i]) + ']');
+                            }
+                        }
+                    }
+                    if (a) console.log(x, equation);
+                    if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g.test(equation))
+                    {
+                        equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g);
+                        for (let i = 0; i < equate.length; i++)
+                        {
+                            equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+                        }
+                    }
+                    if (a) console.log(x, equation);
+                    if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation))
+                    {
+                        equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
+                        equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
+                    }
+                    if (a) console.log(x, equation);
+                    if (/(?<!\])\(-?[0-9.]{1,}\)/g.test(equation))
+                    {
+                        equation = equation.replace(/(?!\])\((-?[0-9.]{1,})\)/g, "$1");
+                    }
+                    if (a) console.log(x, equation);
+                    if (equation != lastEquation)
+                    {
+                        i--;
+                    }
                 }
-            }, 100);
+                try
+                {
+                    return [ "equated", eval(equation) ];
+                }
+                catch (err)
+                {
+                    return [ "error", err ];
+                }
+            }
         </script>
     </body>
 </html>
