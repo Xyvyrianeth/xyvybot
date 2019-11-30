@@ -2191,6 +2191,7 @@ var commands = {
 						let ans1 = equ(y, x - 0.5);
 						let ans2 = equ(y, x + 0.5);
 						let ans3 = equ(y, x);
+						console.log(x, ans1[1], ans2[1], ans3[1]);
 						if (ans1[0] == "error")
 						{
 							result = ans1[1];
@@ -3036,6 +3037,11 @@ function equ(equation, x) {
 	for (let i = 0; i < 1; i++)
 	{
 		lastEquation = equation;
+		if (/\(Math.(PI|Infinity)\)/g.test(equation))
+		{
+			equation = equation.replace(/\(Math.PI\)/g, Math.PI);
+			equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+		}
 		if (/\([0-9.+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
