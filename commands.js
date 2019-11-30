@@ -2095,7 +2095,9 @@ var commands = {
 						"of it trying to do everything at once, it has to solve it step by step. It has its own order of operation it has to follow.\n",
 						"\n",
 						"I'm constantly refining it little by little, and soon it'll be something. Maybe not great, but something."].join(''))
-				.addField("Other Sub-Commands", "`x!" + cmd + "`  `syntax`");
+				.addField("Other Sub-Commands", "`x!" + cmd + "`  `syntax`")
+				.setColor(new Color().random());
+			return sendChat({embed});
 		}
 		else
 		if (["help", "syntax", "rules"].includes(args[0]) || !args[0])
@@ -2103,12 +2105,12 @@ var commands = {
 			let embed = new Discord.RichEmbed()
 				.setTitle("How to Graphic Calculator, Xyvybot Style")
 				.setAuthor("By Xyvyrianeth", exports.Images.avatar)
-				.setDescription("[Click this link, it totally isn't spoopy](https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph)");
-
+				.setDescription("[Click this link, it totally isn't spoopy](https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph)")
+				.setColor(new Color().random());
+			return sendChat({embed});
 		}
 		else
 		{
-
 			// Draw blank graph
 			canvas = new Canvas.createCanvas(301, 301);
 			ctx = canvas.getContext('2d');
@@ -2893,42 +2895,48 @@ Object.defineProperty(Array.prototype, 'shuffle', {
 		return b;
 	}
 });
-Math.sum = function(n, a, b) {
-	n = Math.round(n);
-	a = Math.round(a);
-	c = 0;
-	for (let i = n; i <= a; i++)
-	{
-		c += b;
+Object.defineProperty(Math, 'sum', {
+	value: function(n, a, b) {
+		n = Math.round(n);
+		a = Math.round(a);
+		c = 0;
+		for (let i = n; i <= a; i++)
+		{
+			c += b;
+		}
+		return c;
 	}
-	return c;
-}
-Math.prod = function(n, a, b) {
-	n = Math.round(n);
-	a = Math.round(a);
-	c = 0;
-	for (let i = n; i <= a; i++)
-	{
-		c *= b;
+});
+Object.defineProperty(Math, 'prod', {
+	value: function(n, a, b) {
+		n = Math.round(n);
+		a = Math.round(a);
+		c = 0;
+		for (let i = n; i <= a; i++)
+		{
+			c *= b;
+		}
+		return c;
 	}
-	return c;
-}
-Math.fraction = function(x) {
-	let gcd = function(a, b) {
-		if (!b) return a;
-		return gcd(b, a % b);
+});
+Object.defineProperty(Math, 'fraction', {
+	value: function(x, n) {
+		let gcd = function(a, b) {
+			if (!b) return a;
+			return gcd(b, a % b);
+		}
+
+		let len = x.toString().length - 2;
+		let den = Math.pow(10, len);
+		let num = x * den;
+		let div = gcd(num, den);
+
+		num /= div;
+		den /= div;
+
+		return [num, den, num + '/' + den][n];
 	}
-
-	let len = x.toString().length - 2;
-	let den = Math.pow(10, len);
-	let num = x * den;
-	let div = gcd(num, den);
-
-	num /= div;
-	den /= div;
-
-	return [num, den, num + '/' + den];
-};
+});
 function equ(equation, x) {
 	if (x !== undefined)
 	{
@@ -2985,7 +2993,7 @@ function equ(equation, x) {
 		], [// If the radicand is negative and the radical is not an integer
 			// \rt[1.5](-5)
 			/(?:\\rt|√)\[(-?[0-9.]{1,2}[0-9]{1,})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g,
-			"Math.pow(Math.pow($2, Math.fraction($1)[0]),(1/Math.fraction($1)[1]))"
+			"Math.pow(Math.pow($2,Math.fraction($1,0)),(1/Math.fraction($1,1)))"
 
 		], [// If the radicand is negative and the radical is even
 			// \rt[2](-5)
@@ -3068,17 +3076,9 @@ function equ(equation, x) {
 				}
 			}
 		}
-		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g.test(equation))
+		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g.test(equation))
 		{
-			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,}))?\)/g);
-			for (let i = 0; i < equate.length; i++)
-			{
-				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-			}
-		}
-		if (/Math.fraction\([0-9.]{1,}\)\[[01]\]/g.test(equation))
-		{
-			equate = equation.match(/Math.fraction\([0-9.]{1,}\)\[[01]\]/g);
+			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g);
 			for (let i = 0; i < equate.length; i++)
 			{
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
