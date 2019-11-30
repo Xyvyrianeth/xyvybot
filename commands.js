@@ -1,4 +1,4 @@
-var version = "2.40.1.9";
+var version = "2.40.1.10";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2939,7 +2939,7 @@ Object.defineProperty(Math, 'fraction', {
 		num /= div;
 		den /= div;
 
-		if (!n)
+		if (n == undefined)
 		{
 			return [num, den, num + '/' + den];
 		}
