@@ -3050,6 +3050,7 @@ function equ(equation, x) {
 			equation = equation.replace(/\(Math.PI\)/g, Math.PI);
 			equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
 		}
+		console.log(equation, x);
 		if (/\([0-9.+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
@@ -3061,10 +3062,12 @@ function equ(equation, x) {
 				}
 			}
 		}
+		console.log(equation, x);
 		for (let i = 0; i < methods.length; i++)
 		{
 			equation = equation.replace(methods[i][0], methods[i][1]);
 		}
+		console.log(equation, x);
 		if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
@@ -3076,6 +3079,7 @@ function equ(equation, x) {
 				}
 			}
 		}
+		console.log(equation, x);
 		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g.test(equation))
 		{
 			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g);
@@ -3084,18 +3088,22 @@ function equ(equation, x) {
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			}
 		}
+		console.log(equation, x);
 		if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation)) {
 			equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
 			equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
 		}
+		console.log(equation, x);
 		if (/(?!\])\(-?[0-9.]{1,}\)/g.test(equation))
 		{
 			equation = equation.replace(/(?!\])\((-?[0-9.]{1,})\)/g, "$1");
 		}
+		console.log(equation, x);
 		if (equation != lastEquation)
 		{
 			i--;
 		}
+		console.log(equation, x);
 	}
 	try
 	{
