@@ -3,26 +3,36 @@
     <head>
         <title>Other Canvas Testing</title>
         <script src="../assets/misc/Color.js"></script>
+        <style>
+            textarea {
+                height: 150px;
+                width: 340px;
+                position: fixed;
+                bottom: 15px;
+            }
+        </style>
     </head>
     <body style="background-color: #435">
         <img id="background" style="visibility: hidden; height: 0px;" src="../assets/misc/graph.png"></img>
-        <canvas id="thing" width="601" height="601" style="border:1px solid #fff"></canvas>
-        <button onclick="graph()">Graph</button>
-        <textarea id="text" style="width: 300px;"></textarea>
+        <canvas id="thing" width="301" height="301"></canvas>
+        <button onclick="graph()" style="height: 300px; width: 100px; position: relative; bottom: 148px">Graph</button>
+        <textarea id="input" style="left: 10px"></textarea>
+        <textarea id="text" style="right: 10px" readonly></textarea>
         <script>
             CONSOLE = false;
+            size = 1;
             canvas = document.getElementById("thing");
             ctx = canvas.getContext('2d');
             //ctx.drawImage(document.getElementById("background"), 0, 0);
             ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, 601, 601);
-            ctx.translate(300.5, 300.5);
+            ctx.fillRect(0, 0, 301, 301);
+            ctx.translate(150.5, 150.5);
             function graph() {
-                ctx.translate(-300.5, -300.5);
+                ctx.translate(-150.5, -150.5);
                 //ctx.drawImage(document.getElementById("background"), 0, 0);
                 ctx.fillRect(0, 0, 601, 601);
-                ctx.translate(300.5, 300.5);
-                input = document.getElementById("text").value;
+                ctx.translate(150.5, 150.5);
+                input = document.getElementById("input").value;
                 e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
                 input = input.split('\n');
                 colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
@@ -64,24 +74,27 @@
                             }[ic[1].toLowerCase()];
                         }
                     }
-                    Y = y.match(/^y(=|(>=?|≥)|(<=?|≤))/);
-                    if (Y != null)
+                    let egl = y.match(/^y(?:=|(?:>=?|≥)|(?:<=?|≤))/);
+                    if (egl != null)
                     {
-                        y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
-                        egl = Y[0].substring(1);
-                        switch (egl)
+                        switch (egl[0])
                         {
-                            case '=': egl = 0;
-                            case '≤': egl = 1;
-                            case '≥': egl = 2;
-                            case '<': egl = 3;
-                            case '>': egl = 4;
+                            default:    egl = 0; break;
+                            case 'y=':  egl = 0; break;
+                            case 'y≤':  egl = 1; break;
+                            case 'y<=': egl = 1; break;
+                            case 'y≥':  egl = 2; break;
+                            case 'y>=': egl = 2; break;
+                            case 'y<':  egl = 3; break;
+                            case 'y>':  egl = 4; break;
                         }
                     }
                     else
                     {
                         egl = 0;
                     }
+
+                    y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
 
                     // start graphing
                     let canEquate = true;
@@ -95,10 +108,10 @@
                     else
                     {
                         result = [];
-                        for (let x = -300; x < -301; x++)
+                        for (let x = -150; x < 151; x += 0.5)
                         {
                             let Y = equ(y, x);
-                            if (Y[0] != "err")
+                            if (Y[0] == "err")
                             {
                                 result = [false, Y[1]];
                                 break;
@@ -109,33 +122,38 @@
                             }
                         }
                         if (result[0] === false) {
-                            display.push('y ' + ['=', '≤', '≥'][egl] + ' ' + y + '  -  ' + result[1]);
+                            display.push('y ' + ['=', '≤', '≥', '<', '>'][egl] + ' ' + y + '  -  ' + result[1]);
                         }
                         else
                         {
-                            display.push('y ' + ['=', '≤', '≥'][egl] + ' ' + y + '  -  ' + new Color(color).getName());
+                            display.push('y ' + ['=', '≤', '≥', '<', '>'][egl] + ' ' + y + '  -  ' + (new Color(color).getName()));
                             for (let i = 0; i < result.length; i++)
                             {
                                 XY = result[i];
                                 let c = new Color(color);
-                                if (egl <= 2)
+                                if (XY[1] == NaN || XY[1] == Infinity)
                                 {
-                                    ctx.strokeStyle = color;
+                                    continue;
+                                }
+                                if (egl < 3)
+                                {
+                                    ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},1)`;
                                     ctx.beginPath();
-                                    ctx.moveTo(XY[0], XY[1]);
-                                    ctx.lineTo(XY[0], XY[1]);
+                                    ctx.moveTo(XY[0], -XY[1]);
+                                    ctx.arc(XY[0], -XY[1], size, 0, Math.PI * 2);
                                     ctx.stroke();
                                 }
                                 if (egl > 0)
                                 {
                                     ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
                                     ctx.beginPath();
-                                    ctx.moveTo(XY[0], XY[1]);
-                                    ctx.lineTo(XY[0], [305, -305][egl % 2]);
+                                    ctx.moveTo(XY[0], -XY[1]);
+                                    ctx.lineTo(XY[0], [-155, 155][egl % 2]);
                                     ctx.stroke();
                                 }
                             }
                         }
+                        document.getElementById("text").value = display.join('\n');
                     }
                 }
             }
@@ -175,29 +193,14 @@
                 }
             });
             Object.defineProperty(Math, 'fraction', {
-                value: function(x, n) {
-
-                    let y = x;
-                    let num, den;
+                value: function(a, n) {
+                    let num = 0;
+                    let den = 0;
                     do {
-                        y += x;
-                    } while (y != Math.round(y))
-                    let z = y / x;
-                    if (z == Math.round(z))
-                    {
-                        num = y;
-                        den = z;
-                    }
-                    else
-                    {
-                        let len = x.toString().substring(0, 7).length - 2;
-                        den = Math.pow(10, len);
-                        num = x * den;
-                        let div = Math.gcd(num, den);
+                        den++;
+                        num = a * den;
+                    } while (num != Math.round(num));
 
-                        num /= div;
-                        den /= div;
-                    }
                     if (n == undefined)
                     {
                         return [num, den, num + '/' + den];
