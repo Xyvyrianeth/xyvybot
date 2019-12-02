@@ -1,4 +1,4 @@
-var version = "2.40.2.0";
+var version = "2.40.2.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2223,7 +2223,7 @@ var commands = {
 								ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},1)`;
 								ctx.beginPath();
 								ctx.moveTo(XY[0], -XY[1]);
-								ctx.arc(XY[0], -XY[1], size, 0.75, Math.PI * 2);
+								ctx.arc(XY[0], -XY[1], 0.75, 0, Math.PI * 2);
 								ctx.stroke();
 							}
 							if (egl > 0)
