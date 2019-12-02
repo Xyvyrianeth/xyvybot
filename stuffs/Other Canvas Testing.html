@@ -5,7 +5,7 @@
         <script src="../assets/misc/Color.js"></script>
         <style>
             textarea {
-                height: 150px;
+                height: 160px;
                 width: 340px;
                 position: fixed;
                 bottom: 15px;
@@ -14,23 +14,23 @@
     </head>
     <body style="background-color: #435">
         <img id="background" style="visibility: hidden; height: 0px;" src="../assets/misc/graph.png"></img>
-        <canvas id="thing" width="301" height="301"></canvas>
+		<canvas id="thing" width="301" height="301"></canvas>
+		<img id="background" src="../assets/misc/graph.png" style="position: fixed; height: 0px; width: 0px"></img>
         <button onclick="graph()" style="height: 300px; width: 100px; position: relative; bottom: 148px">Graph</button>
         <textarea id="input" style="left: 10px"></textarea>
         <textarea id="text" style="right: 10px" readonly></textarea>
         <script>
             CONSOLE = false;
-            size = 1;
             canvas = document.getElementById("thing");
             ctx = canvas.getContext('2d');
-            //ctx.drawImage(document.getElementById("background"), 0, 0);
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, 301, 301);
+            ctx.drawImage(document.getElementById("background"), 0, 0);
+            //ctx.fillStyle = "#ffffff";
+            //ctx.fillRect(0, 0, 301, 301);
             ctx.translate(150.5, 150.5);
             function graph() {
                 ctx.translate(-150.5, -150.5);
-                //ctx.drawImage(document.getElementById("background"), 0, 0);
-                ctx.fillRect(0, 0, 601, 601);
+                ctx.drawImage(document.getElementById("background"), 0, 0);
+                //ctx.fillRect(0, 0, 601, 601);
                 ctx.translate(150.5, 150.5);
                 input = document.getElementById("input").value;
                 e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
@@ -42,7 +42,7 @@
                 }
                 if (e.length > colors.length)
                 {
-                    alert("Too many equations");
+                    return alert("Too many equations");
                 }
                 let display = [];
 
@@ -140,7 +140,7 @@
                                     ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},1)`;
                                     ctx.beginPath();
                                     ctx.moveTo(XY[0], -XY[1]);
-                                    ctx.arc(XY[0], -XY[1], size, 0, Math.PI * 2);
+                                    ctx.arc(XY[0], -XY[1], 0.75, 0, Math.PI * 2);
                                     ctx.stroke();
                                 }
                                 if (egl > 0)
@@ -153,9 +153,9 @@
                                 }
                             }
                         }
-                        document.getElementById("text").value = display.join('\n');
                     }
                 }
+				document.getElementById("text").value = display.join('\n');
             }
             Object.defineProperty(Math, 'sum', {
                 value: function(n, a, b) {
@@ -305,21 +305,18 @@
                         equation = equation.replace(methods[i][0], methods[i][1]);
                     }
                     if (a) console.log(x, equation);
-                    if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
+                    if (/\(([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\)/.test(equation))
                     {
-                        equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
+                        equate = equation.match(/\(([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\)/g);
                         for (let i = 0; i < equate.length; i++)
                         {
-                            if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
-                            {
-                                equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-                            }
+                            equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                         }
                     }
                     if (a) console.log(x, equation);
-                    if (/\[[0-9.()+\-/*]{1,}\]/.test(equation))
+                    if (/\[([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\]/.test(equation))
                     {
-                        equate = equation.match(/\[[0-9.()+\-/*]{1,}\]/g);
+                        equate = equation.match(/\[([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\]/g);
                         for (let i = 0; i < equate.length; i++)
                         {
                             if (/\[/.test(equate[i]) && /\]/.test(equate[i]) && equate[i].match(/\[/g).length == equate[i].match(/\]/g).length)
@@ -336,12 +333,6 @@
                         {
                             equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
                         }
-                    }
-                    if (a) console.log(x, equation);
-                    if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation))
-                    {
-                        equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
-                        equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
                     }
                     if (a) console.log(x, equation);
                     if (/(?<!\])\(-?[0-9.]{1,}\)/g.test(equation))

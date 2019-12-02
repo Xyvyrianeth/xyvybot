@@ -1,4 +1,4 @@
-var version = "2.40.1.10";
+var version = "2.40.2.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2118,7 +2118,7 @@ var commands = {
 			ctx.translate(150.5, 150.5);
 			e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
 			input = input.split('\n');
-			colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008800", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
+			colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008000", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
 			if (/;$/.test(input))
 			{
 				e.pop();
@@ -2157,24 +2157,27 @@ var commands = {
 						}[ic[1].toLowerCase()];
 					}
 				}
-				Y = y.match(/^y(=|(>=?|≥)|(<=?|≤))/);
-				if (Y != null)
+				let egl = y.match(/^y(?:=|(?:>=?|≥)|(?:<=?|≤))/);
+				if (egl != null)
 				{
-					y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
-					egl = Y[0].substring(1);
-					if (egl == '≤')
+					switch (egl[0])
 					{
-						egl = "<=";
-					}
-					if (egl == '≥')
-					{
-						egl = ">=";
+						default:    egl = 0; break;
+						case 'y=':  egl = 0; break;
+						case 'y≤':  egl = 1; break;
+						case 'y<=': egl = 1; break;
+						case 'y≥':  egl = 2; break;
+						case 'y>=': egl = 2; break;
+						case 'y<':  egl = 3; break;
+						case 'y>':  egl = 4; break;
 					}
 				}
 				else
 				{
-					egl = '=';
+					egl = 0;
 				}
+
+				y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
 
 				// start graphing
 				let canEquate = true;
@@ -2188,124 +2191,53 @@ var commands = {
 				else
 				{
 					result = [];
-					for (let x = -150; x < 151; x++)
+					for (let x = -150; x < 151; x += 0.5)
 					{
-						let ans1 = equ(y, x - 0.5);
-						let ans2 = equ(y, x + 0.5);
-						let ans3 = equ(y, x);
-						console.log(x, ans1[1], ans2[1], ans3[1]);
-						if (ans1[0] == "error")
+						let Y = equ(y, x);
+						if (Y[0] == "err")
 						{
-							result = ans1[1];
-							canEquate = false;
+							result = [false, Y[1]];
 							break;
-						}
-						if (ans2[0] == "error")
-						{
-							result = ans2[1];
-							canEquate = false;
-							break;
-						}
-						if (ans3[0] == "error")
-						{
-							result = ans3[1];
-							canEquate = false;
-							break;
-						}
-						if ([isNaN(ans1[1]), isNaN(ans2[1]), isNaN(ans3[1])].filter(x => x).length < 2)
-						{
-							if (isNaN(ans1[1]) && !isNaN(ans2[1]))
-							{
-								result.push([egl, x, -ans3[1], -ans2[1], 0]);
-							}
-							else
-							if (!isNaN(ans1[1]) && isNaN(ans2[1]))
-							{
-								result.push([egl, x, -ans1[1], -ans3[1], 1]);
-							}
-							else
-							{
-								result.push([egl, x, -ans1[1], -ans2[1], 2]);
-							}
 						}
 						else
 						{
-							result.push([false]);
+							result.push([x, Y[1]]);
 						}
 					}
-				}
-
-				let result_;
-				if (canEquate)
-				{
-					ctx.strokeStyle = color;
-					ctx.lineJoin = "round";
-					ctx.lineCap = "round";
-					for (let i = 0; i < result.length; i++)
+					if (result[0] === false) {
+						display.push('y ' + ['=', '≤', '≥', '<', '>'][egl] + ' ' + y + '  -  ' + result[1]);
+					}
+					else
 					{
-						//display.push(result[i]);
-						if (result[i][0])
+						display.push('y ' + ['=', '≤', '≥', '<', '>'][egl] + ' ' + y + '  -  ' + (new Color(color).getName()));
+						for (let i = 0; i < result.length; i++)
 						{
-							if (result[i][0] == '=')
+							XY = result[i];
+							let c = new Color(color);
+							if (XY[1] == NaN || XY[1] == Infinity)
 							{
+								continue;
+							}
+							if (egl < 3)
+							{
+								ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},1)`;
 								ctx.beginPath();
-								ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
-								ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
+								ctx.moveTo(XY[0], -XY[1]);
+								ctx.arc(XY[0], -XY[1], size, 0.75, Math.PI * 2);
 								ctx.stroke();
 							}
-							else
-							if (result[i][0].startsWith('>'))
+							if (egl > 0)
 							{
-								let c = new Color(color);
-								ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
-								ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
+								ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
 								ctx.beginPath();
-								ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], -151);
-								ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
-								ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
-								ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], -151);
-								ctx.fill();
-
-								if (result[i][0].endsWith('='))
-								{
-									ctx.strokeStyle = color;
-									ctx.beginPath();
-									ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
-									ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
-									ctx.stroke();
-								}
-							}
-							else
-							if (result[i][0].startsWith('<'))
-							{
-								let c = new Color(color);
-								ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
-								ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
-								ctx.beginPath();
-								ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], 151);
-								ctx.lineTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
-								ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
-								ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], 151);
-								ctx.fill();
-
-								if (result[i][0].endsWith('='))
-								{
-									ctx.strokeStyle = color;
-									ctx.beginPath();
-									ctx.moveTo(result[i][1] + [0, -0.5, -0.5][result[i][4]], result[i][2]);
-									ctx.lineTo(result[i][1] + [0.5, 0, 0.5][result[i][4]], result[i][3]);
-									ctx.stroke();
-								}
+								ctx.moveTo(XY[0], -XY[1]);
+								ctx.lineTo(XY[0], [-155, 155][egl % 2]);
+								ctx.stroke();
 							}
 						}
 					}
-					result_ = new Color(color).getName();
+					document.getElementById("text").value = display.join('\n');
 				}
-				else
-				{
-					result_ = result;
-				}
-				display.push(input[i].split(';')[0] + " - " + result_);
 			}
 			let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
 			let embed = new Discord.RichEmbed()
@@ -2895,6 +2827,7 @@ Object.defineProperty(Array.prototype, 'shuffle', {
 		return b;
 	}
 });
+
 Object.defineProperty(Math, 'sum', {
 	value: function(n, a, b) {
 		n = Math.round(n);
@@ -2931,15 +2864,13 @@ Object.defineProperty(Math, 'gcd', {
 	}
 });
 Object.defineProperty(Math, 'fraction', {
-	value: function(x, n) {
-
-		let len = x.toString().length - 2;
-		let den = Math.pow(10, len);
-		let num = x * den;
-		let div = Math.gcd(num, den);
-
-		num /= div;
-		den /= div;
+	value: function(a, n) {
+		let num = 0;
+		let den = 0;
+		do {
+			den++;
+			num = a * den;
+		} while (num != Math.round(num));
 
 		if (n == undefined)
 		{
@@ -2951,7 +2882,7 @@ Object.defineProperty(Math, 'fraction', {
 		}
 	}
 });
-function equ(equation, x) {
+function equ(equation, x, a) {
 	if (x !== undefined)
 	{
 		equation = equation.replace(/x/g, '(' + x + ')');
@@ -2982,16 +2913,16 @@ function equ(equation, x) {
 		[ /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g, // Root of a number, if the radicand is a real number and the radical is 2
 			"Math.sqrt($1)" ], // \sqrt(5)
 
-		[ /(?:\\rt|√)\[(-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g, // If the radicand is positive
+		[ /(?:\\rt|√)\[(\(-?[0-9]{1,}\)|-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g, // If the radicand is positive
 			"Math.pow($2,(1/$1))" ], // \rt[2](5)
 
-		[ /(?:\\rt|√)\[(\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g, // If the radicand is negative and the radical is odd
+		[ /(?:\\rt|√)\[(\(\-?[0-9]{0,}[13579]{1}\)|\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g, // If the radicand is negative and the radical is odd
 			"-Math.pow($2$3,(1/$1))" ], // \rt[3](-5)
 
-		[ /(?:\\rt|√)\[(-?[0-9]{1,}\.[0-9]{1,})\](\(-?[0-9.]{1,}\)|-?[0-9.]{1,})/g, // If the radical is not an integer
+		[ /(?:\\rt|√)\[(\(-?[0-9]{1,}\.[0-9]{1,}\)|-?[0-9]{1,}\.[0-9]{1,})\](\(-?[0-9.]{1,}\)|-?[0-9.]{1,})/g, // If the radical is not an integer
 			"Math.pow(Math.pow($2,Math.fraction($1,1)),(1/Math.fraction($1,0)))" ], // \rt[1.5](-5)
 
-		[ /(?:\\rt|√)\[-?[0-9]{0,}[02468]{1}\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g, // If the radicand is negative and the radical is even
+		[ /(?:\\rt|√)\[(?:\(-?[0-9]{0,}[02468]{1}\)|-?[0-9]{0,}[02468]{1})\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g, // If the radicand is negative and the radical is even
 			"NaN" ], // \rt[2](-5)
 
 		[ /(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\((-?)[0-9.]{1,}\)|-?[0-9.]{1,})/g, // A number number to the power of another number
@@ -3027,6 +2958,7 @@ function equ(equation, x) {
 			equation = equation.replace(/\(Math.PI\)/g, Math.PI);
 			equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
 		}
+		if (a) console.log(x, equation);
 		if (/\([0-9.+\-/*]{1,}\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
@@ -3038,21 +2970,33 @@ function equ(equation, x) {
 				}
 			}
 		}
+		if (a) console.log(x, equation);
 		for (let i = 0; i < methods.length; i++)
 		{
 			equation = equation.replace(methods[i][0], methods[i][1]);
 		}
-		if (/\([0-9.()+\-/*]{1,}\)/.test(equation))
+		if (a) console.log(x, equation);
+		if (/\(([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\)/.test(equation))
 		{
-			equate = equation.match(/\([0-9.()+\-/*]{1,}\)/g);
+			equate = equation.match(/\(([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\)/g);
 			for (let i = 0; i < equate.length; i++)
 			{
-				if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
+				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+			}
+		}
+		if (a) console.log(x, equation);
+		if (/\[([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\]/.test(equation))
+		{
+			equate = equation.match(/\[([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\]/g);
+			for (let i = 0; i < equate.length; i++)
+			{
+				if (/\[/.test(equate[i]) && /\]/.test(equate[i]) && equate[i].match(/\[/g).length == equate[i].match(/\]/g).length)
 				{
-					equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+					equation = equation.replace(equate[i], '[' + eval(equate[i]) + ']');
 				}
 			}
 		}
+		if (a) console.log(x, equation);
 		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g.test(equation))
 		{
 			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g);
@@ -3061,15 +3005,12 @@ function equ(equation, x) {
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			}
 		}
-		if (/(?:[\+\-\*\/\(,]\(-?[0-9.]{1,}\)|\(-?[0-9.]{1,}\)[\+\-\*\/\),])/.test(equation))
-		{
-			equation = equation.replace(/([\+\-\*\/\(,])\((-?[0-9.]{1,})\)/, "$1$2");
-			equation = equation.replace(/\((-?[0-9.]{1,})\)([\+\-\*\/\),])/, "$1$2");
-		}
+		if (a) console.log(x, equation);
 		if (/(?<!\])\(-?[0-9.]{1,}\)/g.test(equation))
 		{
 			equation = equation.replace(/(?!\])\((-?[0-9.]{1,})\)/g, "$1");
 		}
+		if (a) console.log(x, equation);
 		if (equation != lastEquation)
 		{
 			i--;
