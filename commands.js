@@ -1,4 +1,4 @@
-var version = "2.40.2.3";
+var version = "2.40.2.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2201,8 +2201,8 @@ var commands = {
 						}
 						else
 						{
-							X = Y[1] > 160 ? 160 : Y[1];
-							result.push([x, ]);
+							X = Math.abs(Y[1]) > 160 ? 160 : Y[1];
+							result.push([x, X]);
 						}
 					}
 					if (result[0] === false) {
