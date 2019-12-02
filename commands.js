@@ -1,4 +1,4 @@
-var version = "2.40.2.1";
+var version = "2.40.2.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2236,7 +2236,6 @@ var commands = {
 							}
 						}
 					}
-					document.getElementById("text").value = display.join('\n');
 				}
 			}
 			let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
