@@ -1,4 +1,4 @@
-var version = "2.40.2.2";
+var version = "2.40.2.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2201,7 +2201,8 @@ var commands = {
 						}
 						else
 						{
-							result.push([x, Y[1]]);
+							X = Y[1] > 160 ? 160 : Y[1];
+							result.push([x, ]);
 						}
 					}
 					if (result[0] === false) {
@@ -2235,7 +2236,7 @@ var commands = {
 								ctx.stroke();
 							}
 						}
-					}
+					}x
 				}
 			}
 			let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
