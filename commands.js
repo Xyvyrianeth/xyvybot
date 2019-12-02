@@ -1,4 +1,4 @@
-var version = "2.40.2.5";
+var version = "2.40.2.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2118,7 +2118,7 @@ var commands = {
 			ctx.translate(150.5, 150.5);
 			e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
 			input = input.split('\n');
-			colors = ["#ff0000", "#ff7f00", "#fefe33", "#00ff00", "#008000", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
+			colors = ["#ff0000", "#ff7f00", "#fefe33", "#90EE90", "#008000", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
 			if (/;$/.test(input))
 			{
 				e.pop();
@@ -2147,7 +2147,7 @@ var commands = {
 							"red": "#ff0000",
 							"orange": "#ff7F00",
 							"yellow": "#fefe33",
-							"lightgreen": "00ff00",
+							"lightgreen": "90EE90",
 							"green": "#008000",
 							"bluegreen": "#0d98ba",
 							"blue": "#0000ff",
