@@ -1,4 +1,4 @@
-var version = "2.40.2.6";
+var version = "2.40.3.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2157,19 +2157,21 @@ var commands = {
 						}[ic[1].toLowerCase()];
 					}
 				}
-				let egl = y.match(/^y(?:=|(?:>=?|≥)|(?:<=?|≤))/);
+				let egl = y.match(/^y(?:=|>|>=|__>__|≥|<|<=|__<__|≤)/);
 				if (egl != null)
 				{
 					switch (egl[0])
 					{
-						default:    egl = 0; break;
-						case 'y=':  egl = 0; break;
-						case 'y≤':  egl = 1; break;
-						case 'y<=': egl = 1; break;
-						case 'y≥':  egl = 2; break;
-						case 'y>=': egl = 2; break;
-						case 'y<':  egl = 3; break;
-						case 'y>':  egl = 4; break;
+						default:       egl = 0; break;
+						case 'y=':     egl = 0; break;
+						case 'y≤':     egl = 1; break;
+						case 'y<=':    egl = 1; break;
+						case 'y__<__': egl = 1; break;
+						case 'y≥':     egl = 2; break;
+						case 'y>=':    egl = 2; break;
+						case 'y__>__': egl = 2; break;
+						case 'y<':     egl = 3; break;
+						case 'y>':     egl = 4; break;
 					}
 				}
 				else
@@ -2177,7 +2179,7 @@ var commands = {
 					egl = 0;
 				}
 
-				y = y.replace(/^y(=|(>=?|≥)|(<=?|≤))/, '');
+				y = y.replace(/^y(?:=|>|>=|__>__|≥|<|<=|__<__|≤)/, '');
 
 				// start graphing
 				let canEquate = true;
