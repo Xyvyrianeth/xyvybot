@@ -5,10 +5,9 @@
         <script src="../assets/misc/Color.js"></script>
         <style>
             textarea {
-                height: 160px;
-                width: 340px;
                 position: fixed;
-                bottom: 15px;
+                left: 10px;
+                resize: none;
             }
         </style>
     </head>
@@ -17,8 +16,8 @@
 		<canvas id="thing" width="301" height="301"></canvas>
 		<img id="background" src="../assets/misc/graph.png" style="position: fixed; height: 0px; width: 0px"></img>
         <button onclick="graph()" style="height: 300px; width: 100px; position: relative; bottom: 148px">Graph</button>
-        <textarea id="input" style="left: 10px"></textarea>
-        <textarea id="text" style="right: 10px" readonly></textarea>
+        <textarea id="input" rows="10" cols="50" style="bottom: 180px"></textarea>
+        <textarea id="text" rows="10" cols="50" style="bottom: 10px" readonly></textarea>
         <script>
             CONSOLE = false;
             canvas = document.getElementById("thing");
@@ -156,6 +155,7 @@
                             }
                         }
                     }
+                    if (CONSOLE) console.log(result);
                 }
 				document.getElementById("text").value = display.join('\n');
             }
@@ -278,7 +278,13 @@
                         "$1*M" ], // 5Math.sin(7)
 
                     [ /\)\(/g, // Parentheses sequence against parentheses sequence
-                        ")*(" ] // (5)(7)
+                        ")*(" ], // (5)(7)
+
+                    [ /--([0-9.])/, // Minus a negative number
+                        "+($1)" ], // 5--7
+
+                    [ /-\(-([0-9.])\)/, // Minus a negative number in parentheses
+                        "+($1)" ] // 5-(-7)
                 ];
                 let lastEquation;
                 for (let i = 0; i < 1; i++)

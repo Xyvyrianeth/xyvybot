@@ -2949,7 +2949,13 @@ function equ(equation, x, a) {
 			"$1*M" ], // 5Math.sin(7)
 
 		[ /\)\(/g, // Parentheses sequence against parentheses sequence
-			")*(" ] // (5)(7)
+			")*(" ], // (5)(7)
+
+		[ /--([0-9.])/, // Minus a negative number
+			"+($1)" ], // 5--7
+
+		[ /-\(-([0-9.])\)/, // Minus a negative number in parentheses
+			"+($1)" ] // 5-(-7)
 	];
 	let lastEquation;
 	for (let i = 0; i < 1; i++)
