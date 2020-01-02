@@ -1,4 +1,4 @@
-var version = "2.40.3.1";
+var version = "2.40.3.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1291,7 +1291,7 @@ var commands = {
 							.attachFile(new Discord.Attachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
 							.setImage("attachment://profile.png")
 							.setTimestamp()
-							.setColor(new Color().random());
+							.setColor(profile.color);
 						return sendChat({embed});
 					});
 				}).catch(err => sendChat("```" + err + "```"));
@@ -2193,7 +2193,7 @@ var commands = {
 				else
 				{
 					result = [];
-					for (let x = -150; x < 151; x += 0.5)
+					for (let x = -150; x <= 150; x += 0.5)
 					{
 						let Y = equ(y, x);
 						if (Y[0] == "err")
