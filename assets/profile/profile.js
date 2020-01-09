@@ -219,8 +219,8 @@ exports.drawRight = function(member, profile, avatar, background) {
 		ctx.drawImage(assets[4], width - (153 + i), 0);
 		ctx.drawImage(assets[5], width - (153 + i), 0);
 	}
-	ctx.drawImage(assets[2], width - (185 + h), 0);
-	ctx.drawImage(assets[3], width - (185 + h), 0);
+	ctx.drawImage(assets[2], width - (200 + h), 0);
+	ctx.drawImage(assets[3], width - (200 + h), 0);
 	for (let i = 0; i < 3; i++)
 		ctx.drawImage(texts[i], width - (47 + texts[i].width), (i == 1 ? 4 : 3) + (15 * i));
 	for (let i = 0; i < 7; i++) // UPDATE WITH NEW GAMES
