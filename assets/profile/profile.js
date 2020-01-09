@@ -144,7 +144,7 @@ exports.drawRight = function(member, profile, avatar, background) {
 		assets = [];
 	for (let img = 0; img < 7; img++)
 	{
-		let w = [154, 154, 33, 33, 1, 1, 134][img],
+		let w = [154, 154, 48, 48, 1, 1, 134][img],
 			h = [152, 152, 47, 47, 47, 47, 99][img], // UPDATE WITH NEW GAMES (First two and last one)
 			image = exports.Images.right[["border", "borderback", "corner", "cornerback", "extend", "extendback", "preText"][img]],
 			border = new Canvas.createCanvas(w, h),
