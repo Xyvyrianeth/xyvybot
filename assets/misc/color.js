@@ -7,26 +7,20 @@ function Color() {
 		{
 			hexa = hex.match(/([0-9a-f]{6}|[0-9a-f]{3})$/i)[0];
 			if (hexa.length == 6)
-			{
-				r = parseInt(hexa.substring(0, 2), 16);
-				g = parseInt(hexa.substring(2, 4), 16);
+				r = parseInt(hexa.substring(0, 2), 16),
+				g = parseInt(hexa.substring(2, 4), 16),
 				b = parseInt(hexa.substring(4, 6), 16);
-			}
 			if (hexa.length == 3)
-			{
-				r = parseInt(hexa[0] + hexa[0], 16);
-				g = parseInt(hexa[1] + hexa[1], 16);
+				r = parseInt(hexa[0] + hexa[0], 16),
+				g = parseInt(hexa[1] + hexa[1], 16),
 				b = parseInt(hexa[2] + hexa[2], 16);
-			}
 		}
 	}
 	else
 	if (arguments.length === 3)
-	{
-		r = arguments[0];
-		g = arguments[1];
+		r = arguments[0],
+		g = arguments[1],
 		b = arguments[2];
-	}
 	this.r = ~~r || 0;
 	this.g = ~~g || 0;
 	this.b = ~~b || 0;
@@ -35,9 +29,7 @@ function Color() {
 Color.prototype.random = function(color) {
 	let rgb = '#';
 	for (let i = 6; i--;)
-	{
 		rgb += (Math.random() * 16 | 0).toString(16);
-	}
 	return rgb;
 }
 
@@ -69,29 +61,19 @@ Color.prototype.getName = function() {
 	for (var n in Color.map)
 	{
 		if (!Color.map.hasOwnProperty(n))
-		{
 			continue;
-		}
 		var color = new Color(Color.map[n]);
 		if (color.r === this.r && color.g === this.g && color.b === this.b)
-		{
 			return n;
-		}
 		var dist = this.distance(color);
 		if (dist < low)
-		{
-			low = dist;
+			low = dist,
 			name = n;
-		}
 	}
 	if (!name)
-	{
 		name = this.toHexa();
-	}
 	else
-	{
 		name = "A shade of " + name;
-	}
 	return name;
 };
 
