@@ -1,4 +1,4 @@
-var version = "2.41.0.0";
+var version = "2.41.0.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2186,9 +2186,9 @@ Object.defineProperty(Array.prototype, 'shuffle', {
 
 Object.defineProperty(Math, 'sum', {
 	value: (n, a, b) => {
-		let n = Math.round(n),
-			a = Math.round(a),
-			c = 0;
+		n = Math.round(n),
+		a = Math.round(a),
+		c = 0;
 		for (let i = n; i <= a; i++)
 			c += b;
 		return c;
@@ -2196,9 +2196,9 @@ Object.defineProperty(Math, 'sum', {
 });
 Object.defineProperty(Math, 'prod', {
 	value: (n, a, b) => {
-		let n = Math.round(n),
-			a = Math.round(a),
-			c = 0;
+		n = Math.round(n),
+		a = Math.round(a),
+		c = 0;
 		for (let i = n; i <= a; i++)
 			c *= b;
 		return c;
