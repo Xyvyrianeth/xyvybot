@@ -1,4 +1,4 @@
-var version = "2.41.1.9";
+var version = "2.41.1.10";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2076,10 +2076,10 @@ var commands = {
 			{
 				let output = "undefined";
 				let print = function() {
-					for (let i = 0; i < arguments.length; i++)
+					for (let i of arguments)
 					{
-						if (output == "undefined") output = arguments[i];
-						else output += '\n' + arguments[i];
+						if (output == "undefined") output = i;
+						else output += '\n' + i;
 					}
 				}
 				let image = (canvas) => {
