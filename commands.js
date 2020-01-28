@@ -1,4 +1,4 @@
-var version = "2.41.1.5";
+var version = "2.41.1.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2084,8 +2084,8 @@ var commands = {
 				}
 				let image = (canvas) => {
 					attachment = new Discord.Attachment(canvas.toBuffer(), "image.png");
-					embed.attachFile();
-					embed.setImage();
+					embed.attachFile(attachment);
+					embed.setImage("attachment://image.png");
 				}
 				eval(toEval);
 				embed.setDescription("```md\n" + output + "```");
