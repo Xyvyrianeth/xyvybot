@@ -2079,6 +2079,7 @@ var commands = {
 					if (output == "undefined") output = a;
 					else output += '\n' + a;
 				}
+				eval(toEval);
 				embed.setDescription("```js\n" + output + "```");
 				sendChat({embed});
 			}
