@@ -1,4 +1,4 @@
-var version = "2.41.1.6";
+var version = "2.41.1.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2076,7 +2076,7 @@ var commands = {
 			{
 				let output = "undefined";
 				let print = () => {
-					for (let i in arguments)
+					for (let i of arguments)
 					{
 						if (output == "undefined") output = i;
 						else output += '\n' + i;
