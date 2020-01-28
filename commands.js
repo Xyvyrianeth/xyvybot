@@ -1,4 +1,4 @@
-var version = "2.41.1.4";
+var version = "2.41.1.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2075,9 +2075,17 @@ var commands = {
 			try
 			{
 				let output = "undefined";
-				let print = (a) => {
-					if (output == "undefined") output = a;
-					else output += '\n' + a;
+				let print = () => {
+					for (let i in arguments)
+					{
+						if (output == "undefined") output = i;
+						else output += '\n' + i;
+					}
+				}
+				let image = (canvas) => {
+					attachment = new Discord.Attachment(canvas.toBuffer(), "image.png");
+					embed.attachFile();
+					embed.setImage();
 				}
 				eval(toEval);
 				embed.setDescription("```md\n" + output + "```");
