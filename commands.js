@@ -1,4 +1,4 @@
-var version = "2.41.1.3";
+var version = "2.41.1.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2080,7 +2080,7 @@ var commands = {
 					else output += '\n' + a;
 				}
 				eval(toEval);
-				embed.setDescription("```js\n" + output + "```");
+				embed.setDescription("```md\n" + output + "```");
 				sendChat({embed});
 			}
 			catch (err)
