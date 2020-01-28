@@ -1,4 +1,4 @@
-var version = "2.41.1.10";
+var version = "2.41.1.11";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -90,16 +90,10 @@ command = (message) => {
 	let input = args.join(' ');
 	if (!cmd)
 		return;
-	let sendChat = (content, options) => {
-		if (options == undefined)
-			message.channel.send(content);
-		else
-			message.channel.send(content, options);
-	}
 
 	try
 	{
-		return commands[cmd](arg, args, input, message, sendChat);
+		return commands[cmd](arg, args, input, message, message.channel.send);
 	}
 	catch (error)
 	{
@@ -2077,10 +2071,8 @@ var commands = {
 				let output = "undefined";
 				let print = function() {
 					for (let i of arguments)
-					{
 						if (output == "undefined") output = i;
 						else output += '\n' + i;
-					}
 				}
 				let image = (canvas) => {
 					attachment = new Discord.Attachment(canvas.toBuffer(), "image.png");
