@@ -1,4 +1,4 @@
-var version = "2.41.0.5";
+var version = "2.41.1.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2072,13 +2072,13 @@ var commands = {
 				.setTitle("x!js")
 				.setColor(new Color().random())
 				.setTimestamp();
+			let output = "undefined";
 			let print = (a) => {
 				if (output == "undefined") output = a;
 				else output += '\n' + a;
 			}
 			try
 			{
-				let output = "undefined";
 				embed.setDescription("```js\n" + output + "```");
 				sendChat({embed});
 			}
