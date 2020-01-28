@@ -1,4 +1,4 @@
-var version = "2.41.0.4";
+var version = "2.41.0.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2067,14 +2067,19 @@ var commands = {
 			return;
 		if (input.startsWith("```js\n") && input.endsWith("```"))
 		{
-			let execute = input.substring(6, input.length - 3);
+			let toEval = input.substring(6, input.length - 3);
 			let embed = new Discord.RichEmbed()
 				.setTitle("x!js")
 				.setColor(new Color().random())
 				.setTimestamp();
+			let print = (a) => {
+				if (output == "undefined") output = a;
+				else output += '\n' + a;
+			}
 			try
 			{
-				embed.setDescription("```js\n" + JSON.stringify(eval(execute)) + "```");
+				let output = "undefined";
+				embed.setDescription("```js\n" + output + "```");
 				sendChat({embed});
 			}
 			catch (err)
