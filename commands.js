@@ -28,7 +28,7 @@ var timers = setInterval(function() {
 			if (row.time > 0)
 				db.query(`UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'`, (err) => {
 					if (err)
-						sqlError("Internal (var timers @ line 23 | db.query @ line 36)", err, `UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'` ); 
+						sqlError("Internal (var timers @ line 23 | db.query @ line 36)", err, `UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'` );
 				});
 			else
 				db.query(`DELETE FROM timers WHERE id = '${row.id}'`, (err) => {
@@ -453,7 +453,7 @@ var commands = {
 						"x!games `subcommand`\n" +
 						"\n" +
 						"`leaderboard` - View the players with the 10 highest Elos for every game or the players with the 10 highest combined Elos.\n\"x!games leaderboard `game`\"\nLeave `game` blank for general top 10 players." +
-						"`stats` - View either your stats or another player's stats." + 
+						"`stats` - View either your stats or another player's stats." +
 						"`info` - A detailed information about how the Elo system works and the entire ranking system in general." +
 						"`games` - A list of all the games that are a part of the ranking system and a few details about them.")
 					.setColor(new Color().random())
@@ -1220,7 +1220,7 @@ var commands = {
 		if (!input)
 		{
 			let helps =
-				[	"`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo` `papersoccer`\n__**Possible Future Releases**__:\n`gonnect`  ``  ``  ``\n__**Related Commands**__:\n`games`  `profile`",
+				[	"`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__**Possible Future Releases**__:\n`go`\n__**Related Commands**__:\n`games`  `profile`",
 					"`minesweeper`",
 					"`help`  `about`  `avatar`  `aliases`",
 					"`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`"];
@@ -1492,7 +1492,7 @@ var commands = {
 		}
 		else
 		{
-			
+
 		}
 	},
 
