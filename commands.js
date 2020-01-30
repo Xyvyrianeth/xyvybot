@@ -1,4 +1,4 @@
-var version = "2.41.1.15";
+var version = "2.41.1.16";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2054,11 +2054,10 @@ var commands = {
 				.setTimestamp();
 			try
 			{
-				let output = "undefined";
+				let output = "";
 				let print = function() {
 					for (let i of arguments)
-						if (output == "undefined") output = i;
-						else output += '\n' + i;
+						output += '\n' + i;
 				}
 				let image = (canvas) => {
 					attachment = new Discord.Attachment(canvas.toBuffer(), "image.png");
@@ -2066,7 +2065,7 @@ var commands = {
 					embed.setImage("attachment://image.png");
 				}
 				eval(toEval);
-				embed.setDescription("```md\n" + output + "```");
+				embed.setDescription("```md" + output + "```");
 				message.channel.send({embed});
 			}
 			catch (err)
