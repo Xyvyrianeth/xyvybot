@@ -1,4 +1,4 @@
-var version = "2.41.1.13";
+var version = "2.41.1.14";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -582,7 +582,7 @@ var commands = {
 			let Games = [].concat(gms.othello, gms.squares, gms.rokumoku, gms.ttt3d, gms.connect4, gms.ordo, gms.soccer);
 			if (args.length == 2)
 			{
-				if (/^[0-9]{1,}$/.test(args[1]) || /^!?<@[0-9]{1,}>$/.test(args[1]))
+				if (/^[0-9]{1,}$/.test(args[1]) || /^<@!?[0-9]{1,}>$/.test(args[1]))
 					id = args[1];
 				else
 				if (Games.includes(args[1]))
@@ -593,11 +593,11 @@ var commands = {
 			else
 			if (args.length == 3)
 			{
-				if ((/^[0-9]{1,}$/.test(args[1]) || /^!?<@[0-9]{1,}>$/.test(args[1])) && Games.includes(args[2]))
+				if ((/^[0-9]{1,}$/.test(args[1]) || /^<@!?[0-9]{1,}>$/.test(args[1])) && Games.includes(args[2]))
 					id = args[1],
 					gm = args[2];
 				else
-				if ((/^[0-9]{1,}$/.test(args[2]) || /^!?<@[0-9]{1,}>$/.test(args[2])) && Games.includes(args[1]))
+				if ((/^[0-9]{1,}$/.test(args[2]) || /^<@!?[0-9]{1,}>$/.test(args[2])) && Games.includes(args[1]))
 					id = args[2],
 					gm = args[1];
 				else
@@ -969,7 +969,7 @@ var commands = {
 	},
 
 	"profile": (cmd, args, input, message) => {
-		if (!input || /^!?<@[0-9]{1,}>$/.test(input) || /^[0-9]{1,}$/.test(input))
+		if (!input || /^<@!?[0-9]{1,}>$/.test(input) || /^[0-9]{1,}$/.test(input))
 		{
 			let member;
 			if (!input)
@@ -1304,7 +1304,7 @@ var commands = {
 	},
 
 	"avatar": (cmd, args, input, message) => {
-		if (!input || /^!?<@[0-9]{1,}>$/.test(input) || /^[0-9]{1,}$/.test(input))
+		if (!input || /^<@!?[0-9]{1,}>$/.test(input) || /^[0-9]{1,}$/.test(input))
 		{
 			let user;
 			if (!input)
@@ -1502,7 +1502,7 @@ var commands = {
 			return;
 		if (!input)
 			return message.channel.send("__**Proper Usage**__: \"x!kick `<@user>`\"");
-		if (!/^!?<@[0-9]{1,}>$/.test(args[0]) || !/^[0-9]{1,}$/.test(args[0]))
+		if (!/^<@!?[0-9]{1,}>$/.test(args[0]) || !/^[0-9]{1,}$/.test(args[0]))
 			return message.channel.send("Invalid user mention, try again.");
 		else
 			return message.channel.guild.members.get(args[0].match(/[0-9]{1,}/)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => message.channel.send("kicked user <@" + args[0].match(/[0-9]{1,}/)[0] + '>')).catch((err) => message.channel.send("Failed to kick user <@" + args[0].match(/[0-9]{1,}/)[0] + ">```\n" + err + "```"));
@@ -1514,7 +1514,7 @@ var commands = {
 			return;
 		if (!input)
 			return message.channel.send("**Proper Usage**: `x!ban <@user>`");
-		if (!/^!?<@[0-9]{1,}>$/.test(args[0]) || !/^[0-9]{1,}$/.test(args[0]))
+		if (!/^<@!?[0-9]{1,}>$/.test(args[0]) || !/^[0-9]{1,}$/.test(args[0]))
 			return message.channel.send("Invalid user mention, try again.");
 		else
 			return message.channel.guild.members.get(args[0].match(/[0-9]{1,}/)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => message.channel.send("baned user <@" + args[0].match(/[0-9]{1,}/)[0] + '>')).catch((err) => message.channel.send("Failed to ban user <@" + args[0].match(/[0-9]{1,}/)[0] + ">```\n" + err + "```"));
