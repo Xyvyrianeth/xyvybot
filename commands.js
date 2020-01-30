@@ -1,4 +1,4 @@
-var version = "2.41.1.16";
+var version = "2.41.1.17";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2045,7 +2045,7 @@ var commands = {
 	"js": (cmd, args, input, message) => {
 		if (!admins.includes(message.author.id))
 			return;
-		if (/^x!js[ \n]```js\n.{1,}```$/.test(message.content))
+		if (/^x!js( |\n)```js\n.{1,}\n?```$/.test(message.content))
 		{
 			let toEval = input.substring(6, input.length - 3);
 			let embed = new Discord.RichEmbed()
@@ -2057,7 +2057,7 @@ var commands = {
 				let output = "";
 				let print = function() {
 					for (let i of arguments)
-						output += '\n' + i;
+						output += i + '\n';
 				}
 				let image = (canvas) => {
 					attachment = new Discord.Attachment(canvas.toBuffer(), "image.png");
@@ -2065,7 +2065,7 @@ var commands = {
 					embed.setImage("attachment://image.png");
 				}
 				eval(toEval);
-				embed.setDescription("```md" + output + "```");
+				embed.setDescription("```md\n" + output + "```");
 				message.channel.send({embed});
 			}
 			catch (err)
@@ -2101,7 +2101,7 @@ var commands = {
 	"pg": (cmd, args, input, message) => {
 		if (!admins.includes(message.author.id))
 			return;
-		if (/^x!pg[ \n]```sql\n.{1,}```$/.test(message.content))
+		if (/^x!pg( |\n)```sql\n.{1,}\n?```$/.test(message.content))
 			return db.query(input.substring(7, input.length - 3), (err, res) => {
 				let embed = new Discord.RichEmbed()
 					.setTitle("x!pg")
