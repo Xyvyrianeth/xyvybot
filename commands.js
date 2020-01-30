@@ -1,4 +1,4 @@
-var version = "2.41.1.14";
+var version = "2.41.1.15";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -50,17 +50,15 @@ var games = {
 	soccer: require("/app/games/soccer.js")
 };
 
-botError = (message, err) => {
-	return client.channels.get("467902250128506880").send(
-		`\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
-		`Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
-		`\`\`\`User errored on:\`\`\`<@${message.author.id}>\n\n` +
-		`\`\`\`\n` +
-		`Message sent:\`\`\`\`\`\`\n` +
-		`${message.content.replace(/`/g, "\\\`")}\`\`\`\n` +
-		`\`\`\`\n` +
-		`${err.join("\n")}\`\`\``
-	)
+botError = (message, err) => { return client.channels.get("467902250128506880").send(
+	`\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
+	`Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
+	`\`\`\`User errored on:\`\`\`<@${message.author.id}>\n\n` +
+	`\`\`\`\n` +
+	`Message sent:\`\`\`\`\`\`\n` +
+	`${message.content.replace(/`/g, "\\\`")}\`\`\`\n` +
+	`\`\`\`\n` +
+	`${err.join("\n")}\`\`\``);
 }
 sqlError = (message, err, res) => {
 	message.channel.send("```\nWhoops! It appears there was some sort of error with the database! Not sure if it's my fault or not, but Xyvy will look into it!```");
@@ -78,8 +76,7 @@ sqlError = (message, err, res) => {
 		`Query:\`\`\`\`\`\`sql\n` +
 		`${query}\`\`\`\n` +
 		`\`\`\`\n` +
-		`${err}\`\`\``
-	);
+		`${err}\`\`\``);
 }
 
 command = (message) => {
@@ -132,7 +129,7 @@ other = (message) => {
 		}[game.game].test(message.content))
 		{
 			if (message.channel.type !== "dm")
-				setTimeout(() => { message.delete(); }, 5000);
+				setTimeout(() => message.delete(), 5000);
 			try
 			{
 				return games[game.game].takeTurn(message.channel.id, message.content);
@@ -2090,7 +2087,7 @@ var commands = {
 					if (/<anonymous>:[0-9]{1,}:[0-9]{1,}/.test(stack[i]))
 					{
 						let c = stack[i].match(/<anonymous>:[0-9]{1,}:[0-9]{1,}/)[0].split(':');
-						b = [execute.split('\n')[Number(c[1]) - 1], Number(c[2]) - 1];
+						b = [toEval.split('\n')[Number(c[1]) - 1], Number(c[2]) - 1];
 					}
 				}
 				if (!b)
