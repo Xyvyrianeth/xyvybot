@@ -1,4 +1,4 @@
-var version = "2.42.0.15";
+var version = "2.42.0.16";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1506,7 +1506,7 @@ var commands = {
 		{
 			let helps =
 				[	"`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__**Possible Future Releases**__:\n`go`\n__**Related Commands**__:\n`games`  `profile`",
-					"`minesweeper`",
+					"`minesweeper`  `iq`",
 					"`help`  `about`  `avatar`  `aliases`",
 					"`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`"];
 			if (message.channel.type == "dm")
@@ -1534,7 +1534,7 @@ var commands = {
 					.setTitle(input.toUpperCase())
 					.setDescription(
 						{	"games": "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__Related Commands__:\n`games`  `profile`\n__Possible Future Releases__:\n`ninemen`  `gonnect`",
-							"minigames": "`minesweeper`",
+							"minigames": "`minesweeper`  `iq`",
 							"utility": "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`" + (message.channel.type == "dm" ? "  `bugreport`  `request`" : "  `kick`  `ban`") + "",
 							"misc": "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`",
 							"nsfw": "`nsfw`\nThat's the only one. No need for multiple commands that do the same thing."}[input])
@@ -1571,6 +1571,7 @@ var commands = {
 						["x!ai", "Gives you a link to invite Xyvybot - AI to your server.", "x!ai"],
 						["x!botsbyxyvy", "Gives you a link to the site where you request a commission for a custom-made Discord bot by Xyvyrianeth.", "x!botsbyxyvy"],
 						["x!minesweeper `width` `height` `difficulty`", "A classic game of Minesweeper right here on Discord. Wouldn't be possible without the ||spoiler|| feature.", "x!minesweeper 10 15 20%"],
+						["x!iq", "Gives you a quick and easy logic puzzle that you have to answer as fast as you can!", "x!iq"],
 						["x!nsfw `tag`", "Get a naughty hentai image. This command can only be used in channels marked as NSFW or in direct messages.", "x!nsfw gif"]
 					][index];
 					return message.channel.send(
