@@ -1,4 +1,4 @@
-var version = "2.42.0.20";
+var version = "2.42.0.21";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1401,6 +1401,7 @@ var commands = {
 					else a.push(b);
 				}
 				a = a.shuffle();
+				b = false;
 				do {
 					b = (Math.random() * 26 + 10 | 0).toString(36).toUpperCase();
 					if (a.includes(b)) b = false;
@@ -2197,7 +2198,7 @@ var commands = {
 				let output = "";
 				let print = function() {
 					for (let i of arguments)
-						output += i + '\n';
+						output += '\n' + i;
 				}
 				let image = (canvas) => {
 					attachment = new Discord.Attachment(canvas.toBuffer(), "image.png");
