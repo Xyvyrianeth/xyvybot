@@ -1,4 +1,4 @@
-var version = "2.43.0.1";
+var version = "2.43.0.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -42,7 +42,7 @@ var timers = setInterval(function() {
 var games = {
 	games: require("/app/games/games.js").games,
 	minigames: require("/app/games/minigames.js").minigames,
-	hangmanWords: require("/app/games/hangmanWords.js").words,
+	hangmanWords: require("/app/games/hangmanWords.js").words.split('|'),
 	othello: require("/app/games/othello.js"),
 	squares: require("/app/games/squares.js"),
 	rokumoku: require("/app/games/rokumoku.js"),
