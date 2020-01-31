@@ -1401,7 +1401,6 @@ var commands = {
 					else a.push(b);
 				}
 				a = a.shuffle();
-				b = false;
 				do {
 					b = (Math.random() * 26 + 10 | 0).toString(36).toUpperCase();
 					if (a.includes(b)) b = false;
@@ -1409,7 +1408,7 @@ var commands = {
 				ans = b;
 				c = Math.random() * 18 | 0;
 				do {
-					d = Math.random * 18 | 0;
+					d = Math.random() * 18 | 0;
 				} while (Math.abs(c - d) < 5);
 				a.splice(c, 0, b);
 				a.splice(d, 0, b);
