@@ -1,4 +1,4 @@
-var version = "2.42.0.11";
+var version = "2.42.0.12";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1387,20 +1387,30 @@ var commands = {
 	},
 
 	"iq": (cmd, args, input, message) => {
-		let a, b, c, d, e, ans, equ;
+		let a, b, c, d, ans, equ;
 		let A = Math.random() * 4 | 0;
 		switch (A) {
 			case 0:
 				a = [];
-				for (let i = 0; i < 19; i++)
+				for (let i = 0; i < 18; i++)
 				{
 					b = (Math.random() * 26 + 10 | 0).toString(36).toUpperCase();
 					if (a.includes(b)) i--;
 					else a.push(b);
-					if (i == 0) a.push(b);
 				}
-				ans = a[0];
-				equ = a.shuffle().join('` `');
+				a = a.shuffle();
+				do {
+					b = (Math.random() * 26 + 10 | 0).toString(36).toUpperCase();
+					if (a.includes(b)) b = false;
+				} while (b == false);
+				ans = b;
+				c = Math.random() * 18 | 0;
+				do {
+					d = Math.random * 18 | 0;
+				} while (Math.abs(c - d) < 5);
+				a.splice(c, 0, b);
+				a.splice(d, 0, b);
+				equ = a.join('` `');
 				break;
 			case 1:
 				a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
