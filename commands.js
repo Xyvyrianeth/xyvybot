@@ -1,4 +1,4 @@
-var version = "2.42.0.0";
+var version = "2.42.0.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -159,6 +159,18 @@ other = (message) => {
 		}
 		if (["board", "showboard"].includes(message.content))
 			return message.channel.send(`It is <@${game.player}>'s turn.`, game.buffer);
+	}
+	if (games.minigames.filter((minigame) => minigame.channel == message.channel.id) && message.content == minigame.ans)
+	{
+		games.minigames.forEach((minigame, index) => {
+			if (minigame.channel == message.channel.id && message.content == minigame.ans)
+			{
+				minigame.embeds.win.fields[0].value = minigame.embeds.win.fields[0].value.replace("$WINNER$", `<@!${message.author.id}>`);
+				message.channel.send(minigame.embeds.win);
+				delete games.minigames[index];
+				games.minigames.splice(index, 1);
+			}
+		});
 	}
 }
 
@@ -1375,12 +1387,12 @@ var commands = {
 	},
 
 	"math": (cmd, args, input, message) => {
-		a = Math.random() * 4 | 0;
-		[b, c] = [
+		let a = Math.random() * 4 | 0;
+		let [b, c] = [
 			[Math.random() * 100 | 1, Math.random() * 200 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a],
 			[Math.random() * 100 | 1, Math.random() * 200 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a]	];
-		ans = [b + c, b - c, b * c, b][a];
-		equ = [b + ' + ' + c, b + ' - ' + c, b + ' × ' + c, (b * c) + ' ÷ ' + c][a];
+		let ans = [b + c, b - c, b * c, b][a];
+		let equ = [b + ' + ' + c, b + ' - ' + c, b + ' × ' + c, (b * c) + ' ÷ ' + c][a];
 
 		let embed = new Discord.RichEmbed()
 			.setColor(new Color().random())
@@ -1389,15 +1401,21 @@ var commands = {
 		let embed2 = new Discord.RichEmbed()
 			.setColor(new Color().random())
 			.setTitle("Quick Math")
+			.addField("Correct!", "$WINNER$ got it right!\nThe answer for " + equ + " is " + ans + "!");
+		let embed3 = new Discord.RichEmbed()
+			.setColor(new Color().random())
+			.setTitle("Quick Math")
 			.addField("Nobody got it in time!", "The correct answer for " + equ + " is " + ans + '!');
 
 		message.channel.send({embed});
 		games.minigames.push({
 			game: "math",
-			ans: ans,
-			timer: {
-				time: 30,
-				embed: embed2
+			ans: JSON.stringify(ans),
+			timer: 30,
+			channel: message.channel.id,
+			embeds: {
+				win: embed2,
+				lose: embed3
 			}
 		});
 	},

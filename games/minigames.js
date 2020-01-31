@@ -6,15 +6,12 @@ var backup = true;
 
 var timer = setInterval(function() {
     let minigames = exports.minigames;
-    minigames.forEach((game, index) => {
-        game.timer.time--;
-        if (game.timer.time == 0)
+    minigames.forEach((minigame, index) => {
+        minigame.timer--;
+        if (minigame.timer == 0)
         {
-            for (let ch in game.channels)
-            {
-                client.channels.get(ch).send(game.timer.embed);
-            }
-            delete games[index];
+            client.channels.get(minigame.channel).send(minigame.embeds.lose);
+            delete minigames[index];
             minigames.splice(index, 1);
         }
     });
