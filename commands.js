@@ -1,4 +1,4 @@
-var version = "2.42.0.7";
+var version = "2.42.0.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1422,7 +1422,6 @@ var commands = {
 					if (i == 4) ans = b;
 					else equ += ', ' + b;
 				}
-				equ += "\nDifficulty: " + ["Easy", "Easy", "Medium", "Hard"][a];
 				break;
 			case 3:
 				a = Math.random() * 4 | 0;
@@ -1446,10 +1445,13 @@ var commands = {
 			equ + ", ___",
 			equ + " = ___"
 		][A];
+		let diff = [
+			"", "", "\nDifficulty: **" ["Easy", "Easy", "Medium", "Hard"][a], ""
+		]
 		let end = [
 			que + "\nAnswer: **" + ans + "** appears twice!",
 			que + "\nAnswer: **" + ans + "** is missing!",
-			que + ", __" + ans + "__",
+			equ + ", __" + ans + "__",
 			equ + " = `" + ans + "`!"
 		][A];
 		let time = [30, 30, 60, 30][A];
@@ -1457,7 +1459,7 @@ var commands = {
 		let embed = new Discord.RichEmbed()
 			.setColor(new Color().random())
 			.setTitle("IQ")
-			.addField(type, equ + "\n\nYou have " + time + " seconds.");
+			.addField(type, que + diff + "\n\nYou have " + time + " seconds.");
 		let embed2 = new Discord.RichEmbed()
 			.setColor(new Color().random())
 			.setTitle("IQ")
