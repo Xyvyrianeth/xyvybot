@@ -163,7 +163,7 @@ other = (message) => {
 	if (games.minigames.filter((minigame) => minigame.channel == message.channel.id && message.content == minigame.ans.toLowerCase()))
 	{
 		games.minigames.forEach((minigame, index) => {
-			if (minigame.channel == message.channel.id && ((typeof minigame.ans == "number" && Number(message.content) == minigame.ans) || (typeof minigame.answer == "string" && message.content.toLowerCase() == minigame.ans.toLowerCase())))
+			if (minigame.channel == message.channel.id && message.content.toLowerCase() == minigame.ans.toLowerCase())
 			{
 				minigame.embeds.win.fields[0].value = minigame.embeds.win.fields[0].value.replace("$WINNER$", `<@!${message.author.id}>`);
 				message.channel.send(minigame.embeds.win);
@@ -1415,7 +1415,7 @@ var commands = {
 			case 1:
 				a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 				b = Math.random() * 10 | 0;
-				ans = a[b];
+				ans = JSON.stringify(a[b]);
 				a.splice(b, 1);
 				equ = a.shuffle().join('` `');
 				break;
@@ -1425,13 +1425,12 @@ var commands = {
 					[Math.random() * 20 | 1, Math.random() * 100 | 1, Math.random() * 5 | 1, Math.random() * 20 | 1][a],
 					[Math.random() * 15 + 5 | 1, Math.random() * 15 + 5 | 1, Math.random() * 5 + 1 | 1, Math.random() * 20 | 1][a]	];
 				d = a == 3 ? Math.random() * 5 | 1 : false;
-				ans = '';
 				equ = b;
 				for (let i = 0; i <= 4; i++)
 				{
 					if (d) c += d;
 					b = [b + c, b - c, b * c, b + c][a];
-					if (i == 4) ans = b;
+					if (i == 4) ans = JSON.stringify(b);
 					else equ += ', ' + b;
 				}
 				break;
@@ -1440,7 +1439,7 @@ var commands = {
 				[b, c] = [
 					[Math.random() * 100 | 1, Math.random() * 200 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a],
 					[Math.random() * 100 | 1, Math.random() * 200 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a]	];
-				ans = [b + c, b - c, b * c, b][a];
+				ans = JSON.stringify([b + c, b - c, b * c, b][a]);
 				equ = [b + ' + ' + c, b + ' - ' + c, b + ' × ' + c, (b * c) + ' ÷ ' + c][a];
 				break;
 
