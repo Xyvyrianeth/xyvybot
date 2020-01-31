@@ -1,4 +1,4 @@
-var version = "2.42.0.12";
+var version = "2.42.0.13";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -160,10 +160,10 @@ other = (message) => {
 		if (["board", "showboard"].includes(message.content))
 			return message.channel.send(`It is <@${game.player}>'s turn.`, game.buffer);
 	}
-	if (games.minigames.filter((minigame) => minigame.channel == message.channel.id && message.content == minigame.ans))
+	if (games.minigames.filter((minigame) => minigame.channel == message.channel.id && message.content == minigame.ans.toLowerCase()))
 	{
 		games.minigames.forEach((minigame, index) => {
-			if (minigame.channel == message.channel.id && message.content == minigame.ans)
+			if (minigame.channel == message.channel.id && message.content == minigame.ans.toLowerCase())
 			{
 				minigame.embeds.win.fields[0].value = minigame.embeds.win.fields[0].value.replace("$WINNER$", `<@!${message.author.id}>`);
 				message.channel.send(minigame.embeds.win);
@@ -1416,7 +1416,7 @@ var commands = {
 				a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 				b = Math.random() * 10 | 0;
 				ans = a[b];
-				a.splice(Math.random() * 10 | 0, 1);
+				a.splice(b, 1);
 				equ = a.shuffle().join('` `');
 				break;
 			case 2:
@@ -1458,7 +1458,7 @@ var commands = {
 			equ + " = ___"
 		][A];
 		let diff = [
-			"", "", "\nDifficulty: **" + ["Easy", "Easy", "Medium", "Hard"][a], ""
+			"", "", "\nDifficulty: **" + ["Easy", "Easy", "Medium", "Hard"][a] + "**", ""
 		][A];
 		let end = [
 			que + "\nAnswer: **" + ans + "** appears twice!",
@@ -1483,7 +1483,7 @@ var commands = {
 
 		message.channel.send({embed});
 		games.minigames.push({
-			ans: JSON.stringify(ans),
+			ans: ans,
 			timer: time,
 			channel: message.channel.id,
 			embeds: {
