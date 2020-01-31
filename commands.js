@@ -1,4 +1,4 @@
-var version = "2.42.0.8";
+var version = "2.42.0.9";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1447,7 +1447,7 @@ var commands = {
 		][A];
 		let diff = [
 			"", "", "\nDifficulty: **" ["Easy", "Easy", "Medium", "Hard"][a], ""
-		]
+		][A];
 		let end = [
 			que + "\nAnswer: **" + ans + "** appears twice!",
 			que + "\nAnswer: **" + ans + "** is missing!",
