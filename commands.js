@@ -1,4 +1,4 @@
-var version = "2.42.0.13";
+var version = "2.42.0.14";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1466,7 +1466,7 @@ var commands = {
 			equ + ", __" + ans + "__",
 			equ + " = `" + ans + "`!"
 		][A];
-		let time = [30, 30, 60, 30][A];
+		let time = [20, 10, 30 + (15 * a), 20 + (10 * a)][A];
 
 		let embed = new Discord.RichEmbed()
 			.setColor(new Color().random())
