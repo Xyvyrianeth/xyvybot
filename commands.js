@@ -1,4 +1,4 @@
-var version = "2.42.0.5";
+var version = "2.42.0.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1408,7 +1408,7 @@ var commands = {
 			case 2:
 				a = Math.random() * 4 | 0;
 				[b, c] = [
-					[Math.random() * 20 | 1, Math.random() * 100 | 1, Math.random() * 5 | 1, Math.random() * 20 | 1][a]
+					[Math.random() * 20 | 1, Math.random() * 100 | 1, Math.random() * 5 | 1, Math.random() * 20 | 1][a],
 					[Math.random() * 15 + 5 | 1, Math.random() * 15 + 5 | 1, Math.random() * 5 + 1 | 1, Math.random() * 20 | 1][a]	];
 				d = a == 3 ? Math.random() * 5 | 1 : false;
 				ans = '';
