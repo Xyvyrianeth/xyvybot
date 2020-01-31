@@ -1,4 +1,4 @@
-var version = "2.42.0.1";
+var version = "2.42.0.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -160,7 +160,7 @@ other = (message) => {
 		if (["board", "showboard"].includes(message.content))
 			return message.channel.send(`It is <@${game.player}>'s turn.`, game.buffer);
 	}
-	if (games.minigames.filter((minigame) => minigame.channel == message.channel.id) && message.content == minigame.ans)
+	if (games.minigames.filter((minigame) => minigame.channel == message.channel.id && message.content == minigame.ans))
 	{
 		games.minigames.forEach((minigame, index) => {
 			if (minigame.channel == message.channel.id && message.content == minigame.ans)
