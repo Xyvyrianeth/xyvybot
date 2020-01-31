@@ -1,4 +1,4 @@
-var version = "2.42.0.10";
+var version = "2.42.0.11";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1404,7 +1404,9 @@ var commands = {
 				break;
 			case 1:
 				a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
-				ans = a.splice(Math.random() * 10 | 0, 1);
+				b = Math.random() * 10 | 0;
+				ans = a[b];
+				a.splice(Math.random() * 10 | 0, 1);
 				equ = a.shuffle().join('` `');
 				break;
 			case 2:
