@@ -1,4 +1,4 @@
-var version = "2.42.0.18";
+var version = "2.42.0.19";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -160,12 +160,13 @@ other = (message) => {
 		if (["board", "showboard"].includes(message.content))
 			return message.channel.send(`It is <@${game.player}>'s turn.`, game.buffer);
 	}
-	if (games.minigames.some((minigame) => minigame.channel == message.channel.id && message.content.toLowerCase() == minigame.ans.toLowerCase()))
+	if (games.minigames.some((minigame) => minigame.channel == message.channel.id && message.content.toUpperCase() == minigame.ans))
 	{
 		games.minigames.forEach((minigame, index) => {
-			if (minigame.channel == message.channel.id && message.content.toLowerCase() == minigame.ans.toLowerCase())
+			if (minigame.channel == message.channel.id && message.content.toUpperCase() == minigame.ans)
 			{
 				minigame.embeds.win.fields[0].value = minigame.embeds.win.fields[0].value.replace("$WINNER$", `<@!${message.author.id}>`);
+				minigame.embeds.win.addBlankField("Completed in `" + (minigame.sTime - minigame.timer) + "` seconds");
 				message.channel.send(minigame.embeds.win);
 				delete games.minigames[index];
 				games.minigames.splice(index, 1);
@@ -1416,31 +1417,31 @@ var commands = {
 			case 1:
 				a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 				b = Math.random() * 10 | 0;
-				ans = JSON.stringify(a[b]);
+				ans = a[b];
 				a.splice(b, 1);
 				equ = a.shuffle().join('` `');
 				break;
 			case 2:
 				a = Math.random() * 4 | 0;
 				[b, c] = [
-					[Math.random() * 20 | 1, Math.random() * 100 | 1, Math.random() * 5 | 1, Math.random() * 20 | 1][a],
-					[Math.random() * 15 + 5 | 1, Math.random() * 15 + 5 | 1, Math.random() * 5 + 1 | 1, Math.random() * 20 | 1][a]	];
+					[Math.random() * 20 | 1, Math.random() * 100 | 1, Math.random() * 20 | 1, Math.random() * 20 | 1][a],
+					[Math.random() * 15 + 5 | 1, Math.random() * 15 + 5 | 1, Math.random() * 9 + 1 | 1, Math.random() * 20 | 1][a]	];
 				d = a == 3 ? Math.random() * 5 | 1 : false;
 				equ = b;
 				for (let i = 0; i <= 4; i++)
 				{
 					if (d) c += d;
 					b = [b + c, b - c, b * c, b + c][a];
-					if (i == 4) ans = JSON.stringify(b);
+					if (i == 4) ans = b;
 					else equ += ', ' + b;
 				}
 				break;
 			case 3:
 				a = Math.random() * 4 | 0;
 				[b, c] = [
-					[Math.random() * 100 | 1, Math.random() * 200 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a],
-					[Math.random() * 100 | 1, Math.random() * 200 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a]	];
-				ans = JSON.stringify([b + c, b - c, b * c, b][a]);
+					[Math.random() * 500 | 1, Math.random() * 500 | 1, Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a],
+					[Math.random() * 500 | 1, Math.random() * 500 | 1, Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a]	];
+				ans = [b + c, b - c, b * c, b][a];
 				equ = [b + ' + ' + c, b + ' - ' + c, b + ' × ' + c, (b * c) + ' ÷ ' + c][a];
 				break;
 
@@ -1458,7 +1459,7 @@ var commands = {
 			equ + " = ___"
 		][A];
 		let diff = [
-			"", "", "\nDifficulty: **" + ["Easy", "Easy", "Medium", "Hard"][a] + "**", ""
+			"", "", "\nDifficulty: **" + ["Easy", "Easy", "Medium", "Hard"][a] + "**", "\nDifficulty: **" + ["Easy", "Easy", "Medium", "Hard"][a] + "**"
 		][A];
 		let end = [
 			que + "\nAnswer: **" + ans + "** appears twice!",
@@ -1485,6 +1486,7 @@ var commands = {
 		games.minigames.push({
 			ans: ans,
 			timer: time,
+			sTime: time,
 			channel: message.channel.id,
 			embeds: {
 				win: embed2,
