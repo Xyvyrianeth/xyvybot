@@ -1,4 +1,4 @@
-var version = "2.42.0.14";
+var version = "2.42.0.15";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -163,7 +163,7 @@ other = (message) => {
 	if (games.minigames.filter((minigame) => minigame.channel == message.channel.id && message.content == minigame.ans.toLowerCase()))
 	{
 		games.minigames.forEach((minigame, index) => {
-			if (minigame.channel == message.channel.id && message.content == minigame.ans.toLowerCase())
+			if (minigame.channel == message.channel.id && ((typeof minigame.ans == "number" && Number(message.content) == minigame.ans) || (typeof minigame.answer == "string" && message.content.toLowerCase() == minigame.ans.toLowerCase())))
 			{
 				minigame.embeds.win.fields[0].value = minigame.embeds.win.fields[0].value.replace("$WINNER$", `<@!${message.author.id}>`);
 				message.channel.send(minigame.embeds.win);
