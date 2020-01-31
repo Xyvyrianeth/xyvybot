@@ -1,4 +1,4 @@
-var version = "2.42.0.16";
+var version = "2.42.0.17";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -116,7 +116,7 @@ other = (message) => {
 		images = Array.from(message.attachments).map(m => m[1].url);
 		client.guilds.get("399327996076621825").channels.get("537098266685472788").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
 	}
-	if (games.games.filter((game) => game.channels.hasOwnProperty(message.channel.id) && game.started).length == 1)
+	if (games.games.some((game) => game.channels.hasOwnProperty(message.channel.id) && game.started))
 	{
 		let game = games.games.filter((game) => game.channels.hasOwnProperty(message.channel.id))[0];
 		if (message.author.id == game.player && {
@@ -160,7 +160,7 @@ other = (message) => {
 		if (["board", "showboard"].includes(message.content))
 			return message.channel.send(`It is <@${game.player}>'s turn.`, game.buffer);
 	}
-	if (games.minigames.filter((minigame) => minigame.channel == message.channel.id && message.content == minigame.ans.toLowerCase()))
+	if (games.minigames.some((minigame) => minigame.channel == message.channel.id && message.content == minigame.ans.toLowerCase()))
 	{
 		games.minigames.forEach((minigame, index) => {
 			if (minigame.channel == message.channel.id && message.content.toLowerCase() == minigame.ans.toLowerCase())
@@ -1387,6 +1387,7 @@ var commands = {
 	},
 
 	"iq": (cmd, args, input, message) => {
+		if (games.minigames.some((minigame) => minigame.channel == message.channel.id)) return;
 		let a, b, c, d, ans, equ;
 		let A = Math.random() * 4 | 0;
 		switch (A) {
@@ -1465,7 +1466,7 @@ var commands = {
 			equ + ", __" + ans + "__",
 			equ + " = `" + ans + "`!"
 		][A];
-		let time = [20, 10, 30 + (15 * a), 20 + (10 * a)][A];
+		let time = [20, 10, 5 * a + 15, 10 * a + 10][A];
 
 		let embed = new Discord.RichEmbed()
 			.setColor(new Color().random())
