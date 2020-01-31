@@ -1,4 +1,4 @@
-var version = "2.41.1.18";
+var version = "2.41.1.19";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1845,7 +1845,7 @@ var commands = {
 			for (let y = h; y--;)
 				for (let x = w; x--;)
 					if (typeof a[y][x] == "number")
-						a[y][x] = "0⃣1⃣2⃣3⃣4⃣5⃣6⃣7⃣8⃣"[a[y][x]];
+						a[y][x] = "0⃣ 1⃣ 2⃣ 3⃣ 4⃣ 5⃣ 6⃣ 7⃣ 8⃣".split(' ')[a[y][x]];
 			for (let y = h; y--;)
 				a[y] = a[y].join("||||");
 			let embed = new Discord.RichEmbed()
