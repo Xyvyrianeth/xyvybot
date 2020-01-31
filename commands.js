@@ -1,4 +1,4 @@
-var version = "2.42.0.22";
+var version = "2.43.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -42,6 +42,7 @@ var timers = setInterval(function() {
 var games = {
 	games: require("/app/games/games.js").games,
 	minigames: require("/app/games/minigames.js").minigames,
+	hangmanWords: require("/app/games/hangmanWords.txt"),
 	othello: require("/app/games/othello.js"),
 	squares: require("/app/games/squares.js"),
 	rokumoku: require("/app/games/rokumoku.js"),
@@ -160,16 +161,61 @@ other = (message) => {
 		if (["board", "showboard"].includes(message.content))
 			return message.channel.send(`It is <@${game.player}>'s turn.`, game.buffer);
 	}
-	if (games.minigames.some((minigame) => minigame.channel == message.channel.id && message.content.toUpperCase() == minigame.ans))
+	if (games.minigames.some((minigame) => minigame.type == "iq" && minigame.channel == message.channel.id && message.content.toUpperCase() == minigame.ans))
 	{
 		games.minigames.forEach((minigame, index) => {
-			if (minigame.channel == message.channel.id && message.content.toUpperCase() == minigame.ans)
+			if (minigame.type == "iq" && minigame.channel == message.channel.id && message.content.toUpperCase() == minigame.ans)
 			{
 				minigame.embeds.win.fields[0].value = minigame.embeds.win.fields[0].value.replace("$WINNER$", `<@!${message.author.id}>`);
 				minigame.embeds.win.addField("\u200b", "Completed in `" + (minigame.sTime - minigame.timer) + "` seconds", true);
 				message.channel.send(minigame.embeds.win);
 				delete games.minigames[index];
 				games.minigames.splice(index, 1);
+			}
+		});
+	}
+	if (games.minigames.some((minigame) => minigame.type == "hangman" && minigame.channel == message.channel.id && (/^[a-z]$/i.test(message.content) || message.content.toUpperCase() == minigame.ans)))
+	{
+		let guess = message.content.toUpperCase();
+		games.minigames.forEach((minigame, index) => {
+			if (minigame.type == "hangman" && minigame.channel == message.channel.id)
+			{
+				let embed = new Discord.RichEmbed()
+					.setTitle("Hangman")
+					.setColor(new Color().random());
+				if (/^[a-z]$/i.test(message.content) && !minigame.guesses.includes(guess))
+				{
+					if (minigame.ans.includes(guess))
+					{
+						for (let letter in minigame.ans)
+							if (minigame.ans[letter] == guess && minigame.right[letter] == '   ')
+								minigame.right[letter] = minigame.ans[letter];
+						if (!minigame.right.includes('   '))
+						{
+							embed.addField(guess + " is in the word!", "<@!" + message.author.id + "> has finished the word! The word was\n**__" + minigame.ans.join("__ __") + "__**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+							delete games.minigames[index];
+							games.minigames.splice(index, 1);
+						}
+						else
+							embed.addField(guess + " is in the word!", "**__" + minigame.ans.join("__ __") + "__**\n\nGuesses: `" + minigame.guesses.join("` `") + "`\nWrong guesses" + (minigame.tries == 7 ? "" : " left") + ": `" + minigame.tries + '`');
+					}
+					else
+					{
+						minigame.guesses.push(guess);
+						minigame.tries--;
+						if (minigame.tries == 0)
+							embed.addField(guess + " is not in the word!", "You guessed incorrectly too many times!\nThe word was\n**__" + minigame.ans.join("__ __") + "__**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+						else
+							embed.addField(guess + " is not in the word!", "**__" + minigame.right.join('__ __') + "__**\n\nGuesses: `" + minigame.guesses.join("` `") + "`\nWrong guesses" + (minigame.tries == 7 ? "" : " left") + ": `" + minigame.tries + '`');
+					}
+				}
+				else if (guess == minigame.ans)
+				{
+					embed.addField("\u200b", "<@!" + message.author.id + "> has solved the word!\nThe word was\n**__" + minigame.ans.join("__ __") + "__**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+					delete games.minigames[index];
+					games.minigames.splice(index, 1);
+				}
+				message.channel.send(embed);
 			}
 		});
 	}
@@ -387,6 +433,7 @@ var aliases = {
 		/* @TODO add to x!help when all have been added*/
 		"minesweeper": ["minesweeper", "ms", "mines"],
 		"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],
+		"hangman": ["hangman", "hm"],
 
 		// Utility
 		"about": ["about", "info", "bot"],
@@ -430,6 +477,7 @@ var aliases = {
 		/* @TODO add to x!help when all have been added*/
 		"minesweeper": ["minesweeper", "ms", "mines"],
 		"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],
+		"hangman": ["hangman", "hm"],
 
 		// Utility
 		"about": ["about", "info", "bot"],
@@ -667,7 +715,7 @@ var commands = {
 					else
 						embed.setDescription("**User**: <@" + id + ">\n**__Game__: " + ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][Gm - 1] + "\n__Elo__: " + user["elo" + Gm] + "\n__W/L (%)__: " + user["win" + Gm] + "/" + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? Math.round(user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) * 10000) / 100 : "N/A") + "%)**");
 
-					return message.channel.send({embed});
+					return message.channel.send(embed);
 				});
 			}
 		}
@@ -974,7 +1022,7 @@ var commands = {
 					break;
 			}
 			embed.setColor(new Color().random());
-			message.author.send({embed});
+			message.author.send(embed);
 			if (message.channel.type != "dm")
 				return message.channel.send("The rules for " + GameName + " have been sent to you via DMs!");
 		}
@@ -1383,7 +1431,7 @@ var commands = {
 				.setDescription("||" + a.join("||\n||") + "||")
 				.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d)
 				.setColor(new Color().random());
-			message.channel.send({embed});
+			message.channel.send(embed);
 		}
 	},
 
@@ -1453,8 +1501,8 @@ var commands = {
 			"Solve this:"
 		][A];
 		let que = [
-			"[`" + equ + "`]",
-			"[`" + equ + "`]",
+			'`' + equ + '`',
+			'`' + equ + '`',
 			equ + ", ___",
 			equ + " = ___"
 		][A];
@@ -1482,8 +1530,9 @@ var commands = {
 			.setTitle("IQ")
 			.addField("Nobody got it in time!", end);
 
-		message.channel.send({embed});
+		message.channel.send(embed);
 		games.minigames.push({
+			type: "iq",
 			ans: ans,
 			timer: time,
 			sTime: time,
@@ -1495,11 +1544,31 @@ var commands = {
 		});
 	},
 
-	"shuffle": (cmd, args, input, message) => {
-		
+	"hangman": (cmd, args, input, message) => {
+		let word = games.hangmanWords.random(), ans = [], right = [];
+		for (let i = 0; i < word.length; i++)
+		{
+			ans.push(word[i]);
+			if (/^[a-z]$/i.test(word[i])) right.push("   ");
+			else right.push(word[i]);
+		}
+		let embed = new Discord.RichEmbed()
+			.setTitle("Hangman")
+			.setColor(new Color().random())
+			.addField("\u200b", "**__" + right.join("__ __") + "__**\n\nWrong guesses: `7`");
+		message.channel.send(embed);
+		games.minigames.push({
+			type: "hangman", 
+			ans: ans,
+			right: right,
+			guesses: [],
+			tries: 7,
+			timer: 180,
+			channel: message.channel.id
+		});
 	},
 
-	"hangman": (cmd, args, input, message) => {
+	"shuffle": (cmd, args, input, message) => {
 		
 	},
 
@@ -1509,7 +1578,7 @@ var commands = {
 		{
 			let helps =
 				[	"`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__**Possible Future Releases**__:\n`go`\n__**Related Commands**__:\n`games`  `profile`",
-					"`minesweeper`  `iq`",
+					"`minesweeper`  `iq`  `hangman`",
 					"`help`  `about`  `avatar`  `aliases`",
 					"`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`"];
 			if (message.channel.type == "dm")
@@ -1527,7 +1596,7 @@ var commands = {
 				.setFooter("Xyvybot version " + version);
 			if (message.channel.type == "dm" || message.channel.nsfw)
 				embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \"x!nsfw help\" for a list of all the lewds I'm capable of.`);
-			return message.channel.send({embed});
+			return message.channel.send(embed);
 		}
 		else
 		if (["games", "minigames", "utility", "miscellaneous", "misc", "nsfw"].includes(input))
@@ -1537,7 +1606,7 @@ var commands = {
 					.setTitle(input.toUpperCase())
 					.setDescription(
 						{	"games": "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__Related Commands__:\n`games`  `profile`\n__Possible Future Releases__:\n`ninemen`  `gonnect`",
-							"minigames": "`minesweeper`  `iq`",
+							"minigames": "`minesweeper`  `iq`  `hangman`",
 							"utility": "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`" + (message.channel.type == "dm" ? "  `bugreport`  `request`" : "  `kick`  `ban`") + "",
 							"misc": "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`",
 							"nsfw": "`nsfw`\nThat's the only one. No need for multiple commands that do the same thing."}[input])
@@ -1559,6 +1628,9 @@ var commands = {
 						["x!ordo `start|rules`", "Ordo is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!ordo start"],
 						["x!papersoccer `start|rules`", "Paper Soccer is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!papersoccer start"],
 						["x!profile `user`", "Show of your own profile card that shows your game stats and rank. It has a customizable background and overlay color.", "x!profile 357700219825160194"],
+						["x!minesweeper `width` `height` `difficulty`", "A classic game of Minesweeper right here on Discord. Wouldn't be possible without the ||spoiler|| feature.", "x!minesweeper 10 15 20%"],
+						["x!iq", "Gives you a quick and easy logic puzzle that you have to answer as fast as you can!", "x!iq"],
+						["x!hangman", "Lets you and your friends play a game of Hangman with each other!", "x!hangman"],
 						["x!about", "Just a bit of information about what this bot does and some history about it.", "x!about"],
 						["x!help `command`", "Generates a list of commands, or gives a short description about a specific command.", "x!help help"],
 						["x!avatar `user`", "Get a large version of a user's profile picture.", "x!avatar 357700219825160194"],
@@ -1573,8 +1645,6 @@ var commands = {
 						["x!graph `equation`", "Draws out an equation on a coordinate grid. You can graph up to 10 equations at once.", "x!graph 2x + 7"],
 						["x!ai", "Gives you a link to invite Xyvybot - AI to your server.", "x!ai"],
 						["x!botsbyxyvy", "Gives you a link to the site where you request a commission for a custom-made Discord bot by Xyvyrianeth.", "x!botsbyxyvy"],
-						["x!minesweeper `width` `height` `difficulty`", "A classic game of Minesweeper right here on Discord. Wouldn't be possible without the ||spoiler|| feature.", "x!minesweeper 10 15 20%"],
-						["x!iq", "Gives you a quick and easy logic puzzle that you have to answer as fast as you can!", "x!iq"],
 						["x!nsfw `tag`", "Get a naughty hentai image. This command can only be used in channels marked as NSFW or in direct messages.", "x!nsfw gif"]
 					][index];
 					return message.channel.send(
@@ -1704,7 +1774,7 @@ var commands = {
 							`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.${message.author.avatar.startsWith("a_") ? "gif" : "png"}?size=2048`)
 						.setDescription("**Command**: " + com + "\n\n" + desc)
 						.setColor(new Color().random());
-					client.guilds.get("399327996076621825").channels.get("467853697528102912").send({embed});
+					client.guilds.get("399327996076621825").channels.get("467853697528102912").send(embed);
 					message.channel.send("Bug report sent! Thanks for helping out!");
 					if (res.rows.length == 0)
 						return db.query(`INSERT INTO timers (id, bug, req) VALUES (${message.author.id}, 7200, 0);`);
@@ -1737,7 +1807,7 @@ var commands = {
 								`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.${message.author.avatar.startsWith("a_") ? "gif" : "png"}?size=2048`)
 							.setDescription("**Suggestion**:\n" + input)
 							.setColor(new Color().random());
-						client.guilds.get("399327996076621825").channels.get("468245442388295691").send({embed});
+						client.guilds.get("399327996076621825").channels.get("468245442388295691").send(embed);
 						message.channel.send("Request sent! Thanks for the suggestion!");
 						if (res.rows.length == 0)
 							return db.query(`INSERT INTO timers (id, bug, req) VALUES (${message.author.id}, 0, 7200);`);
@@ -2206,7 +2276,7 @@ var commands = {
 				}
 				eval(toEval);
 				embed.setDescription("```md" + output + "\n ```");
-				message.channel.send({embed});
+				message.channel.send(embed);
 			}
 			catch (err)
 			{
@@ -2233,7 +2303,7 @@ var commands = {
 					embed.setDescription("```" + err + "``````\n" + Err.join("\n") + "```");
 				else
 					embed.setDescription("```" + err + "``````" + b[0] + '\n' + ' '.repeat(b[1]) + "^```");
-				message.channel.send({embed});
+				message.channel.send(embed);
 			}
 		}
 	},
@@ -2250,10 +2320,10 @@ var commands = {
 				if (err)
 				{
 					embed.setDescription("```" + err + "```");
-					return message.channel.send({embed});
+					return message.channel.send(embed);
 				}
 				embed.setDescription(table(res));
-				return message.channel.send({embed});
+				return message.channel.send(embed);
 			});
 	},
 
