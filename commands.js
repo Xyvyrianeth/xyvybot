@@ -1,4 +1,4 @@
-var version = "2.42.0.4";
+var version = "2.42.0.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2251,12 +2251,12 @@ Canvas.loadImage("/app/assets/misc/graph.png").then(image => {
 });
 
 Object.defineProperty(Array.prototype, 'clone', {
-	value: () => {
+	value: function() {
 		return JSON.parse(JSON.stringify(this));
 	}
 });
 Object.defineProperty(Array.prototype, 'random', {
-	value: (a) => {
+	value: function(a) {
 		if (!a)
 			return this[Math.random() * this.length | 0];
 		else
