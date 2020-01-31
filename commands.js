@@ -1,4 +1,4 @@
-var version = "2.42.0.19";
+var version = "2.42.0.20";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -166,7 +166,7 @@ other = (message) => {
 			if (minigame.channel == message.channel.id && message.content.toUpperCase() == minigame.ans)
 			{
 				minigame.embeds.win.fields[0].value = minigame.embeds.win.fields[0].value.replace("$WINNER$", `<@!${message.author.id}>`);
-				minigame.embeds.win.addBlankField("Completed in `" + (minigame.sTime - minigame.timer) + "` seconds");
+				minigame.embeds.win.addField("\u200b", "Completed in `" + (minigame.sTime - minigame.timer) + "` seconds", true);
 				message.channel.send(minigame.embeds.win);
 				delete games.minigames[index];
 				games.minigames.splice(index, 1);
