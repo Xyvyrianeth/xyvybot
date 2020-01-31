@@ -1,4 +1,4 @@
-var version = "2.42.0.2";
+var version = "2.42.0.3;
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -385,7 +385,7 @@ var aliases = {
 		// Minigames
 		/* @TODO add to x!help when all have been added*/
 		"minesweeper": ["minesweeper", "ms", "mines"],
-		"math": ["math", "quickmath", "maff", "quickmaff", "maffs", "quickmaffs"],
+		"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],
 
 		// Utility
 		"about": ["about", "info", "bot"],
@@ -428,7 +428,7 @@ var aliases = {
 		// Minigames
 		/* @TODO add to x!help when all have been added*/
 		"minesweeper": ["minesweeper", "ms", "mines"],
-		"math": ["math", "quickmath", "maff", "quickmaff", "maffs", "quickmaffs"],
+		"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],
 
 		// Utility
 		"about": ["about", "info", "bot"],
@@ -1386,46 +1386,93 @@ var commands = {
 		}
 	},
 
-	"math": (cmd, args, input, message) => {
-		let a = Math.random() * 4 | 0;
-		let [b, c] = [
-			[Math.random() * 100 | 1, Math.random() * 200 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a],
-			[Math.random() * 100 | 1, Math.random() * 200 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a]	];
-		let ans = [b + c, b - c, b * c, b][a];
-		let equ = [b + ' + ' + c, b + ' - ' + c, b + ' × ' + c, (b * c) + ' ÷ ' + c][a];
+	"iq": (cmd, args, input, message) => {
+		let a, b, c, d, e, ans, equ;
+		switch (Math.random() * 4 | 0) {
+			case 0:
+				a = [];
+				for (let i = 0; i < 19; i++)
+				{
+					b = (Math.random() * 26 + 10 | 0).toString(36).toUpperCase();
+					if (a.includes(b)) i--;
+					else a.push(b);
+					if (i == 0) a.push(b);
+				}
+				ans = a[0];
+				equ = a.shuffle().join('` `');
+			case 1:
+				a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+				ans = a.splice(Math.random() * 10 | 0, 1);
+				equ = a.shuffle().join('` `');
+			case 2:
+				a = Math.random() * 4 | 0;
+				[b, c] = [
+					[Math.random() * 20 | 1, Math.random() * 100 | 1, Math.random() * 5 | 1, Math.random() * 20 | 1][a]
+					[Math.random() * 15 + 5 | 1, Math.random() * 15 + 5 | 1, Math.random() * 5 + 1 | 1, Math.random() * 20 | 1][a]	];
+				d = a == 3 ? Math.random() * 5 | 1 : false;
+				ans = '';
+				equ = b;
+				for (let i = 0; i <= 4; i++)
+				{
+					if (d) c += d;
+					b = [b + c, b - c, b * c, b + c][a];
+					if (i == 4) ans = b;
+					else equ += ', ' + b;
+				}
+				equ += "\nDifficulty: " + ["Easy", "Easy", "Medium", "Hard"][a];
+				break;
+			case 3:
+				a = Math.random() * 4 | 0;
+				[b, c] = [
+					[Math.random() * 100 | 1, Math.random() * 200 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a],
+					[Math.random() * 100 | 1, Math.random() * 200 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a]	];
+				ans = [b + c, b - c, b * c, b][a];
+				equ = [b + ' + ' + c, b + ' - ' + c, b + ' × ' + c, (b * c) + ' ÷ ' + c][a];
+
+		}
+		let type = [
+			"Which letter appears twice?",
+			"Which digit is missing?",
+			"What is the next number in the pattern?",
+			"Solve this:"
+		][a];
+		let que = [
+			"[`" + equ + "`]",
+			"[`" + equ + "`]",
+			equ + ", ___",
+			equ + " = ___"
+		]
+		let end = [
+			que + "\nAnswer: **" + ans + "** appears twice!",
+			que + "\nAnswer: **" + ans + "** is missing!",
+			que + ", __" + ans + "__",
+			equ + " = `" + ans + "`!"
+		][a];
+		let time = [30, 30, 60, 30][a];
 
 		let embed = new Discord.RichEmbed()
 			.setColor(new Color().random())
-			.setTitle("Quick Math")
-			.addField("Solve this:", equ + ' = ___');
+			.setTitle("IQ")
+			.addField(type, equ + "\n\nYou have " + time + " seconds.");
 		let embed2 = new Discord.RichEmbed()
 			.setColor(new Color().random())
-			.setTitle("Quick Math")
-			.addField("Correct!", "$WINNER$ got it right!\nThe answer for " + equ + " is " + ans + "!");
+			.setTitle("IQ")
+			.addField("Correct!", "$WINNER$ got it right!\n" + end);
 		let embed3 = new Discord.RichEmbed()
 			.setColor(new Color().random())
-			.setTitle("Quick Math")
-			.addField("Nobody got it in time!", "The correct answer for " + equ + " is " + ans + '!');
+			.setTitle("IQ")
+			.addField("Nobody got it in time!", end);
 
 		message.channel.send({embed});
 		games.minigames.push({
-			game: "math",
 			ans: JSON.stringify(ans),
-			timer: 30,
+			timer: time,
 			channel: message.channel.id,
 			embeds: {
 				win: embed2,
 				lose: embed3
 			}
 		});
-	},
-
-	"pattern": (cmd, args, input, message) => {
-		
-	},
-
-	"iq": (cmd, args, input, message) => {
-		
 	},
 
 	"shuffle": (cmd, args, input, message) => {
@@ -2137,7 +2184,7 @@ var commands = {
 					embed.setImage("attachment://image.png");
 				}
 				eval(toEval);
-				embed.setDescription("```md\n" + output + "```");
+				embed.setDescription("```md" + output + "\n ```");
 				message.channel.send({embed});
 			}
 			catch (err)
