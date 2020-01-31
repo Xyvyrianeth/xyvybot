@@ -1,4 +1,4 @@
-var version = "2.42.0.3;
+var version = "2.42.0.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1388,7 +1388,8 @@ var commands = {
 
 	"iq": (cmd, args, input, message) => {
 		let a, b, c, d, e, ans, equ;
-		switch (Math.random() * 4 | 0) {
+		let A = Math.random() * 4 | 0;
+		switch (A) {
 			case 0:
 				a = [];
 				for (let i = 0; i < 19; i++)
@@ -1435,20 +1436,20 @@ var commands = {
 			"Which digit is missing?",
 			"What is the next number in the pattern?",
 			"Solve this:"
-		][a];
+		][A];
 		let que = [
 			"[`" + equ + "`]",
 			"[`" + equ + "`]",
 			equ + ", ___",
 			equ + " = ___"
-		]
+		][A];
 		let end = [
 			que + "\nAnswer: **" + ans + "** appears twice!",
 			que + "\nAnswer: **" + ans + "** is missing!",
 			que + ", __" + ans + "__",
 			equ + " = `" + ans + "`!"
-		][a];
-		let time = [30, 30, 60, 30][a];
+		][A];
+		let time = [30, 30, 60, 30][A];
 
 		let embed = new Discord.RichEmbed()
 			.setColor(new Color().random())
