@@ -1,4 +1,4 @@
-var version = "2.43.0.12";
+var version = "2.43.0.13";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1627,7 +1627,7 @@ var commands = {
 		if (!input)
 		{
 			let helps =
-				[	"`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__**Possible Future Releases**__:\n`go`\n__**Related Commands**__:\n`games`  `profile`",
+				[	"__**Featured Games**__\n`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__**Possible Future Releases**__:\n`go`\n__**Related Commands**__:\n`games`  `profile`",
 					"`minesweeper`  `iq`  `hangman`",
 					"`help`  `about`  `avatar`  `aliases`",
 					"`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`"];
@@ -1647,21 +1647,6 @@ var commands = {
 			if (message.channel.type == "dm" || message.channel.nsfw)
 				embed.addField("NSFW", `NSFW command only available in DMs or NSFW-marked channels (if you're seeing this, then you can use it here). Say \"x!nsfw help\" for a list of all the lewds I'm capable of.`);
 			return message.channel.send(embed);
-		}
-		else
-		if (["games", "minigames", "utility", "miscellaneous", "misc", "nsfw"].includes(input))
-		{
-			return message.channel.send(
-				new Discord.RichEmbed()
-					.setTitle(input.toUpperCase())
-					.setDescription(
-						{	"games": "`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__Related Commands__:\n`games`  `profile`\n__Possible Future Releases__:\n`ninemen`  `gonnect`",
-							"minigames": "`minesweeper`  `iq`  `hangman`",
-							"utility": "`help`  `about`  `avatar`  `aliases`  `bugreport`  `request`" + (message.channel.type == "dm" ? "  `bugreport`  `request`" : "  `kick`  `ban`") + "",
-							"misc": "`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`",
-							"nsfw": "`nsfw`\nThat's the only one. No need for multiple commands that do the same thing."}[input])
-					.setColor(new Color().random())
-					.setFooter("Xyvybot version " + version));
 		}
 		else
 		{
