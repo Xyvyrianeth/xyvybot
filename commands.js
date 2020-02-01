@@ -1,4 +1,4 @@
-var version = "2.43.0.5";
+var version = "2.43.0.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -198,7 +198,7 @@ other = (message) => {
 							{
 								if (/^([A-Z]|   )$/.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
 								else display.push(minigame.right[i]);
-							}	
+							}
 							embed.addField(guess + " is in the word!", "<@!" + message.author.id + "> has finished the word!\nThe word was\n**" + display.join(' ') + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
@@ -246,7 +246,7 @@ other = (message) => {
 					{
 						if (/^([A-Z]|   )$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 						else display.push(minigame.ans[i]);
-					}	
+					}
 					embed.addField("\u200b", "<@!" + message.author.id + "> has solved the word!\nThe word was\n**" + display.join(' ') + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
 					delete games.minigames[index];
 					games.minigames.splice(index, 1);
@@ -1594,13 +1594,14 @@ var commands = {
 			if (/^([a-z]|   )$/.test(right[i])) display.push("__" + right[i] + "__");
 			else display.push(right[i]);
 		}
+		console.log(display);
 		let embed = new Discord.RichEmbed()
 			.setTitle("Hangman")
 			.setColor(new Color().random())
 			.addField("Guess letters and fill out the word!", "**" + display.join(' ') + "**\n\nWrong guesses: `7`");
 		message.channel.send(embed);
 		games.minigames.push({
-			type: "hangman", 
+			type: "hangman",
 			ans: ans,
 			right: right,
 			guesses: [],
@@ -1611,7 +1612,7 @@ var commands = {
 	},
 
 	"shuffle": (cmd, args, input, message) => {
-		
+
 	},
 
 	// Utility
