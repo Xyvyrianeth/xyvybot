@@ -1,4 +1,4 @@
-var version = "2.43.0.9";
+var version = "2.43.0.10";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -193,8 +193,8 @@ other = (message) => {
 								minigame.right[letter] = minigame.ans[letter];
 						if (!minigame.right.includes('\u200b \u200b \u200b \u200b'))
 						{
-							display = [];
-							for (let i = 0; i < minigame.ans; i++)
+							let display = [];
+							for (let i = 0; i < minigame.ans.length; i++)
 							{
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 								else display.push(minigame.ans[i]);
@@ -205,8 +205,8 @@ other = (message) => {
 						}
 						else
 						{
-							display = [];
-							for (let i = 0; i < minigame.right; i++)
+							let display = [];
+							for (let i = 0; i < minigame.right.length; i++)
 							{
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/i.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
 								else display.push(minigame.right[i]);
@@ -219,8 +219,8 @@ other = (message) => {
 						minigame.tries--;
 						if (minigame.tries == 0)
 						{
-							display = [];
-							for (let i = 0; i < minigame.ans; i++)
+							let display = [];
+							for (let i = 0; i < minigame.ans.length; i++)
 							{
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 								else display.push(minigame.ans[i]);
@@ -229,8 +229,8 @@ other = (message) => {
 						}
 						else
 						{
-							display = [];
-							for (let i = 0; i < minigame.right; i++)
+							let display = [];
+							for (let i = 0; i < minigame.right.length; i++)
 							{
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
 								else display.push(minigame.right[i]);
@@ -241,8 +241,8 @@ other = (message) => {
 				}
 				else
 				{
-					display = [];
-					for (let i = 0; i < minigame.ans; i++)
+					let display = [];
+					for (let i = 0; i < minigame.ans.length; i++)
 					{
 						if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 						else display.push(minigame.ans[i]);
