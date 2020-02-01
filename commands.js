@@ -1,4 +1,4 @@
-var version = "2.43.1.3";
+var version = "2.43.1.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1607,7 +1607,7 @@ var commands = {
 		let embed = new Discord.RichEmbed()
 			.setTitle("Hangman")
 			.setColor(new Color(176, 14, 223).toHexa())
-			.addField("Guess letters and fill out the word!", `**${display.join("\u200b \u200b")}**\n**Category: **${category}**\n\nWrong guesses: \`7\``);
+			.addField("Guess letters and fill out the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${category}**\n\nWrong guesses: \`7\``);
 		message.channel.send(embed);
 		games.minigames.push({
 			type: "hangman",
