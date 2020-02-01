@@ -1,4 +1,4 @@
-var version = "2.43.1.4";
+var version = "2.43.1.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -198,7 +198,7 @@ other = (message) => {
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 								else display.push(minigame.ans[i]);
 							}
-							embed.addField(guess + " is in the word!", `<@!${message.author.id}> has finished the word!\nThe word was\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
+							embed.addField(guess + " is in the word!", `<@!${message.author.id}> has finished the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
 							embed.setColor(new Color(46, 204, 113).toHexa());
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
@@ -227,7 +227,7 @@ other = (message) => {
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 								else display.push(minigame.ans[i]);
 							}
-							embed.addField(guess + " is not in the word!", `You guessed incorrectly too many times!\nThe word was\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
+							embed.addField(guess + " is not in the word!", `You guessed incorrectly too many times!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
 							embed.setColor(new Color(231, 76, 60).toHexa());
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
@@ -254,7 +254,7 @@ other = (message) => {
 						if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 						else display.push(minigame.ans[i]);
 					}
-					embed.addField("Solved!", `<@!${message.author.id}> has solved the word!\nThe word was\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
+					embed.addField("Solved!", `<@!${message.author.id}> has solved the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
 					embed.setColor(new Color(46, 204, 113).toHexa());
 					delete games.minigames[index];
 					games.minigames.splice(index, 1);
