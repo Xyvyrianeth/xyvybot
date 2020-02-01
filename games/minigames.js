@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const { client, config } = require("/app/Xyvy.js");
+var { Color } = require("/app/assets/misc/color.js");
 var db = require("/app/commands.js").db;
 
 var backup = true;
