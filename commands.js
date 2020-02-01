@@ -1,4 +1,4 @@
-var version = "2.43.1.1";
+var version = "2.43.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -198,7 +198,7 @@ other = (message) => {
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 								else display.push(minigame.ans[i]);
 							}
-							embed.addField(guess + " is in the word!", "<@!" + message.author.id + "> has finished the word!\nThe word was\n**" + display.join("\u200b \u200b") + "**\nCategory: **" + minigame.category + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+							embed.addField(guess + " is in the word!", `<@!${message.author.id}> has finished the word!\nThe word was\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
 							embed.setColor(new Color(46, 204, 113).toHexa());
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
@@ -211,7 +211,7 @@ other = (message) => {
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/i.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
 								else display.push(minigame.right[i]);
 							}
-							embed.addField(guess + " is in the word!", "**" + display.join("\u200b \u200b") + "**\nCategory: **" + minigame.category + "**\n\nGuesses: `" + minigame.guesses.join("` `") + "`\nWrong guesses" + (minigame.tries == 7 ? "" : " left") + ": `" + minigame.tries + '`');
+							embed.addField(guess + " is in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
 							embed.setColor(new Color(52, 152, 219).toHexa());
 							minigame.timer = 180;
 						}
@@ -227,7 +227,7 @@ other = (message) => {
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 								else display.push(minigame.ans[i]);
 							}
-							embed.addField(guess + " is not in the word!", "You guessed incorrectly too many times!\nThe word was\n**" + display.join("\u200b \u200b") + "**\nCategory: **" + minigame.category + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+							embed.addField(guess + " is not in the word!", `You guessed incorrectly too many times!\nThe word was\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
 							embed.setColor(new Color(231, 76, 60).toHexa());
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
@@ -239,8 +239,8 @@ other = (message) => {
 							{
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
 								else display.push(minigame.right[i]);
-							}
-							embed.addField(guess + " is not in the word!", "**" + display.join("\u200b \u200b") + "**\nCategory: **" + minigame.category + "**\n\nGuesses: `" + minigame.guesses.join("` `") + "`\nWrong guesses" + (minigame.tries == 7 ? "" : " left") + ": `" + minigame.tries + '`');
+							}Z
+							embed.addField(guess + " is not in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
 							embed.setColor(new Color(214, 196, 15).toHexa());
 							minigame.timer = 180;
 						}
@@ -254,7 +254,7 @@ other = (message) => {
 						if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 						else display.push(minigame.ans[i]);
 					}
-					embed.addField("Solved!", "<@!" + message.author.id + "> has solved the word!\nThe word was\n**" + display.join("\u200b \u200b") + "**\nCategory: **" + minigame.category + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+					embed.addField("Solved!", `<@!${message.author.id}> has solved the word!\nThe word was\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
 					embed.setColor(new Color(46, 204, 113).toHexa());
 					delete games.minigames[index];
 					games.minigames.splice(index, 1);
@@ -1600,17 +1600,18 @@ var commands = {
 		let display = [];
 		for (let i = 0; i < right.length; i++)
 		{
-			if (/^([a-z]|\u200b \u200b \u200b \u200b)$/.test(right[i])) display.push("__" + right[i] + "__");
+			if (/^([a-z]|\u200b \u200b \u200b \u200b)$/.test(right[i])) display.push(`__${right[i]}__`);
 			else display.push(right[i]);
 		}
+		category = ["Tabletop Games", "Movies", "TV Shows", "Video Games"][category];
 		let embed = new Discord.RichEmbed()
 			.setTitle("Hangman")
 			.setColor(new Color(176, 14, 223).toHexa())
-			.addField("Guess letters and fill out the word!", "**" + display.join("\u200b \u200b") + "**\n\nWrong guesses: `7`");
+			.addField("Guess letters and fill out the word!", `**${display.join("\u200b \u200b")}**\n**Category: **${category}**\n\nWrong guesses: \`7\``);
 		message.channel.send(embed);
 		games.minigames.push({
 			type: "hangman",
-			category: ["Tabletop Games", "Movies", "TV Shows", "Video Games"][category],
+			category: category,
 			ans: ans,
 			right: right,
 			guesses: [],
