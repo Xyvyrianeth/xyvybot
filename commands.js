@@ -1,4 +1,4 @@
-var version = "2.43.1.0";
+var version = "2.43.1.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -42,7 +42,7 @@ var timers = setInterval(function() {
 var games = {
 	games: require("/app/games/games.js").games,
 	minigames: require("/app/games/minigames.js").minigames,
-	hangmanWords: require("/app/games/hangmanWords.js").words.split('|'),
+	hangmanWords: require("/app/games/hangmanWords.js").words,
 	othello: require("/app/games/othello.js"),
 	squares: require("/app/games/squares.js"),
 	rokumoku: require("/app/games/rokumoku.js"),
@@ -1590,7 +1590,7 @@ var commands = {
 
 	"hangman": (cmd, args, input, message) => {
 		let category = Math.random() * 4 | 0;
-		let word = games.hangmanWords[category].random(), ans = [], right = [];
+		let word = games.hangmanWords[category].split('|').random(), ans = [], right = [];
 		for (let i = 0; i < word.length; i++)
 		{
 			ans.push(word[i]);
