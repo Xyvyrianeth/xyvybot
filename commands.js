@@ -1,4 +1,4 @@
-var version = "2.43.0.10";
+var version = "2.43.0.11";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -212,6 +212,7 @@ other = (message) => {
 								else display.push(minigame.right[i]);
 							}
 							embed.addField(guess + " is in the word!", "**" + display.join("\u200b \u200b") + "**\n\nGuesses: `" + minigame.guesses.join("` `") + "`\nWrong guesses" + (minigame.tries == 7 ? "" : " left") + ": `" + minigame.tries + '`');
+							minigame.timer = 180;
 						}
 					}
 					else
@@ -226,6 +227,8 @@ other = (message) => {
 								else display.push(minigame.ans[i]);
 							}
 							embed.addField(guess + " is not in the word!", "You guessed incorrectly too many times!\nThe word was\n**" + display.join("\u200b \u200b") + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+							delete games.minigames[index];
+							games.minigames.splice(index, 1);
 						}
 						else
 						{
@@ -236,6 +239,7 @@ other = (message) => {
 								else display.push(minigame.right[i]);
 							}
 							embed.addField(guess + " is not in the word!", "**" + display.join("\u200b \u200b") + "**\n\nGuesses: `" + minigame.guesses.join("` `") + "`\nWrong guesses" + (minigame.tries == 7 ? "" : " left") + ": `" + minigame.tries + '`');
+							minigame.timer = 180;
 						}
 					}
 				}
@@ -247,7 +251,7 @@ other = (message) => {
 						if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 						else display.push(minigame.ans[i]);
 					}
-					embed.addField("\u200b", "<@!" + message.author.id + "> has solved the word!\nThe word was\n**" + display.join("\u200b \u200b") + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+					embed.addField("Solved!", "<@!" + message.author.id + "> has solved the word!\nThe word was\n**" + display.join("\u200b \u200b") + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
 					delete games.minigames[index];
 					games.minigames.splice(index, 1);
 				}
