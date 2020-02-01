@@ -1,4 +1,4 @@
-var version = "2.43.1.2";
+var version = "2.43.1.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -239,7 +239,7 @@ other = (message) => {
 							{
 								if (/^([A-Z]|\u200b \u200b \u200b \u200b)$/.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
 								else display.push(minigame.right[i]);
-							}Z
+							}
 							embed.addField(guess + " is not in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
 							embed.setColor(new Color(214, 196, 15).toHexa());
 							minigame.timer = 180;
