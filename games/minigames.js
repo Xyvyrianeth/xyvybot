@@ -21,7 +21,7 @@ var timer = setInterval(function() {
 			{
 				let embed = new Discord.RichEmbed()
 					.setTitle("Hangman")
-					.setColor(new Color().random())
+					.setColor(new Color(231, 76, 60).toHexa())
 					.addField("Looks like nobody's playing anymore!", "The word was\n**__" + minigame.ans.join("__ __") + "__**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
 				client.channels.get(minigame.channel).send(embed);
 				delete minigames[index];

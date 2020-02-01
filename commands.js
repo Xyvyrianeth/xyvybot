@@ -1,4 +1,4 @@
-var version = "2.43.0.11";
+var version = "2.43.0.12";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -181,8 +181,7 @@ other = (message) => {
 			if (minigame.type == "hangman" && minigame.channel == message.channel.id)
 			{
 				let embed = new Discord.RichEmbed()
-					.setTitle("Hangman")
-					.setColor(new Color().random());
+					.setTitle("Hangman");
 				if (/^[a-z]$/i.test(message.content) && !minigame.guesses.includes(guess))
 				{
 					minigame.guesses.push(guess);
@@ -200,6 +199,7 @@ other = (message) => {
 								else display.push(minigame.ans[i]);
 							}
 							embed.addField(guess + " is in the word!", "<@!" + message.author.id + "> has finished the word!\nThe word was\n**" + display.join("\u200b \u200b") + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+							embed.setColor(new Color(46, 204, 113).toHexa());
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
 						}
@@ -212,6 +212,7 @@ other = (message) => {
 								else display.push(minigame.right[i]);
 							}
 							embed.addField(guess + " is in the word!", "**" + display.join("\u200b \u200b") + "**\n\nGuesses: `" + minigame.guesses.join("` `") + "`\nWrong guesses" + (minigame.tries == 7 ? "" : " left") + ": `" + minigame.tries + '`');
+							embed.setColor(new Color(52, 152, 219).toHexa());
 							minigame.timer = 180;
 						}
 					}
@@ -227,6 +228,7 @@ other = (message) => {
 								else display.push(minigame.ans[i]);
 							}
 							embed.addField(guess + " is not in the word!", "You guessed incorrectly too many times!\nThe word was\n**" + display.join("\u200b \u200b") + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+							embed.setColor(new Color(231, 76, 60).toHexa());
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
 						}
@@ -239,6 +241,7 @@ other = (message) => {
 								else display.push(minigame.right[i]);
 							}
 							embed.addField(guess + " is not in the word!", "**" + display.join("\u200b \u200b") + "**\n\nGuesses: `" + minigame.guesses.join("` `") + "`\nWrong guesses" + (minigame.tries == 7 ? "" : " left") + ": `" + minigame.tries + '`');
+							embed.setColor(new Color(214, 196, 15).toHexa());
 							minigame.timer = 180;
 						}
 					}
@@ -252,6 +255,7 @@ other = (message) => {
 						else display.push(minigame.ans[i]);
 					}
 					embed.addField("Solved!", "<@!" + message.author.id + "> has solved the word!\nThe word was\n**" + display.join("\u200b \u200b") + "**\n\nGuesses: `" + minigame.guesses.join("` `") + '`');
+					embed.setColor(new Color(46, 204, 113).toHexa());
 					delete games.minigames[index];
 					games.minigames.splice(index, 1);
 				}
@@ -1558,15 +1562,15 @@ var commands = {
 		let time = [20, 10, 5 * a + 15, 10 * a + 10][A];
 
 		let embed = new Discord.RichEmbed()
-			.setColor(new Color().random())
+			.setColor(new Color(176, 14, 223).toHexa())
 			.setTitle("IQ")
 			.addField(type, que + diff + "\n\nYou have " + time + " seconds.");
 		let embed2 = new Discord.RichEmbed()
-			.setColor(new Color().random())
+			.setColor(new Color(46, 204, 113).toHexa())
 			.setTitle("IQ")
 			.addField("Correct!", "$WINNER$ got it right!\n" + end);
 		let embed3 = new Discord.RichEmbed()
-			.setColor(new Color().random())
+			.setColor(new Color(231, 76, 60).toHexa())
 			.setTitle("IQ")
 			.addField("Nobody got it in time!", end);
 
@@ -1600,7 +1604,7 @@ var commands = {
 		}
 		let embed = new Discord.RichEmbed()
 			.setTitle("Hangman")
-			.setColor(new Color().random())
+			.setColor(new Color(176, 14, 223).toHexa())
 			.addField("Guess letters and fill out the word!", "**" + display.join("\u200b \u200b") + "**\n\nWrong guesses: `7`");
 		message.channel.send(embed);
 		games.minigames.push({
