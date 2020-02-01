@@ -1,4 +1,4 @@
-var version = "2.43.0.6";
+var version = "2.43.0.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -2298,7 +2298,7 @@ var commands = {
 	"js": (cmd, args, input, message) => {
 		if (!admins.includes(message.author.id))
 			return;
-		if (/^x!js( |\n)```js\n.{1,}\n?```$/.test(message.content))
+		if (message.content.startsWith("x!js ```js\n") && message.content.endsWith("```"))
 		{
 			let toEval = input.substring(6, input.length - 3);
 			let embed = new Discord.RichEmbed()
