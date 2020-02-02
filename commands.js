@@ -83,7 +83,7 @@ sqlError = (message, err, res) => {
 
 command = (message) => {
 	let a = message.channel.type == "dm" ? "user" : "guild";
-	let args = message.content.split(/ {1,}/);
+	let args = message.content.split(/ +/);
 	let arg = args.shift().replace("x!", '').toLowerCase();
 	let cmd = Object.keys(aliases[a]).filter(alias => aliases[a][alias].includes(arg))[0] || false;
 	let input = args.join(' ');
@@ -123,7 +123,7 @@ other = (message) => {
 		if (message.author.id == game.player && {
 			"squares": /^([a-j] ?(10|[1-9])|(10|[1-9]) ?[a-j])$/i,
 			"othello": /^([a-h][1-8]|[1-8][a-h])$/i,
-			"rokumoku": /^([a-s] ?1?[0-9]{1,}|1?[0-9]{1,} ?[a-s])$/i,
+			"rokumoku": /^([a-s] ?1?[0-9]+|1?[0-9]+ ?[a-s])$/i,
 			"connect4": /^[1-7]$/,
 			"ttt3d": /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,
 			"ordo": /^(([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])|([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9])$/i,
@@ -269,7 +269,7 @@ bot = (message) => {
 	if (message.attachments.array().length != 0)
 	{
 		let img = message.attachments.first().filename;
-		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)_[0-2]_[0-9]{1,}(|vs[0-9]{1,})\.png$/.test(img))
+		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)_[0-2]_[0-9]+(|vs[0-9]+)\.png$/.test(img))
 		{
 			let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
 			let end = img.match(/_[0-2]_/)[0].substring(1, 2);
@@ -407,7 +407,7 @@ bot = (message) => {
 	{
 		let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
 		if (
-			/<@[0-9]{1,}> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo|Paper Soccer)!/.test(message.content) ||
+			/<@[0-9]+> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo|Paper Soccer)!/.test(message.content) ||
 			message.content.startsWith("Illegal move:") ||
 			message.content == "This is a singleton move, please use the singleton move format!"
 		)
@@ -693,7 +693,7 @@ var commands = {
 			let Games = [].concat(gms.othello, gms.squares, gms.rokumoku, gms.ttt3d, gms.connect4, gms.ordo, gms.soccer);
 			if (args.length == 2)
 			{
-				if (/^[0-9]{1,}$/.test(args[1]) || /^<@!?[0-9]{1,}>$/.test(args[1]))
+				if (/^[0-9]+$/.test(args[1]) || /^<@!?[0-9]+>$/.test(args[1]))
 					id = args[1];
 				else
 				if (Games.includes(args[1]))
@@ -704,11 +704,11 @@ var commands = {
 			else
 			if (args.length == 3)
 			{
-				if ((/^[0-9]{1,}$/.test(args[1]) || /^<@!?[0-9]{1,}>$/.test(args[1])) && Games.includes(args[2]))
+				if ((/^[0-9]+$/.test(args[1]) || /^<@!?[0-9]+>$/.test(args[1])) && Games.includes(args[2]))
 					id = args[1],
 					gm = args[2];
 				else
-				if ((/^[0-9]{1,}$/.test(args[2]) || /^<@!?[0-9]{1,}>$/.test(args[2])) && Games.includes(args[1]))
+				if ((/^[0-9]+$/.test(args[2]) || /^<@!?[0-9]+>$/.test(args[2])) && Games.includes(args[1]))
 					id = args[2],
 					gm = args[1];
 				else
@@ -1073,21 +1073,21 @@ var commands = {
 		if (["tourney", "tournament"].includes(args[0]))
 			if (message.channel.guild.members.get(message.author.id).roles.some(x => x.id == "597901572843896841"))
 			{
-				let player1 = args[1].match(/[0-9]{1,}/)[0],
-					player2 = args[2].match(/[0-9]{1,}/)[0];
+				let player1 = args[1].match(/[0-9]+/)[0],
+					player2 = args[2].match(/[0-9]+/)[0];
 				games[gameName].newTourney(message.channel.id, player1, player2);
 			}
 	},
 
 	"profile": (cmd, args, input, message) => {
-		if (!input || /^<@!?[0-9]{1,}>$/.test(input) || /^[0-9]{1,}$/.test(input))
+		if (!input || /^<@!?[0-9]+>$/.test(input) || /^[0-9]+$/.test(input))
 		{
 			let member;
 			if (!input)
 				member = message.channel.guild.members.get(message.author.id);
 			else
 			if (message.channel.type !== "dm")
-				member = message.channel.guild.members.get(input.match(/[0-9]{1,}/)[0]);
+				member = message.channel.guild.members.get(input.match(/[0-9]+/)[0]);
 			else
 				return message.channel.send("Cannot display other users' profiles in DMs, yet, sorry!");
 
@@ -1379,14 +1379,14 @@ var commands = {
 		{
 			h = !input || args.length == 1 || args.length > 3 ?
 					10 :
-				!/^[1-9][0-9]{0,}$/.test(args[1]) ?
+				!/^[1-9][0-9]*$/.test(args[1]) ?
 					10 :
 				Number(args[1]) > 20 ?
 					20 :
 				Number(args[1]);
 			w = !input || args.length == 1 || args.length > 3 ?
 					10 :
-				!/^[1-9][0-9]{0,}$/.test(args[0]) ?
+				!/^[1-9][0-9]*$/.test(args[0]) ?
 					10 :
 				Number(args[0]) * h > 198 ?
 					Math.floor(198 / h) > 16 ?
@@ -1405,7 +1405,7 @@ var commands = {
 					10 :
 				args.length == 2 ?
 					Math.round(wh * 0.1) :
-				/^[1-9][0-9]{0,}%?$/.test(D) ?
+				/^[1-9][0-9]*%?$/.test(D) ?
 					/%/.test(D) ?
 						Number(D.substring(0, D.length - 1)) > 100 ?
 							wh :
@@ -1702,13 +1702,13 @@ var commands = {
 	},
 
 	"avatar": (cmd, args, input, message) => {
-		if (!input || /^<@!?[0-9]{1,}>$/.test(input) || /^[0-9]{1,}$/.test(input))
+		if (!input || /^<@!?[0-9]+>$/.test(input) || /^[0-9]+$/.test(input))
 		{
 			let user;
 			if (!input)
 				user = client.users.get(message.author.id);
 			else
-				user = client.users.get(input.match(/[0-9]{1,}/)[0]);
+				user = client.users.get(input.match(/[0-9]+/)[0]);
 
 			if (user == null)
 				return message.channel.send("User not found.");
@@ -1900,10 +1900,10 @@ var commands = {
 			return;
 		if (!input)
 			return message.channel.send("__**Proper Usage**__: \"x!kick `<@user>`\"");
-		if (!/^<@!?[0-9]{1,}>$/.test(args[0]) || !/^[0-9]{1,}$/.test(args[0]))
+		if (!/^<@!?[0-9]+>$/.test(args[0]) || !/^[0-9]+$/.test(args[0]))
 			return message.channel.send("Invalid user mention, try again.");
 		else
-			return message.channel.guild.members.get(args[0].match(/[0-9]{1,}/)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => message.channel.send("kicked user <@" + args[0].match(/[0-9]{1,}/)[0] + '>')).catch((err) => message.channel.send("Failed to kick user <@" + args[0].match(/[0-9]{1,}/)[0] + ">```\n" + err + "```"));
+			return message.channel.guild.members.get(args[0].match(/[0-9]+/)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => message.channel.send("kicked user <@" + args[0].match(/[0-9]+/)[0] + '>')).catch((err) => message.channel.send("Failed to kick user <@" + args[0].match(/[0-9]+/)[0] + ">```\n" + err + "```"));
 	},
 
 	"ban": (cmd, args, input, message) => {
@@ -1912,10 +1912,10 @@ var commands = {
 			return;
 		if (!input)
 			return message.channel.send("**Proper Usage**: `x!ban <@user>`");
-		if (!/^<@!?[0-9]{1,}>$/.test(args[0]) || !/^[0-9]{1,}$/.test(args[0]))
+		if (!/^<@!?[0-9]+>$/.test(args[0]) || !/^[0-9]+$/.test(args[0]))
 			return message.channel.send("Invalid user mention, try again.");
 		else
-			return message.channel.guild.members.get(args[0].match(/[0-9]{1,}/)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => message.channel.send("baned user <@" + args[0].match(/[0-9]{1,}/)[0] + '>')).catch((err) => message.channel.send("Failed to ban user <@" + args[0].match(/[0-9]{1,}/)[0] + ">```\n" + err + "```"));
+			return message.channel.guild.members.get(args[0].match(/[0-9]+/)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => message.channel.send("baned user <@" + args[0].match(/[0-9]+/)[0] + '>')).catch((err) => message.channel.send("Failed to ban user <@" + args[0].match(/[0-9]+/)[0] + ">```\n" + err + "```"));
 	},
 
 	// Misc
@@ -2332,9 +2332,9 @@ var commands = {
 				for (let i = 1; i < a; i++)
 				{
 					Err.push(stack[i]);
-					if (/<anonymous>:[0-9]{1,}:[0-9]{1,}/.test(stack[i]))
+					if (/<anonymous>:[0-9]+:[0-9]+/.test(stack[i]))
 					{
-						let c = stack[i].match(/<anonymous>:[0-9]{1,}:[0-9]{1,}/)[0].split(':');
+						let c = stack[i].match(/<anonymous>:[0-9]+:[0-9]+/)[0].split(':');
 						b = [toEval.split('\n')[Number(c[1]) - 1], Number(c[2]) - 1];
 					}
 				}
@@ -2350,7 +2350,7 @@ var commands = {
 	"pg": (cmd, args, input, message) => {
 		if (!admins.includes(message.author.id))
 			return;
-		if (/^x!pg( |\n)```sql\n.{1,}\n?```$/.test(message.content))
+		if (/^x!pg( |\n)```sql\n.+\n?```$/.test(message.content))
 			return db.query(input.substring(7, input.length - 3), (err, res) => {
 				let embed = new Discord.RichEmbed()
 					.setTitle("x!pg")
@@ -2479,43 +2479,43 @@ equ = (equation, x, a) => {
 	for (let i = 0; i < terms.length; i++)
 		equation = equation.replace(terms[i][0], terms[i][1]);
 	let methods = [
-		[ /\\(sin|cos|tan|log)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
+		[ /\\(sin|cos|tan|log)(-?[0-9.]+|\(-?[0-9.]+\))/g, // Sin, Cos, Tan, or Log of a number (went ahead and fit Log into here because it uses similar syntax)
 			"Math.$1($2)" ], // \sin(5)
 
-		[ /\\a(sin|cos|tan)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Asin, Acos, or Atan of a number
+		[ /\\a(sin|cos|tan)(-?[0-9.]+|\(-?[0-9.]+\))/g, // Asin, Acos, or Atan of a number
 			"Math.a$1($2)" ], // \asin(5)
 
-		[ /\\(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Sinh, Cosh, or Tanh of a number
+		[ /\\(sin|cos|tan)h(-?[0-9.]+|\(-?[0-9.]+\))/g, // Sinh, Cosh, or Tanh of a number
 			"Math.$1h($2)" ], // \sinh(5)
 
-		[ /\\a(sin|cos|tan)h(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Asinh, Acosh, or Atanh of a number
+		[ /\\a(sin|cos|tan)h(-?[0-9.]+|\(-?[0-9.]+\))/g, // Asinh, Acosh, or Atanh of a number
 			"Math.a$1h($2)" ], // \asinh(5)
 
-		[ /(?:\\(?:sq|)rt|√)(-?[0-9\.]{1,}|\(-?[0-9.]{1,}\))/g, // Root of a number, if the radicand is a real number and the radical is 2
+		[ /(?:\\(?:sq|)rt|√)(-?[0-9\.]+|\(-?[0-9.]+\))/g, // Root of a number, if the radicand is a real number and the radical is 2
 			"Math.sqrt($1)" ], // \sqrt(5)
 
-		[ /(?:\\rt|√)\[(\(-?[0-9]{1,}\)|-?[0-9]{1,})\](\([0-9.]{1,}\)|[0-9.]{1,})/g, // If the radicand is positive
+		[ /(?:\\rt|√)\[(\(-?[0-9]+\)|-?[0-9]+)\](\([0-9.]+\)|[0-9.]+)/g, // If the radicand is positive
 			"Math.pow($2,(1/$1))" ], // \rt[2](5)
 
-		[ /(?:\\rt|√)\[(\(\-?[0-9]{0,}[13579]{1}\)|\-?[0-9]{0,}[13579]{1})\](?:\(-([0-9.]{1,})\)|-([0-9.]{1,}))/g, // If the radicand is negative and the radical is odd
+		[ /(?:\\rt|√)\[(\(\-?[0-9]*[13579]{1}\)|\-?[0-9]*[13579]{1})\](?:\(-([0-9.]+)\)|-([0-9.]+))/g, // If the radicand is negative and the radical is odd
 			"-Math.pow($2$3,(1/$1))" ], // \rt[3](-5)
 
-		[ /(?:\\rt|√)\[(\(-?[0-9]{1,}\.[0-9]{1,}\)|-?[0-9]{1,}\.[0-9]{1,})\](\(-?[0-9.]{1,}\)|-?[0-9.]{1,})/g, // If the radical is not an integer
+		[ /(?:\\rt|√)\[(\(-?[0-9]+\.[0-9]+\)|-?[0-9]+\.[0-9]+)\](\(-?[0-9.]+\)|-?[0-9.]+)/g, // If the radical is not an integer
 			"Math.pow(Math.pow($2,Math.fraction($1,1)),(1/Math.fraction($1,0)))" ], // \rt[1.5](-5)
 
-		[ /(?:\\rt|√)\[(?:\(-?[0-9]{0,}[02468]{1}\)|-?[0-9]{0,}[02468]{1})\](?:\(-[0-9.]{1,}\)|-[0-9.]{1,})/g, // If the radicand is negative and the radical is even
+		[ /(?:\\rt|√)\[(?:\(-?[0-9]*[02468]{1}\)|-?[0-9]*[02468]{1})\](?:\(-[0-9.]+\)|-[0-9.]+)/g, // If the radicand is negative and the radical is even
 			"NaN" ], // \rt[2](-5)
 
-		[ /(\(-?[0-9.]{1,}\)|(?![0-9)]-)[0-9.]{1,})(?!sin|cos|tan)\^(?!-1)(\((-?)[0-9.]{1,}\)|-?[0-9.]{1,})/g, // A number number to the power of another number
+		[ /(\(-?[0-9.]+\)|(?![0-9)]-)[0-9.]+)(?!sin|cos|tan)\^(?!-1)(\((-?)[0-9.]+\)|-?[0-9.]+)/g, // A number number to the power of another number
 			"Math.pow($1,$2)" ], // 5^7
 
-		[ /(?:\\sum|∑)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(\-?[0-9.]{1,}\))/g, // Summation function
+		[ /(?:\\sum|∑)\[n=([0-9]+)\]\(([0-9]+)\)(-?[0-9.]+|\(\-?[0-9.]+\))/g, // Summation function
 			"Math.sum($1, $2, $3)" ], // \sum[n=0](5)5
 
-		[ /(?:\\prod|∏)\[n=([0-9]{1,})\]\(([0-9]{1,})\)(-?[0-9.]{1,}|\(-?[0-9.]{1,}\))/g, // Product function
+		[ /(?:\\prod|∏)\[n=([0-9]+)\]\(([0-9]+)\)(-?[0-9.]+|\(-?[0-9.]+\))/g, // Product function
 			"Math.prod($1, $2, $3)" ], // \prod[n=0](5)5
 
-		[ /\|(-?[0-9.+\-/*()]{1,})\|/g, // The absolute value of a number
+		[ /\|(-?[0-9.+\-/*()]+)\|/g, // The absolute value of a number
 			"Math.abs($1)" ], // |-5|
 
 		[ /([0-9.])\(/g, // A number against a parentheses sequence
@@ -2544,9 +2544,9 @@ equ = (equation, x, a) => {
 			equation = equation.replace(/\(Math.PI\)/g, Math.PI),
 			equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
 		if (a) console.log(x, equation);
-		if (/\([0-9.+\-/*]{1,}\)/.test(equation))
+		if (/\([0-9.+\-/*]+\)/.test(equation))
 		{
-			equate = equation.match(/\([0-9.+\-/*]{1,}\)/g);
+			equate = equation.match(/\([0-9.+\-/*]+\)/g);
 			for (let i = 0; i < equate.length; i++)
 				if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
 					equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
@@ -2555,30 +2555,30 @@ equ = (equation, x, a) => {
 		for (let i = 0; i < methods.length; i++)
 			equation = equation.replace(methods[i][0], methods[i][1]);
 		if (a) console.log(x, equation);
-		if (/\(([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\)/.test(equation))
+		if (/\(([0-9.]+){1}([+\-*/%][0-9.]+)+\)/.test(equation))
 		{
-			equate = equation.match(/\(([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\)/g);
+			equate = equation.match(/\(([0-9.]+){1}([+\-*/%][0-9.]+)+\)/g);
 			for (let i = 0; i < equate.length; i++)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 		}
 		if (a) console.log(x, equation);
-		if (/\[([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\]/.test(equation))
+		if (/\[([0-9.]+){1}([+\-*/%][0-9.]+)+\]/.test(equation))
 		{
-			equate = equation.match(/\[([0-9.]{1,}){1}([+\-*/%][0-9.]{1,}){1,}\]/g);
+			equate = equation.match(/\[([0-9.]+){1}([+\-*/%][0-9.]+)+\]/g);
 			for (let i = 0; i < equate.length; i++)
 				if (/\[/.test(equate[i]) && /\]/.test(equate[i]) && equate[i].match(/\[/g).length == equate[i].match(/\]/g).length)
 					equation = equation.replace(equate[i], '[' + eval(equate[i]) + ']');
 		}
 		if (a) console.log(x, equation);
-		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g.test(equation))
+		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g.test(equation))
 		{
-			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]{1,}\)|-?[0-9.]{1,})(,(\(\-?[0-9.]{1,}\)|\-?[0-9.]{1,})){0,}\)/g);
+			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g);
 			for (let i = 0; i < equate.length; i++)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 		}
 		if (a) console.log(x, equation);
-		if (/(?<!\])\(-?[0-9.]{1,}\)/g.test(equation))
-			equation = equation.replace(/(?!\])\((-?[0-9.]{1,})\)/g, "$1");
+		if (/(?<!\])\(-?[0-9.]+\)/g.test(equation))
+			equation = equation.replace(/(?!\])\((-?[0-9.]+)\)/g, "$1");
 		if (a) console.log(x, equation);
 		if (equation != lastEquation)
 			i--;
