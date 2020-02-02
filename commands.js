@@ -1,4 +1,4 @@
-var version = "2.43.2.0";
+var version = "2.43.2.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -174,7 +174,7 @@ other = (message) => {
 			}
 		});
 	}
-	if (games.minigames.some((minigame) => minigame.type == "hangman" && minigame.channel == message.channel.id && ((/^[a-z0-9]$/i.test(message.content) && minigame.guesses.includes(message.content.toUpperCase())) || message.content.toUpperCase() == minigame.ans.join(''))))
+	if (games.minigames.some((minigame) => minigame.type == "hangman" && minigame.channel == message.channel.id && ((/^[a-z0-9]$/i.test(message.content) && !minigame.guesses.includes(message.content.toUpperCase())) || message.content.toUpperCase() == minigame.ans.join(''))))
 	{
 		let guess = message.content.toUpperCase();
 		games.minigames.forEach((minigame, index) => {
