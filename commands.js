@@ -1,4 +1,4 @@
-var version = "2.43.1.5";
+var version = "2.43.1.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1589,6 +1589,7 @@ var commands = {
 	},
 
 	"hangman": (cmd, args, input, message) => {
+		if (games.minigames.some((minigame) => minigame.channel == message.channel.id)) return;
 		let category = Math.random() * 4 | 0;
 		let word = games.hangmanWords[category].split('|').random(), ans = [], right = [];
 		for (let i = 0; i < word.length; i++)
