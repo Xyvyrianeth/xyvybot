@@ -1,4 +1,4 @@
-var version = "2.43.3.8";
+var version = "2.43.3.9";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -826,7 +826,7 @@ var commands = {
 			"soccer": "Paper Soccer"
 		}[gameName];
 		if (!input)
-			return message.channel.send(`__**${GameName}**__\nTo start a game, type \`x!${cmd} start\`!`);
+			return message.channel.send(`__**${GameName}**__\nTo start a game, type "x!${cmd} start"!\nTo learn the rules, type "x!${cmd} rules"!`);
 		condition = (condition) => {
 			return {
 				"noGame":			 (game) => game.game == gameNam,
@@ -1523,7 +1523,8 @@ var commands = {
 				equ = b;
 				for (let i = 0; i <= 2; i++)
 				{
-					b = [b + c, b * c, b + (c += d)][a];
+					if (a == 2) c += d;
+					b = [b + c, b * c, b + c][a];
 					if (i == 2) ans = b;
 					else equ += ', ' + b;
 				}

@@ -229,11 +229,12 @@ exports.takeTurn = function(channel, Move) {
     }
     
     pieces = [];
+    let boardClone = JSON.parse(JSON.stringify(game.board));
     for (let i = 0; i < move.from.length; i++)
     {
-        pieces[i] = game.board[move.from[i][0]][move.from[i][1]];
-        game.board[move.from[i][0]][move.from[i][1]] = false;
-        game.board[move.to[i][0]][move.to[i][1]] = game.turn;
+        pieces[i] = boardClone[move.from[i][0]][move.from[i][1]];
+        boardClone[move.from[i][0]][move.from[i][1]] = false;
+        boardClone[move.to[i][0]][move.to[i][1]] = game.turn;
     }
     
     let queue = [[], []];
@@ -246,7 +247,7 @@ exports.takeTurn = function(channel, Move) {
         {
             for (let x = 0; x < 10; x++)
             {
-                if (game.board[y][x] === P)
+                if (boardClone[y][x] === P)
                 {
                     count++;
                     queue[P].push([y, x]);
@@ -288,19 +289,21 @@ exports.takeTurn = function(channel, Move) {
     {
         for (let i = 0; i < move.from.length; i++)
         {
-            game.board[move.from[i][0]][move.from[i][1]] = game.turn;
-            game.board[move.to[i][0]][move.to[i][1]] = pieces[i];
+            boardClone[move.from[i][0]][move.from[i][1]] = game.turn;
+            boardClone[move.to[i][0]][move.to[i][1]] = pieces[i];
         }
         return exports.say(channel, [game.split ? "Illegal move: would not reconnect your stones into one group." : "Illegal move: would split your stones into more than one group."]);
     }
     else
-    if (game.board[[7, 0][game.turn]].some(p => p === game.turn))
+    if (boardClone[[7, 0][game.turn]].some(p => p === game.turn))
     {
+        game.board = JSON.parse(JSON.stringify(boardClone));
         end = 1;
     }
     else
     if (queue[[1, 0][game.turn]].length > 0)
     {
+        game.board = JSON.parse(JSON.stringify(boardClone));
         let possible = false;
         // Checking for singleton moves that can reconnect
         let d = [[0, 0], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1]];

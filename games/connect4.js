@@ -125,7 +125,7 @@ exports.takeTurn = function(channel, Move) {
     {
         for (let y = [3, 0, 0, 0][d]; y < [6, 6, 3, 3][d]; y++)
         {
-            for (let x = 0; d < [7, 3, 3, 7][d]; x++)
+            for (let x = 0; x < [7, 3, 3, 7][d]; x++)
             {
                 if (![
                     a[y][x],
