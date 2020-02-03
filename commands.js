@@ -1,4 +1,4 @@
-var version = "2.43.3.0";
+var version = "2.43.3.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1514,16 +1514,15 @@ var commands = {
 				equ = a.shuffle().join('` `');
 				break;
 			case 2:
-				a = Math.random() * 4 | 0;
-				[b, c] = [
-					[Math.random() * 20 | 1, Math.random() * 100 | 1, Math.random() * 50 | 1, Math.random() * 20 | 1][a],
-					[Math.random() * 15 + 5 | 1, Math.random() * 15 + 5 | 1, Math.random() * 4 + 1 | 1, Math.random() * 20 | 1][a]	];
-				d = a == 3 ? Math.random() * 5 | 1 : false;
+				a = Math.random() * 3 | 0;
+				[b, c, d] = [
+					[Math.random() * 200 | 1,							Math.random() * 20 | 1,		Math.random() * 20 | 1][a],
+					[(Math.random() * 25 + 5 | 1) * [1, -1].random(),	Math.random() * 4 + 1 | 1,	Math.random() * 20 | 1][a],
+					[false,												false,						(Math.random() * 20 | 1) * [1, -1].random()][a]	];
 				equ = b;
 				for (let i = 0; i <= 4; i++)
 				{
-					if (d) c += d;
-					b = [b + c, b - c, b * c, b + c][a];
+					b = [b + c, b * c, b + (c += d)][a];
 					if (i == 4) ans = b;
 					else equ += ', ' + b;
 				}
@@ -1531,8 +1530,8 @@ var commands = {
 			case 3:
 				a = Math.random() * 4 | 0;
 				[b, c] = [
-					[Math.random() * 500 | 1, Math.random() * 500 | 1, Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a],
-					[Math.random() * 500 | 1, Math.random() * 500 | 1, Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a]	];
+					[Math.random() * 500 | 1,						Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a],
+					[(Math.random() * 500 | 1) * [1, -1].random(),	Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a]	];
 				ans = [b + c, b - c, b * c, b][a];
 				equ = [b + ' + ' + c, b + ' - ' + c, b + ' × ' + c, (b * c) + ' ÷ ' + c][a];
 				break;
@@ -1551,7 +1550,7 @@ var commands = {
 			equ + " = ___"
 		][A];
 		let diff = [
-			"", "", "\nDifficulty: **" + ["Easy", "Easy", "Medium", "Hard"][a] + "**", "\nDifficulty: **" + ["Easy", "Easy", "Medium", "Hard"][a] + "**"
+			"", "", "\nDifficulty: **" + ["Easy", "Medium", "Hard"][a] + "**", "\nDifficulty: **" + ["Easy", "Medium", "Hard"][a] + "**"
 		][A];
 		let end = [
 			que + "\nAnswer: **" + ans + "** appears twice!",
