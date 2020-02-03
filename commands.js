@@ -1,4 +1,4 @@
-var version = "2.43.3.3";
+var version = "2.43.3.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1516,9 +1516,9 @@ var commands = {
 			case 2:
 				a = Math.random() * 3 | 0;
 				[b, c, d] = [
-					[Math.random() * 200 | 1,							Math.random() * 20 | 1,		Math.random() * 20 | 1][a],
-					[(Math.random() * 25 + 5 | 1) * [1, -1].random(),	Math.random() * 4 + 1 | 1,	Math.random() * 20 | 1][a],
-					[false,												false,						(Math.random() * 20 | 1) * [1, -1].random()][a]	];
+					[Math.random() * 200 | 1,		Math.random() * 20 | 1,		Math.random() * 20 | 1][a],
+					[(Math.random() * 25 + 5 | 1),	Math.random() * 4 + 1 | 1,	Math.random() * 20 | 1][a]  * [1, -1].random(),
+					[false,							false,						(Math.random() * 20 | 1) * [1, -1].random()][a]];
 				equ = b;
 				for (let i = 0; i <= 3; i++)
 				{
@@ -1530,8 +1530,8 @@ var commands = {
 			case 3:
 				a = Math.random() * 3 | 0;
 				[b, c] = [
-					[Math.random() * 500 | 1,						Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a],
-					[(Math.random() * 500 | 1) * [1, -1].random(),	Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a]	];
+					[Math.random() * 500 | 1,	Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a],
+					[(Math.random() * 500 | 1),	Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a] * [1, -1].random()];
 				ans = [b + c, b - c, b * c, b][a];
 				equ = [b + ' + ' + c, b + ' × ' + c, (b * c) + ' ÷ ' + c][a];
 				break;
