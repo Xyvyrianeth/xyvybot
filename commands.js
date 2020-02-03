@@ -1,4 +1,4 @@
-var version = "2.43.3.5";
+var version = "2.43.3.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1534,7 +1534,7 @@ var commands = {
 					[Math.random() * 500,	Math.random() * 500,	Math.random() * 101 - 51,	Math.random() * 20 + 5][a] | 1];
 				[ans, equ] = [
 					[b + c, b - c, b * c, b][a],
-					'**' + [b, b, b, b * c][a] + '** x **' + c + '**'.replace('x', '+-×÷'.split('')[a])];
+					('**' + [b, b, b, b * c][a] + '** x **' + c + '**').replace('x', '+-×÷'.split('')[a])];
 				break;
 
 		}
