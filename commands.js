@@ -1,4 +1,4 @@
-var version = "2.43.3.4";
+var version = "2.43.3.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1501,7 +1501,7 @@ var commands = {
 				c = Math.random() * 18 | 0;
 				do {
 					d = Math.random() * 18 | 0;
-				} while (Math.abs(c - d) < 5);
+				} while (Math.abs(c - d) < 7);
 				a.splice(c, 0, b);
 				a.splice(d, 0, b);
 				equ = a.join('` `');
@@ -1516,9 +1516,9 @@ var commands = {
 			case 2:
 				a = Math.random() * 3 | 0;
 				[b, c, d] = [
-					[Math.random() * 200 | 1,		Math.random() * 20 | 1,		Math.random() * 20 | 1][a],
-					[(Math.random() * 25 + 5 | 1),	Math.random() * 4 + 1 | 1,	Math.random() * 20 | 1][a]  * [1, -1].random(),
-					[false,							false,						(Math.random() * 20 | 1) * [1, -1].random()][a]];
+					[Math.random() * 200,		Math.random() * 20,		Math.random() * 20][a] | 1,
+					[Math.random() * 25 + 5,	Math.random() * 4 + 1,	Math.random() * 20][a] | 1,
+					[undefined,					undefined,				Math.random() * 20][a] | 1	];
 				equ = b;
 				for (let i = 0; i <= 3; i++)
 				{
@@ -1528,12 +1528,13 @@ var commands = {
 				}
 				break;
 			case 3:
-				a = Math.random() * 3 | 0;
+				a = Math.random() * 4 | 0;
 				[b, c] = [
-					[Math.random() * 500 | 1,	Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a],
-					[(Math.random() * 500 | 1),	Math.random() * 101 - 51 | 1, Math.random() * 20 + 5 | 1][a] * [1, -1].random()];
-				ans = [b + c, b - c, b * c, b][a];
-				equ = [b + ' + ' + c, b + ' × ' + c, (b * c) + ' ÷ ' + c][a];
+					[Math.random() * 500,	Math.random() * 500,	Math.random() * 101 - 51,	Math.random() * 20 + 5][a] | 1,
+					[Math.random() * 500,	Math.random() * 500,	Math.random() * 101 - 51,	Math.random() * 20 + 5][a] | 1];
+				[ans, equ] = [
+					[b + c, b - c, b * c, b][a],
+					'**' + [b, b, b, b * c][a] + '** x **' + c + '**'.replace('x', '+-×÷'.split('')[a])];
 				break;
 
 		}
@@ -1546,11 +1547,11 @@ var commands = {
 		let que = [
 			'`' + equ + '`',
 			'`' + equ + '`',
-			equ + ", ___",
-			equ + " = ___"
+			equ + ", __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__",
+			equ + " = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__"
 		][A];
 		let diff = [
-			"", "", "\nDifficulty: **" + ["Easy", "Medium", "Hard"][a] + "**", "\nDifficulty: **" + ["Easy", "Medium", "Hard"][a] + "**"
+			"", "", "\nDifficulty: **" + ["Easy", "Medium", "Hard"][a] + "**", "\nDifficulty: **" + ["Easy", "Easy", "Medium", "Hard"][a] + "**"
 		][A];
 		let end = [
 			que + "\nAnswer: **" + ans + "** appears twice!",
