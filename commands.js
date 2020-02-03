@@ -1,4 +1,4 @@
-var version = "2.43.3.7";
+var version = "2.43.3.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1482,7 +1482,7 @@ var commands = {
 	"iq": (cmd, args, input, message) => {
 		if (games.minigames.some((minigame) => minigame.channel == message.channel.id)) return;
 		let a, b, c, d, ans, equ;
-		let A = Math.random() * 4 | 0;
+		let A = 2 //Math.random() * 4 | 0;
 		switch (A) {
 			case 0:
 				a = [];
@@ -1521,10 +1521,10 @@ var commands = {
 					[undefined,					undefined,				Math.random() * 20][a] | 1	];
 				[b, c, d] = [b * [1, -1].random(), c * [1, -1].random(), d * [1, -1].random()];
 				equ = b;
-				for (let i = 0; i <= 3; i++)
+				for (let i = 0; i <= 2; i++)
 				{
 					b = [b + c, b * c, b + (c += d)][a];
-					if (i == 3) ans = b;
+					if (i == 2) ans = b;
 					else equ += ', ' + b;
 				}
 				break;
