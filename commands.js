@@ -1,4 +1,4 @@
-var version = "2.43.3.6";
+var version = "2.43.3.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1519,6 +1519,7 @@ var commands = {
 					[Math.random() * 200,		Math.random() * 20,		Math.random() * 20][a] | 1,
 					[Math.random() * 25 + 5,	Math.random() * 4 + 1,	Math.random() * 20][a] | 1,
 					[undefined,					undefined,				Math.random() * 20][a] | 1	];
+				[b, c, d] = [b * [1, -1].random(), c * [1, -1].random(), d * [1, -1].random()];
 				equ = b;
 				for (let i = 0; i <= 3; i++)
 				{
@@ -1530,8 +1531,9 @@ var commands = {
 			case 3:
 				a = Math.random() * 4 | 0;
 				[b, c] = [
-					[Math.random() * 500,	Math.random() * 500,	Math.random() * 101 - 51,	Math.random() * 20 + 5][a] | 1,
-					[Math.random() * 500,	Math.random() * 500,	Math.random() * 101 - 51,	Math.random() * 20 + 5][a] | 1];
+					[Math.random() * 500,	Math.random() * 500,	Math.random() * 50,	Math.random() * 20 + 5][a] | 1,
+					[Math.random() * 500,	Math.random() * 500,	Math.random() * 50,	Math.random() * 20 + 5][a] | 1];
+				[b, c] = a > 1 ? [b * [1, -1].random(), c * [1, -1].random()] : [b, c];
 				[ans, equ] = [
 					[b + c, b - c, b * c, b][a],
 					('**' + [b, b, b, b * c][a] + '** x **' + c + '**').replace('x', '+-×÷'.split('')[a])];
@@ -1559,7 +1561,7 @@ var commands = {
 			equ + ", __" + ans + "__",
 			equ + " = `" + ans + "`!"
 		][A];
-		let time = [20, 10, 5 * a + 15, 10 * a + 10][A];
+		let time = [20, 10, 10 * a + 20, 15 + [15, 15, 30, 45][a]][A];
 
 		let embed = new Discord.RichEmbed()
 			.setColor(new Color(176, 14, 223).toHexa())
