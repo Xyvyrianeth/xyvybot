@@ -1,4 +1,4 @@
-var version = "2.43.6.8";
+var version = "2.43.6.9";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -418,11 +418,11 @@ bot = (message) => {
 newUser = (id, message) => {
 	let image = images.ids.random(),
 		query =
-		`INSERT INTO profiles (\n` +
-		`   id,       color,      title,      titles,             background,  backgrounds,         lefty,  money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7\n` +
-		`) VALUES (\n` +
-		`   '${id}',  '#2f3136',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   500,    1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0\n` +
-		`)`;
+			`INSERT INTO profiles (\n` +
+			`   id,       color,      title,      titles,             background,  backgrounds,         lefty,  money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7\n` +
+			`) VALUES (\n` +
+			`   '${id}',  '#2f3136',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   500,    1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0\n` +
+			`)`;
 	db.query(query, (err) => {
 		if (err)
 			return sqlError(message, err, query);
@@ -2354,7 +2354,7 @@ var commands = {
 	"pg": (cmd, args, input, message) => {
 		if (!admins.includes(message.author.id))
 			return;
-		if (/^x!pg( |\n)```sql\n.+\n?```$/.test(message.content))
+		if (message.content.startsWith("x!pg ```sql\n") && message.content.endsWith("```"))
 			return db.query(input.substring(7, input.length - 3), (err, res) => {
 				let embed = new Discord.RichEmbed()
 					.setTitle("x!pg")
