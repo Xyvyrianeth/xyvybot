@@ -1,4 +1,4 @@
-var version = "2.43.4.0";
+var version = "2.43.5.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1593,7 +1593,7 @@ var commands = {
 
 	"hangman": (cmd, args, input, message) => {
 		if (games.minigames.some((minigame) => minigame.channel == message.channel.id)) return;
-		let category = Math.random() * 4 | 0;
+		let category = Math.random() * 5 | 0;
 		let word = games.hangmanWords[category].split('|').random(), ans = [], right = [];
 		for (let i = 0; i < word.length; i++)
 		{
@@ -1607,7 +1607,7 @@ var commands = {
 			if (/^([a-z0-9]|\u200b \u200b \u200b \u200b)$/.test(right[i])) display.push(`__${right[i]}__`);
 			else display.push(right[i]);
 		}
-		category = ["Tabletop/Board/Card Games", "Movies", "TV Shows", "Video Games"][category];
+		category = ["Tabletop/Board/Card Games", "Movies", "TV Shows", "Video Games", "Anime"][category];
 		let embed = new Discord.RichEmbed()
 			.setTitle("Hangman")
 			.setColor(new Color(176, 14, 223).toHexa())
