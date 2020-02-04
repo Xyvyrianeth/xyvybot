@@ -1,4 +1,4 @@
-var version = "2.43.6.6";
+var version = "2.43.6.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1482,7 +1482,7 @@ var commands = {
 	"iq": (cmd, args, input, message) => {
 		if (games.minigames.some((minigame) => minigame.channel == message.channel.id)) return;
 		let a, b, c, d, ans, equ;
-		let A = 2 //Math.random() * 4 | 0;
+		let A = Math.random() * 4 | 0;
 		switch (A) {
 			case 0:
 				a = [];
