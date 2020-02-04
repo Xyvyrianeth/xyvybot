@@ -54,7 +54,7 @@ client.on("ready", () => {
                 url: "https://twitch.tv/Xyvyrianeth"
             }
         });
-    }, 15000);
+    }, 30000);
 });
 exports.client = client;
 

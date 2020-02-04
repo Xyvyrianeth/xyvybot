@@ -10,9 +10,9 @@
 		"npm": "5.7.1"
 	},
 	"dependencies": {
-		"canvas": "2.5.0",
+		"canvas": "2.6.1",
 		"discord.js": "11.5.1",
-		"nekos.life": "2.0.4",
-		"pg": "7.11.0"
+		"nekos.life": "2.0.5",
+		"pg": "7.18.0"
 	}
 }
