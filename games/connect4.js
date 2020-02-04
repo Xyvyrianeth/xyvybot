@@ -59,13 +59,13 @@ exports.drawBoard = function(game, end, highlight) {
     if (end == 0)
     {
         ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 9, 6);
-        ctx.drawImage(exports.Images.turn, 45 - (13 * game.turn), 4);
+        ctx.drawImage(exports.Images.turn, 57 - (13 * game.turn), 4);
     }
     else
     if (end == 1)
     {
         ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 9, 6);
-        ctx.drawImage(exports.Images.win, 50 - (13 * game.turn), 6);
+        ctx.drawImage(exports.Images.win, 67 - (13 * game.turn), 6);
     }
     else
     if (end == 2)

@@ -1,4 +1,4 @@
-var version = "2.43.6.9";
+var version = "2.43.6.10";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -153,7 +153,7 @@ other = (message) => {
 					if (error.stack.split('\n')[i].includes("at Client.emit"))
 						break;
 					else
-						return errs.push(error.stack.split('\n')[i]);
+						errs.push(error.stack.split('\n')[i]);
 				}
 				return client.channels.get("467902250128506880").send(botError(message, errs));
 			}
