@@ -1,4 +1,4 @@
-var version = "2.43.6.0";
+var version = "2.43.6.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1597,7 +1597,7 @@ var commands = {
 		let word = games.hangmanWords[category].split('|')[39], ans = [], right = [];
 		for (let i = 0; i < word.length; i++)
 		{
-			if (/^[a-z0-9]$/i.test(word[i])) ans.push(word[i]);
+			if (!/^[\u0300-\u036f]$/.test(word[i])) ans.push(word[i]);
 			if (/^[a-z0-9]$/i.test(word[i])) right.push("\u200b \u200b \u200b \u200b");
 			else if (/^[\u0300-\u036f]$/.test(word[i])) ans[i - 1] += word[i];
 			else right.push(word[i]);
