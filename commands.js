@@ -1,4 +1,4 @@
-var version = "2.43.6.2";
+var version = "2.43.6.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -188,7 +188,7 @@ other = (message) => {
 					if (minigame.ans.some(a => a.replace(/[\u0300-\u036f]/g, '') == message.content.toUpperCase()))
 					{
 						for (let letter in minigame.ans)
-							if (minigame.ans[letter] == guess && minigame.right[letter] == '\u200b \u200b \u200b \u200b')
+							if (minigame.ans[letter].replace(/[\u0300-\u036f]/g, '') == guess && minigame.right[letter] == '\u200b \u200b \u200b \u200b')
 								minigame.right[letter] = minigame.ans[letter];
 						if (!minigame.right.includes('\u200b \u200b \u200b \u200b'))
 						{
@@ -198,7 +198,7 @@ other = (message) => {
 								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 								else display.push(minigame.ans[i]);
 							}
-							embed.addField(guess + " is in the word!", `<@!${message.author.id}> has finished the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
+							embed.addField(guess + " is in the word!", `<@!${message.author.id}> has finished the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigames.guess == 0 ? "None" : minigame.guesses.join("` `")}\``);
 							embed.setColor(new Color(46, 204, 113).toHexa());
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
@@ -211,7 +211,7 @@ other = (message) => {
 								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/i.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
 								else display.push(minigame.right[i]);
 							}
-							embed.addField(guess + " is in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
+							embed.addField(guess + " is in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigames.guess == 0 ? "None" : minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
 							embed.setColor(new Color(52, 152, 219).toHexa());
 							minigame.timer = 180;
 						}
@@ -227,7 +227,7 @@ other = (message) => {
 								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 								else display.push(minigame.ans[i]);
 							}
-							embed.addField(guess + " is not in the word!", `You guessed incorrectly too many times!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
+							embed.addField(guess + " is not in the word!", `You guessed incorrectly too many times!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigames.guess == 0 ? "None" : minigame.guesses.join("` `")}\``);
 							embed.setColor(new Color(231, 76, 60).toHexa());
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
@@ -240,7 +240,7 @@ other = (message) => {
 								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
 								else display.push(minigame.right[i]);
 							}
-							embed.addField(guess + " is not in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
+							embed.addField(guess + " is not in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigames.guess == 0 ? "None" : minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
 							embed.setColor(new Color(214, 196, 15).toHexa());
 							minigame.timer = 180;
 						}
@@ -254,7 +254,7 @@ other = (message) => {
 						if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 						else display.push(minigame.ans[i]);
 					}
-					embed.addField("Solved!", `<@!${message.author.id}> has solved the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.join("` `")}\``);
+					embed.addField("Solved!", `<@!${message.author.id}> has solved the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigames.guess == 0 ? "None" : minigame.guesses.join("` `")}\``);
 					embed.setColor(new Color(46, 204, 113).toHexa());
 					delete games.minigames[index];
 					games.minigames.splice(index, 1);
