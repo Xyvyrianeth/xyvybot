@@ -1,4 +1,4 @@
-var version = "2.43.6.10";
+var version = "2.43.6.11";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -829,7 +829,7 @@ var commands = {
 			return message.channel.send(`__**${GameName}**__\nTo start a game, type "x!${cmd} start"!\nTo learn the rules, type "x!${cmd} rules"!`);
 		condition = (condition) => {
 			return {
-				"noGame":			 (game) => game.game == gameNam,
+				"noGame":			 (game) => game.game == gameName,
 				"noGameHere":		 (game) => game.game == gameName && !game.channels.hasOwnProperty(message.channel.id),
 				"gameHere":			 (game) => game.game == gameName && !game.started && game.channels.hasOwnProperty(message.channel.id),
 				"gameThere":		 (game) => game.game == gameName && !game.started && !game.channels.hasOwnProperty(message.channel.id) && !game.here,
