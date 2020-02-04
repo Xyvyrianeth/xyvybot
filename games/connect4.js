@@ -4,7 +4,7 @@ const { games } = require("/app/games/games.js");
 const { client } = require("/app/Xyvy.js");
 var gamename = "Connect Four";
 var shortname = "connect4";
- 
+
 exports.newGame = function(channel, player, here) {
     let game = {
         buffer: {},
@@ -23,7 +23,7 @@ exports.newGame = function(channel, player, here) {
     games.push(game);
 
     game.board = [[],[],[],[],[],[],[]];
- 
+
     game.timer = {
         time: 900,
         message: `It appears nobody wants to play right now, <@${player}>.`
@@ -37,10 +37,10 @@ exports.startGame = function(channel1, channel2, player2) {
     if (channel1 !== channel2) game.channels[channel2] = [];
     game.players[1] = player2;
     game.started = true;
- 
+
     if ((Math.random() * 2 | 0) == 0) game.players.reverse(); // Makes player one random instead of always the challenger
     game.player = game.players[0];
- 
+
     game.timer = {
         time: 600,
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
@@ -49,11 +49,11 @@ exports.startGame = function(channel1, channel2, player2) {
     game.buffer = new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be Red!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
- 
+
 exports.drawBoard = function(game, end, highlight) {
     let canvas = new Canvas.createCanvas(184, 195);
     let ctx = canvas.getContext("2d");
-     
+
     ctx.drawImage(exports.Images.board, 0, 0);
 
     if (end == 0)
@@ -78,7 +78,7 @@ exports.drawBoard = function(game, end, highlight) {
         for (let ii = 0; ii < game.board[i].length; ii++)
         {
             ctx.drawImage(exports.Images[["blue", "red"][game.board[i][ii]]], 6 + (25 * i), 30 + (25 * (5 - ii)));
-            
+
             if (end === 1 && highlight.some(x => x[0] == i && x[1] == ii))
             {
                 ctx.drawImage(exports.Images.winHighlight, 6 + (25 * i), 30 + (25 * (5 - ii)));
@@ -90,13 +90,13 @@ exports.drawBoard = function(game, end, highlight) {
             ctx.drawImage(exports.Images.highlight, 6 + (25 * i), 30 + (25 * (6 - game.board[i].length)));
         }
     }
-     
+
     return canvas.toBuffer();
 }
- 
+
 exports.takeTurn = function(channel, Move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
-     
+
     // Function will vary with game
     let move = Move - 1;
     if (game.board[move].length == 6)
@@ -106,7 +106,7 @@ exports.takeTurn = function(channel, Move) {
 
     game.board[move].push(game.turn);
     game.highlight = move;
- 
+
     let end = 2;
     for (let i = 7; i--;)
     {
@@ -146,14 +146,9 @@ exports.takeTurn = function(channel, Move) {
         }
     }
 
-    if (end !== 0)
-    {
-        game.winner = game.turn;
-    }
-     
     exports.nextTurn(channel, end);
 }
- 
+
 exports.nextTurn = function(channel, end) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
@@ -176,7 +171,6 @@ exports.nextTurn = function(channel, end) {
         {
             client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
         }
-        game.channels[ch] = [];
     }
 
     exports.say(game.channels, [[`It is <@${game.player}>'s turn.`, `<@${game.player}> has won!`, "Tie game, everyone loses!"][end], game.buffer]);
