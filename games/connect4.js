@@ -134,6 +134,8 @@ exports.takeTurn = function(channel, Move) {
                         [x + (f[d] * 3), y + (e[d] * 3)]
                     ];
                     end = 1;
+                    console.log(game.highlight);
+                    break;
                 }
             }
         }
