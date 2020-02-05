@@ -73,21 +73,21 @@ exports.drawBoard = function(game, end) {
         ctx.drawImage(exports.Images.tie, 9, 6);
     }
 
-    for (let i = 0; i < 7; i++)
+    for (let x = 0; x < 7; x++)
     {
-        for (let ii = 0; ii < game.board[i].length; ii++)
+        for (let y = 0; y < game.board[x].length; y++)
         {
-            ctx.drawImage(exports.Images[["blue", "red"][game.board[i][ii]]], 6 + (25 * i), 30 + (25 * (5 - ii)));
+            ctx.drawImage(exports.Images[["blue", "red"][game.board[x][y]]], 6 + (25 * x), 30 + (25 * (5 - y)));
 
-            if (end === 1 && highlight.some(x => x[0] == i && x[1] == ii))
+            if (end === 1 && highlight.some(i => i[0] == x && i[1] == y))
             {
-                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * i), 30 + (25 * (5 - ii)));
+                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * x), 30 + (25 * (5 - y)));
             }
         }
 
-        if (end === 0 && highlight !== false && highlight == i)
+        if (end === 0 && highlight !== false && highlight == x)
         {
-            ctx.drawImage(exports.Images.highlight, 6 + (25 * i), 30 + (25 * (6 - game.board[i].length)));
+            ctx.drawImage(exports.Images.highlight, 6 + (25 * x), 30 + (25 * (6 - game.board[x].length)));
         }
     }
 
@@ -135,10 +135,10 @@ exports.takeTurn = function(channel, Move) {
                 ].some(c => c != b))
                 {
                     game.highlight = [
-                        a[y][x],
-                        a[y + (e[d] * 1)][x + (f[d] * 1)],
-                        a[y + (e[d] * 2)][x + (f[d] * 2)],
-                        a[y + (e[d] * 3)][x + (f[d] * 3)]
+                        [x, y],
+                        [x + (f[d] * 1), y + (e[d] * 1)],
+                        [x + (f[d] * 2), y + (e[d] * 2)],
+                        [x + (f[d] * 3), y + (e[d] * 3)]
                     ];
                     end = 1;
                 }
