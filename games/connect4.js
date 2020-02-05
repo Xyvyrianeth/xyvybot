@@ -55,7 +55,6 @@ exports.drawBoard = function(game, end) {
 	let ctx = canvas.getContext("2d");
     ctx.drawImage(exports.Images.board, 0, 0);
 
-	let highlight = game.highlight;
     if (end == 0)
     {
         ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 9, 6);
@@ -79,13 +78,13 @@ exports.drawBoard = function(game, end) {
         {
             ctx.drawImage(exports.Images[["blue", "red"][game.board[x][y]]], 6 + (25 * x), 30 + (25 * (5 - y)));
 
-            if (end === 1 && highlight.some(i => i[0] == x && i[1] == y))
+            if (end === 1 && game.highlight.some(i => i[0] == x && i[1] == y))
             {
-                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * x), 30 + (25 * (5 - y)));
+                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * x), 30 + (25 * y));
             }
         }
 
-        if (end === 0 && highlight !== false && highlight == x)
+        if (end === 0 && game.highlight !== false && game.highlight == x)
         {
             ctx.drawImage(exports.Images.highlight, 6 + (25 * x), 30 + (25 * (6 - game.board[x].length)));
         }
