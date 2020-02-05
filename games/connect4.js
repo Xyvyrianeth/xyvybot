@@ -129,12 +129,11 @@ exports.takeTurn = function(channel, Move) {
                 {
                     game.highlight = [
                         [x, y],
-                        [x + (f[d] * 1), y + (e[d] * 1)],
-                        [x + (f[d] * 2), y + (e[d] * 2)],
-                        [x + (f[d] * 3), y + (e[d] * 3)]
+                        [x + (e[d] * 1), y + (f[d] * 1)],
+                        [x + (e[d] * 2), y + (f[d] * 2)],
+                        [x + (e[d] * 3), y + (f[d] * 3)]
                     ];
                     end = 1;
-                    console.log(game.highlight);
                     break;
                 }
             }
