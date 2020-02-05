@@ -170,7 +170,8 @@ exports.nextTurn = function(channel, end) {
         for (let i = 0; i < game.channels[ch].length; i++)
         {
             client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
-        }
+		}
+		game.channels[ch] = [];
     }
 
     exports.say(game.channels, [[`It is <@${game.player}>'s turn.`, `<@${game.player}> has won!`, "Tie game, everyone loses!"][end], game.buffer]);
