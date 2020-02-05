@@ -68,26 +68,19 @@ exports.drawBoard = function(game, end) {
     }
     else
     if (end == 2)
-    {
         ctx.drawImage(exports.Images.tie, 9, 6);
-    }
 
     for (let x = 0; x < 7; x++)
-    {
         for (let y = 0; y < game.board[x].length; y++)
-        {
             ctx.drawImage(exports.Images[["blue", "red"][game.board[x][y]]], 6 + (25 * x), 30 + (25 * (5 - y)));
 
-            if (end === 1 && game.highlight.some(i => i[0] == x && i[1] == y))
-            {
-                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * x), 30 + (25 * (6 - y)));
-            }
-        }
-
-        if (end === 0 && game.highlight !== false && game.highlight == x)
-        {
-            ctx.drawImage(exports.Images.highlight, 6 + (25 * x), 30 + (25 * (6 - game.board[x].length)));
-        }
+    if (game.highlight !== false)
+    {
+        if (end == 0)
+            ctx.drawImage(exports.Images.highlight, 6 + (25 * game.highlight), 30 + (25 * (6 - game.board[game.hightlight].length)));
+        else
+            for (let i of game.highlight)
+                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * i[0]), 30 + (25 * (6 - i[1])));
     }
 
     return canvas.toBuffer();
