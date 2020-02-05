@@ -122,15 +122,15 @@ exports.takeTurn = function(channel, Move) {
     let f = [1, 1, 1, 0];
     for (let d = 0; d < 4; d++)
     {
-        for (let y = [3, 0, 0, 0][d]; y < [6, 6, 3, 3][d]; y++)
+        for (let x = [3, 0, 0, 0][d]; x < [6, 6, 3, 3][d]; x++)
         {
-            for (let x = 0; x < [7, 3, 3, 7][d]; x++)
+            for (let y = 0; y < [7, 3, 3, 7][d]; y++)
             {
                 if (![
-                    a[y][x],
-                    a[y + (e[d] * 1)][x + (f[d] * 1)],
-                    a[y + (e[d] * 2)][x + (f[d] * 2)],
-                    a[y + (e[d] * 3)][x + (f[d] * 3)]
+                    a[x][y],
+                    a[x + (e[d] * 1)][y + (f[d] * 1)],
+                    a[x + (e[d] * 2)][y + (f[d] * 2)],
+                    a[x + (e[d] * 3)][y + (f[d] * 3)]
                 ].some(c => c != b))
                 {
                     game.highlight = [
