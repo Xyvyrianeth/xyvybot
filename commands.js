@@ -1,4 +1,4 @@
-var version = "2.43.6.12";
+var version = "2.43.6.13";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -28,12 +28,12 @@ var timers = setInterval(function() {
 			if (row.time > 0)
 				db.query(`UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'`, (err) => {
 					if (err)
-						sqlError("Internal (var timers @ line 23 | db.query @ line 36)", err, `UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'` );
+						sqlError("Internal (var timers @ line 23 | db.query @ line 36)", err, `UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'`);
 				});
 			else
 				db.query(`DELETE FROM timers WHERE id = '${row.id}'`, (err) => {
 						if (err)
-							sqlError("Internal (var timers @ line 23 | db.query @ line 53)", err, `DELETE FROM timers WHERE id = '${row.id}'` );
+							sqlError("Internal (var timers @ line 23 | db.query @ line 53)", err, `DELETE FROM timers WHERE id = '${row.id}'`);
 				});
 		});
 	});

@@ -50,12 +50,12 @@ exports.startGame = function(channel1, channel2, player2) {
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be Red!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
 
-exports.drawBoard = function(game, end, highlight) {
+exports.drawBoard = function(game, end) {
     let canvas = new Canvas.createCanvas(184, 195);
-    let ctx = canvas.getContext("2d");
-
+	let ctx = canvas.getContext("2d");
     ctx.drawImage(exports.Images.board, 0, 0);
 
+	let highlight = game.highlight;
     if (end == 0)
     {
         ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 9, 6);
