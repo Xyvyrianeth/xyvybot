@@ -80,7 +80,7 @@ exports.drawBoard = function(game, end) {
 
             if (end === 1 && game.highlight.some(i => i[0] == x && i[1] == y))
             {
-                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * x), 30 + (25 * y));
+                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * x), 30 + (25 * (6 - y)));
             }
         }
 
