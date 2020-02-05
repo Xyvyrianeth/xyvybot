@@ -646,7 +646,7 @@ var commands = {
 							los = top[i].los,
 							w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u200b \u200b N/A \u200b \u200b";
 
-						users.push('`' + '\u200b '.repeat(5 - String(place).length) + place + ')` | `' + '\u200b '.repeat(5 - String(elo).length) + elo + "`|`" + '\u200b '.repeat(3 - String(win).length) + win + "`/`" + los + ' \u200b'.repeat(3 - String(los).length) + "`|`" + '\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0) + w_l + "`|<@" + id + '>');
+						users.push('`' + '\u200b '.repeat(5 - String(place).length) + place + ')`|`' + '\u200b '.repeat(5 - String(elo).length) + elo + "`|`" + '\u200b '.repeat(3 - String(win).length) + win + "`/`" + los + ' \u200b'.repeat(3 - String(los).length) + "`|`" + '\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0) + w_l + "`|<@" + id + '>');
 					}
 					if (res[1].rows.length != 0)
 					{
