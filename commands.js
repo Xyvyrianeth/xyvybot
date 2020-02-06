@@ -4,6 +4,7 @@ const Discord = require("discord.js");
 const Canvas = require("canvas");
 const pg = require("pg");
 const nekos = require("nekos.life");
+const gif = require("gif-encoder");
 
 var { client, config } = require("/app/Xyvy.js");
 var { Color } = require("/app/assets/misc/color.js");

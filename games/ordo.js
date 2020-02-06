@@ -199,7 +199,7 @@ exports.takeTurn = function(channel, Move) {
             (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y > move.from[0][0] && y <= move.to[0][0] && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
             (direction == 1 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x > move.from[0][1] && x <= move.to[0][1] && game.board[y][x] !== false))) ||
             (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false))))
-                return exports.say(channel, ["Illegal move: one or more stones are blocking that movement"]);
+                return exports.say(channel, ["Illegal move: one or more stones are blocking that movement (ordo moves cannot capture enemy stones)."]);
     }
     
     let pieces = [];
