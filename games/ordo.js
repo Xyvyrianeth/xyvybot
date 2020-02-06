@@ -105,9 +105,9 @@ exports.drawBoard = function(game, end) {
                 ctx.drawImage(exports.Images.to, X, Y);
             }
             else
-            if (y == [7, 0][game.turn])
+            if (y == 0 || y == 7)
             {
-                ctx.drawImage(exports.Images[["blue", "white"][game.turn] + "HomeRow"], X, Y);
+                ctx.drawImage(exports.Images[["blue", "white"][y] + "HomeRow"], X, Y);
             }
         }
     }
@@ -120,42 +120,33 @@ exports.takeTurn = function(channel, Move) {
     let move;
     let end;
     Move = Move.toLowerCase();
-    if (/^([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])$/.test(Move))
+    if (/^([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])$/.test(Move)) // Singleton moves
     {
         move = {
             from: [[Number(Move.split(' ')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].match(/[a-j]/)[0])]],
             to:   [[Number(Move.split(' ')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[1].match(/[a-j]/)[0])]]
-        };
-        let dir = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
-        let dis = move.from[0][1] == move.to[0][1] ? Math.abs(move.from[0][0] - move.to[0][0]) : Math.abs(move.from[0][1] - move.to[0][1]);
+        };  // "4C 7F" = { from: [ [3, 2] ], to: [ [6, 5] ] }
+        let direction = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
+        let distance = move.from[0][1] == move.to[0][1] ? Math.abs(move.from[0][0] - move.to[0][0]) : Math.abs(move.from[0][1] - move.to[0][1]);
+
         if (game.board[move.from[0][0]][move.from[0][1]] !== game.turn)
-        {
-            return exports.say(channel, ["Illegal move: you do not have a stone in this spot"]);
-        }
-        if (dir == 8 || dis == 0)
-        {
+            return exports.say(channel, ["Illegal move: that stone is not yours."]);
+        if (direction == 8 || distance == 0)
             return exports.say(channel, ["Illegal move: you actually have to move the stone."]);
-        }
         if (move.from[0][0] != move.to[0][0] && move.from[0][1] != move.to[0][1] && Math.abs(move.from[0][0] - move.to[0][0]) != Math.abs(move.from[0][1] - move.to[0][1]))
+            return exports.say(channel, ["Illegal move: stones can only be moved diagonally or orthagonally."]);
+        for (let i = 1; i <= distance; i++)
         {
-            return exports.say(channel, ["Illegal move: attempted movement is neither diagonal nor orthagonal."]);
-        }
-        for (let i = 1; i <= dis; i++)
-        {
-            if (i < dis && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][dir] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][dir] * i)] !== false)
-            {
+            if (i < distance && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][direction] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][direction] * i)] !== false)
                 return exports.say(channel, ["Illegal move: a stone is blocking this movement."]);
-            }
-            if (i == dis && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][dir] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][dir] * i)] === game.turn)
-            {
+            if (i == distance && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][direction] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][direction] * i)] === game.turn)
                 return exports.say(channel, ["Illegal move: you cannot capture your own stone."]);
-            }
         }
     }
     else
-    if (/^([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9]$/.test(Move))
+    if (/^([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9]$/.test(Move)) // Ordo moves
     {
-        dir = {
+        let direction = {
             "up": 0,
             "u": 0,
             "right": 1,
@@ -165,70 +156,51 @@ exports.takeTurn = function(channel, Move) {
             "left": 3,
             "l": 3
         }[Move.split(' ')[1]];
-        dis = Number(Move.split(' ')[2]);
-        stones = [
+        let width = Number(Move.split(' ')[2]);
+        let stones = [
             [Number(Move.split(' ')[0].split('-')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[0].match(/[a-j]/)[0])],
             [Number(Move.split(' ')[0].split('-')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[1].match(/[a-j]/)[0])]
-        ];
-        Stones = [];
-        if (stones[0][0] == stones[1][0] && stones[0][1] == stones[1][1])
-        {
+        ];  // "5A-7A left 4" = [ [4, 0], [6, 0] ]
+        let width;
+        let Stones = [];
+        if (stones[0][0] == stones[1][0] && stones[0][1] == stones[1][1])   
             return exports.say(channel, ["This is a singleton move, please use the singleton move format!"]);
-        }
         if (stones[0][0] != stones[1][0] && stones[0][1] != stones[1][1])
-        {
             return exports.say(channel, ["Illegal move: stones trying to be moved are not alligned orthagonally."]);
-        }
         else
-        if ((stones[0][1] == stones[1][1] && (dir == 0 || dir == 2)) || (stones[0][0] == stones[1][0] && (dir == 1 || dir == 3)))
-        {
+        if ((stones[0][1] == stones[1][1] && (direction == 0 || direction == 2)) || (stones[0][0] == stones[1][0] && (direction == 1 || direction == 3)))
             return exports.say(channel, ["Illegal move: multiple stones cannot be moved single-file."]);
-        }
         else
         if (stones[0][0] == stones[1][0])
-        {
+        {   // alligned horizontally
             if (stones[0][1] > stones[1][1])
-            {
                 stones.push(stones.shift());
-            }
             for (let x = stones[0][1]; x <= stones[1][1]; x++)
-            {
                 Stones.push([stones[0][0], x]);
-            }
-            wid = stones[1][1] - stones[0][1];
+            width = stones[1][1] - stones[0][1];
         }
         else
-        {
+        {   // alligned vertically
             if (stones[0][0] > stones[1][0])
-            {
                 stones.push(stones.shift());
-            }
             for (let y = stones[0][0]; y <= stones[1][0]; y++)
-            {
                 Stones.push([y, stones[0][1]]);
-            }
-            wid = stones[1][0] - stones[0][0];
+            width = stones[1][0] - stones[0][0];
         }
         move = {
             from: Stones,
-            to:   Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][dir] * dis), p[1] + ([0, 1, 0, -1][dir] * dis)])
-        }
+            to:   Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * width), p[1] + ([0, 1, 0, -1][direction] * width)])
+        } // "5A-7A left 4" = { from: [ [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0] ], to: [ [1, 9], [2, 9], [3, 9], [4, 9], [5, 9], [6, 9] ] }
         if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
-        {
             return exports.say(channel, ["Illegal move: one or more of the stones you're trying to move aren't yours."]);
-        }
-        if (
-            (dir == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[wid][1] && game.board[y][x] !== false))) ||
-            (dir == 2 && game.board.some((Y, y) => Y.some((X, x) => y > move.from[0][0] && y <= move.to[0][0] && x >= move.from[0][1] && x <= move.to[wid][1] && game.board[y][x] !== false))) ||
-            (dir == 1 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[wid][0] && x > move.from[0][1] && x <= move.to[0][1] && game.board[y][x] !== false))) ||
-            (dir == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[wid][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false)))
-        )
-        {
-            return exports.say(channel, ["Illegal move: a stone is blocking that movement"]);
-        }
+        if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
+            (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y > move.from[0][0] && y <= move.to[0][0] && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
+            (direction == 1 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x > move.from[0][1] && x <= move.to[0][1] && game.board[y][x] !== false))) ||
+            (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false))))
+                return exports.say(channel, ["Illegal move: one or more stones are blocking that movement"]);
     }
     
-    pieces = [];
+    let pieces = [];
     let boardClone = JSON.parse(JSON.stringify(game.board));
     for (let i = 0; i < move.from.length; i++)
     {
@@ -257,6 +229,7 @@ exports.takeTurn = function(channel, Move) {
         if (count == 0)
         {
             game.highlight = Object.values(move);
+            game.board = JSON.parse(JSON.stringify(boareClone));
             return exports.nextTurn(channel, 2);
         }
         else
@@ -287,11 +260,6 @@ exports.takeTurn = function(channel, Move) {
     }
     if (queue[game.turn].length != 0)
     {
-        for (let i = 0; i < move.from.length; i++)
-        {
-            boardClone[move.from[i][0]][move.from[i][1]] = game.turn;
-            boardClone[move.to[i][0]][move.to[i][1]] = pieces[i];
-        }
         return exports.say(channel, [game.split ? "Illegal move: would not reconnect your stones into one group." : "Illegal move: would split your stones into more than one group."]);
     }
     else
@@ -318,22 +286,14 @@ exports.takeTurn = function(channel, Move) {
                     {
                         let dis;
                         if (c[0] == y)
-                        {
                             dis = Math.abs(c[1] - x);
-                        }
                         else
-                        {
                             dis = Math.abs(c[0] - y);
-                        }
                         let between = [];
                         for (let i = 1; i < dis; i++)
-                        {
                             between.push(game.board[c[0] - (i * (c[0] != y ? (c[0] - y) / Math.abs(c[0] - y) : 0))][c[1] - (i * (c[1] != x ? (c[1] - x) / Math.abs(c[1] - x) : 0))]);
-                        }
                         if (!between.some(k => k !== false))
-                        {
                             save.push([y, x, c[0], c[1]]);
-                        }
                     }
                 }
             }
@@ -341,13 +301,13 @@ exports.takeTurn = function(channel, Move) {
         for (let i = 0; i < save.length; i++)
         {
             let s = save[i];
-            let board = [];
+            let boardClone = [];
             for (let y = 0; y < 8; y++)
             {
-                board.push(game.board[y].slice(0));
+                boardClone.push(game.board[y].slice(0));
             }
-            board[s[0]][s[1]] = false;
-            board[s[2]][s[3]] = [1, 0][game.turn];
+            boardClone[s[0]][s[1]] = false;
+            boardClone[s[2]][s[3]] = [1, 0][game.turn];
             let queue = [];
             let evaluating = [];
             let confirmed = [];
@@ -355,7 +315,7 @@ exports.takeTurn = function(channel, Move) {
             {
                 for (let x = 0; x < 10; x++)
                 {
-                    if (board[y][x] === [1, 0][game.turn])
+                    if (boardClone[y][x] === [1, 0][game.turn])
                     {
                         queue.push([y, x]);
                     }
@@ -404,31 +364,23 @@ exports.takeTurn = function(channel, Move) {
                         {
                             let dis;
                             if (c[0] == y)
-                            {
                                 dis = Math.abs(c[1] - x);
-                            }
                             else
-                            {
                                 dis = Math.abs(c[0] - y);
-                            }
                             if (c[0] == y)
                             {
                                 let l = 0;
                                 while (y - l > -1 && game.board[y - l][x] === [1, 0][game.turn] && game.board[c[0] - l][c[1]] !== false)
                                 {
                                     if (!game.board[y - l].some((a, b) => ((c[1] > x && b < c[1] && b > x) || (x > c[1] && b < x && b > c[1])) && a === false))
-                                    {
                                         save.push([[y - l, y], [x, x], [c[0] - l, c[0]], [c[1], c[1]]]);
-                                    }
                                     l++;
                                 }
                                 l = 0;
                                 while (y + l < 8 && game.board[y + l][x] === [1, 0][game.turn] && game.board[c[0] + l][c[1]] !== false)
                                 {
                                     if (!game.board[y + l].some((a, b) => ((c[1] > x && b < c[1] && b > x) || (x > c[1] && b < x && b > c[1])) && a === false))
-                                    {
                                         save.push([[y, y + l], [x, x], [c[0], c[0] + l], [c[1], c[1]]]);
-                                    }
                                     l++;
                                 }
                             }
@@ -438,18 +390,14 @@ exports.takeTurn = function(channel, Move) {
                                 while (x - l > -1 && game.board[y][x - l] === [1, 0][game.turn] && game.board[c[0]][c[1] - l] !== false)
                                 {
                                     if (!game.board.some((a, b) => ((c[0] > x && b < c[0] && b > x) || (x > c[0] && b < x && b > c[0])) && game.board[a][x - l] === false))
-                                    {
                                         save.push([[y, y], [x - l, x], [c[0], c[0]], [c[1] - l, c[1]]]);
-                                    }
                                     l++;
                                 }
                                 l = 0;
                                 while (x + l < 10 && game.board[y][x + l] === [1, 0][game.turn] && game.board[c[0]][c[1] + l] !== false)
                                 {
                                     if (!game.board.some((a, b) => ((c[0] > x && b < c[0] && b > x) || (x > c[0] && b < x && b > c[0])) && game.board[a][x + l] === false))
-                                    {
                                         save.push([[y, y], [x, x + l], [c[0], c[0]], [c[1], c[1] + l]]);
-                                    }
                                     l++;
                                 }
                             }
@@ -462,23 +410,13 @@ exports.takeTurn = function(channel, Move) {
                 let s = save[i];
                 let board = [];
                 for (let y = 0; y < 8; y++)
-                {
                     board.push(game.board[y].slice(0));
-                }
                 for (let y = s[0][0]; y <= s[0][1]; y++)
-                {
                     for (let x = s[1][0]; x <= s[1][1]; x++)
-                    {
                         board[y][x] = false;
-                    }
-                }
                 for (let y = s[2][0]; y <= s[2][1]; y++)
-                {
                     for (let x = s[3][0]; x <= s[3][1]; x++)
-                    {
                         board[y][x] = [1, 0][game.turn];
-                    }
-                }
                 let queue = [];
                 let evaluating = [];
                 let confirmed = [];
@@ -529,9 +467,7 @@ exports.takeTurn = function(channel, Move) {
             end = 0;
         }
         else
-        {
             end = 3;
-        }
     }
     else
     {
