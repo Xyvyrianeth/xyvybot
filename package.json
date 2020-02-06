@@ -12,7 +12,7 @@
 	"dependencies": {
 		"canvas": "2.6.1",
 		"discord.js": "11.5.1",
-		"gifshot": "yahoo/gifshot",
+		"canvas-gif-encoder": "0.1.2",
 		"nekos.life": "2.0.5",
 		"pg": "7.18.0"
 	}
