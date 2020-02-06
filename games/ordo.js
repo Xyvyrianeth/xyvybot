@@ -129,8 +129,10 @@ exports.takeTurn = function(channel, Move) {
         let direction = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
         let distance = move.from[0][1] == move.to[0][1] ? Math.abs(move.from[0][0] - move.to[0][0]) : Math.abs(move.from[0][1] - move.to[0][1]);
 
-        if (game.board[move.from[0][0]][move.from[0][1]] !== game.turn)
+        if (game.board[move.from[0][0]][move.from[0][1]] == [1, 0][game.turn])
             return exports.say(channel, ["Illegal move: that stone is not yours."]);
+        if (game.board[move.from[0][0]][move.from[0][1]] === false)
+            return exports.say(channel, ["Illegal move: there is no stone to move in that space."]);
         if (direction == 8 || distance == 0)
             return exports.say(channel, ["Illegal move: you actually have to move the stone."]);
         if (move.from[0][0] != move.to[0][0] && move.from[0][1] != move.to[0][1] && Math.abs(move.from[0][0] - move.to[0][0]) != Math.abs(move.from[0][1] - move.to[0][1]))
@@ -145,7 +147,7 @@ exports.takeTurn = function(channel, Move) {
     }
     else
     if (/^([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9]$/.test(Move)) // Ordo moves
-    {   // Exampe: "5A-7A left 4"
+    {   // Exampe: "5A-7A right 4"
         let direction = {
             "up": 0,
             "u": 0,
@@ -155,8 +157,9 @@ exports.takeTurn = function(channel, Move) {
             "d": 2,
             "left": 3,
             "l": 3
-        }[Move.split(' ')[1]]; // 3
-        let width = Number(Move.split(' ')[2]); // 4
+        }[Move.split(' ')[1]]; // 1
+        let distance = Number(Move.split(' ')[2]); // 4
+        console.log(distance);
         let stones = [
             [Number(Move.split(' ')[0].split('-')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[0].match(/[a-j]/)[0])],
             [Number(Move.split(' ')[0].split('-')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[1].match(/[a-j]/)[0])]
@@ -173,29 +176,29 @@ exports.takeTurn = function(channel, Move) {
         if (stones[0][0] == stones[1][0])
         {
             if (stones[0][1] > stones[1][1])
-                stones.push(stones.shift());
+                stones.reverse();
             for (let x = stones[0][1]; x <= stones[1][1]; x++)
                 Stones.push([stones[0][0], x]);
-            width = stones[1][1] - stones[0][1];
+            distance = stones[1][1] - stones[0][1];
         }
         else
         {
             if (stones[0][0] > stones[1][0])
-                stones.push(stones.shift());
+                stones.reverse();
             for (let y = stones[0][0]; y <= stones[1][0]; y++)
                 Stones.push([y, stones[0][1]]);
-            width = stones[1][0] - stones[0][0];
+            distance = stones[1][0] - stones[0][0];
         }
         move = {
             from: Stones,
-            to:   Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * width), p[1] + ([0, 1, 0, -1][direction] * width)])
+            to:   Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * distance), p[1] + ([0, 1, 0, -1][direction] * distance)])
         }   // { from: [ [4, 0], [5, 0], [6, 0] ], to: [ [4, 4], [5, 4], [6, 4] ] }
         if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
             return exports.say(channel, ["Illegal move: one or more of the stones you're trying to move aren't yours."]);
-        if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
-            (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y > move.from[0][0] && y <= move.to[0][0] && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
-            (direction == 1 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x > move.from[0][1] && x <= move.to[0][1] && game.board[y][x] !== false))) ||
-            (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false))))
+        if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[distance][1] && game.board[y][x] !== false))) ||
+            (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y > move.from[0][0] && y <= move.to[0][0] && x >= move.from[0][1] && x <= move.to[distance][1] && game.board[y][x] !== false))) ||
+            (direction == 1 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[distance][0] && x > move.from[0][1] && x <= move.to[0][1] && game.board[y][x] !== false))) ||
+            (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[distance][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false))))
                 return exports.say(channel, ["Illegal move: one or more stones are blocking that movement"]);
     }
     
@@ -476,7 +479,7 @@ exports.takeTurn = function(channel, Move) {
         end = 0;
     }
 
-    game.highlight = Object.values(move);
+    game.highlight = Object.values(move);   
       
     exports.nextTurn(channel, end);
 }

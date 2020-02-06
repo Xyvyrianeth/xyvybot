@@ -1,4 +1,4 @@
-var version = "2.43.7.3";
+var version = "2.43.7.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1032,7 +1032,7 @@ var commands = {
 					.addField(
 						"Ordo Moves",
 						"Ordo moves consist of multiple stones that are adjacent orthagonally from each other being moved in either perpendicular direction (if the stones being moved are aligned vertically, they can only be moved horizontally, and vice versa).\n" +
-						"You make an ordo move by saying the 2 coordinates of the stones located at both ends of the line of stones you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many spaces you wish to move it in that direction; for example, say \"5A-7A left 4\" to move 3 stones aligned vertically in Column A to the left 4 spaces each.\n" +
+						"You make an ordo move by saying the 2 coordinates of the stones located at both ends of the line of stones you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many spaces you wish to move it in that direction; for example, say \"5A-7A right 4\" to move 3 stones aligned vertically in Column A to the right 4 spaces each.\n" +
 						"These moves cannot capture enemy stones.\n" +
 						`[Example](${wiki.ghuc}ordo/ordo_move.png)`)
 					.addField(
