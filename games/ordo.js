@@ -201,6 +201,7 @@ exports.takeTurn = function(channel, Move) {
             (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[distance][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false))))
                 return exports.say(channel, ["Illegal move: one or more stones are blocking that movement"]);
     }
+    console.log(move);
     
     let pieces = [];
     let boardClone = JSON.parse(JSON.stringify(game.board));
