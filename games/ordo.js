@@ -163,6 +163,7 @@ exports.takeTurn = function(channel, Move) {
             [Number(Move.split(' ')[0].split('-')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[0].match(/[a-j]/)[0])],
             [Number(Move.split(' ')[0].split('-')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[1].match(/[a-j]/)[0])]
         ];  // [ [4, 0], [6, 0] ]
+        let width;
         let Stones = [];
         if (stones[0][0] == stones[1][0] && stones[0][1] == stones[1][1])   
             return exports.say(channel, ["This is a singleton move, please use the singleton move format!"]);
@@ -178,7 +179,7 @@ exports.takeTurn = function(channel, Move) {
                 stones.reverse();
             for (let x = stones[0][1]; x <= stones[1][1]; x++)
                 Stones.push([stones[0][0], x]);
-            distance = stones[1][1] - stones[0][1];
+            width = stones[1][1] - stones[0][1];
         }
         else
         {
@@ -186,22 +187,18 @@ exports.takeTurn = function(channel, Move) {
                 stones.reverse();
             for (let y = stones[0][0]; y <= stones[1][0]; y++)
                 Stones.push([y, stones[0][1]]);
-            distance = stones[1][0] - stones[0][0];
+            width = stones[1][0] - stones[0][0];
         }
-        console.log(distance);
-        console.log(Stones);
-        console.log(Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * distance), p[1] + ([0, 1, 0, -1][direction] * distance)]));
         move = {
             from: Stones,
             to:   Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * distance), p[1] + ([0, 1, 0, -1][direction] * distance)])
         }   // { from: [ [4, 0], [5, 0], [6, 0] ], to: [ [4, 4], [5, 4], [6, 4] ] }
-        console.log(move);
         if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
             return exports.say(channel, ["Illegal move: one or more of the stones you're trying to move aren't yours."]);
-        if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[distance][1] && game.board[y][x] !== false))) ||
-            (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y > move.from[0][0] && y <= move.to[0][0] && x >= move.from[0][1] && x <= move.to[distance][1] && game.board[y][x] !== false))) ||
-            (direction == 1 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[distance][0] && x > move.from[0][1] && x <= move.to[0][1] && game.board[y][x] !== false))) ||
-            (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[distance][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false))))
+        if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
+            (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y > move.from[0][0] && y <= move.to[0][0] && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
+            (direction == 1 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x > move.from[0][1] && x <= move.to[0][1] && game.board[y][x] !== false))) ||
+            (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false))))
                 return exports.say(channel, ["Illegal move: one or more stones are blocking that movement"]);
     }
     
