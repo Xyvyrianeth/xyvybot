@@ -1,4 +1,4 @@
-var version = "2.43.7.5";
+var version = "2.44.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -278,6 +278,9 @@ bot = (message) => {
 			if (end === '0')
 				return game.channels[message.channel.id].push(message.id);
 			let result = false;
+
+			game.replayData[0].end();
+			message.channel.send("Replay GIF:", new Discord.Attachment(game.replayData[2], "replay.gif"));
 			if (end === '1')
 				result = {
 					winner: game.players[game.winner],
