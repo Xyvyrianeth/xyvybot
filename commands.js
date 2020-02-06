@@ -4,7 +4,6 @@ const Discord = require("discord.js");
 const Canvas = require("canvas");
 const pg = require("pg");
 const nekos = require("nekos.life");
-const gif = require("gif-encoder");
 
 var { client, config } = require("/app/Xyvy.js");
 var { Color } = require("/app/assets/misc/color.js");
@@ -12,6 +11,8 @@ var { table } = require("/app/assets/misc/table.js");
 var Profile = require("/app/assets/profile/profile.js");
 var titles = require("/app/assets/profile/titles.json");
 var images = require("/app/assets/backgrounds/images.json");
+var GIFEncoder = require("/app/assets/GIFEncoder.js");
+var GifEncoder = require("gif-encoder");
 
 const Nekos = new nekos();
 const db = new pg.Client(config.DATABASE_URL);
