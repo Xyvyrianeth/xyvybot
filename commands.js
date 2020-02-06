@@ -1,4 +1,4 @@
-var version = "2.44.0.4";
+var version = "2.44.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -286,10 +286,12 @@ bot = (message) => {
 			let stream = fs.createWriteStream("replay.gif");
 			encoder.createReadStream().pipe(stream);
 			encoder.begin();
-			for (let i = 0; i < 5; i++)
+			for (let i = 0; i < 2; i++)
 				encoder.addFrame(game.replayData[0], 1500);
 			for (let i = 0; i < game.replayData.length; i++)
 				encoder.addFrame(game.replayData[i], 1500);
+			for (let i = 0; i < 5; i++)
+				encoder.addFrame(game.replayData[game.replayData.length - 1], 1500);
 			encoder.end();
 			setTimeout(() => message.channel.send("Replay GIF:", new Discord.Attachment("replay.gif", "replay.gif")), 5000);
 			if (end === '1')

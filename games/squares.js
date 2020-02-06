@@ -16,6 +16,7 @@ exports.newGame = function(channel, player, here) {
 		over: false,
 		player: false,
 		players: [player],
+        replayData: [],
 		score: [0, 0],
 		started: false,
 		turn: 0.5
@@ -155,6 +156,7 @@ exports.drawBoard = function(game, end) {
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 228, 3);
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]], 237, 3);
 
+    game.replayData.push(ctx);
 	return canvas.toBuffer();
 }
   

@@ -16,6 +16,7 @@ exports.newGame = function(channel, player) {
 		over: false,
 		player: false,
 		players: [player],
+        replayData: [],
 		score: [0, 0],
 		started: false,
 		turn: 0
@@ -59,6 +60,7 @@ exports.drawBoard = function(game, end, highlight) {
 
 	// ....
 
+    game.replayData.push(ctx);
 	return canvas.toBuffer();
 }
   

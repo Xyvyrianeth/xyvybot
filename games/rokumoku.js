@@ -18,6 +18,7 @@ exports.newGame = function(channel, player, here) {
         over: false,
         player: false,
         players: [player],
+        replayData: [],
         started: false,
         turn: 0.5
     };
@@ -104,6 +105,7 @@ exports.drawBoard = function(game, end) {
         }
     }
 
+    game.replayData.push(ctx);
     return canvas.toBuffer();
 }
  
