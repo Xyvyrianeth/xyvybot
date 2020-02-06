@@ -107,7 +107,7 @@ exports.drawBoard = function(game, end) {
             else
             if (y == 0 || y == 7)
             {
-                ctx.drawImage(exports.Images[["blue", "white"][y] + "HomeRow"], X, Y);
+                ctx.drawImage(exports.Images[["blue", "white"][y % 6] + "HomeRow"], X, Y);
             }
         }
     }
@@ -301,13 +301,13 @@ exports.takeTurn = function(channel, Move) {
         for (let i = 0; i < save.length; i++)
         {
             let s = save[i];
-            let boardClone = [];
+            let board = [];
             for (let y = 0; y < 8; y++)
             {
-                boardClone.push(game.board[y].slice(0));
+                board.push(game.board[y].slice(0));
             }
-            boardClone[s[0]][s[1]] = false;
-            boardClone[s[2]][s[3]] = [1, 0][game.turn];
+            board[s[0]][s[1]] = false;
+            board[s[2]][s[3]] = [1, 0][game.turn];
             let queue = [];
             let evaluating = [];
             let confirmed = [];
@@ -315,7 +315,7 @@ exports.takeTurn = function(channel, Move) {
             {
                 for (let x = 0; x < 10; x++)
                 {
-                    if (boardClone[y][x] === [1, 0][game.turn])
+                    if (board[y][x] === [1, 0][game.turn])
                     {
                         queue.push([y, x]);
                     }
