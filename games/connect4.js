@@ -1,20 +1,11 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
-const gifEncoder = require("canvas-gif-encoder");
-const fs = require("fs");
 const { games } = require("/app/games/games.js");
 const { client } = require("/app/Xyvy.js");
 var gamename = "Connect Four";
 var shortname = "connect4";
 
 exports.newGame = function(channel, player, here) {
-    console.log("made it here (1)");
-    let encoder = new gifEncoder(184, 195);
-    let stream = fs.createWriteStream(`${player}_replay.gif`);
-    console.log("made it here (2)");
-    encoder.createReadStream().pipe(stream);
-    encoder.begin();
-    console.log("made it here (3)");
     let game = {
         buffer: {},
         channels: {},
@@ -26,14 +17,12 @@ exports.newGame = function(channel, player, here) {
         over: false,
         player: false,
         players: [player],
-        replayData: [encoder, `${player}_replay.gif`],
+        replayData: [],
         started: false,
         turn: 0
     };
     game.channels[channel] = [];
     games.push(game);
-
-    console.log("made it here (4)");
 
     game.board = [[],[],[],[],[],[],[]];
 
@@ -96,7 +85,7 @@ exports.drawBoard = function(game, end) {
                 ctx.drawImage(exports.Images.winHighlight, 6 + (25 * i[0]), 30 + (25 * (5 - i[1])));
     }
 
-    game.replayData[0].addFrame(ctx, 1500);
+    game.replayData.push(ctx);
     return canvas.toBuffer();
 }
 

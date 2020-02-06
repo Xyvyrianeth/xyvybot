@@ -1,4 +1,4 @@
-var version = "2.44.0.0";
+var version = "2.44.0.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -279,8 +279,19 @@ bot = (message) => {
 				return game.channels[message.channel.id].push(message.id);
 			let result = false;
 
-			game.replayData[0].end();
-			message.channel.send("Replay GIF:", new Discord.Attachment(game.replayData[1], "replay.gif"));
+			let dimensions = {
+				"connect4": [184, 195]
+			}[img.match(/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)/)];
+			let encoder = new gifEncoder();
+			let stream = fs.createWriteStream("replay.gif");
+			encoder.createReadStream().pipe(stream);
+			encoder.begin();
+			for (let i = 0; i < 5; i++)
+				encoder.addFrame(game.replayData[0], 1500);
+			for (let i = 0; i < game.replayData.length; i++)
+				encoder.addFrame(game.replayData[i], 1500);
+			encoder.end();
+			setTimeout(() => message.channel.send("Replay GIF:", new Discord.Attachment("replay.gif", "replay.gif")), 5000);
 			if (end === '1')
 				result = {
 					winner: game.players[game.winner],
