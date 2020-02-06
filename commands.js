@@ -280,7 +280,7 @@ bot = (message) => {
 			let result = false;
 
 			game.replayData[0].end();
-			message.channel.send("Replay GIF:", new Discord.Attachment(game.replayData[2], "replay.gif"));
+			message.channel.send("Replay GIF:", new Discord.Attachment(game.replayData[1], "replay.gif"));
 			if (end === '1')
 				result = {
 					winner: game.players[game.winner],

@@ -8,10 +8,13 @@ var gamename = "Connect Four";
 var shortname = "connect4";
 
 exports.newGame = function(channel, player, here) {
+    console.log("made it here (1)");
     let encoder = new gifEncoder(184, 195);
     let stream = fs.createWriteStream(`${player}_replay.gif`);
+    console.log("made it here (2)");
     encoder.createReadStream().pipe(stream);
     encoder.begin();
+    console.log("made it here (3)");
     let game = {
         buffer: {},
         channels: {},
@@ -23,12 +26,14 @@ exports.newGame = function(channel, player, here) {
         over: false,
         player: false,
         players: [player],
-        replayData: [encoder, stream, `${player}_replay.gif`],
+        replayData: [encoder, `${player}_replay.gif`],
         started: false,
         turn: 0
     };
     game.channels[channel] = [];
     games.push(game);
+
+    console.log("made it here (4)");
 
     game.board = [[],[],[],[],[],[],[]];
 
