@@ -121,11 +121,11 @@ exports.takeTurn = function(channel, Move) {
     let end;
     Move = Move.toLowerCase();
     if (/^([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])$/.test(Move)) // Singleton moves
-    {
+    {   // "4C 7F"
         move = {
             from: [[Number(Move.split(' ')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].match(/[a-j]/)[0])]],
             to:   [[Number(Move.split(' ')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[1].match(/[a-j]/)[0])]]
-        };  // "4C 7F" = { from: [ [3, 2] ], to: [ [6, 5] ] }
+        };  // { from: [ [3, 2] ], to: [ [6, 5] ] }
         let direction = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
         let distance = move.from[0][1] == move.to[0][1] ? Math.abs(move.from[0][0] - move.to[0][0]) : Math.abs(move.from[0][1] - move.to[0][1]);
 
@@ -145,7 +145,7 @@ exports.takeTurn = function(channel, Move) {
     }
     else
     if (/^([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9]$/.test(Move)) // Ordo moves
-    {
+    {   // Exampe: "5A-7A left 4"
         let direction = {
             "up": 0,
             "u": 0,
@@ -155,12 +155,12 @@ exports.takeTurn = function(channel, Move) {
             "d": 2,
             "left": 3,
             "l": 3
-        }[Move.split(' ')[1]];
-        let width = Number(Move.split(' ')[2]);
+        }[Move.split(' ')[1]]; // 3
+        let width = Number(Move.split(' ')[2]); // 4
         let stones = [
             [Number(Move.split(' ')[0].split('-')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[0].match(/[a-j]/)[0])],
             [Number(Move.split(' ')[0].split('-')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[1].match(/[a-j]/)[0])]
-        ];  // "5A-7A left 4" = [ [4, 0], [6, 0] ]
+        ];  // [ [4, 0], [6, 0] ]
         let Stones = [];
         if (stones[0][0] == stones[1][0] && stones[0][1] == stones[1][1])   
             return exports.say(channel, ["This is a singleton move, please use the singleton move format!"]);
@@ -171,7 +171,7 @@ exports.takeTurn = function(channel, Move) {
             return exports.say(channel, ["Illegal move: multiple stones cannot be moved single-file."]);
         else
         if (stones[0][0] == stones[1][0])
-        {   // alligned horizontally
+        {
             if (stones[0][1] > stones[1][1])
                 stones.push(stones.shift());
             for (let x = stones[0][1]; x <= stones[1][1]; x++)
@@ -179,7 +179,7 @@ exports.takeTurn = function(channel, Move) {
             width = stones[1][1] - stones[0][1];
         }
         else
-        {   // alligned vertically
+        {
             if (stones[0][0] > stones[1][0])
                 stones.push(stones.shift());
             for (let y = stones[0][0]; y <= stones[1][0]; y++)
@@ -189,7 +189,7 @@ exports.takeTurn = function(channel, Move) {
         move = {
             from: Stones,
             to:   Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * width), p[1] + ([0, 1, 0, -1][direction] * width)])
-        } // "5A-7A left 4" = { from: [ [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0] ], to: [ [1, 9], [2, 9], [3, 9], [4, 9], [5, 9], [6, 9] ] }
+        }   // { from: [ [4, 0], [5, 0], [6, 0] ], to: [ [4, 4], [5, 4], [6, 4] ] }
         if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
             return exports.say(channel, ["Illegal move: one or more of the stones you're trying to move aren't yours."]);
         if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
@@ -211,45 +211,45 @@ exports.takeTurn = function(channel, Move) {
     let queue = [[], []];
     let evaluating = [[], []];
     let confirmed = [[], []];
-    for (let P = 0; P < 2; P++)
-    {
+    for (let Player = 0; Player < 2; Player++)
+    {   // Thing that checks for split groups for both players
         let count = 0;
         for (let y = 0; y < 8; y++)
         {
             for (let x = 0; x < 10; x++)
             {
-                if (boardClone[y][x] === P)
+                if (boardClone[y][x] === Player)
                 {
                     count++;
-                    queue[P].push([y, x]);
+                    queue[Player].push([y, x]);
                 }
             }
         }
         if (count == 0)
         {
             game.highlight = Object.values(move);
-            game.board = JSON.parse(JSON.stringify(boareClone));
+            game.board = JSON.parse(JSON.stringify(boardClone));
             return exports.nextTurn(channel, 2);
         }
         else
         {
-            evaluating[P].push(queue[P].shift());
-            while (evaluating[P].length != 0) {
-                let evaluated = evaluating[P];
-                evaluating[P] = [];
+            evaluating[Player].push(queue[Player].shift());
+            while (evaluating[Player].length != 0) {
+                let evaluated = evaluating[Player];
+                evaluating[Player] = [];
                 for (let i = 0; i < evaluated.length; i++)
                 {
-                    confirmed[P].push(evaluated[i])
+                    confirmed[Player].push(evaluated[i])
                     for (let d = 0; d < 8; d++)
                     {
                         Y = evaluated[i][0] + [-1, -1, 0, 1, 1, 1, 0, -1][d];
                         X = evaluated[i][1] + [0, 1, 1, 1, 0, -1, -1, -1][d];
                         if (Y != -1 && Y != 8 && X != -1 && Y != 10)
                         {
-                            if (queue[P].some(s => s[0] == Y && s[1] == X))
+                            if (queue[Player].some(s => s[0] == Y && s[1] == X))
                             {
-                                evaluating[P].push([Y, X]);
-                                queue[P] = queue[P].filter(s => s[0] != Y || s[1] != X);
+                                evaluating[Player].push([Y, X]);
+                                queue[Player] = queue[Player].filter(s => s[0] != Y || s[1] != X);
                             }
                         }
                     }
@@ -258,25 +258,26 @@ exports.takeTurn = function(channel, Move) {
         }
     }
     if (queue[game.turn].length != 0)
-    {
+    {   // Attempting to split yourself up
         return exports.say(channel, [game.split ? "Illegal move: would not reconnect your stones into one group." : "Illegal move: would split your stones into more than one group."]);
     }
     else
     if (boardClone[[7, 0][game.turn]].some(p => p === game.turn))
-    {
+    {   // Homerow has been reached
         game.board = JSON.parse(JSON.stringify(boardClone));
         end = 1;
     }
     else
     if (queue[[1, 0][game.turn]].length > 0)
-    {
+    {   // Uh oh, split up?
+        // I don't think any changes here is affecting the game in the way it isn't working
         game.board = JSON.parse(JSON.stringify(boardClone));
         let possible = false;
         // Checking for singleton moves that can reconnect
-        let d = [[0, 0], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1]];
+        let direction = [[0, 0], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1]];
         let save = [];
         for (let D = 0; D < 9; D++) {
-            let c = [move.to[0][0] + d[D][0], move.to[0][1] + d[D][1]];
+            let c = [move.to[0][0] + direction[D][0], move.to[0][1] + direction[D][1]];
             for (let y = 0; y < 8; y++)
             {
                 for (let x = 0; x < 10; x++)
@@ -470,6 +471,7 @@ exports.takeTurn = function(channel, Move) {
     }
     else
     {
+        game.board = JSON.parse(JSON.stringify(boardClone));
         game.split = false;
         end = 0;
     }
