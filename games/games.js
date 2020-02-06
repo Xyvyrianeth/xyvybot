@@ -27,27 +27,6 @@ var timer = setInterval(function() {
             games.splice(index, 1);
         }
     });
-    db.query("SELECT * FROM games", function(err, res) {
-        if (err)
-        {
-            client.channels.get("478371618620571648").send('Error retrieving game data backups\n```\n' + err + '```');
-        }
-
-        if (backup)
-        {
-            games = res.rows[0].data;
-            backup = false;
-        }
-        
-        if (games.length > 0)
-        {
-            db.query(`UPDATE games SET data = '${JSON.stringify(games)}'`);
-        }
-        else
-        {
-            db.query("UPDATE games SET data = '[]'");
-        }
-    });
     exports.games = games;
 }, 1000);
 
