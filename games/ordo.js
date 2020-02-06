@@ -107,7 +107,7 @@ exports.drawBoard = function(game, end) {
             else
             if (y == 0 || y == 7)
             {
-                ctx.drawImage(exports.Images[["blue", "white"][y % 6] + "HomeRow"], X, Y);
+                ctx.drawImage(exports.Images[["white", "blue"][y % 6] + "HomeRow"], X, Y);
             }
         }
     }
@@ -161,7 +161,6 @@ exports.takeTurn = function(channel, Move) {
             [Number(Move.split(' ')[0].split('-')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[0].match(/[a-j]/)[0])],
             [Number(Move.split(' ')[0].split('-')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[1].match(/[a-j]/)[0])]
         ];  // "5A-7A left 4" = [ [4, 0], [6, 0] ]
-        let width;
         let Stones = [];
         if (stones[0][0] == stones[1][0] && stones[0][1] == stones[1][1])   
             return exports.say(channel, ["This is a singleton move, please use the singleton move format!"]);
