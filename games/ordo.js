@@ -159,7 +159,6 @@ exports.takeTurn = function(channel, Move) {
             "l": 3
         }[Move.split(' ')[1]]; // 1
         let distance = Number(Move.split(' ')[2]); // 4
-        console.log(distance);
         let stones = [
             [Number(Move.split(' ')[0].split('-')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[0].match(/[a-j]/)[0])],
             [Number(Move.split(' ')[0].split('-')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[1].match(/[a-j]/)[0])]
@@ -189,10 +188,14 @@ exports.takeTurn = function(channel, Move) {
                 Stones.push([y, stones[0][1]]);
             distance = stones[1][0] - stones[0][0];
         }
+        console.log(distance);
+        console.log(Stones);
+        console.log(Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * distance), p[1] + ([0, 1, 0, -1][direction] * distance)]));
         move = {
             from: Stones,
             to:   Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * distance), p[1] + ([0, 1, 0, -1][direction] * distance)])
         }   // { from: [ [4, 0], [5, 0], [6, 0] ], to: [ [4, 4], [5, 4], [6, 4] ] }
+        console.log(move);
         if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
             return exports.say(channel, ["Illegal move: one or more of the stones you're trying to move aren't yours."]);
         if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[distance][1] && game.board[y][x] !== false))) ||
@@ -201,7 +204,6 @@ exports.takeTurn = function(channel, Move) {
             (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[distance][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false))))
                 return exports.say(channel, ["Illegal move: one or more stones are blocking that movement"]);
     }
-    console.log(move);
     
     let pieces = [];
     let boardClone = JSON.parse(JSON.stringify(game.board));
