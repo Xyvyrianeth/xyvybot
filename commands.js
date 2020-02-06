@@ -1,4 +1,4 @@
-var version = "2.44.1.1";
+var version = "2.44.1.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -281,7 +281,13 @@ bot = (message) => {
 
 			// Replay Creation
 			let dimensions = {
-				"connect4": [184, 195]
+				"connect4": [184, 195],
+				"ttt3d": [316, 230],
+				"squares": [280, 300],
+				"othello": [221, 246],
+				"rokumoku": [321, 346],
+				"ordo": [271, 246],
+				"soccer": [311, 235]
 			}[img.match(/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)/g)[0]];
 			let encoder = new gifEncoder(dimensions[0], dimensions[1]);
 			let stream = fs.createWriteStream("replay.gif");
