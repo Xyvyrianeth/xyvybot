@@ -78,7 +78,7 @@ exports.drawBoard = function(game, end) {
 
     if (game.highlight !== false)
     {
-        if (end == 0)
+        if (end !== 1)
             ctx.drawImage(exports.Images.highlight, 6 + (25 * game.highlight), 30 + (25 * (6 - game.board[game.highlight].length)));
         else
             for (let i of game.highlight)
