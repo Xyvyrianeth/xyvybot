@@ -82,7 +82,7 @@ exports.drawBoard = function(game, end) {
             ctx.drawImage(exports.Images.highlight, 6 + (25 * game.highlight), 30 + (25 * (6 - game.board[game.highlight].length)));
         else
             for (let i of game.highlight)
-                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * i[1]), 30 + (25 * (5 - i[0])));
+                ctx.drawImage(exports.Images.winHighlight, 6 + (25 * i[0]), 30 + (25 * (5 - i[1])));
     }
 
     game.replayData.push(ctx);
@@ -126,10 +126,10 @@ exports.takeTurn = function(channel, Move) {
                 ].some(c => c != game.turn))
                 {
                     game.highlight = [
-                        game.board[x][y],
-                        game.board[x + (e[d] * 1)][y + (f[d] * 1)],
-                        game.board[x + (e[d] * 2)][y + (f[d] * 2)],
-                        game.board[x + (e[d] * 3)][y + (f[d] * 3)]
+                        [x, y],
+                        [x + (e[d] * 1), y + (f[d] * 1)],
+                        [x + (e[d] * 2), y + (f[d] * 2)],
+                        [x + (e[d] * 3), y + (f[d] * 3)]
                     ];
 					end = 1;
 					break;
