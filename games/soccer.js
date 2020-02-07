@@ -53,7 +53,7 @@ exports.newGame = function(channel, player, here) {
 	};
 
 	game.timer = {
-		time: 900,
+		time: 1800,
 		message: `It appears nobody wants to play right now, <@${player}>.`
 	}
 	exports.say(game.channels, [`<@${player}> is now requesting a new game of ${gamename}!`, game.buffer]);
@@ -69,7 +69,7 @@ exports.startGame = function(channel1, channel2, player2) {
 	game.player = game.players[0];
   
 	game.timer = {
-		time: 600,
+		time: 900,
 		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
 	}
 	
@@ -127,7 +127,7 @@ exports.newTourney = function(channel, player1, player2) {
 	game.player = game.players[0];
   
 	game.timer = {
-		time: 600,
+		time: 900,
 		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
 	}
 	
@@ -291,7 +291,7 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 			game.player = game.players[game.turn];
 		}
 		game.timer = {
-			time: 600,
+			time: 900,
 			message: `Whoops, it looks like <@${game.players[game.turn]}> has run out of time, so the game is over!`
 		}
 	}
