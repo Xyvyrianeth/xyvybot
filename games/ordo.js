@@ -4,7 +4,7 @@ const { games } = require("/app/games/games.js");
 const { client } = require("/app/Xyvy.js");
 var gamename = "Ordo";
 var shortname = "ordo";
-  
+
 exports.newGame = function(channel, player, here) {
     let game = {
         buffer: {},
@@ -34,7 +34,7 @@ exports.newGame = function(channel, player, here) {
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [_, _, 1, 1, _, _, 1, 1, _, _]
     ];
-  
+
     game.timer = {
         time: 900,
         message: `It appears nobody wants to play right now, <@${player}>.`
@@ -42,31 +42,31 @@ exports.newGame = function(channel, player, here) {
 
     exports.say(game.channels, [`<@${player}> is now requesting a new game of ${gamename}!`, game.buffer]);
 }
-  
+
 exports.startGame = function(channel1, channel2, player2) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel1))[0];
     if (channel1 !== channel2) game.channels[channel2] = [];
     game.players[1] = player2;
     game.started = true;
-  
+
     if ((Math.random() * 2 | 0) == 0) game.players.reverse();
     game.player = game.players[0];
-  
+
     game.timer = {
         time: 600,
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
-    
+
     game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be White!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
-  
+
 exports.drawBoard = function(game, end) {
     let canvas = new Canvas.createCanvas(271, 246);
     let ctx = canvas.getContext('2d');
-      
+
     ctx.drawImage(exports.Images.board, 0, 0);
-      
+
     ctx.drawImage(exports.Images.board, 0, 0);
 
     if (end === 0)
@@ -79,7 +79,7 @@ exports.drawBoard = function(game, end) {
         ctx.drawImage(exports.Images[["blue", "white"][game.winner] + "Text"], 20, 6);
         ctx.drawImage(exports.Images.win, 75 + (6 * game.winner), 6);
     }
-    
+
     for (let y = 0; y < 8; y++)
     {
         for (let x = 0; x < 10; x++)
@@ -116,7 +116,7 @@ exports.drawBoard = function(game, end) {
     game.replayData.push(ctx);
     return canvas.toBuffer();
 }
-  
+
 exports.takeTurn = function(channel, Move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     let move;
@@ -131,10 +131,10 @@ exports.takeTurn = function(channel, Move) {
         let direction = move.from[0][0] < move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 5 : move.from[0][1] < move.to[0][1] ? 3 : 4 : move.from[0][0] > move.to[0][0] ? move.from[0][1] > move.to[0][1] ? 7 : move.from[0][1] < move.to[0][1] ? 1 : 0 : move.from[0][1] > move.to[0][1] ? 6 : move.from[0][1] < move.to[0][1] ? 2 : 8;
         let distance = move.from[0][1] == move.to[0][1] ? Math.abs(move.from[0][0] - move.to[0][0]) : Math.abs(move.from[0][1] - move.to[0][1]);
 
-        if (game.board[move.from[0][0]][move.from[0][1]] == [1, 0][game.turn])
-            return exports.say(channel, ["Illegal move: that stone is not yours."]);
         if (game.board[move.from[0][0]][move.from[0][1]] === false)
             return exports.say(channel, ["Illegal move: there is no stone to move in that space."]);
+        if (game.board[move.from[0][0]][move.from[0][1]] == [1, 0][game.turn])
+            return exports.say(channel, ["Illegal move: that stone is not yours."]);
         if (direction == 8 || distance == 0)
             return exports.say(channel, ["Illegal move: you actually have to move the stone."]);
         if (move.from[0][0] != move.to[0][0] && move.from[0][1] != move.to[0][1] && Math.abs(move.from[0][0] - move.to[0][0]) != Math.abs(move.from[0][1] - move.to[0][1]))
@@ -167,7 +167,7 @@ exports.takeTurn = function(channel, Move) {
         ];  // [ [4, 0], [6, 0] ]
         let width;
         let Stones = [];
-        if (stones[0][0] == stones[1][0] && stones[0][1] == stones[1][1])   
+        if (stones[0][0] == stones[1][0] && stones[0][1] == stones[1][1])
             return exports.say(channel, ["This is a singleton move, please use the singleton move format!"]);
         if (stones[0][0] != stones[1][0] && stones[0][1] != stones[1][1])
             return exports.say(channel, ["Illegal move: stones trying to be moved are not alligned orthagonally."]);
@@ -197,13 +197,13 @@ exports.takeTurn = function(channel, Move) {
         }   // { from: [ [4, 0], [5, 0], [6, 0] ], to: [ [4, 4], [5, 4], [6, 4] ] }
         if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
             return exports.say(channel, ["Illegal move: one or more of the stones you're trying to move aren't yours."]);
-        if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y < move.from[0][0] && y >= move.to[0][0] && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
-            (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y > move.from[0][0] && y <= move.to[0][0] && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
-            (direction == 1 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x > move.from[0][1] && x <= move.to[0][1] && game.board[y][x] !== false))) ||
-            (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x < move.from[0][1] && x >= move.to[0][1] && game.board[y][x] !== false))))
+        if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y <  move.from[0][0] && y >= move.to[0][0] 	 && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
+            (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y >  move.from[0][0] && y <= move.to[0][0] 	 && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
+            (direction == 1 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x >  move.from[0][1] && x <= move.to[0][1] 	   && game.board[y][x] !== false))) ||
+            (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x <  move.from[0][1] && x >= move.to[0][1]     && game.board[y][x] !== false))))
                 return exports.say(channel, ["Illegal move: one or more stones are blocking that movement (ordo moves cannot capture enemy stones)."]);
     }
-    
+
     let pieces = [];
     let boardClone = JSON.parse(JSON.stringify(game.board));
     for (let i = 0; i < move.from.length; i++)
@@ -212,7 +212,7 @@ exports.takeTurn = function(channel, Move) {
         boardClone[move.from[i][0]][move.from[i][1]] = false;
         boardClone[move.to[i][0]][move.to[i][1]] = game.turn;
     }
-    
+
     let queue = [[], []];
     let evaluating = [[], []];
     let confirmed = [[], []];
@@ -270,14 +270,22 @@ exports.takeTurn = function(channel, Move) {
     if (boardClone[[7, 0][game.turn]].some(p => p === game.turn))
     {   // Homerow has been reached
         game.board = JSON.parse(JSON.stringify(boardClone));
-        end = 1;
-    }
+		end = 1;
+		endType = 0;
+	}
+	else
+	if (!boardClone.some(y => y.some(x => x.includes([1, 0][game.turn]))))
+	{
+		game.board = JSON.parse(JSON.stringify(boardClone));
+		end = 1;
+		endType = 1;
+	}
     else
     if (queue[[1, 0][game.turn]].length > 0)
-    {   // Uh oh, split up?
-        // I don't think any changes here is affecting the game in the way it isn't working
+    {
         game.board = JSON.parse(JSON.stringify(boardClone));
-        let possible = false;
+		let possible = false;
+
         // Checking for singleton moves that can reconnect
         let direction = [[0, 0], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1]];
         let save = [];
@@ -317,15 +325,9 @@ exports.takeTurn = function(channel, Move) {
             let evaluating = [];
             let confirmed = [];
             for (let y = 0; y < 8; y++)
-            {
                 for (let x = 0; x < 10; x++)
-                {
                     if (board[y][x] === [1, 0][game.turn])
-                    {
                         queue.push([y, x]);
-                    }
-                }
-            }
             evaluating.push(queue.shift());
             while (evaluating.length != 0) {
                 let evaluated = evaluating;
@@ -471,8 +473,11 @@ exports.takeTurn = function(channel, Move) {
             game.split = true;
             end = 0;
         }
-        else
-            end = 3;
+		else
+		{
+			end = 1;
+			endType = 2;
+		}
     }
     else
     {
@@ -481,12 +486,12 @@ exports.takeTurn = function(channel, Move) {
         end = 0;
     }
 
-    game.highlight = Object.values(move);   
-      
+    game.highlight = Object.values(move);
+
     exports.nextTurn(channel, end);
 }
-  
-exports.nextTurn = function(channel, end) {
+
+exports.nextTurn = function(channel, end, endType) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
     {
@@ -512,7 +517,7 @@ exports.nextTurn = function(channel, end) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [[game.split ? `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.` : `It is <@${game.player}>'s turn.`, `<@${game.player}> has won by reaching their opponent's home row!`, `<@${game.player}> has won by capturing all of their opponent's stones!`, `<@${game.player}> has won by isolating their opponent's pieces!`][end], game.buffer]);
+    exports.say(game.channels, [[game.split ? `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.` : `It is <@${game.player}>'s turn.`, [`<@${game.player}> has won by reaching their opponent's home row!`, `<@${game.player}> has won by capturing all of their opponent's stones!`, `<@${game.player}> has won by splitting up their opponent's pieces!`][endType]][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {
