@@ -1,4 +1,4 @@
-var version = "2.44.1.7";
+var version = "2.44.1.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -271,7 +271,7 @@ bot = (message) => {
 	if (message.attachments.array().length != 0)
 	{
 		let img = message.attachments.first().filename;
-		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)_[0-2]_[0-9]+(|vs[0-9]+)\.png$/.test(img))
+		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)_(0_[0-9]+vs[0-9]+|1_[0-9]+|2_tie)\.png$/.test(img))
 		{
 			let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
 			let end = img.match(/_[0-2]_/)[0].substring(1, 2);
@@ -293,23 +293,21 @@ bot = (message) => {
 			let stream = fs.createWriteStream("replay.gif");
 			encoder.createReadStream().pipe(stream);
 			encoder.begin();
-			for (let i = 0; i < 2; i++)
-				encoder.addFrame(game.replayData[0], 1000);
-			for (let i = 0; i < game.replayData.length - 1; i++)
+			encoder.addFrame(game.replayData[0], 2500);
+			for (let i = 1; i < game.replayData.length - 1; i++)
 				encoder.addFrame(game.replayData[i], 1500);
-			for (let i = 0; i < 5; i++)
-				encoder.addFrame(game.replayData[game.replayData.length - 1], 1000);
+			encoder.addFrame(game.replayData[game.replayData.length - 1], 5000);
 			encoder.end();
 			setTimeout(() => message.channel.send("Replay GIF:", new Discord.Attachment("replay.gif", "replay.gif")), 5000);
 
-			if (end === '1')
+			if (end == 1)
 				result = {
 					winner: game.players[game.winner],
 					loser: game.players[[1, 0][game.winner]],
 					game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer"].indexOf(game.game) + 1),
 					score: game.score
 				};
-			if (end !== '0')
+			if (end != 0)
 				games.games.forEach((game, index) => {
 					if (game.channels.hasOwnProperty(message.channel.id))
 					{
