@@ -310,10 +310,9 @@ exports.nextTurn = function(channel, End) {
     }
     for (let ch in game.channels)
     {
-        for (let i = 0; i < game.channels[ch].length; i++)
-        {
-            client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
-        }
+        if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
+            for (let i = 0; i < game.channels[ch].length; i++)
+                client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
         game.channels[ch] = [];
     }
 

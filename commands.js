@@ -1,4 +1,4 @@
-var version = "2.44.1.12";
+var version = "2.44.1.13";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -132,8 +132,8 @@ other = (message) => {
 			"soccer": /^([0-7]|([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?))$/i
 		}[game.game].test(message.content))
 		{
-			if (message.channel.type !== "dm")
-				setTimeout(() => message.delete(), 5000);
+			if (message.channel.type !== "dm" && message.channel.guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
+				setTimeout(() => message.delete(), 1000);
 			try
 			{
 				return games[game.game].takeTurn(message.channel.id, message.content);
