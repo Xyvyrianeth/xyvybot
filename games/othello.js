@@ -121,26 +121,26 @@ exports.drawBoard = function(game, end) {
         }
     }
     
-    if (end === 0)
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 160, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 169, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 194, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 203, 3);
+
+    for (let i = 0; i < game.highlight.length; i++)
     {
-        for (let i = 0; i < game.highlight.length; i++)
-        {
-            let spot = game.highlight[i];
-            ctx.drawImage(i == 0 ? exports.Images.placed : exports.Images.captured, 17 + (spot[1] * 25), 30 + (spot[0] * 25));
-        }
+        let spot = game.highlight[i];
+        ctx.drawImage(i == 0 ? exports.Images.placed : exports.Images.captured, 17 + (spot[1] * 25), 30 + (spot[0] * 25));
+    }
+
+    game.replayData.push(ctx);
+
+    if (end === 0)
         for (let i = 0; i < game.possible.length; i++)
         {
             let spot = game.possible[i];
             ctx.drawImage(exports.Images.possible, 17 + (spot[1] * 25), 30 + (spot[0] * 25));
         }
-    }
 
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 160, 3);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 169, 3);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 194, 3);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 203, 3);
-      
-    game.replayData.push(ctx);
     return canvas.toBuffer();
 }
   
