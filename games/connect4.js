@@ -95,9 +95,7 @@ exports.takeTurn = function(channel, Move) {
     // Function will vary with game
     let move = Move - 1;
     if (game.board[move].length == 6)
-    {
         return exports.say(game.channels, ["Illegal move: this column is full.", {}]);
-    }
 
     game.board[move].push(game.turn);
     game.highlight = move;
@@ -112,31 +110,29 @@ exports.takeTurn = function(channel, Move) {
         }
     }
 
-    let a = game.board;
-    let b = game.turn;
-    let e = [-1, 0, 1, 1];
-    let f = [1, 1, 1, 0];
+	let e = [1, 1, 1, 0];
+    let f = [-1, 0, 1, 1];
     for (let d = 0; d < 4; d++)
     {
-        for (let x = [3, 0, 0, 0][d]; x < [6, 6, 3, 3][d]; x++)
+        for (let x = 0; x < [4, 4, 4, 7][d]; x++)
         {
-            for (let y = 0; y < [7, 3, 3, 7][d]; y++)
+            for (let y = [3, 0, 0, 0][d]; y < [6, 6, 3, 3][d]; y++)
             {
                 if (![
-                    a[x][y],
-                    a[x + (e[d] * 1)][y + (f[d] * 1)],
-                    a[x + (e[d] * 2)][y + (f[d] * 2)],
-                    a[x + (e[d] * 3)][y + (f[d] * 3)]
-                ].some(c => c != b))
+                    game.board[x][y],
+                    game.board[x + (e[d] * 1)][y + (f[d] * 1)],
+                    game.board[x + (e[d] * 2)][y + (f[d] * 2)],
+                    game.board[x + (e[d] * 3)][y + (f[d] * 3)]
+                ].some(c => c != game.turn))
                 {
                     game.highlight = [
-                        [x, y],
-                        [x + (e[d] * 1), y + (f[d] * 1)],
-                        [x + (e[d] * 2), y + (f[d] * 2)],
-                        [x + (e[d] * 3), y + (f[d] * 3)]
+                        game.board[x][y],
+                        game.board[x + (e[d] * 1)][y + (f[d] * 1)],
+                        game.board[x + (e[d] * 2)][y + (f[d] * 2)],
+                        game.board[x + (e[d] * 3)][y + (f[d] * 3)]
                     ];
-                    end = 1;
-                    break;
+					end = 1;
+					break;
                 }
             }
         }
@@ -157,16 +153,12 @@ exports.nextTurn = function(channel, end) {
         }
     }
     else
-    {
         game.winner = game.turn;
-    }
     game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`, `${shortname}_${end}_${game.players[game.winner]}.png`][end]);
     for (let ch in game.channels)
     {
         for (let i = 0; i < game.channels[ch].length; i++)
-        {
             client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
-		}
 		game.channels[ch] = [];
     }
 
@@ -175,9 +167,7 @@ exports.nextTurn = function(channel, end) {
 
 exports.say = function(channels, message) {
     for (let i in channels)
-    {
         client.channels.get(i).send(message[0], message[1]);
-    }
 }
 
 // Images
