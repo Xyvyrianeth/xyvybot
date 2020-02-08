@@ -4,7 +4,7 @@ const { games } = require("/app/games/games.js");
 const { client } = require("/app/Xyvy.js");
 var gamename = "Othello";
 var shortname = "othello";
-  
+
 exports.newGame = function(channel, player, here) {
     let game = {
         buffer: {},
@@ -58,7 +58,7 @@ exports.newGame = function(channel, player, here) {
     game.board[3][2] = true;
     game.board[4][5] = true;
     game.board[5][4] = true;
-  
+
     game.timer = {
         time: 1800,
         message: `It appears nobody wants to play right now, <@${player}>.`
@@ -72,10 +72,10 @@ exports.startGame = function(channel1, channel2, player2) {
     if (channel1 !== channel2) game.channels[channel2] = [];
     game.players[1] = player2;
     game.started = true;
-  
+
     if ((Math.random() * 2 | 0) == 0) game.players.reverse(); // Makes player one random instead of always the challenger
     game.player = game.players[0];
-  
+
     game.timer = {
         time: 900,
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
@@ -84,11 +84,11 @@ exports.startGame = function(channel1, channel2, player2) {
     game.buffer =  new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Black, and <@${game.players[1]}> will be White!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
-  
+
 exports.drawBoard = function(game, end) {
     let canvas = new Canvas.createCanvas(221, 246);
     let ctx = canvas.getContext('2d');
-      
+
     ctx.drawImage(exports.Images.board, 0, 0);
 
     if (end === 0)
@@ -107,7 +107,7 @@ exports.drawBoard = function(game, end) {
     {
         ctx.drawImage(exports.Images.tie, 14, 10);
     }
-    
+
     game.score = [0, 0];
     for (let x = 0; x < 8; x++)
     {
@@ -120,7 +120,7 @@ exports.drawBoard = function(game, end) {
             }
         }
     }
-    
+
     ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 160, 3);
     ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 169, 3);
     ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 194, 3);
@@ -132,7 +132,11 @@ exports.drawBoard = function(game, end) {
         ctx.drawImage(i == 0 ? exports.Images.placed : exports.Images.captured, 17 + (spot[1] * 25), 30 + (spot[0] * 25));
     }
 
-    game.replayData.push(ctx);
+	let newCanvas = new Canvas.createCanvas(221, 246);
+	let newCtx = newCanvas.getContext('2d');
+	let data = ctx.getImageData(0, 0, 221, 246);
+	newCtx.putImageData(data, 0, 0);
+    game.replayData.push(newCtx);
 
     if (end === 0)
         for (let i = 0; i < game.possible.length; i++)
@@ -143,11 +147,11 @@ exports.drawBoard = function(game, end) {
 
     return canvas.toBuffer();
 }
-  
+
 exports.takeTurn = function(channel, Move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     let move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-h]/)[0])];
-  
+
     // Function will vary with game
     game.highlight = [];
     if (typeof game.board[move[0]][move[1]] !== "boolean")
@@ -159,7 +163,7 @@ exports.takeTurn = function(channel, Move) {
         return exports.say(JSON.parse(`{"${channel}":[]}`), ["Illegal move: playing in this space would not capture anything.", {}]);
     }
     game.possible.forEach(p => {
-        
+
         if (move[0] == p[0] && move[1] == p[1])
         {
             game.board[move[0]][move[1]] = game.turn;
@@ -175,7 +179,7 @@ exports.takeTurn = function(channel, Move) {
     });
 
     game.highlight.unshift(move);
-    
+
     // Turns all booleans to false for possible placement algorithm
     for (let y = 0; y < 8; y++)
     {
@@ -222,13 +226,13 @@ exports.checkPossible = function(game) {
 
                 d = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]; // All 8 cardinal [d]irections
                 p = []; // Total [d]irections that can be captured in [this] space
-                
+
                 for (let i = 0; i < 8; i++)
                 { // For all 8 directions...
 
                     if (y + d[i][0] < 8 && y + d[i][0] > -1 && x + d[i][1] < 8 && x + d[i][1] > -1)
                     { // If the next space in this [d]irection does not go off the edge
-                    
+
                         let y1 = y + d[i][0]; // Y-coord of next space d
                         let x1 = x + d[i][1]; // X-coord of next space d
                         let p1 = 1; // How many stones in [d]irection?
@@ -243,7 +247,7 @@ exports.checkPossible = function(game) {
                                 y1 += d[i][0]; // +1 in vertical [d]irection
                                 x1 += d[i][1]; // +1 in horizontal [d]irection
                                 p1 += 1; // +1 to distance
-                                
+
                                 if (y1 < 8 && y1 > -1 && x1 < 8 && x1 > -1)
                                 { // Next space does not go off the endge
 
@@ -282,7 +286,7 @@ exports.checkPossible = function(game) {
         game.possible = false;
     }
 }
-  
+
 exports.nextTurn = function(channel, End) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     let end = 0;
