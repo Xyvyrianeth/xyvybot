@@ -251,7 +251,7 @@ exports.nextTurn = function(channel, end) {
 	else
 		game.winner = game.score[0] > game.score[1] ? 0 : 1;
 
-	game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`squares_1_${game.players[game.winner]}.png`, `squares_0_${game.players[0]}vs${game.players[1]}.png`, `squares_2_tie`][end]);
+	game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`squares_1_${game.players[game.winner]}.png`, `squares_0_${game.players[0]}vs${game.players[1]}.png`, `squares_2_tie.png`][end]);
 	for (let ch in game.channels)
 	{
 		if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
