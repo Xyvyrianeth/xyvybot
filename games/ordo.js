@@ -17,7 +17,8 @@ exports.newGame = function(channel, player, here) {
         player: false,
         players: [player],
         replayData: [],
-        started: false,
+		started: false,
+		split: 0,
         turn: 0
     };
     game.channels[channel] = [];
@@ -264,7 +265,7 @@ exports.takeTurn = function(channel, Move) {
     }
     if (queue[game.turn].length != 0)
     {   // Attempting to split yourself up
-        return exports.say(channel, [game.split ? "Illegal move: would not reconnect your stones into one group." : "Illegal move: would split your stones into more than one group."]);
+        return exports.say(channel, ["Illegal move: would split your stones into more than one group.", "Illegal move: would not reconnect your stones into one group."][game.split]);
     }
     else
     if (boardClone[[7, 0][game.turn]].some(p => p === game.turn))
@@ -470,7 +471,7 @@ exports.takeTurn = function(channel, Move) {
 
         if (possible)
         {
-            game.split = true;
+            game.split = 1;
             end = 0;
         }
 		else
@@ -482,7 +483,7 @@ exports.takeTurn = function(channel, Move) {
     else
     {
         game.board = JSON.parse(JSON.stringify(boardClone));
-        game.split = false;
+        game.split = 0;
         end = 0;
     }
 
@@ -507,7 +508,7 @@ exports.nextTurn = function(channel, end, endType) {
         game.winner = game.turn;
     }
 
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 0 ? `${shortname}_0_${game.players[0]}vs${game.players[1]}.png` : `${shortname}_1_${game.players[game.winner]}.png`);
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`ordo_0_${game.players[0]}vs${game.players[1]}.png`, `ordo_1_${game.players[game.winner]}.png`][end]);
     for (let ch in game.channels)
     {
         if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
@@ -516,7 +517,7 @@ exports.nextTurn = function(channel, end, endType) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [[game.split ? `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.` : `It is <@${game.player}>'s turn.`, [`<@${game.player}> has won by reaching their opponent's home row!`, `<@${game.player}> has won by capturing all of their opponent's stones!`, `<@${game.player}> has won by splitting up their opponent's pieces!`][endType]][end], game.buffer]);
+    exports.say(game.channels, [[[`It is <@${game.player}>'s turn.`, `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.`][game.split], [`<@${game.player}> has won by reaching their opponent's home row!`, `<@${game.player}> has won by capturing all of their opponent's stones!`, `<@${game.player}> has won by splitting up their opponent's pieces!`][endType]][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {

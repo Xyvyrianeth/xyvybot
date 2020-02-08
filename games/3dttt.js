@@ -49,7 +49,7 @@ exports.newGame = function(channel, player, here) {
             'D': [false, false, false, false],
         }
     };
- 
+
     game.timer = {
         time: 1800,
         message: `It appears nobody wants to play right now, <@${player}>.`
@@ -57,16 +57,16 @@ exports.newGame = function(channel, player, here) {
 
     exports.say(game.channels, [`<@${player}> is now requesting a new game of ${gamename}!`, game.buffer]);
 }
- 
+
 exports.startGame = function(channel1, channel2, player2) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel1))[0];
     if (channel1 !== channel2) game.channels[channel2] = [];
     game.players[1] = player2;
     game.started = true;
- 
+
     if ((Math.random() * 2 | 0) == 0) game.players.reverse(); // Makes player one random instead of always the challenger
     game.player = game.players[0];
- 
+
     game.timer = {
         time: 900,
         message: "Whoops, it looks like <@" + game.players[0] + "> has run out of time, so the game is over!"
@@ -75,7 +75,7 @@ exports.startGame = function(channel1, channel2, player2) {
     game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false, true), `${shortname}_0.png`);
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be **X**, and <@${game.players[1]}> will be **O**!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
- 
+
 exports.drawBoard = function(game, end, highlight, firstDisp) {
     let canvas = new Canvas.createCanvas(316, 230);
     let ctx = canvas.getContext('2d');
@@ -110,7 +110,7 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
                         game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()
                     ], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 }
-                
+
                 if (end === 0 && highlight !== false && (x + 1) + (y + 10).toString(14).toUpperCase() + z == highlight)
                 {
                     ctx.drawImage(exports.Images.highlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
@@ -127,7 +127,7 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
     game.replayData.push(ctx);
     return canvas.toBuffer();
 }
- 
+
 exports.takeTurn = function(channel, move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     // Function will vary with game
@@ -178,7 +178,7 @@ exports.takeTurn = function(channel, move) {
         [['4', 'B', 0], ['4', 'B', 1], ['4', 'B', 2], ['4', 'B', 3]],
         [['4', 'C', 0], ['4', 'C', 1], ['4', 'C', 2], ['4', 'C', 3]],
         [['4', 'D', 0], ['4', 'D', 1], ['4', 'D', 2], ['4', 'D', 3]],
-        
+
         [['1', 'A', 0], ['1', 'B', 0], ['1', 'C', 0], ['1', 'D', 0]],
         [['1', 'A', 1], ['1', 'B', 1], ['1', 'C', 1], ['1', 'D', 1]],
         [['1', 'A', 2], ['1', 'B', 2], ['1', 'C', 2], ['1', 'D', 2]],
@@ -239,7 +239,7 @@ exports.takeTurn = function(channel, move) {
         [['1', 'D', 1], ['2', 'C', 1], ['3', 'B', 1], ['4', 'A', 1]],
         [['1', 'D', 2], ['2', 'C', 2], ['3', 'B', 2], ['4', 'A', 2]],
         [['1', 'D', 3], ['2', 'C', 3], ['3', 'B', 3], ['4', 'A', 3]],
-        
+
         [['1', 'A', 0], ['2', 'B', 1], ['3', 'C', 2], ['4', 'D', 3]],
         [['1', 'D', 3], ['2', 'C', 2], ['3', 'B', 1], ['4', 'A', 0]],
         [['1', 'A', 3], ['2', 'B', 2], ['3', 'C', 1], ['4', 'D', 0]],
@@ -265,10 +265,10 @@ exports.takeTurn = function(channel, move) {
     }
 
     //
-     
+
     exports.nextTurn(channel, end, highlight);
 }
- 
+
 exports.nextTurn = function(channel, end, highlight) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
@@ -285,7 +285,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.winner = game.turn;
     }
 
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), [`ttt3d_0_${game.players[0]}vs${game.players[1]}.png`, `ttt3d_1_${game.players[game.winner]}.png`, 'ttt3d_2_tie'][end]);
     for (let ch in game.channels)
     {
         if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
@@ -294,7 +294,7 @@ exports.nextTurn = function(channel, end, highlight) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [end == 0 ? `It is <@${game.players[game.turn]}>'s turn.` : end == 1 ? `<@${game.players[game.winner]}> has won!` : "Tie game, everyone loses!", game.buffer]);
+    exports.say(game.channels, [[`It is <@${game.players[game.turn]}>'s turn.`, `<@${game.players[game.winner]}> has won!`, "Tie game, everyone loses!"][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {

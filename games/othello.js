@@ -192,22 +192,20 @@ exports.takeTurn = function(channel, Move) {
         }
     }
 
-    exports.checkPossible(game);
-    if (!game.possible)
+    if (!exports.checkPossible(game))
     {
-        exports.checkPossible(game);
-        if (!game.possible)
+        if (!exports.checkPossible(game))
         {
-            exports.nextTurn(channel, true);
+            exports.nextTurn(channel, 1);
         }
         else
         {
-            exports.nextTurn(channel, false);
+            exports.nextTurn(channel, 0);
         }
     }
     else
     {
-        exports.nextTurn(channel, false);
+        exports.nextTurn(channel, 0);
     }
 }
 
@@ -281,16 +279,12 @@ exports.checkPossible = function(game) {
             }
         }
     }
-    if (game.possible.length == 0)
-    {
-        game.possible = false;
-    }
+    return game.possible.length !== 0;
 }
 
-exports.nextTurn = function(channel, End) {
+exports.nextTurn = function(channel, end) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
-    let end = 0;
-    if (End)
+    if (end == 1)
     {
         if (game.score[0] == game.score[1])
         {
@@ -301,17 +295,18 @@ exports.nextTurn = function(channel, End) {
             end = 1;
             game.winner = game.score[0] > game.score[1] ? 0 : 1;
         }
-        game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`${shortname}_1_${game.players[game.winner]}.png`, `${shortname}_2_${game.players[0]}vs${game.players[1]}.png`][end - 1]);
-    }
-    else
-    {
-        game.timer = {
-            time: 900,
-            message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
-        }
-        game.player = game.players[game.turn];
-        game.buffer = new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
-    }
+	}
+	else
+	{
+		game.timer = {
+			time: 900,
+			message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
+		}
+	}
+
+	game.player = game.players[game.turn];
+	game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`othello_0_${game.players[0]}vs${game.players[1]}.png`, `othello_1_${game.players[game.winner]}.png`, `othello_2_tie.png`][end]);
+
     for (let ch in game.channels)
     {
         if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))

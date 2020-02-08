@@ -4,7 +4,7 @@ const { games } = require("/app/games/games.js");
 const { client } = require("/app/Xyvy.js");
 var gamename = "Rokumoku";
 var shortname = "rokumoku";
- 
+
 exports.newGame = function(channel, player, here) {
     let game = {
         buffer: {},
@@ -36,7 +36,7 @@ exports.newGame = function(channel, player, here) {
         }
         game.board.push(row);
     }
- 
+
     game.timer = {
         time: 1800,
         message: `It appears nobody wants to play right now, <@${player}>.`
@@ -44,16 +44,16 @@ exports.newGame = function(channel, player, here) {
 
     exports.say(game.channels, [`<@${player}> is now requesting a new game of ${gamename}!`, {}]);
 }
- 
+
 exports.startGame = function(channel1, channel2, player2) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel1))[0];
     if (channel1 !== channel2) game.channels[channel2] = [];
     game.players[1] = player2;
     game.started = true;
- 
+
     if ((Math.random() * 2 | 0) == 0) game.players.reverse();
     game.player = game.players[0];
- 
+
     game.timer = {
         time: 900,
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
@@ -62,11 +62,11 @@ exports.startGame = function(channel1, channel2, player2) {
     game.buffer = new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Black, and <@${game.players[1]}> will be White!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
- 
+
 exports.drawBoard = function(game, end) {
     let canvas = new Canvas.createCanvas(321, 346);
     let ctx = canvas.getContext('2d');
-      
+
     ctx.drawImage(exports.Images.board, 0, 0);
 
     if (end === 0)
@@ -86,7 +86,7 @@ exports.drawBoard = function(game, end) {
         ctx.drawImage(exports.Images.tie, 20, 6);
         game.highlight = [];
     }
-    
+
     for (let x = 0; x < 12; x++)
     {
         for (let y = 0; y < 12; y++)
@@ -108,7 +108,7 @@ exports.drawBoard = function(game, end) {
     game.replayData.push(ctx);
     return canvas.toBuffer();
 }
- 
+
 exports.takeTurn = function(channel, Move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghijkl'.indexOf(Move.toLowerCase().match(/[a-z]/)[0])];
@@ -155,7 +155,7 @@ exports.takeTurn = function(channel, Move) {
                 ].some(c => c !== b))
                 {
                     game.highlight = [
-                        a[y][x], 
+                        a[y][x],
                         a[y + (e[d] * 1)][x + (f[d] * 1)],
                         a[y + (e[d] * 2)][x + (f[d] * 2)],
                         a[y + (e[d] * 3)][x + (f[d] * 3)],
@@ -177,10 +177,10 @@ exports.takeTurn = function(channel, Move) {
     {
         game.highlight.push(move);
     }
-     
+
     exports.nextTurn(channel, end);
 }
- 
+
 exports.nextTurn = function(channel, end) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 0)
@@ -192,11 +192,10 @@ exports.nextTurn = function(channel, end) {
             message: `Whoops, it looks like <@${game.player}> has run out of time, so the game is over!`
         }
     }
-    else
-    {
+	else
+	if (end == 1)
         game.winner = Math.floor(game.turn);
-    }
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 1 ? `${shortname}_${end}_${game.winner}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
+    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`rokumoku_0_${game.players[0]}vs${game.players[1]}.png`, `rokumoku_1_${game.winner}.png`, 'rokumoku_2_tie.png'][end]);
     for (let ch in game.channels)
     {
         if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
@@ -205,7 +204,7 @@ exports.nextTurn = function(channel, end) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn` : end == 1 ? `<@${game.player}> has won!` : `Tie game, everyone loses!`, game.buffer]);
+    exports.say(game.channels, [[`It is <@${game.player}>'s turn`, `<@${game.player}> has won!`, `Tie game, everyone loses!`][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {

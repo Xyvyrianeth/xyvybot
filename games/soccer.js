@@ -4,7 +4,7 @@ const { games } = require("/app/games/games.js");
 const { client } = require("/app/Xyvy.js");
 var gamename = "Paper Soccer";
 var shortname = "soccer";
-  
+
 exports.newGame = function(channel, player, here) {
 	let game = {
 		buffer: {},
@@ -58,21 +58,21 @@ exports.newGame = function(channel, player, here) {
 	}
 	exports.say(game.channels, [`<@${player}> is now requesting a new game of ${gamename}!`, game.buffer]);
 }
-  
+
 exports.startGame = function(channel1, channel2, player2) {
 	let game = games.filter(game => game.channels.hasOwnProperty(channel1))[0];
 	if (channel1 !== channel2) game.channels[channel2] = [];
 	game.players[1] = player2;
 	game.started = true;
-  
+
 	if ((Math.random() * 2 | 0) == 0) game.players.push(game.players.shift());
 	game.player = game.players[0];
-  
+
 	game.timer = {
 		time: 900,
 		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
 	}
-	
+
 	game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
 	exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be Red!`, game.buffer]);
 }
@@ -122,23 +122,23 @@ exports.newTourney = function(channel, player1, player2) {
 		],
 		ball: [5, 6]
 	};
-  
+
 	if ((Math.random() * 2 | 0) == 0) game.players.reverse();
 	game.player = game.players[0];
-  
+
 	game.timer = {
 		time: 900,
 		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
 	}
-	
+
 	game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
 	exports.say(game.channels, [`A tourney match has been started between <@${game.players[0]}> and <@${game.players[1]}>!\n<@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be Red!`, game.buffer]);
 }
-  
+
 exports.drawBoard = function(game, end, highlight) {
 	let canvas = new Canvas.createCanvas(311, 235);
 	let ctx = canvas.getContext('2d');
-	
+
 	ctx.drawImage(exports.Images.board, 0, 0);
 	if
 	(end === 0)
@@ -197,7 +197,7 @@ exports.drawBoard = function(game, end, highlight) {
     game.replayData.push(ctx);
 	return canvas.toBuffer();
 }
-  
+
 exports.takeTurn = function(channel, Move) {
 	let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
 	let move;
@@ -236,7 +236,7 @@ exports.takeTurn = function(channel, Move) {
 	{
 		return exports.say(channel, ["Illegal Move: You cannot move the ball along the edge of the board, you have to bounce off."]);
 	}
-	if ((move < 4 && tempboard.paths[Y][X][move] != 0) || (move > 3 && tempboard.paths[Y + yy][X + xx][move % 4] != 0)) 
+	if ((move < 4 && tempboard.paths[Y][X][move] != 0) || (move > 3 && tempboard.paths[Y + yy][X + xx][move % 4] != 0))
 	{
 		return exports.say(channel, ["Illegal Move: This move will cross a path that has already been used."]);
 	}
@@ -277,10 +277,10 @@ exports.takeTurn = function(channel, Move) {
 
 	game.board = tempboard;
 	// .....
-	  
+
 	exports.nextTurn(channel, end, highlight, goagain);
 }
-  
+
 exports.nextTurn = function(channel, end, highlight, goagain) {
 	let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
 	if (end == 0)
@@ -296,7 +296,7 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 		}
 	}
 
-	game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
+	game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), [`soccer_0_${game.players[0]}vs${game.players[1]}.png`, `soccer_1_${game.players[game.winner]}.png`, `soccer_1_${game.players[game.winner]}.png`][end]);
 	for (let ch in game.channels)
 	{
 		if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
@@ -305,7 +305,7 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 		game.channels[ch] = [];
 	}
 
-	exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ? `<@${game.players[game.winner]}> has won because <@${game.player}> got the ball stuck!` : `<@${game.players[game.winner]}> has won!`, game.buffer]);
+	exports.say(game.channels, [[`It is <@${game.player}>'s turn.`, `<@${game.players[game.winner]}> has won!`, `<@${game.players[game.winner]}> has won because <@${game.player}> got the ball stuck!`][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {

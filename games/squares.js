@@ -251,7 +251,7 @@ exports.nextTurn = function(channel, end) {
 	else
 		game.winner = game.score[0] > game.score[1] ? 0 : 1;
 
-	game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
+	game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`squares_1_${game.players[game.winner]}.png`, `squares_0_${game.players[0]}vs${game.players[1]}.png`, `squares_2_tie`][end]);
 	for (let ch in game.channels)
 	{
 		if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
@@ -260,7 +260,7 @@ exports.nextTurn = function(channel, end) {
 		game.channels[ch] = [];
 	}
 
-	if (end == 1)
+	if (end !== 0)
 	{
 		// Replay GIF will be different for this game
 		// Instead of showing movement history, it'll just cycle through all the squares on the final screen and highlight them
