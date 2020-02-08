@@ -4,7 +4,7 @@ const { games } = require("/app/games/games.js");
 const { client } = require("/app/Xyvy.js");
 var gamename = "Squares";
 var shortname = "squares";
-  
+
 exports.newGame = function(channel, player, here) {
 	let game = {
 		buffer: {},
@@ -34,7 +34,7 @@ exports.newGame = function(channel, player, here) {
 		}
 		game.board.push(row);
 	}
-  
+
 	game.timer = {
 		time: 1800,
 		message: `It appears nobody wants to play right now, <@${player}>.`
@@ -42,21 +42,21 @@ exports.newGame = function(channel, player, here) {
 
 	exports.say(game.channels, [`<@${player}> is now requesting a new game of ${gamename}!`, game.buffer]);
 }
-  
+
 exports.startGame = function(channel1, channel2, player2) {
 	let game = games.filter(game => game.channels.hasOwnProperty(channel1))[0];
 	if (channel1 !== channel2) game.channels[channel2] = [];
 	game.players[1] = player2;
 	game.started = true;
-  
+
 	if ((Math.random() * 2 | 0) == 0) game.players.push(game.players.shift());
 	game.player = game.players[0];
-  
+
 	game.timer = {
 		time: 900,
 		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
 	}
-	
+
 	game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
 	exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Black, and <@${game.players[1]}> will be Red!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
@@ -90,45 +90,42 @@ exports.newTourney = function(channel, player1, player2) {
 		}
 		game.board.push(row);
 	}
-  
+
 	if ((Math.random() * 2 | 0) == 0) game.players.reverse();
 	game.player = game.players[0];
-  
+
 	game.timer = {
 		time: 900,
 		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
 	}
-	
+
 	game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
 	exports.say(game.channels, [`A tourney match has been started between <@${game.players[0]}> and <@${game.players[1]}>!\n<@${game.players[0]}> will be Black, and <@${game.players[1]}> will be Red!`, game.buffer]);
 }
-  
+
 exports.drawBoard = function(game, end) {
 	let canvas = new Canvas.createCanvas(280, 300);
 	let ctx = canvas.getContext('2d');
-	  
+
 	ctx.drawImage(exports.Images.board, 0, 0);
 
-	if
-	(end === 0)
+	if (end === 0)
 	{
 		ctx.drawImage(exports.Images[["black", "red"][Math.floor(game.turn)] + "Text"], 20, 6);
 		ctx.drawImage(exports.Images.turn, 76 - (19 * Math.floor(game.turn)), 4);
 	}
 	else
-	if
-	(end === 1)
+	if (end === 1)
 	{
 		ctx.drawImage(exports.Images[["black", "red"][game.winner] + "Text"], 20, 6);
 		ctx.drawImage(exports.Images.win, 81 - (19 * Math.floor(game.turn)), 6);
 	}
 	else
-	if
-	(end === 2)
+	if (end === 2)
 	{
 		ctx.drawImage(exports.Images.tie, 20, 6);
 	}
-	
+
 	for (let x = 0; x < 10; x++)
 	{
 		for (let y = 0; y < 10; y++)
@@ -156,10 +153,10 @@ exports.drawBoard = function(game, end) {
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 228, 3);
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]], 237, 3);
 
-    game.replayData.push(ctx);
+	if (end === 3) game.replayData.push(ctx);
 	return canvas.toBuffer();
 }
-  
+
 exports.takeTurn = function(channel, Move) {
 	let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
 	let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
@@ -224,7 +221,7 @@ exports.takeTurn = function(channel, Move) {
 		game.highlight[0].push(move);
 		game.highlight[1] = game.highlight[1].concat(highlight);
 	}
-	
+
 	if (end !== 0)
 	{
 		if (game.score[0] == game.score[1])
@@ -236,10 +233,10 @@ exports.takeTurn = function(channel, Move) {
 			game.winner = game.score[0] > game.score[1] ? 0 : 1;
 		}
 	}
-	  
+
 	exports.nextTurn(channel, end);
 }
-  
+
 exports.nextTurn = function(channel, end) {
 	let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
 	if (end == 0)
@@ -252,9 +249,7 @@ exports.nextTurn = function(channel, end) {
 		}
 	}
 	else
-	{
 		game.winner = game.score[0] > game.score[1] ? 0 : 1;
-	}
 
 	game.buffer = new Discord.Attachment(exports.drawBoard(game, end), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
 	for (let ch in game.channels)
@@ -263,6 +258,35 @@ exports.nextTurn = function(channel, end) {
             for (let i = 0; i < game.channels[ch].length; i++)
                 client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
 		game.channels[ch] = [];
+	}
+
+	if (end == 1)
+	{
+		// Replay GIF will be different for this game
+		// Instead of showing movement history, it'll just cycle through all the squares on the final screen and highlight them
+
+		game.highlight = [[], []];
+		game.score = [0, 0];
+		exports.drawBoard(game, 3);
+		for (let p = 0; p < 2; p++)
+		{
+			for (let i = 1; i < 10; i++)
+			{
+				for (let x = 0; x < 10 - i; x++)
+				{
+					for (let y = 0; y < 10 - i; y++)
+					{
+						if (game.board[y][x] === p && game.board[y][x] === game.board[y + i][x] && game.board[y][x] === game.board[y][x + i] && game.board[y][x] === game.board[y + i][x + i])
+						{
+							game.score[p] += 1;
+							game.highlight[1] = [[y, x], [y + i, x], [y, x + i], [y + i, x + i]];
+							exports.drawBoard(game, 3);
+						}
+					}
+				}
+			}
+		}
+		exports.drawBoard(game, 3);
 	}
 
 	exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ? "Tie game, everyone loses!" : `<@${game.players[game.winner]}> has won!`, game.buffer]);

@@ -1,4 +1,4 @@
-var version = "2.44.1.14";
+var version = "2.44.2.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -280,6 +280,7 @@ bot = (message) => {
 			let result = false;
 
 			// Replay Creation
+			let Game = img.match(/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)/g)[0];
 			let dimensions = {
 				"connect4": [184, 195],
 				"ttt3d": [316, 230],
@@ -288,15 +289,15 @@ bot = (message) => {
 				"rokumoku": [321, 346],
 				"ordo": [271, 246],
 				"soccer": [311, 235]
-			}[img.match(/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)/g)[0]];
+			}[Game];
 			let encoder = new gifEncoder(dimensions[0], dimensions[1]);
 			let stream = fs.createWriteStream("replay.gif");
 			encoder.createReadStream().pipe(stream);
 			encoder.begin();
 			encoder.addFrame(game.replayData[0], 2500);
 			for (let i = 1; i < game.replayData.length - 1; i++)
-				encoder.addFrame(game.replayData[i], 1500);
-			encoder.addFrame(game.replayData[game.replayData.length - 1], 5000);
+				encoder.addFrame(game.replayData[i], Game == "squares" ? 300 : 1500);
+			encoder.addFrame(game.replayData[game.replayData.length - 1], Game == "squares" ? 2500 : 5000);
 			encoder.end();
 			setTimeout(() => message.channel.send("Replay GIF:", new Discord.Attachment("replay.gif", "replay.gif")), 5000);
 
