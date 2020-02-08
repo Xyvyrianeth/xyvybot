@@ -1,4 +1,4 @@
-var version = "2.44.2.2";
+var version = "2.44.2.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -296,7 +296,7 @@ bot = (message) => {
 			encoder.begin();
 			encoder.addFrame(game.replayData[0], 2500);
 			for (let i = 1; i < game.replayData.length - 1; i++)
-				encoder.addFrame(game.replayData[i], Game == "squares" ? 300 : 1500);
+				encoder.addFrame(game.replayData[i], Game == "squares" ? 350 : 1500);
 			encoder.addFrame(game.replayData[game.replayData.length - 1], Game == "squares" ? 2500 : 5000);
 			encoder.end();
 			setTimeout(() => message.channel.send(Game == "squares" ? "Squares Count:" : "Replay GIF:", new Discord.Attachment("replay.gif", "replay.gif")), 5000);

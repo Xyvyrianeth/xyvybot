@@ -286,6 +286,7 @@ exports.nextTurn = function(channel, end) {
 				}
 			}
 		}
+		game.highlight = [[], []];
 		exports.drawBoard(game, 3);
 	}
 
