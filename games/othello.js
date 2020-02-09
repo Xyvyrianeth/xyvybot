@@ -91,35 +91,14 @@ exports.drawBoard = function(game, end) {
 
     ctx.drawImage(exports.Images.board, 0, 0);
 
-    if (end === 0)
-    {
-        ctx.drawImage(exports.Images[["black", "white"][game.turn] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.turn, 76, 4);
-    }
-    else
-    if (end === 1)
-    {
-        ctx.drawImage(exports.Images[["black", "white"][game.winner] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.win, 81, 6);
-    }
-    else
-    if (end === 2)
-    {
-        ctx.drawImage(exports.Images.tie, 14, 10);
-    }
-
     game.score = [0, 0];
     for (let x = 0; x < 8; x++)
-    {
         for (let y = 0; y < 8; y++)
-        {
             if (typeof game.board[x][y] !== "boolean")
             {
                 ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
                 game.score[game.board[x][y]] += 1;
             }
-        }
-    }
 
     ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 160, 3);
     ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 169, 3);
@@ -137,6 +116,21 @@ exports.drawBoard = function(game, end) {
 	let data = ctx.getImageData(0, 0, 221, 246);
 	newCtx.putImageData(data, 0, 0);
     game.replayData.push(newCtx);
+
+    if (end === 0)
+    {
+        ctx.drawImage(exports.Images[["black", "white"][game.turn] + "Text"], 20, 6);
+        ctx.drawImage(exports.Images.turn, 76, 4);
+    }
+    else
+    if (end === 1)
+    {
+        ctx.drawImage(exports.Images[["black", "white"][game.winner] + "Text"], 20, 6);
+        ctx.drawImage(exports.Images.win, 81, 6);
+    }
+    else
+    if (end === 2)
+        ctx.drawImage(exports.Images.tie, 14, 10);
 
     if (end === 0)
         for (let i = 0; i < game.possible.length; i++)

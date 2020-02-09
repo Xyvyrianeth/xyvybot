@@ -122,29 +122,17 @@ exports.drawBoard = function(game, end) {
 	}
 	else
 	if (end === 2)
-	{
 		ctx.drawImage(exports.Images.tie, 20, 6);
-	}
 
 	for (let x = 0; x < 10; x++)
-	{
 		for (let y = 0; y < 10; y++)
-		{
 			if (game.highlight[0].some(h => h[0] == x && h[1] == y))
-			{
 				ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
-			}
 			else
 			if (game.highlight[1].some(h => h[0] == x && h[1] == y))
-			{
 				ctx.drawImage(exports.Images.squareHighlight, 17 + (y * 25), 30 + (x * 25));
-			}
 			if (game.board[x][y] !== false)
-			{
 				ctx.drawImage(exports.Images[["black", "red"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
-			}
-		}
-	}
 
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 186, 3);
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 195, 3);
@@ -269,23 +257,15 @@ exports.nextTurn = function(channel, end) {
 		game.score = [0, 0];
 		exports.drawBoard(game, 3);
 		for (let p = 0; p < 2; p++)
-		{
 			for (let i = 1; i < 10; i++)
-			{
 				for (let x = 0; x < 10 - i; x++)
-				{
 					for (let y = 0; y < 10 - i; y++)
-					{
 						if (game.board[y][x] === p && game.board[y][x] === game.board[y + i][x] && game.board[y][x] === game.board[y][x + i] && game.board[y][x] === game.board[y + i][x + i])
 						{
 							game.score[p] += 1;
 							game.highlight[1] = [[y, x], [y + i, x], [y, x + i], [y + i, x + i]];
 							exports.drawBoard(game, 3);
 						}
-					}
-				}
-			}
-		}
 		game.highlight = [[], []];
 		exports.drawBoard(game, 3);
 	}

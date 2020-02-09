@@ -69,6 +69,18 @@ exports.drawBoard = function(game, end) {
 
     ctx.drawImage(exports.Images.board, 0, 0);
 
+    for (let x = 0; x < 12; x++)
+		for (let y = 0; y < 12; y++)
+		{
+            for (let h = 0; h < game.highlight.length; h++)
+                if (game.highlight[h][0] == x && game.highlight[h][1] == y)
+                    ctx.drawImage(exports.Images[end == 0 ? "highlight" : "winHighlight"], 17 + (y * 25), 30 + (x * 25));
+            if (game.board[x][y] !== false)
+				ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
+		}
+
+    game.replayData.push(ctx);
+
     if (end === 0)
     {
         ctx.drawImage(exports.Images[["black", "white"][Math.floor(game.turn)] + "Text"], 20, 6);
@@ -85,27 +97,8 @@ exports.drawBoard = function(game, end) {
     {
         ctx.drawImage(exports.Images.tie, 20, 6);
         game.highlight = [];
-    }
+	}
 
-    for (let x = 0; x < 12; x++)
-    {
-        for (let y = 0; y < 12; y++)
-        {
-            for (let h = 0; h < game.highlight.length; h++)
-            {
-                if (game.highlight[h][0] == x && game.highlight[h][1] == y)
-                {
-                    ctx.drawImage(exports.Images[end == 0 ? "highlight" : "winHighlight"], 17 + (y * 25), 30 + (x * 25));
-                }
-            }
-            if (game.board[x][y] !== false)
-            {
-                ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
-            }
-        }
-    }
-
-    game.replayData.push(ctx);
     return canvas.toBuffer();
 }
 

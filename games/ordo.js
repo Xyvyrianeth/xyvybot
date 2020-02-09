@@ -68,7 +68,28 @@ exports.drawBoard = function(game, end) {
 
     ctx.drawImage(exports.Images.board, 0, 0);
 
-    ctx.drawImage(exports.Images.board, 0, 0);
+    for (let y = 0; y < 8; y++)
+        for (let x = 0; x < 10; x++)
+        {
+            let X = 17 + (x * 25);
+            let Y = 30 + (y * 25);
+            if (game.board[y][x] !== false)
+                ctx.drawImage(exports.Images[["blue", "white"][game.board[y][x]]], X, Y);
+
+            if (end > 0 && game.highlight[1].some(h => h[0] == y && h[1] == x))
+                ctx.drawImage(exports.Images.winHighlight, X, Y);
+            else
+            if (game.highlight[0].some(h => h[0] == y && h[1] == x))
+                ctx.drawImage(exports.Images.from, X, Y);
+            else
+            if (game.highlight[1].some(h => h[0] == y && h[1] == x))
+                ctx.drawImage(exports.Images.to, X, Y);
+            else
+            if (y == 0 || y == 7)
+                ctx.drawImage(exports.Images[["white", "blue"][y % 6] + "HomeRow"], X, Y);
+        }
+
+    game.replayData.push(ctx);
 
     if (end === 0)
     {
@@ -79,42 +100,8 @@ exports.drawBoard = function(game, end) {
     {
         ctx.drawImage(exports.Images[["blue", "white"][game.winner] + "Text"], 20, 6);
         ctx.drawImage(exports.Images.win, 75 + (6 * game.winner), 6);
-    }
+	}
 
-    for (let y = 0; y < 8; y++)
-    {
-        for (let x = 0; x < 10; x++)
-        {
-            let X = 17 + (x * 25);
-            let Y = 30 + (y * 25);
-            if (game.board[y][x] !== false)
-            {
-                ctx.drawImage(exports.Images[["blue", "white"][game.board[y][x]]], X, Y);
-            }
-
-            if (end > 0 && game.highlight[1].some(h => h[0] == y && h[1] == x))
-            {
-                ctx.drawImage(exports.Images.winHighlight, X, Y);
-            }
-            else
-            if (game.highlight[0].some(h => h[0] == y && h[1] == x))
-            {
-                ctx.drawImage(exports.Images.from, X, Y);
-            }
-            else
-            if (game.highlight[1].some(h => h[0] == y && h[1] == x))
-            {
-                ctx.drawImage(exports.Images.to, X, Y);
-            }
-            else
-            if (y == 0 || y == 7)
-            {
-                ctx.drawImage(exports.Images[["white", "blue"][y % 6] + "HomeRow"], X, Y);
-            }
-        }
-    }
-
-    game.replayData.push(ctx);
     return canvas.toBuffer();
 }
 

@@ -57,21 +57,6 @@ exports.drawBoard = function(game, end) {
 	let ctx = canvas.getContext("2d");
     ctx.drawImage(exports.Images.board, 0, 0);
 
-    if (end == 0)
-    {
-        ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 9, 6);
-        ctx.drawImage(exports.Images.turn, 58 - (13 * game.turn), 4);
-    }
-    else
-    if (end == 1)
-    {
-        ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 9, 6);
-        ctx.drawImage(exports.Images.win, 67 - (13 * game.turn), 6);
-    }
-    else
-    if (end == 2)
-        ctx.drawImage(exports.Images.tie, 9, 6);
-
     for (let x = 0; x < 7; x++)
         for (let y = 0; y < game.board[x].length; y++)
             ctx.drawImage(exports.Images[["blue", "red"][game.board[x][y]]], 6 + (25 * x), 30 + (25 * (5 - y)));
@@ -86,6 +71,22 @@ exports.drawBoard = function(game, end) {
     }
 
     game.replayData.push(ctx);
+
+    if (end == 0)
+    {
+        ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 9, 6);
+        ctx.drawImage(exports.Images.turn, 58 - (13 * game.turn), 4);
+    }
+    else
+    if (end == 1)
+    {
+        ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 9, 6);
+        ctx.drawImage(exports.Images.win, 67 - (13 * game.turn), 6);
+    }
+    else
+    if (end == 2)
+		ctx.drawImage(exports.Images.tie, 9, 6);
+
     return canvas.toBuffer();
 }
 

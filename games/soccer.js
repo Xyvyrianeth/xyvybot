@@ -140,8 +140,38 @@ exports.drawBoard = function(game, end, highlight) {
 	let ctx = canvas.getContext('2d');
 
 	ctx.drawImage(exports.Images.board, 0, 0);
-	if
-	(end === 0)
+
+	let lines = new Canvas.createCanvas(311, 235);
+	let ltx = lines.getContext('2d');
+	for (let y = 0; y <= 10; y++)
+		for (let x = 0; x <= 12; x++)
+			for (let i = 0; i < 4; i++)
+				if (game.board.paths[y][x][i] == 1)
+					ltx.drawImage(exports.Images[["blue", "red", "black"][game.board.color[y][x][i] - 1] + "line" + i], x * 25 + 4, (y - 1) * 25 + 3);
+	let data = ltx.getImageData(0, 0, 311, 235);
+	for (let i = 0; i < data.data.length; i += 4)
+	{
+		if (data.data[i] != 0 && data.data[i + 2] == 0)
+			data.data[i] = 255;
+		else
+		if (data.data[i + 2] != 0 && data.data[i] == 0)
+			data.data[i + 2] = 255;
+		else
+		if (data.data[i] != 0 && data.data[i + 2] != 0)
+			data.data[i] = 150,
+			data.data[i + 2] = 150;
+		data.data[i + 3] *= 4;
+	}
+	ltx.putImageData(data, 0, 0);
+
+	ctx.drawImage(lines, 0, 0);
+	ctx.drawImage(exports.Images.ball, game.board.ball[1] * 25 + 1, game.board.ball[0] * 25);
+
+	// ....
+
+	game.replayData.push(ctx);
+
+	if (end === 0)
 	{
 		ctx.drawImage(exports.Images[["blue", "red"][game.turn] + "Text"], 20, 6);
 		ctx.drawImage(exports.Images.turn, 76 - (19 * Math.floor(game.turn)), 4);
@@ -152,49 +182,6 @@ exports.drawBoard = function(game, end, highlight) {
 		ctx.drawImage(exports.Images.win, 81 - (19 * game.turn), 6);
 	}
 
-	let lines = new Canvas.createCanvas(311, 235);
-	let ltx = lines.getContext('2d');
-	for (let y = 0; y <= 10; y++)
-	{
-		for (let x = 0; x <= 12; x++)
-		{
-			for (let i = 0; i < 4; i++)
-			{
-				if (game.board.paths[y][x][i] == 1)
-				{
-					ltx.drawImage(exports.Images[["blue", "red", "black"][game.board.color[y][x][i] - 1] + "line" + i], x * 25 + 4, (y - 1) * 25 + 3);
-				}
-			}
-		}
-	}
-	let data = ltx.getImageData(0, 0, 311, 235);
-	for (let i = 0; i < data.data.length; i += 4)
-	{
-		if (data.data[i] != 0 && data.data[i + 2] == 0)
-		{
-			data.data[i] = 255;
-		}
-		else
-		if (data.data[i + 2] != 0 && data.data[i] == 0)
-		{
-			data.data[i + 2] = 255;
-		}
-		else
-		if (data.data[i] != 0 && data.data[i + 2] != 0)
-		{
-			data.data[i] = 150;
-			data.data[i + 2] = 150;
-		}
-		data.data[i + 3] *= 4;
-	}
-	ltx.putImageData(data, 0, 0);
-
-	ctx.drawImage(lines, 0, 0);
-	ctx.drawImage(exports.Images.ball, game.board.ball[1] * 25 + 1, game.board.ball[0] * 25);
-
-	// ....
-
-    game.replayData.push(ctx);
 	return canvas.toBuffer();
 }
 
