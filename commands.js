@@ -1,4 +1,4 @@
-var version = "2.45.0.0";
+var version = "2.45.0.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -299,13 +299,13 @@ bot = (message) => {
 				encoder.addFrame(game.replayData[i], Game == "squares" ? 350 : 1500);
 			encoder.addFrame(game.replayData[game.replayData.length - 1], Game == "squares" ? 2500 : 5000);
 			encoder.end();
-			db.query(`INSERT INTO matches (id, game, location, players, winner, timeStart) VALUES ('${message.id}', '${Game}', '${message.channel.guild.id}/${message.channel.id}/${message.id}', 'array[${game.players[0]},${game.players[1]}]', '${game.winner}', ${game.timeStart})`, (err, res) => {
+			db.query(`INSERT INTO matches (id, game, location, players, winner, timeStart) VALUES ('${message.id}', '${Game}', '${message.channel.guild.id}/${message.channel.id}/${message.id}', 'array[${game.players[0]},${game.players[1]}]', '${game.players[game.winner]}', ${game.timeStart})`, (err, res) => {
 				if (err)
-					return sqlError(message, err, `INSERT INTO matches (id, game, location, players, winner, timeStart) VALUES ('${message.id}', '${Game}', '${message.channel.guild.id}/${message.channel.id}/${message.id}', 'array[${game.players[0]},${game.players[1]}]', '${game.winner}', ${game.timeStart})`);
+					return sqlError(message, err, `INSERT INTO matches (id, game, location, players, winner, timeStart) VALUES ('${message.id}', '${Game}', '${message.channel.guild.id}/${message.channel.id}/blank', 'array[${game.players[0]},${game.players[1]}]', '${game.players[game.winner]}', ${game.timeStart})`);
 				let attachment = new Discord.Attachment("replay.gif", "replay.gif");
 				let embed = new Discord.RichEmbed()
 					.setTitle(Game == "squares" ? "Final Square Count:" : "Replay GIF:")
-					.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>`)
+					.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`)
 					.attachFile(attachment)
 					.setImage("attachments://replay.gif");
 				message.channel.send(embed);
@@ -616,23 +616,23 @@ var commands = {
 
 			let wins = elos.replace(/elo/g, "win"),
 				loss = elos.replace(/elo/g, "los"),
-				query = (`SELECT\n` + 
-					`	id, elos AS elo, wins AS win, loss AS los,\n` + 
-					`	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound\n` + 
-					`FROM profiles WHERE wins + loss > 0 ORDER BY\n` + 
-					`	elo DESC, ci_lower_bound DESC, id ASC\n` + 
-					`LIMIT 10;\n` + 
+				query = (`SELECT\n` +
+					`	id, elos AS elo, wins AS win, loss AS los,\n` +
+					`	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound\n` +
+					`FROM profiles WHERE wins + loss > 0 ORDER BY\n` +
+					`	elo DESC, ci_lower_bound DESC, id ASC\n` +
+					`LIMIT 10;\n` +
 
-					`SELECT\n` + 
-					`	id, elos AS elo, wins AS win, loss AS los,\n` + 
-					`	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound\n` + 
-					`FROM profiles WHERE\n` + 
-					`	id = '${message.author.id}' AND wins + loss > 0;\n` + 
+					`SELECT\n` +
+					`	id, elos AS elo, wins AS win, loss AS los,\n` +
+					`	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound\n` +
+					`FROM profiles WHERE\n` +
+					`	id = '${message.author.id}' AND wins + loss > 0;\n` +
 
-					`SELECT CAST(COUNT(id) + 1 AS int) AS place FROM profiles WHERE\n` + 
-					`	0 < ANY (SELECT wins + loss FROM profiles WHERE id = '${message.author.id}') AND id != '${message.author.id}' AND wins + loss > 0 AND elos >= ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}') AND\n` + 
-					`	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))\n` + 
-					`	> ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))\n` + 
+					`SELECT CAST(COUNT(id) + 1 AS int) AS place FROM profiles WHERE\n` +
+					`	0 < ANY (SELECT wins + loss FROM profiles WHERE id = '${message.author.id}') AND id != '${message.author.id}' AND wins + loss > 0 AND elos >= ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}') AND\n` +
+					`	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))\n` +
+					`	> ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))\n` +
 					`FROM profiles WHERE id = '${message.author.id}');`).replace(/elos/g, elos).replace(/wins/g, wins).replace(/loss/g, loss);
 			return db.query(query, (err, res) => {
 				if (err)

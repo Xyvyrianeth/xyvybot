@@ -92,19 +92,19 @@ exports.drawBoard = function(game, end) {
 
     ctx.drawImage(exports.Images.board, 0, 0);
 
-    game.score = [0, 0];
+	let score = [0, 0];
     for (let x = 0; x < 8; x++)
         for (let y = 0; y < 8; y++)
-            if (typeof game.board[x][y] !== "boolean")
+            if (typeof game.board[x][y] != "boolean")
             {
-                ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
-                game.score[game.board[x][y]] += 1;
-            }
+				ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
+				score[game.board[x][y]] += 1;
+			}
 
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 160, 3);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 169, 3);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[0]], 194, 3);
-    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 203, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(score[0]).length) + score[0]).split('')[0]], 160, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(score[0]).length) + score[0]).split('')[1]], 169, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(score[1]).length) + score[1]).split('')[0]], 194, 3);
+    ctx.drawImage(exports.Images.numbers[('0'.repeat(2 - JSON.stringify(score[1]).length) + score[1]).split('')[1]], 203, 3);
 
     for (let i = 0; i < game.highlight.length; i++)
     {
@@ -141,6 +141,16 @@ exports.drawBoard = function(game, end) {
         }
 
     return canvas.toBuffer();
+}
+
+exports.getScore = function(game) {
+    score = [0, 0];
+    for (let x = 0; x < 8; x++)
+        for (let y = 0; y < 8; y++)
+            if (typeof game.board[x][y] != "boolean")
+				score[game.board[x][y]] += 1;
+
+	return score;
 }
 
 exports.takeTurn = function(channel, Move) {
@@ -281,14 +291,14 @@ exports.nextTurn = function(channel, end) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
     if (end == 1)
     {
-        if (game.score[0] == game.score[1])
-        {
+		let score = exports.getScore(game);
+
+        if (score[0] == score[1])
             end = 2;
-        }
         else
         {
             end = 1;
-            game.winner = game.score[0] > game.score[1] ? 0 : 1;
+            game.winner = score[0] > score[1] ? 0 : 1;
         }
 	}
 	else
@@ -310,7 +320,7 @@ exports.nextTurn = function(channel, end) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [[`It is <@${game.player}>'s turn.`, `<@${game.player}> has won!`, "Tie game, everyone loses!"][end], game.buffer]);
+    exports.say(game.channels, [[`It is <@${game.player}>'s turn.`, `<@${game.players[game.winner]}> has won!`, "Tie game, everyone loses!"][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {
