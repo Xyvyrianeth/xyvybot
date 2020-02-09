@@ -1,7 +1,7 @@
 {
 	"name": "xyvybot",
 	"author": "Xyvyrianeth",
-	"version": "v2.44.3",
+	"version": "v2.45.0",
 	"scripts": {
 		"start": "node Xyvy.js --harmony"
 	},

@@ -17,6 +17,7 @@ exports.newGame = function(channel, player, here) {
 		players: [player],
         replayData: [],
 		started: false,
+		timeStart: new Date(),
 		turn: 0
 	};
 	game.channels[channel] = [];
@@ -88,6 +89,7 @@ exports.newTourney = function(channel, player1, player2) {
 		player: false,
 		players: [player1, player2],
 		started: false,
+		timeStart: new Date(),
 		turn: 0
 	};
 	game.channels[channel] = [];

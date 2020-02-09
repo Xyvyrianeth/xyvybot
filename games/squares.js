@@ -19,6 +19,7 @@ exports.newGame = function(channel, player, here) {
         replayData: [],
 		score: [0, 0],
 		started: false,
+		timeStart: new Date(),
 		turn: 0.5
 	};
 	game.channels[channel] = [];
@@ -126,6 +127,7 @@ exports.drawBoard = function(game, end) {
 
 	for (let x = 0; x < 10; x++)
 		for (let y = 0; y < 10; y++)
+		{
 			if (game.highlight[0].some(h => h[0] == x && h[1] == y))
 				ctx.drawImage(exports.Images.highlight, 17 + (y * 25), 30 + (x * 25));
 			else
@@ -133,6 +135,7 @@ exports.drawBoard = function(game, end) {
 				ctx.drawImage(exports.Images.squareHighlight, 17 + (y * 25), 30 + (x * 25));
 			if (game.board[x][y] !== false)
 				ctx.drawImage(exports.Images[["black", "red"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
+		}
 
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[0]], 186, 3);
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[0]).length) + game.score[0]).split('')[1]], 195, 3);

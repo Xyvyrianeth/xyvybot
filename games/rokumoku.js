@@ -20,6 +20,7 @@ exports.newGame = function(channel, player, here) {
         players: [player],
         replayData: [],
         started: false,
+		timeStart: new Date(),
         turn: 0.5
     };
     game.channels[channel] = [];

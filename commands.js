@@ -1,4 +1,4 @@
-var version = "2.44.3.0";
+var version = "2.45.0.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -299,7 +299,17 @@ bot = (message) => {
 				encoder.addFrame(game.replayData[i], Game == "squares" ? 350 : 1500);
 			encoder.addFrame(game.replayData[game.replayData.length - 1], Game == "squares" ? 2500 : 5000);
 			encoder.end();
-			setTimeout(() => message.channel.send(Game == "squares" ? "Final Square Count:" : "Replay GIF:", new Discord.Attachment("replay.gif", "replay.gif")), 5000);
+			db.query(`INSERT INTO matches (id, game, location, players, winner, timeStart) VALUES ('${message.id}', '${Game}', '${message.channel.guild.id}/${message.channel.id}/${message.id}', 'array[${game.players[0]},${game.players[1]}]', '${game.winner}', ${game.timeStart})`, (err, res) => {
+				if (err)
+					return sqlError(message, err, `INSERT INTO matches (id, game, location, players, winner, timeStart) VALUES ('${message.id}', '${Game}', '${message.channel.guild.id}/${message.channel.id}/${message.id}', 'array[${game.players[0]},${game.players[1]}]', '${game.winner}', ${game.timeStart})`);
+				let attachment = new Discord.Attachment("replay.gif", "replay.gif");
+				let embed = new Discord.RichEmbed()
+					.setTitle(Game == "squares" ? "Final Square Count:" : "Replay GIF:")
+					.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>`)
+					.attachFile(attachment)
+					.setImage("attachments://replay.gif");
+				message.channel.send(embed);
+			});
 
 			if (end == 1)
 				result = {
@@ -486,7 +496,7 @@ var aliases = {
 		"profile": ["profile", "scorecard", "prof"],
 
 		// Minigames
-		/* @TODO add to x!help when all have been added*/
+		/** @TODO add to x!help when all have been added*/
 		"minesweeper": ["minesweeper", "ms", "mines"],
 		"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],
 		"hangman": ["hangman", "hm"],
@@ -530,7 +540,7 @@ var aliases = {
 		"profile": ["profile", "scorecard", "prof"],
 
 		// Minigames
-		/* @TODO add to x!help when all have been added*/
+		/** @TODO add to x!help when all have been added*/
 		"minesweeper": ["minesweeper", "ms", "mines"],
 		"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],
 		"hangman": ["hangman", "hm"],
@@ -606,25 +616,24 @@ var commands = {
 
 			let wins = elos.replace(/elo/g, "win"),
 				loss = elos.replace(/elo/g, "los"),
-				query =
-				`SELECT
-					id, elos AS elo, wins AS win, loss AS los,
-					((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound
-				FROM profiles WHERE wins + loss > 0 ORDER BY
-					elo DESC, ci_lower_bound DESC, id ASC
-				LIMIT 10;
+				query = (`SELECT\n` + 
+					`	id, elos AS elo, wins AS win, loss AS los,\n` + 
+					`	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound\n` + 
+					`FROM profiles WHERE wins + loss > 0 ORDER BY\n` + 
+					`	elo DESC, ci_lower_bound DESC, id ASC\n` + 
+					`LIMIT 10;\n` + 
 
-				SELECT
-					id, elos AS elo, wins AS win, loss AS los,
-					((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound
-				FROM profiles WHERE
-					id = '${message.author.id}' AND wins + loss > 0;
+					`SELECT\n` + 
+					`	id, elos AS elo, wins AS win, loss AS los,\n` + 
+					`	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) AS ci_lower_bound\n` + 
+					`FROM profiles WHERE\n` + 
+					`	id = '${message.author.id}' AND wins + loss > 0;\n` + 
 
-				SELECT CAST(COUNT(id) + 1 AS int) AS place FROM profiles WHERE
-					0 < ANY (SELECT wins + loss FROM profiles WHERE id = '${message.author.id}') AND id != '${message.author.id}' AND wins + loss > 0 AND elos >= ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}') AND
-					((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))
-					> ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))
-				FROM profiles WHERE id = '${message.author.id}');`.replace(/elos/g, elos).replace(/wins/g, wins).replace(/loss/g, loss);
+					`SELECT CAST(COUNT(id) + 1 AS int) AS place FROM profiles WHERE\n` + 
+					`	0 < ANY (SELECT wins + loss FROM profiles WHERE id = '${message.author.id}') AND id != '${message.author.id}' AND wins + loss > 0 AND elos >= ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}') AND\n` + 
+					`	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))\n` + 
+					`	> ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))\n` + 
+					`FROM profiles WHERE id = '${message.author.id}');`).replace(/elos/g, elos).replace(/wins/g, wins).replace(/loss/g, loss);
 			return db.query(query, (err, res) => {
 				if (err)
 					return sqlError(message, err, query);
@@ -791,11 +800,37 @@ var commands = {
 		}
 		else
 		if (["games"].includes(args[0]))
+		{
 			return message.channel.send(
 				new Discord.RichEmbed()
 					.setDescription("I currently have 7 games, and plan to add more.\n\n**Games**: Othello, Squares, Rokumoku, 3D Tic-Tac-Toe, Connect Four, Ordo, Paper Soccer\n**Planned**: Rokumoku\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).")
-					.setColor(new Color().random())
-			);
+					.setColor(new Color().random()));
+		}
+		/** @TODO
+		else
+		if (["history"].includes(args[0]))
+		{
+			let query;
+			if (!args[1] || args[1] == "me")
+				query = `SELECT * FROM matches WHERE '${message.author.id}' = ANY (players) LIMIT 10`; // Make only pick 10 most recent
+			else
+			if (/^<@!?[0-9]+>$/.test(args[1]))
+				query = `SELECT * FROM matches WHERE '${args[1].match(/[0-9]+/)[0]}' = ANY (players) LIMIT 10`;
+
+			if (args[2] == "page" && /^[0-9]+$/.test(args[3])) // Page number
+			{
+
+			}
+			else
+			{
+
+			}
+			db.query(query, (err, res) => {
+				if (err)
+					return sqlError(message, err, query);
+
+			});
+		} */
 	},
 
 	"othello": (cmd, args, input, message) => {
