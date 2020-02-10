@@ -1,4 +1,4 @@
-var version = "2.45.0.7";
+var version = "2.45.0.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -455,7 +455,7 @@ bot = (message) => {
 	else
 	if (message.embeds.length > 0 && (message.embeds[0].title == "Replay GIF:" || message.embeds[0].title == "Final Square Count:"))
 	{
-		let query = `UPDATE matches SET location = '${message.channel.id}/${message.embeds[0].image.url.split('/')[5]}' WHERE '${message.channnel.id}' = split_part(location, '/', 1) AND 'blank' = split_part(location, '/', s)`;
+		let query = `UPDATE matches SET location = '${message.channel.id}/${message.embeds[0].image.url.split('/')[5]}' WHERE '${message.channnel.id}' = split_part(location, '/', 1) AND 'blank' = split_part(location, '/', 2)`;
 		db.query(query, (err, res) => { if (err) return sqlError(message, err, query); })
 	}
 }
