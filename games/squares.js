@@ -17,8 +17,9 @@ exports.newGame = function(channel, player, here) {
 		over: false,
 		player: false,
 		players: [player],
-        replayData: [],
+		replayData: [],
 		score: [0, 0],
+		squareCounterData: [],
 		started: false,
 		timeStart: `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
 		turn: 0.5
@@ -111,21 +112,6 @@ exports.drawBoard = function(game, end) {
 
 	ctx.drawImage(exports.Images.board, 0, 0);
 
-	if (end === 0)
-	{
-		ctx.drawImage(exports.Images[["black", "red"][Math.floor(game.turn)] + "Text"], 20, 6);
-		ctx.drawImage(exports.Images.turn, 76 - (19 * Math.floor(game.turn)), 4);
-	}
-	else
-	if (end === 1)
-	{
-		ctx.drawImage(exports.Images[["black", "red"][game.winner] + "Text"], 20, 6);
-		ctx.drawImage(exports.Images.win, 81 - (19 * Math.floor(game.turn)), 6);
-	}
-	else
-	if (end === 2)
-		ctx.drawImage(exports.Images.tie, 20, 6);
-
 	for (let x = 0; x < 10; x++)
 		for (let y = 0; y < 10; y++)
 		{
@@ -145,7 +131,24 @@ exports.drawBoard = function(game, end) {
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 228, 3);
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]], 237, 3);
 
-	if (end === 3) game.replayData.push(ctx);
+	if (end === 3) game.squareCounterData.push(ctx);
+	else game.replayData.push(ctx);
+
+	if (end === 0)
+	{
+		ctx.drawImage(exports.Images[["black", "red"][Math.floor(game.turn)] + "Text"], 20, 6);
+		ctx.drawImage(exports.Images.turn, 76 - (19 * Math.floor(game.turn)), 4);
+	}
+	else
+	if (end === 1)
+	{
+		ctx.drawImage(exports.Images[["black", "red"][game.winner] + "Text"], 20, 6);
+		ctx.drawImage(exports.Images.win, 81 - (19 * Math.floor(game.turn)), 6);
+	}
+	else
+	if (end === 2)
+		ctx.drawImage(exports.Images.tie, 20, 6);
+
 	return canvas.toBuffer();
 }
 

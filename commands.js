@@ -1,4 +1,4 @@
-var version = "2.45.0.10";
+var version = "2.45.1.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -200,7 +200,7 @@ other = (message) => {
 								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 								else display.push(minigame.ans[i]);
 							}
-							embed.addField(guess + " is in the word!", `<@!${message.author.id}> has finished the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\``);
+							embed.addField(guess + " is in the word!", `<@!${message.author.id}> has finished the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**${minigame.ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!\n" : ""}\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\``);
 							embed.setColor(new Color(46, 204, 113).toHexa());
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
@@ -213,7 +213,7 @@ other = (message) => {
 								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/i.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
 								else display.push(minigame.right[i]);
 							}
-							embed.addField(guess + " is in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
+							embed.addField(guess + " is in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**${minigame.ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!\n" : ""}\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
 							embed.setColor(new Color(52, 152, 219).toHexa());
 							minigame.timer = 180;
 						}
@@ -229,7 +229,7 @@ other = (message) => {
 								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 								else display.push(minigame.ans[i]);
 							}
-							embed.addField(guess + " is not in the word!", `You guessed incorrectly too many times!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\``);
+							embed.addField(guess + " is not in the word!", `You guessed incorrectly too many times!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**${minigame.ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!\n" : ""}\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\``);
 							embed.setColor(new Color(231, 76, 60).toHexa());
 							delete games.minigames[index];
 							games.minigames.splice(index, 1);
@@ -242,7 +242,7 @@ other = (message) => {
 								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
 								else display.push(minigame.right[i]);
 							}
-							embed.addField(guess + " is not in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
+							embed.addField(guess + " is not in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**${minigame.ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!\n" : ""}\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
 							embed.setColor(new Color(214, 196, 15).toHexa());
 							minigame.timer = 180;
 						}
@@ -256,7 +256,7 @@ other = (message) => {
 						if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
 						else display.push(minigame.ans[i]);
 					}
-					embed.addField("Solved!", `<@!${message.author.id}> has solved the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\``);
+					embed.addField("Solved!", `<@!${message.author.id}> has solved the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**${minigame.ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!\n" : ""}\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\``);
 					embed.setColor(new Color(46, 204, 113).toHexa());
 					delete games.minigames[index];
 					games.minigames.splice(index, 1);
@@ -323,7 +323,8 @@ bot = (message) => {
 						.setTitle(Game == "squares" ? "Final Square Count:" : "Replay GIF:")
 						.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`)
 						.attachFile(attachment)
-						.setImage("attachment://replay.gif");
+						.setImage("attachment://replay.gif")
+						.setFooter("Match ID: " + message.id);
 					message.channel.send(embed);
 				});
 			}, 5000);
@@ -455,7 +456,7 @@ bot = (message) => {
 	else
 	if (message.embeds.length > 0 && (message.embeds[0].title == "Replay GIF:" || message.embeds[0].title == "Final Square Count:"))
 	{
-		let query = `UPDATE matches SET location = '${message.channel.id}/${message.embeds[0].image.url.split('/')[5]}' WHERE '${message.channel.id}' = split_part(location, '/', 1) AND 'blank' = split_part(location, '/', 2)`;
+		let query = `UPDATE matches SET location = '${message.channel.id}/${message.embeds[0].image.url.split('/')[5]}' WHERE id = '${message.embeds[0].footer.match(/[0-9]+$/)[0]}'`;
 		db.query(query, (err, res) => { if (err) return sqlError(message, err, query); })
 	}
 }
@@ -829,31 +830,46 @@ var commands = {
 					.setDescription("I currently have 7 games, and plan to add more.\n\n**Games**: Othello, Squares, Rokumoku, 3D Tic-Tac-Toe, Connect Four, Ordo, Paper Soccer\n**Planned**: Rokumoku\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).")
 					.setColor(new Color().random()));
 		}
-		/** @TODO
 		else
 		if (["history"].includes(args[0]))
 		{
 			let query;
-			if (!args[1] || args[1] == "me")
-				query = `SELECT * FROM matches WHERE '${message.author.id}' = ANY (players) LIMIT 10`; // Make only pick 10 most recent
-			else
-			if (/^<@!?[0-9]+>$/.test(args[1]))
-				query = `SELECT * FROM matches WHERE '${args[1].match(/[0-9]+/)[0]}' = ANY (players) LIMIT 10`;
+			let player = message.author.id;
+			let game = '';
+			let id = '';
 
-			if (args[2] == "page" && /^[0-9]+$/.test(args[3])) // Page number
+			if (args.some(arg => /^<@!?[0-9]+>$/.test(arg)) && client.users.get(args.filter(arg => /^<@!?[0-9]+>$/.test(arg))) != undefined)
+				player = client.users.get(args.filter(arg => /^<@!?[0-9]+>$/.test(arg))[0]).id;
+			player = `ANY (players) = '${player}'`;
+				
+			let gms = {
+				"othello": ["othello", "reversi"],
+				"squares": ["squares"],
+				"rokumoku": ["rokumoku", "connect6", "connectsix", "c6"],
+				"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
+				"connect4": ["connectfour", "connect4", "cfour", "c4"],
+				"ordo": ["ordo"],
+				"soccer": ["soccer", "papersoccer", "psoccer"]
+			};
+			args.some(arg => Object.keys(gms).forEach(gm => { if (gms[gm].includes(arg)) game = gm; }));
+
+			if (args.some(arg => /^<@!?[0-9]+>$/.test(arg)))
 			{
-
+				id = ``;
 			}
-			else
-			{
-
-			}
+			
+			let query = `SELECT * FROM matches\n` +
+						`WHERE\n` +
+						`	${player} ${game} ${id}\n` +
+						`ORDER BY timeStart DESC\n` +
+						`LIMIT 20`;
+			
 			db.query(query, (err, res) => {
 				if (err)
 					return sqlError(message, err, query);
 
 			});
-		} */
+		}
 	},
 
 	"othello": (cmd, args, input, message) => {
@@ -1682,7 +1698,7 @@ var commands = {
 		let embed = new Discord.RichEmbed()
 			.setTitle("Hangman")
 			.setColor(new Color(176, 14, 223).toHexa())
-			.addField("Guess letters and fill out the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${category}**\n\nWrong guesses: \`7\``);
+			.addField("Guess letters and fill out the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${category}**\n${ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!" : ""}\n\nWrong guesses: \`7\``);
 		message.channel.send(embed);
 		games.minigames.push({
 			type: "hangman",
