@@ -1,4 +1,4 @@
-var version = "2.45.0.3";
+var version = "2.45.0.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -305,15 +305,15 @@ bot = (message) => {
 						`	location,\n` +
 						`	players,\n` +
 						`	winner,\n` +
-						`	timeStart`
+						`	timeStart\n`
 						`) VALUES (\n` +
-						`	'${message.id}\n',` +
-						`	'${Game}\n',` +
-						`	'${message.channel.guild.id}/${message.channel.id}/${message.id}\n',` +
-						`	array['${game.players[0]}','${game.players[1]}'\n],` +
-						`	'${game.players[game.winner]}\n',` +
-						`	'${game.timeStart}\n` + 
-						`)'`;
+						`	'${message.id}',\n` +
+						`	'${Game}',\n` +
+						`	'${message.channel.guild.id}/${message.channel.id}/${message.id}',\n` +
+						`	array['${game.players[0]}','${game.players[1]}'],\n` +
+						`	'${game.players[game.winner]}',\n` +
+						`	'${game.timeStart}'\n` + 
+						`)`;
 			db.query(query, (err, res) => {
 				if (err)
 					return sqlError(message, err, query);
