@@ -1,4 +1,4 @@
-var version = "2.45.1.0";
+var version = "2.45.1.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -313,7 +313,7 @@ bot = (message) => {
 							`	'${message.channel.id}/blank',\n` +
 							`	array['${game.players[0]}','${game.players[1]}'],\n` +
 							`	'${game.players[game.winner]}',\n` +
-							`	'${game.timeStart}'\n` + 
+							`	'${game.timeStart}'\n` +
 							`)`;
 				db.query(query, (err, res) => {
 					if (err)
@@ -833,7 +833,6 @@ var commands = {
 		else
 		if (["history"].includes(args[0]))
 		{
-			let query;
 			let player = message.author.id;
 			let game = '';
 			let id = '';
@@ -841,7 +840,7 @@ var commands = {
 			if (args.some(arg => /^<@!?[0-9]+>$/.test(arg)) && client.users.get(args.filter(arg => /^<@!?[0-9]+>$/.test(arg))) != undefined)
 				player = client.users.get(args.filter(arg => /^<@!?[0-9]+>$/.test(arg))[0]).id;
 			player = `ANY (players) = '${player}'`;
-				
+
 			let gms = {
 				"othello": ["othello", "reversi"],
 				"squares": ["squares"],
@@ -857,13 +856,13 @@ var commands = {
 			{
 				id = ``;
 			}
-			
+
 			let query = `SELECT * FROM matches\n` +
 						`WHERE\n` +
 						`	${player} ${game} ${id}\n` +
 						`ORDER BY timeStart DESC\n` +
 						`LIMIT 20`;
-			
+
 			db.query(query, (err, res) => {
 				if (err)
 					return sqlError(message, err, query);
