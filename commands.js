@@ -1,4 +1,4 @@
-var version = "2.45.0.1";
+var version = "2.45.0.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -299,7 +299,7 @@ bot = (message) => {
 				encoder.addFrame(game.replayData[i], Game == "squares" ? 350 : 1500);
 			encoder.addFrame(game.replayData[game.replayData.length - 1], Game == "squares" ? 2500 : 5000);
 			encoder.end();
-			db.query(`INSERT INTO matches (id, game, location, players, winner, timeStart) VALUES ('${message.id}', '${Game}', '${message.channel.guild.id}/${message.channel.id}/${message.id}', 'array[${game.players[0]},${game.players[1]}]', '${game.players[game.winner]}', ${game.timeStart})`, (err, res) => {
+			db.query(`INSERT INTO matches (id, game, location, players, winner, timeStart) VALUES ('${message.id}', '${Game}', '${message.channel.guild.id}/${message.channel.id}/${message.id}', array['${game.players[0]}','${game.players[1]}'], '${game.players[game.winner]}', '${game.timeStart})'`, (err, res) => {
 				if (err)
 					return sqlError(message, err, `INSERT INTO matches (id, game, location, players, winner, timeStart) VALUES ('${message.id}', '${Game}', '${message.channel.guild.id}/${message.channel.id}/blank', 'array[${game.players[0]},${game.players[1]}]', '${game.players[game.winner]}', ${game.timeStart})`);
 				let attachment = new Discord.Attachment("replay.gif", "replay.gif");

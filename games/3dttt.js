@@ -6,6 +6,7 @@ var gamename = "3D Tic Tac Toe";
 var shortname = "ttt3d";
 
 exports.newGame = function(channel, player, here) {
+    let time = new Date();
     let game = {
         buffer:  {},
         channels: {},
@@ -18,7 +19,7 @@ exports.newGame = function(channel, player, here) {
         players: [player],
         replayData: [],
         started: false,
-		timeStart: new Date(),
+		timeStart: `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
         turn: 0
     };
     game.channels[channel] = [];

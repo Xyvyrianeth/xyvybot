@@ -6,6 +6,7 @@ var gamename = "Othello";
 var shortname = "othello";
 
 exports.newGame = function(channel, player, here) {
+    let time = new Date();
     let game = {
         buffer: {},
         channels: {},
@@ -20,7 +21,7 @@ exports.newGame = function(channel, player, here) {
         replayData: [],
         score: [0, 0],
         started: false,
-		timeStart: new Date(),
+		timeStart: `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
         turn: 0
     };
     game.channels[channel] = [];
