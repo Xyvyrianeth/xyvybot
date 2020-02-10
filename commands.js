@@ -1,4 +1,4 @@
-var version = "2.45.0.5";
+var version = "2.45.0.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -322,7 +322,7 @@ bot = (message) => {
 					.setTitle(Game == "squares" ? "Final Square Count:" : "Replay GIF:")
 					.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`)
 					.attachFile(attachment)
-					.setImage("attachments://replay.gif");
+					.setImage("attachment://replay.gif");
 				message.channel.send(embed);
 			});
 
