@@ -1,4 +1,4 @@
-var version = "2.45.0.4";
+var version = "2.45.0.5";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -305,7 +305,7 @@ bot = (message) => {
 						`	location,\n` +
 						`	players,\n` +
 						`	winner,\n` +
-						`	timeStart\n`
+						`	timeStart\n` +
 						`) VALUES (\n` +
 						`	'${message.id}',\n` +
 						`	'${Game}',\n` +
