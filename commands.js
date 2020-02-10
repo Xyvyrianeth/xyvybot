@@ -1,4 +1,4 @@
-var version = "2.45.0.6";
+var version = "2.45.0.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -299,32 +299,34 @@ bot = (message) => {
 				encoder.addFrame(game.replayData[i], Game == "squares" ? 350 : 1500);
 			encoder.addFrame(game.replayData[game.replayData.length - 1], Game == "squares" ? 2500 : 5000);
 			encoder.end();
-			let query = `INSERT INTO matches (\n` +
-						`	id,\n` +
-						`	game,\n` +
-						`	location,\n` +
-						`	players,\n` +
-						`	winner,\n` +
-						`	timeStart\n` +
-						`) VALUES (\n` +
-						`	'${message.id}',\n` +
-						`	'${Game}',\n` +
-						`	'${message.channel.guild.id}/${message.channel.id}/${message.id}',\n` +
-						`	array['${game.players[0]}','${game.players[1]}'],\n` +
-						`	'${game.players[game.winner]}',\n` +
-						`	'${game.timeStart}'\n` + 
-						`)`;
-			db.query(query, (err, res) => {
-				if (err)
-					return sqlError(message, err, query);
-				let attachment = new Discord.Attachment("replay.gif", "replay.gif");
-				let embed = new Discord.RichEmbed()
-					.setTitle(Game == "squares" ? "Final Square Count:" : "Replay GIF:")
-					.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`)
-					.attachFile(attachment)
-					.setImage("attachment://replay.gif");
-				message.channel.send(embed);
-			});
+			setTimeout(() => {
+				let query = `INSERT INTO matches (\n` +
+							`	id,\n` +
+							`	game,\n` +
+							`	location,\n` +
+							`	players,\n` +
+							`	winner,\n` +
+							`	timeStart\n` +
+							`) VALUES (\n` +
+							`	'${message.id}',\n` +
+							`	'${Game}',\n` +
+							`	'${message.channel.id}/blank',\n` +
+							`	array['${game.players[0]}','${game.players[1]}'],\n` +
+							`	'${game.players[game.winner]}',\n` +
+							`	'${game.timeStart}'\n` + 
+							`)`;
+				db.query(query, (err, res) => {
+					if (err)
+						return sqlError(message, err, query);
+					let attachment = new Discord.Attachment("replay.gif", "replay.gif");
+					let embed = new Discord.RichEmbed()
+						.setTitle(Game == "squares" ? "Final Square Count:" : "Replay GIF:")
+						.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`)
+						.attachFile(attachment)
+						.setImage("attachment://replay.gif");
+					message.channel.send(embed);
+				});
+			}, 5000);
 
 			if (end == 1)
 				result = {
@@ -449,6 +451,12 @@ bot = (message) => {
 		let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
 		if (/<@[0-9]+> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo|Paper Soccer)!/.test(message.content) || message.content.startsWith("Illegal move:") || message.content == "This is a singleton move, please use the singleton move format!")
 			game.channels[message.channel.id].push(message.id);
+	}
+	else
+	if (message.embeds.length > 0 && (message.embeds[0].title == "Replay GIF:" || message.embeds[0].title == "Final Square Count:"))
+	{
+		let query = `UPDATE matches SET location = '${message.channel.id}/${message.embeds[0].image.url.split('/')[5]}' WHERE '${message.channnel.id}' = split_part(location, '/', 1) AND 'blank' = split_part(location, '/', s)`;
+		db.query(query, (err, res) => { if (err) return sqlError(message, err, query); })
 	}
 }
 
