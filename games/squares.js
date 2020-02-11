@@ -9,6 +9,7 @@ exports.newGame = function(channel, player, here) {
 	let time = new Date();
 	let game = {
 		buffer: {},
+		canTakeTurn: true,
 		channels: {},
 		forfeit: false,
 		game: shortname,
@@ -131,8 +132,13 @@ exports.drawBoard = function(game, end) {
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[1]], 228, 3);
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]], 237, 3);
 
-	if (end === 3) game.squareCounterData.push(ctx);
-	else game.replayData.push(ctx);
+
+	let newCanvas = new Canvas.createCanvas(221, 246);
+	let newCtx = newCanvas.getContext('2d');
+	let data = ctx.getImageData(0, 0, 221, 246);
+	newCtx.putImageData(data, 0, 0);
+	if (end === 3) game.squareCounterData.push(newCtx);
+	else game.replayData.push(newCtx);
 
 	if (end === 0)
 	{
@@ -154,6 +160,8 @@ exports.drawBoard = function(game, end) {
 
 exports.takeTurn = function(channel, Move) {
 	let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
+	game.canHaveTurn = false;
+
 	let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
 
 	if (game.board[move[0]][move[1]] !== false)

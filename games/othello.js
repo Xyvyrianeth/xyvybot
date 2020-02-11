@@ -9,6 +9,7 @@ exports.newGame = function(channel, player, here) {
     let time = new Date();
     let game = {
         buffer: {},
+		canTakeTurn: true,
         channels: {},
         forfeit: false,
         game: shortname,
@@ -156,9 +157,11 @@ exports.getScore = function(game) {
 
 exports.takeTurn = function(channel, Move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
+	game.canHaveTurn = false;
+
+
     let move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-h]/)[0])];
 
-    // Function will vary with game
     game.highlight = [];
     if (typeof game.board[move[0]][move[1]] !== "boolean")
     {

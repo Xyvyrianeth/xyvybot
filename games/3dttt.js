@@ -9,6 +9,7 @@ exports.newGame = function(channel, player, here) {
     let time = new Date();
     let game = {
         buffer:  {},
+		canTakeTurn: true,
         channels: {},
         forfeit:  false,
         game: shortname,
@@ -98,7 +99,11 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
                     ctx.drawImage(exports.Images.winHighlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
             }
 
-    game.replayData.push(ctx);
+	let newCanvas = new Canvas.createCanvas(221, 246);
+	let newCtx = newCanvas.getContext('2d');
+	let data = ctx.getImageData(0, 0, 221, 246);
+	newCtx.putImageData(data, 0, 0);
+	game.replayData.push(newCtx);
 
     if (end === 0 || end === 1)
     {
@@ -117,7 +122,8 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
 
 exports.takeTurn = function(channel, move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
-    // Function will vary with game
+	game.canHaveTurn = false;
+
     let X = move.match(/[1-4]/g)[0];
     let Y = move.match(/[a-d]/i)[0].toUpperCase();
     let Z = move.match(/[1-4]/g)[1] - 1;

@@ -1,4 +1,4 @@
-var version = "2.45.1.1";
+var version = "2.45.2.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -119,7 +119,7 @@ other = (message) => {
 		images = Array.from(message.attachments).map(m => m[1].url);
 		client.guilds.get("399327996076621825").channels.get("537098266685472788").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
 	}
-	if (games.games.some((game) => game.channels.hasOwnProperty(message.channel.id) && game.started))
+	if (games.games.some((game) => game.channels.hasOwnProperty(message.channel.id) && game.started && game.canHaveTurn))
 	{
 		let game = games.games.filter((game) => game.channels.hasOwnProperty(message.channel.id))[0];
 		if (message.author.id == game.player && {
@@ -274,6 +274,7 @@ bot = (message) => {
 		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)_(0_[0-9]+vs[0-9]+|1_[0-9]+|2_tie)\.png$/.test(img))
 		{
 			let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
+			game.canHaveTurn = true;
 			let end = img.match(/_[0-2]_/)[0].substring(1, 2);
 			if (end === '0')
 				return game.channels[message.channel.id].push(message.id);
@@ -291,43 +292,58 @@ bot = (message) => {
 				"soccer": [311, 235]
 			}[Game];
 			let encoder = new gifEncoder(dimensions[0], dimensions[1]);
-			let stream = fs.createWriteStream("replay.gif");
+			let stream = fs.createWriteStream(`replay_${message.id}.gif`);
 			encoder.createReadStream().pipe(stream);
 			encoder.begin();
 			encoder.addFrame(game.replayData[0], 2500);
 			for (let i = 1; i < game.replayData.length - 1; i++)
-				encoder.addFrame(game.replayData[i], Game == "squares" ? 350 : 1500);
-			encoder.addFrame(game.replayData[game.replayData.length - 1], Game == "squares" ? 2500 : 5000);
+				encoder.addFrame(game.replayData[i], 500);
+			encoder.addFrame(game.replayData[game.replayData.length - 1], 5000);
 			encoder.end();
-			setTimeout(() => {
-				let query = `INSERT INTO matches (\n` +
-							`	id,\n` +
-							`	game,\n` +
-							`	location,\n` +
-							`	players,\n` +
-							`	winner,\n` +
-							`	timeStart\n` +
-							`) VALUES (\n` +
-							`	'${message.id}',\n` +
-							`	'${Game}',\n` +
-							`	'${message.channel.id}/blank',\n` +
-							`	array['${game.players[0]}','${game.players[1]}'],\n` +
-							`	'${game.players[game.winner]}',\n` +
-							`	'${game.timeStart}'\n` +
-							`)`;
+			let query = `INSERT INTO matches (id, game, location, players, winner, timeStart)\n` +
+						`VALUES ('${message.id}', '${Game}', '${message.channel.id}/blank', ARRAY['${game.players[0]}', '${game.players[1]}'], '${game.players[game.winner]}', '${game.timeStart}')`;
+			db.query(query, (err, res) => {
+				if (err)
+					return sqlError(message, err, query);
+				setTimeout(() => {
+					let attachment = new Discord.Attachment(`replay_${message.id}.gif`, `replay_${message.id}.gif`);
+					let embed = new Discord.RichEmbed()
+						.setTitle("Replay GIF:")
+						.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`)
+						.attachFile(attachment)
+						.setImage(`attachment://replay_${message.id}.gif`)
+						.setFooter("Match ID: " + message.id);
+					message.channel.send(embed);
+				}, 5000);
+			});
+			if (Game == "squares")
+			{
+				let encoder2 = new gifEncoder(dimensions[0], dimensions[1]);
+				let stream2 = fs.createWriteStream(`counter_${message.id}.gif`);
+				encoder2.createReadStream().pipe(stream2);
+				encoder2.begin();
+				encoder2.addFrame(game.squareCounterData[0], 2500);
+				for (let i = 1; i < game.squareCounterData.length - 1; i++)
+					encoder2.addFrame(game.squareCounterData[i], 350);
+				encoder2.addFrame(game.squareCounterData[game.squareCounterData.length - 1], 2500);
+				encoder2.end();
+				let query = `INSERT INTO matches (id, game, location, players, winner, timeStart)\n` +
+							`VALUES ('${message.id}', '${Game}', '${message.channel.id}/blank', ARRAY['${game.players[0]}', '${game.players[1]}'], '${game.players[game.winner]}', '${game.timeStart}')`;
 				db.query(query, (err, res) => {
 					if (err)
 						return sqlError(message, err, query);
-					let attachment = new Discord.Attachment("replay.gif", "replay.gif");
-					let embed = new Discord.RichEmbed()
-						.setTitle(Game == "squares" ? "Final Square Count:" : "Replay GIF:")
-						.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`)
-						.attachFile(attachment)
-						.setImage("attachment://replay.gif")
-						.setFooter("Match ID: " + message.id);
-					message.channel.send(embed);
+					setTimeout(() => {
+						let attachment = new Discord.Attachment(`counter_${message.id}.gif`, `counter_${message.id}.gif`);
+						let embed = new Discord.RichEmbed()
+							.setTitle("Final Square Count:")
+							.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`)
+							.attachFile(attachment)
+							.setImage(`attachment://counter_${message.id}.gif`)
+							.setFooter("Match ID: " + message.id);
+						message.channel.send(embed);
+					}, 5000);
 				});
-			}, 5000);
+			}
 
 			if (end == 1)
 				result = {
@@ -454,10 +470,20 @@ bot = (message) => {
 			game.channels[message.channel.id].push(message.id);
 	}
 	else
-	if (message.embeds.length > 0 && (message.embeds[0].title == "Replay GIF:" || message.embeds[0].title == "Final Square Count:"))
+	if (message.embeds.length > 0)
 	{
-		let query = `UPDATE matches SET location = '${message.channel.id}/${message.embeds[0].image.url.split('/')[5]}' WHERE id = '${message.embeds[0].footer.match(/[0-9]+$/)[0]}'`;
-		db.query(query, (err, res) => { if (err) return sqlError(message, err, query); })
+		message.embeds.forEach(embed => {
+			if (embed.title == "Replay GIF:")
+			{
+				let query = `UPDATE matches SET location = '${message.channel.id}/${embed.image.url.split('/')[5]}' WHERE id = '${embed.footer.text.match(/[0-9]+$/)[0]}'`;
+				db.query(query, err => { if (err) return sqlError(message, err, query); });
+			}
+			if (embed.title == "Final Square Count:")
+			{
+				let query = `UPDATE matches SET squareReplay = '${message.channel.id}/${embed.image.url.split('/')[5]}' WHERE id = '${embed.footer.text.match(/[0-9]+$/)[0]}'`;
+				db.query(query, err => { if (err) return sqlError(message, err, query); });
+			}
+		});
 	}
 }
 
@@ -601,6 +627,15 @@ var commands = {
 
 	// Games
 	"games": (cmd, args, input, message) => {
+		let gms = {
+			"othello": ["othello", "reversi"],
+			"squares": ["squares"],
+			"rokumoku": ["rokumoku", "connect6", "connectsix", "c6"],
+			"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
+			"connect4": ["connectfour", "connect4", "cfour", "c4"],
+			"ordo": ["ordo"],
+			"soccer": ["soccer", "papersoccer", "psoccer"]
+		};
 		if (!args[0])
 		{
 			return message.channel.send(
@@ -618,15 +653,6 @@ var commands = {
 		}
 		if (["leaderboard", "top"].includes(args[0]))
 		{
-			let gms = {
-				"othello": ["othello", "reversi"],
-				"squares": ["squares"],
-				"rokumoku": ["rokumoku", "connect6", "connectsix"],
-				"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
-				"connect4": ["connectfour", "connect4", "cfour", "c4"],
-				"ordo": ["ordo"],
-				"soccer": ["soccer", "papersoccer", "psoccer"]
-			};
 			let elos = !args[1] ?			 "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7" :
 			gms.othello.includes(args[1]) ?	 "elo1" :
 			gms.squares.includes(args[1]) ?	 "elo2" :
@@ -710,7 +736,7 @@ var commands = {
 					return message.channel.send(
 						new Discord.RichEmbed()
 							.setTitle("Leaderboard for " + game)
-							.setDescription("__`\u200b RANK \u200b|\u200b Elo \u200b|\u200b \u200b W/L \u200b \u200b|WINRATE`|<@USER>__\n" + users.join('\n'))
+							.setDescription("__`\u200b RANK \u200b|\u200b Elo \u200b|\u200b \u200b W/L \u200b \u200b|WINRATE`|USER__\n" + users.join('\n'))
 							.setColor(new Color().random())
 					);
 				}
@@ -725,16 +751,7 @@ var commands = {
 		}
 		if (["stats", "statistics"].includes(args[0])) {
 			let id = message.author.id,
-				gm = "all",
-				gms = {
-				"othello": ["othello", "reversi"],
-				"squares": ["squares"],
-				"rokumoku": ["rokumoku", "connect6", "connectsix"],
-				"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
-				"connect4": ["connectfour", "connect4", "cfour", "c4"],
-				"ordo": ["ordo"],
-				"soccer": ["soccer", "papersoccer", "psoccer"]
-			};
+				gm = "all";
 			let Games = [].concat(gms.othello, gms.squares, gms.rokumoku, gms.ttt3d, gms.connect4, gms.ordo, gms.soccer);
 			if (args.length == 2)
 			{
@@ -833,40 +850,51 @@ var commands = {
 		else
 		if (["history"].includes(args[0]))
 		{
-			let player = message.author.id;
-			let game = '';
-			let id = '';
-
-			if (args.some(arg => /^<@!?[0-9]+>$/.test(arg)) && client.users.get(args.filter(arg => /^<@!?[0-9]+>$/.test(arg))) != undefined)
-				player = client.users.get(args.filter(arg => /^<@!?[0-9]+>$/.test(arg))[0]).id;
-			player = `ANY (players) = '${player}'`;
-
-			let gms = {
-				"othello": ["othello", "reversi"],
-				"squares": ["squares"],
-				"rokumoku": ["rokumoku", "connect6", "connectsix", "c6"],
-				"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
-				"connect4": ["connectfour", "connect4", "cfour", "c4"],
-				"ordo": ["ordo"],
-				"soccer": ["soccer", "papersoccer", "psoccer"]
+			let player, game, id;
+			let has = {
+				game: false,
+				id: false
 			};
-			args.some(arg => Object.keys(gms).forEach(gm => { if (gms[gm].includes(arg)) game = gm; }));
 
-			if (args.some(arg => /^<@!?[0-9]+>$/.test(arg)))
-			{
-				id = ``;
-			}
+			args.forEach(arg => {
+				if (/^<@!?[0-9]+>$/.test(arg) && client.users.get(args.filter(arg => /^<@!?[0-9]+>$/.test(arg))) != undefined)
+					player = arg.match(/[0-9]+/)[0];
+				else
+					player = message.author.id;
+
+				if (/^[0-9]+$/.test(arg))
+					id = arg, has.id = true;
+
+				if (Object.keys(gms).some(gm => gms[gm].includes(arg)))
+					game = gm, has.game = true;
+			});
 
 			let query = `SELECT * FROM matches\n` +
 						`WHERE\n` +
-						`	${player} ${game} ${id}\n` +
+						`	${has.id ? `AND id = '${id}'` : `ANY (player) = '${player}' ${has.game ? `AND game = '${game}'` : ''}`}\n` +
 						`ORDER BY timeStart DESC\n` +
 						`LIMIT 20`;
 
 			db.query(query, (err, res) => {
 				if (err)
 					return sqlError(message, err, query);
-
+				let embed = new Discord.RichEmbed()
+					.setColor(new Color().random())
+					.setTitle("Game History");
+				if (res.rows.length == 0)
+					embed.setDescription(`<@${player}> does not have a Game History.`);
+				else
+				{
+					let history = [`__\`GAME${" \u200b".repeat(10)}|STATUS|TIME${" \u200b".repeat(13)}|\`REPLAY GIF|OPPONENT__`];
+					res.rows.forEach(match => {
+						gameName = {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game];
+						status = player == match.winner ? "WINNER": "LOSER \u200b";
+						time = new Date(match.timeStart).toString().substring(4, 21);
+						history.push(`\`${gameName + " \u200b".repeat(14 - gameName.length)}|${status}|${time}|\`[OPEN \u200b LINK](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)|<@${match.players[0] == player ? match.players[1] : match.players[0]}>`);
+					});
+					embed.setDescription(`User: <@${player}>\n\n` + history.join('\n'));
+				}
+				message.channel.send(embed);
 			});
 		}
 	},
