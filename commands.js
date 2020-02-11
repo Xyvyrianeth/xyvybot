@@ -1,4 +1,4 @@
-var version = "2.45.2.9";
+var version = "2.45.2.10";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -693,7 +693,7 @@ var commands = {
 							los = top[i].los,
 							w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u200b \u200b N/A \u200b \u200b";
 
-						users.push('`' + '\u200b '.repeat(5 - String(place).length) + place + ')|' + '\u200b '.repeat(5 - String(elo).length) + elo + "|" + '\u200b '.repeat(3 - String(win).length) + win + "/" + los + ' \u200b'.repeat(3 - String(los).length) + "|" + '\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0) + w_l + "`|<@" + id + '>');
+						users.push('`' + '\u200b '.repeat(5 - String(place).length) + place + ')|' + '\u200b '.repeat(5 - String(elo).length) + elo + "|" + '\u200b '.repeat(3 - String(win).length) + win + "/" + los + ' \u200b'.repeat(3 - String(los).length) + "|" + '\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0) + w_l + "|`<@" + id + '>');
 					}
 					if (res[1].rows.length != 0)
 					{
@@ -707,7 +707,7 @@ var commands = {
 							los = user.los,
 							w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u200b \u200b N/A \u200b \u200b";
 
-						users.push('`' + '\u200b '.repeat(5 - String(place).length) + place + ')|' + '\u200b '.repeat(5 - String(elo).length) + elo + "|" + '\u200b '.repeat(3 - String(win).length) + win + "/" + los + ' \u200b'.repeat(3 - String(los).length) + "|" + '\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0) + w_l + "`|<@" + id + '>');
+						users.push('`' + '\u200b '.repeat(5 - String(place).length) + place + ')|' + '\u200b '.repeat(5 - String(elo).length) + elo + "|" + '\u200b '.repeat(3 - String(win).length) + win + "/" + los + ' \u200b'.repeat(3 - String(los).length) + "|" + '\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0) + w_l + "|`<@" + id + '>');
 					}
 					return message.channel.send(
 						new Discord.RichEmbed()
@@ -861,12 +861,12 @@ var commands = {
 					embed.setDescription(`<@${player}> does not have a Game History.`);
 				else
 				{
-					let history = [`__\`GAME${" \u200b".repeat(10)}|STATUS|TIME${" \u200b".repeat(13)}|\`\`REPLAY GIF\`|OPPONENT__\``];
+					let history = [`__\`GAME${" \u200b".repeat(10)}|STATUS|TIME${" \u200b".repeat(13)}|\`\u200b\`REPLAY GIF\`|OPPONENT__\``];
 					res.rows.forEach(match => {
 						gameName = {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game];
 						status = player == match.winner ? "Winner": "Loser \u200b";
 						let time = new Date(match.timestart).toString().substring(4, 21);
-						history.push(`\`${gameName + " \u200b".repeat(14 - gameName.length)}|${status}|${time}|\`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)|<@${match.players[0] == player ? match.players[1] : match.players[0]}>`);
+						history.push(`\`${gameName + " \u200b".repeat(14 - gameName.length)}|${status}|${time}|\`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)\`|\`<@${match.players[0] == player ? match.players[1] : match.players[0]}>`);
 					});
 					embed.setDescription(`User: <@${player}>\n\n` + history.join('\n'));
 				}
