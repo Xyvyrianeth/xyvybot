@@ -1,4 +1,4 @@
-var version = "2.45.2.7";
+var version = "2.45.2.8";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -309,7 +309,7 @@ bot = (message) => {
 					encoder.addFrame(game[["replayData", "squareCounterData"][i]][game[["replayData", "squareCounterData"][i]].length - 1], [5000, 2500][i])
 					encoder.end();
 					setTimeout(() => {
-						let attachment = new Discord.Attachment(`counter_${message.id}.gif`, `counter_${message.id}.gif`);
+						let attachment = new Discord.Attachment(`${["replay", "counter"][i]}_${message.id}.gif`, `${["replay", "counter"][i]}_${message.id}.gif`);
 						let embed = new Discord.RichEmbed()
 							.setTitle(["Replay GIF:", "Final Square Count:"][i])
 							.attachFile(attachment)
