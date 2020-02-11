@@ -1,4 +1,4 @@
-var version = "2.45.2.21";
+var version = "2.45.2.22";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -297,25 +297,6 @@ bot = (message) => {
 					"ordo": [271, 246],
 					"soccer": [311, 235]
 				}[Game];
-				let encoder1 = new gifEncoder(dimensions[0], dimensions[1]);
-				let stream1 = fs.createWriteStream("replay_" + message.id + ".gif");
-				encoder1.createReadStream().pipe(stream1);
-				encoder1.begin();
-				encoder1.addFrame(game.replayData[0], 2500);
-				for (let f = 1; f <  game.replayData.length - 1; f++)
-					encoder1.addFrame(game.replayData[f], 500);
-				encoder1.addFrame(game.replayData[game.replayData.length - 1], 5000)
-				encoder1.end();
-				setTimeout(() => {
-					let attachment1 = new Discord.Attachment(`replay_${message.id}.gif`, `replay_${message.id}.gif`);
-					let embed1 = new Discord.RichEmbed()
-						.setTitle("Replay GIF:")
-						.attachFile(attachment1)
-						.setImage(`attachment://replay_${message.id}.gif`)
-						.setFooter("Match ID: " + message.id)
-						.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`);
-					message.channel.send(embed1);
-				}, 5000);
 				if (Game == "squares")
 				{
 					let encoder2 = new gifEncoder(dimensions[0], dimensions[1]);
@@ -335,6 +316,28 @@ bot = (message) => {
 							.setImage(`attachment://counter_${message.id}.gif`)
 							.setFooter("Match ID: " + message.id);
 						message.channel.send(embed2);
+					}, 5000);
+				}
+				else
+				{
+					let encoder1 = new gifEncoder(dimensions[0], dimensions[1]);
+					let stream1 = fs.createWriteStream("replay_" + message.id + ".gif");
+					encoder1.createReadStream().pipe(stream1);
+					encoder1.begin();
+					encoder1.addFrame(game.replayData[0], 2500);
+					for (let f = 1; f <  game.replayData.length - 1; f++)
+						encoder1.addFrame(game.replayData[f], 500);
+					encoder1.addFrame(game.replayData[game.replayData.length - 1], 5000)
+					encoder1.end();
+					setTimeout(() => {
+						let attachment1 = new Discord.Attachment(`replay_${message.id}.gif`, `replay_${message.id}.gif`);
+						let embed1 = new Discord.RichEmbed()
+							.setTitle("Replay GIF:")
+							.attachFile(attachment1)
+							.setImage(`attachment://replay_${message.id}.gif`)
+							.setFooter("Match ID: " + message.id)
+							.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`);
+						message.channel.send(embed1);
 					}, 5000);
 				}
 			});
