@@ -1,4 +1,4 @@
-var version = "2.45.2.14";
+var version = "2.45.2.15";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -659,7 +659,7 @@ var commands = {
 						 `SELECT CAST(COUNT(id) + 1 AS int) AS place FROM profiles WHERE\n` +
 						 `	0 < ANY (SELECT wins + loss FROM profiles WHERE id = '${message.author.id}') AND id != '${message.author.id}' AND wins + loss > 0 AND elos >= ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}') AND\n` +
 						 `	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))\n` +
-						 `	> ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss))\n` +
+						 `	> ANY (SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss) FROM profiles WHERE id = '${message.author.id}')\n` +
 						 `FROM profiles WHERE id = '${message.author.id}');`).replace(/elos/g, elos).replace(/wins/g, wins).replace(/loss/g, loss);
 			return db.query(query, (err, res) => {
 				if (err)
