@@ -815,7 +815,8 @@ var commands = {
 					res.rows.forEach(match => {
 						gameName = {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game];
 						status = player == match.winner ? "Winner": "Loser \u200b";
-						let time = new Date(match.timestart).toString().substring(4, 21);
+						let time = new Date(match.timeStart);
+						time = `${time.getMonth() + 1}/${time.getDate()}/${time.getFullYear().toString().substring(2)} ${time.getHours()}:${time.getMinutes()}`;
 						history.push(`\`${gameName + " \u200b".repeat(14 - gameName.length)}|${status}|${time}|\`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)\`|\`<@${match.players[0] == player ? match.players[1] : match.players[0]}>`);
 					});
 					console.log(history[1].length);
@@ -2407,7 +2408,11 @@ var commands = {
 					embed.setDescription("```" + err + "```");
 					return message.channel.send(embed);
 				}
-				embed.setDescription(table(res));
+				let Table = table(res);
+				if (Table.length > 2048)
+					embed.setDescription("Overflow");
+				else
+					embed.setDescription(table(res));
 				return message.channel.send(embed);
 			});
 	},
