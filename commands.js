@@ -818,9 +818,9 @@ var commands = {
 						let time = new Date(match.timestart).toString().substring(4, 21);
 						history.push(`\`${gameName + " \u200b".repeat(14 - gameName.length)}|${status}|${time}|\`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)\`|\`<@${match.players[0] == player ? match.players[1] : match.players[0]}>`);
 					});
-					embed.setDescription(`for user: <@${player}>`);
+					embed.setDescription(`for user: <@${player}>\n\n` + history[1]);
 					for (let i = 1; i < 11; i++)
-						embed.addField("\u200b", history[i], true);
+						embed.addField("\u200b", history[i], false);
 				}
 				message.channel.send(embed);
 			});
