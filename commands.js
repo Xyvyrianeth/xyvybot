@@ -819,14 +819,8 @@ var commands = {
 						history.push(`\`${gameName + " \u200b".repeat(14 - gameName.length)}|${status}|${time}|\`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)\`|\`<@${match.players[0] == player ? match.players[1] : match.players[0]}>`);
 					});
 					console.log(history[1].length);
-					embed.setDescription(`for user: <@${player}>\n\n` + history[0] + '\n' + history[1] + '\n' + history[2]);
-					for (let i = 3; i < history.length; i += 2)
-						if (i + 1 == history.length)
-						{
-							embed.addField("\u200b", history[i], false);
-						}
-						else
-							embed.addField("\u200b", history[i] + '\n' + history[i + 1], false);
+					console.log(history.join('\n').length);
+					embed.setDescription(`for user: <@${player}>\n\n` + history.join('\n'));
 				}
 				message.channel.send(embed);
 			});
