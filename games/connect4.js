@@ -73,9 +73,9 @@ exports.drawBoard = function(game, end) {
                 ctx.drawImage(exports.Images.winHighlight, 6 + (25 * i[0]), 30 + (25 * (5 - i[1])));
     }
 
-	let newCanvas = new Canvas.createCanvas(221, 246);
+	let newCanvas = new Canvas.createCanvas(184, 195);
 	let newCtx = newCanvas.getContext('2d');
-	let data = ctx.getImageData(0, 0, 221, 246);
+	let data = ctx.getImageData(0, 0, 184, 195);
 	newCtx.putImageData(data, 0, 0);
     game.replayData.push(newCtx);
 

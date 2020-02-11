@@ -173,9 +173,9 @@ exports.drawBoard = function(game, end, highlight) {
 
 	// ....
 
-	let newCanvas = new Canvas.createCanvas(221, 246);
+	let newCanvas = new Canvas.createCanvas(311, 235);
 	let newCtx = newCanvas.getContext('2d');
-	let data = ctx.getImageData(0, 0, 221, 246);
+	let data = ctx.getImageData(0, 0, 311, 235);
 	newCtx.putImageData(data, 0, 0);
     game.replayData.push(newCtx);
 

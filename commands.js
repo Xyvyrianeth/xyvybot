@@ -1,4 +1,4 @@
-var version = "2.45.2.22";
+var version = "2.45.2.23";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -316,7 +316,7 @@ bot = (message) => {
 						.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`);
 					message.channel.send(embed1);
 				}, 5000);
-				if (false)
+				if (Game == "squares")
 				{
 					let encoder2 = new gifEncoder(dimensions[0], dimensions[1]);
 					let stream2 = fs.createWriteStream("counter_" + message.id + ".gif");

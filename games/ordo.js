@@ -92,9 +92,9 @@ exports.drawBoard = function(game, end) {
                 ctx.drawImage(exports.Images[["white", "blue"][y % 6] + "HomeRow"], X, Y);
         }
 
-	let newCanvas = new Canvas.createCanvas(221, 246);
+	let newCanvas = new Canvas.createCanvas(271, 246);
 	let newCtx = newCanvas.getContext('2d');
-	let data = ctx.getImageData(0, 0, 221, 246);
+	let data = ctx.getImageData(0, 0, 271, 246);
 	newCtx.putImageData(data, 0, 0);
 	game.replayData.push(newCtx);
 

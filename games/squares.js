@@ -133,9 +133,9 @@ exports.drawBoard = function(game, end) {
 	ctx.drawImage(exports.Images.numbers[('0'.repeat(3 - JSON.stringify(game.score[1]).length) + game.score[1]).split('')[2]], 237, 3);
 
 
-	let newCanvas = new Canvas.createCanvas(221, 246);
+	let newCanvas = new Canvas.createCanvas(280, 300);
 	let newCtx = newCanvas.getContext('2d');
-	let data = ctx.getImageData(0, 0, 221, 246);
+	let data = ctx.getImageData(0, 0, 280, 300);
 	newCtx.putImageData(data, 0, 0);
 	if (end === 3) game.squareCounterData.push(newCtx);
 	else game.replayData.push(newCtx);
