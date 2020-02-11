@@ -677,7 +677,7 @@ var commands = {
 					else
 						game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][elos[3] - 1];
 
-					let users = ["__`\u200b RANK \u200b|\u200b Elo \u200b|\u200b \u200b W/L \u200b \u200b|WINRATE|USER`__\n"];
+					let users = ["__`\u200b RANK \u200b|\u200b Elo \u200b|\u200b \u200b W/L \u200b \u200b|WINRATE| USER`__\n"];
 					for (let i = 0; i < top.length; i++) {
 						if (i == 0)
 							top[i].place = i + 1;
