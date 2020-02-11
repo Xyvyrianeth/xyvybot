@@ -1,4 +1,4 @@
-var version = "2.45.2.19";
+var version = "2.45.2.20";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -302,8 +302,8 @@ bot = (message) => {
 				encoder1.begin();
 				encoder1.addFrame(game.replayData[0], 2500);
 				for (let f = 1; f <  game.replayData.length - 1; f++)
-					encoder1.addFrame(game.replayData[f], [350, 500][i]);
-				encoder1.addFrame(game.replayData[game.replayData.length - 1], [5000, 2500][i])
+					encoder1.addFrame(game.replayData[f], 500);
+				encoder1.addFrame(game.replayData[game.replayData.length - 1], 5000)
 				encoder1.end();
 				setTimeout(() => {
 					let attachment = new Discord.Attachment(`replay_${message.id}.gif`, `replay_${message.id}.gif`);
@@ -323,8 +323,8 @@ bot = (message) => {
 					encoder2.begin();
 					encoder2.addFrame(game.squareCounterData[0], 2500);
 					for (let f = 1; f <  game.squareCounterData.length - 1; f++)
-						encoder2.addFrame(game.squareCounterData[f], [350, 500][i]);
-					encoder2.addFrame(game.squareCounterData[game.squareCounterData.length - 1], [5000, 2500][i])
+						encoder2.addFrame(game.squareCounterData[f], 350);
+					encoder2.addFrame(game.squareCounterData[game.squareCounterData.length - 1], 2500)
 					encoder2.end();
 					setTimeout(() => {
 						let attachment = new Discord.Attachment(`counter_${message.id}.gif`, `counter_${message.id}.gif`);
