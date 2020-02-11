@@ -1,4 +1,4 @@
-var version = "2.45.2.24";
+var version = "2.45.2.25";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -799,7 +799,7 @@ var commands = {
 						`WHERE\n` +
 						`	${has.id ? `id = '${id}'` : `'${player}' = ANY (players)${has.game ? ` AND game = '${game}'` : ''}`}\n` +
 						`ORDER BY timeStart DESC\n` +
-						`LIMIT 15`;
+						`LIMIT 10`;
 
 			db.query(query, (err, res) => {
 				if (err)
