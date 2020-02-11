@@ -861,12 +861,12 @@ var commands = {
 					embed.setDescription(`<@${player}> does not have a Game History.`);
 				else
 				{
-					let history = [`__\`GAME${" \u200b".repeat(10)}|STATUS|TIME${" \u200b".repeat(13)}|\`REPLAY GIF|OPPONENT__`];
+					let history = [`__\`GAME${" \u200b".repeat(10)}|STATUS|TIME${" \u200b".repeat(13)}|REPLAY GIF\`|OPPONENT__`];
 					res.rows.forEach(match => {
 						gameName = {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game];
 						status = player == match.winner ? "Winner": "Loser \u200b";
 						let time = new Date(match.timestart).toString().substring(4, 21);
-						history.push(`\`${gameName + " \u200b".repeat(14 - gameName.length)}|${status}|${time}|\`[OPEN \u200b LINK](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)|<@${match.players[0] == player ? match.players[1] : match.players[0]}>`);
+						history.push(`\`${gameName + " \u200b".repeat(14 - gameName.length)}|${status}|${time}|\`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)|<@${match.players[0] == player ? match.players[1] : match.players[0]}>`);
 					});
 					embed.setDescription(`User: <@${player}>\n\n` + history.join('\n'));
 				}
