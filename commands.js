@@ -1,4 +1,4 @@
-var version = "2.45.2.17";
+var version = "2.45.2.18";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -293,21 +293,23 @@ bot = (message) => {
 			}[Game];
 			let query = `INSERT INTO matches (id, game, location, players, winner, timestart, squarereplay)\n` +
 						`VALUES ('${message.id}', '${Game}', '${message.channel.id}/blank', ARRAY['${game.players[0]}', '${game.players[1]}'], '${game.players[game.winner]}', '${game.timeStart}', 'false')`;
-			db.query(query, (err, res) => {
+			db.query(query, err => {
 				if (err)
 					return sqlError(message, err, query);
+				encoder = [];
+				stream = [];
 				for (let i = 0; i < 2; i++)
 				{
 					if (i == 1 && Game != "squares") break;
-					let encoder = new gifEncoder(dimensions[0], dimensions[1]);
-					let stream = fs.createWriteStream(["replay_", "counter_"][i] + message.id + ".gif");
-					encoder.createReadStream().pipe(stream);
-					encoder.begin();
-					encoder.addFrame(game[["replayData", "squareCounterData"][i]][0], 2500);
-					for (let f = 1; f < game[["replayData", "squareCounterData"][i]].length - 1; f++)
-						encoder.addFrame(game[["replayData", "squareCounterData"][i]][f], [350, 500][i]);
-					encoder.addFrame(game[["replayData", "squareCounterData"][i]][game[["replayData", "squareCounterData"][i]].length - 1], [5000, 2500][i])
-					encoder.end();
+					encoder[i] = new gifEncoder(dimensions[0], dimensions[1]);
+					stream[i] = fs.createWriteStream(["replay_", "counter_"][i] + message.id + ".gif");
+					encoder[i].createReadStream().pipe(stream);
+					encoder[i].begin();
+					encoder[i].addFrame(game[["replayData", "squareCounterData"][i]][0], 2500);
+					for (let f = 1; f <  game[["replayData", "squareCounterData"][i]].length - 1; f++)
+						encoder[i].addFrame(game[["replayData", "squareCounterData"][i]][f], [350, 500][i]);
+					encoder[i].addFrame(game[["replayData", "squareCounterData"][i]][game[["replayData", "squareCounterData"][i]].length - 1], [5000, 2500][i])
+					encoder[i].end();
 					setTimeout(() => {
 						let attachment = new Discord.Attachment(`${["replay", "counter"][i]}_${message.id}.gif`, `${["replay", "counter"][i]}_${message.id}.gif`);
 						let embed = new Discord.RichEmbed()
