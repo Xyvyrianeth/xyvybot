@@ -1,4 +1,4 @@
-var version = "2.45.2.6";
+var version = "2.45.2.7";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -303,7 +303,7 @@ bot = (message) => {
 					let stream = fs.createWriteStream(["replay_", "counter_"][i] + message.id + ".gif");
 					encoder.createReadStream().pipe(stream);
 					encoder.begin();
-					endoder.addFrame(game[["replayData", "squareCounterData"][i]][0], 2500);
+					encoder.addFrame(game[["replayData", "squareCounterData"][i]][0], 2500);
 					for (let f = 1; f < game[["replayData", "squareCounterData"][i]].length - 1; f++)
 						encoder.addFrame(game[["replayData", "squareCounterData"][i]][f], [350, 500][i]);
 					encoder.addFrame(game[["replayData", "squareCounterData"][i]][game[["replayData", "squareCounterData"][i]].length - 1], [5000, 2500][i])
