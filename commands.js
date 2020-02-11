@@ -628,7 +628,7 @@ var commands = {
 			);
 		}
 		else
-		if (["leaderboard", "top", "ranking"].includes(args[0]))
+		if (["leaderboard", "top", "ranking", "ranks", "rank", "ranked"].includes(args[0]))
 		{
 			let elos = !args[1] ?			 "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7" :
 			gms.othello.includes(args[1]) ?	 "elo1" :
