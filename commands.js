@@ -1,4 +1,4 @@
-var version = "2.45.2.20";
+var version = "2.45.2.21";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -280,13 +280,14 @@ bot = (message) => {
 				return game.channels[message.channel.id].push(message.id);
 			let result = false;
 
-			// Replay Creation
+			let Game = img.match(/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)/g)[0];
 			let query = `INSERT INTO matches (id, game, location, players, winner, timestart, squarereplay)\n` +
 						`VALUES ('${message.id}', '${Game}', '${message.channel.id}/blank', ARRAY['${game.players[0]}', '${game.players[1]}'], '${game.players[game.winner]}', '${game.timeStart}', 'false')`;
 			db.query(query, err => {
 				if (err)
 					return sqlError(message, err, query);
-				let Game = img.match(/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)/g)[0];
+
+				// Replay Creation
 				let dimensions = {
 					"connect4": [184, 195],
 					"ttt3d": [316, 230],
