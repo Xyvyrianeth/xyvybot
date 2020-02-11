@@ -1,4 +1,4 @@
-var version = "2.45.2.25";
+var version = "2.45.3.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -485,9 +485,9 @@ newUser = (id, message) => {
 	let image = images.ids.random(),
 		query =
 			`INSERT INTO profiles (\n` +
-			`   id,       color,      title,      titles,             background,  backgrounds,         lefty,  money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7\n` +
+			`   id,       color,      title,      titles,             background,  backgrounds,         lorr,     money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7\n` +
 			`) VALUES (\n` +
-			`   '${id}',  '#2f3136',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   500,    1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0\n` +
+			`   '${id}',  '#2f3136',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  500,    1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0\n` +
 			`)`;
 	db.query(query, (err) => {
 		if (err)
@@ -549,11 +549,7 @@ var aliases = {
 		"about": ["about", "info", "bot"],
 		"credits": ["credits", "acknowledgements"],
 		"help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
-		"avatar": ["avatar", "pfp"],
 		"aliases": ["aliases"],
-		"guild": ["guild", "server"],
-		"kick": ["kick"],
-		"ban": ["ban"],
 		"bug": [],
 		"request": [],
 
@@ -593,10 +589,7 @@ var aliases = {
 		"about": ["about", "info", "bot"],
 		"credits": ["credits", "acknowledgements"],
 		"help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
-		"avatar": ["avatar", "pfp"],
 		"aliases": ["aliases"],
-		"guild": [],
-		"kick": [],
 		"ban": [],
 		"bug": ["reportbug", "bugreport", "bug", "report"],
 		"request": ["request", "suggest", "suggestion", "requestion"],
@@ -1755,29 +1748,6 @@ var commands = {
 		}
 	},
 
-	"avatar": (cmd, args, input, message) => {
-		if (!input || /^<@!?[0-9]+>$/.test(input) || /^[0-9]+$/.test(input))
-		{
-			let user;
-			if (!input)
-				user = client.users.get(message.author.id);
-			else
-				user = client.users.get(input.match(/[0-9]+/)[0]);
-
-			if (user == null)
-				return message.channel.send("User not found.");
-
-			return message.channel.send(
-				new Discord.RichEmbed()
-					.setTitle("User Avatar")
-					.setDescription(`Avatar for <@${user.id}>`)
-					.setImage(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith("a_") ? "gif" : "png"}?size=2048`)
-					.setColor(new Color().random()));
-		}
-		else
-			return message.channel.send("Unknown request.");
-	},
-
 	"about": (cmd, args, input, message) => {
 		return message.channel.send(
 			new Discord.RichEmbed()
@@ -1793,34 +1763,6 @@ var commands = {
 					"\n" +
 					"Currently, I'm building up to starting a community centered around abstract strategy games. I plan to run tournaments where people play these games and win prizes, like money and Steam codes and more.\n" +
 					"Once I feel the bot is in a state of relative completeness, said server will go public. Please look forward to it.")
-				.setColor(new Color().random()));
-	},
-
-	"credits": (cmd, args, input, message) => {
-		return message.channel.send(
-			new Discord.RichEmbed()
-				.setTitle(
-					"Credits",
-					exports.Images.avatar)
-				.addField(
-					"Created, Authored, and Primarily Tested by",
-					"Xyvyrianeth")
-				.addField(
-					"Code Dependencies",
-					"[Heroku](https://heroku.com/), [Node.js](https://nodejs.org/en/), and the following NPM libraries:\n" +
-					" -[Discord.js](https://npm.js/package/discord.js)\n" +
-					" -[PostgreSQL](https://npm.js/package/pg)\n" +
-					" -[Nekos.Life](https://npm.js/package/nekos.life)\n" +
-					" -[Canvas](https://npm.js/package/canvas)\n" +
-					"[Multiplayer Piano](https://multiplayerpiano.com) for all functions relating to [color hexadecimals](https://multiplayerpiano.com/Color.js).")
-				.addField(
-					"Images",
-					"All profile backgrounds found on [Imgur](https://imgur.com/) and posted by user [u/Kizenkis](https://imgur.com/user/Kizenkis) throughout various posts.\n" +
-					`All images from x!nekos${message.channel.nsfw ? " and x!nsfw " : " "}come directly from the [Nekos.Life](https://nekos.life/) API.\n` +
-					"All other assets made by Xyvyrianeth.")
-				.addField(
-					"Special Thanks",
-					"to various users from [The Officially Unofficial Server to the Unofficially Official Dan-Ball Community](https://discord.gg/gYVMUrM) for both support and player testing.")
 				.setColor(new Color().random()));
 	},
 
@@ -1913,63 +1855,32 @@ var commands = {
 		});
 	},
 
-	"guild": (cmd, args, input, message) => {
-		if (!input)
-		{
-			let guild = message.channel.guild,
-				text = guild.channels.filterArray(channel => channel.type == "text").length,
-				voice = guild.channels.filterArray(channel => channel.type == "voice").length,
-				categories = guild.channels.filterArray(channel => channel.type == "category").length,
-				members = guild.memberCount,
-				bots = guild.members.filterArray(member => member.user.bot).length,
-				owner = guild.members.get(guild.ownerID).user;
-			return message.channel.send(
-				new Discord.RichEmbed()
-					.setTitle("Guild ID: " + guild.id)
-					.setAuthor(guild.name)
-					.setColor(new Color().random())
-					.setThumbnail(guild.icon != null ? guild.iconURL : "")
-					.addField("Owner", `<@${owner.id}>`, true)
-					.addField("Region", guild.region, true)
-					.addField("Verification Level",
-						[	"None\nNo restrictions",
-							"Low\nAccount must be verified by email",
-							"Medium\nAccount must be verified by email and be older than 5 minutes",
-							"(╯°□°）╯︵ ┻━┻\nAccount must be verified by email, older than 5 minutes, and be a member of the server for at least 10 minutes",
-							"┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻\nAccount must have a verified phone on it"][guild.verificationLevel])
-					.addField(`Channels (${text + voice})`, `${text} Text | ${voice} Voice\nSplit into ${categories} categories`, true)
-					.addField(`Members (${members})`, `${members - bots} Humans | ${bots} Bots`, true)
-					.addField("Roles", guild.roles.array().length, true)
-					.addField("Emotes", guild.emojis.array().length, true));
-		}
-		else
-		{
-
-		}
-	},
-
-	"kick": (cmd, args, input, message) => {
-		let user = message.channel.guild.members.get(message.author.id);
-		if (!user.hasPermission("KICK_MEMBERS"))
-			return;
-		if (!input)
-			return message.channel.send("__**Proper Usage**__: \"x!kick `<@user>`\"");
-		if (!/^<@!?[0-9]+>$/.test(args[0]) || !/^[0-9]+$/.test(args[0]))
-			return message.channel.send("Invalid user mention, try again.");
-		else
-			return message.channel.guild.members.get(args[0].match(/[0-9]+/)[0]).kick(args[1] ? input.substring(args[0].lenght + 1) : "Probably for something annoying.").then(() => message.channel.send("kicked user <@" + args[0].match(/[0-9]+/)[0] + '>')).catch((err) => message.channel.send("Failed to kick user <@" + args[0].match(/[0-9]+/)[0] + ">```\n" + err + "```"));
-	},
-
-	"ban": (cmd, args, input, message) => {
-		let user = message.channel.guild.members.get(message.author.id);
-		if (user.hasPermission("BAN_MEMBERS"))
-			return;
-		if (!input)
-			return message.channel.send("**Proper Usage**: `x!ban <@user>`");
-		if (!/^<@!?[0-9]+>$/.test(args[0]) || !/^[0-9]+$/.test(args[0]))
-			return message.channel.send("Invalid user mention, try again.");
-		else
-			return message.channel.guild.members.get(args[0].match(/[0-9]+/)[0]).ban({ days: 1, reason: args[1] ? input.substring(args[0].length + 1) : "Probably for something annoying." }).then(() => message.channel.send("baned user <@" + args[0].match(/[0-9]+/)[0] + '>')).catch((err) => message.channel.send("Failed to ban user <@" + args[0].match(/[0-9]+/)[0] + ">```\n" + err + "```"));
+	"credits": (cmd, args, input, message) => {
+		return message.channel.send(
+			new Discord.RichEmbed()
+				.setTitle(
+					"Credits",
+					exports.Images.avatar)
+				.addField(
+					"Created, Authored, and Primarily Tested by",
+					"Xyvyrianeth")
+				.addField(
+					"Code Dependencies",
+					"[Heroku](https://heroku.com/), [Node.js](https://nodejs.org/en/), and the following NPM libraries:\n" +
+					" -[Discord.js](https://npm.js/package/discord.js)\n" +
+					" -[PostgreSQL](https://npm.js/package/pg)\n" +
+					" -[Nekos.Life](https://npm.js/package/nekos.life)\n" +
+					" -[Canvas](https://npm.js/package/canvas)\n" +
+					"[Multiplayer Piano](https://multiplayerpiano.com) for all functions relating to [color hexadecimals](https://multiplayerpiano.com/Color.js).")
+				.addField(
+					"Images",
+					"All profile backgrounds found on [Imgur](https://imgur.com/) and posted by user [u/Kizenkis](https://imgur.com/user/Kizenkis) throughout various posts.\n" +
+					`All images from x!nekos${message.channel.nsfw ? " and x!nsfw " : " "}come directly from the [Nekos.Life](https://nekos.life/) API.\n` +
+					"All other assets made by Xyvyrianeth.")
+				.addField(
+					"Special Thanks",
+					"to various users from [The Officially Unofficial Server to the Unofficially Official Dan-Ball Community](https://discord.gg/gYVMUrM) for both support and player testing.")
+				.setColor(new Color().random()));
 	},
 
 	// Misc
