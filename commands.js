@@ -281,23 +281,23 @@ bot = (message) => {
 			let result = false;
 
 			// Replay Creation
-			let Game = img.match(/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)/g)[0];
-			let dimensions = {
-				"connect4": [184, 195],
-				"ttt3d": [316, 230],
-				"squares": [280, 300],
-				"othello": [221, 246],
-				"rokumoku": [321, 346],
-				"ordo": [271, 246],
-				"soccer": [311, 235]
-			}[Game];
 			let query = `INSERT INTO matches (id, game, location, players, winner, timestart, squarereplay)\n` +
 						`VALUES ('${message.id}', '${Game}', '${message.channel.id}/blank', ARRAY['${game.players[0]}', '${game.players[1]}'], '${game.players[game.winner]}', '${game.timeStart}', 'false')`;
 			db.query(query, err => {
 				if (err)
 					return sqlError(message, err, query);
-				encoder1 = new gifEncoder(dimensions[0], dimensions[1]);
-				stream1 = fs.createWriteStream("replay_" + message.id + ".gif");
+				let Game = img.match(/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)/g)[0];
+				let dimensions = {
+					"connect4": [184, 195],
+					"ttt3d": [316, 230],
+					"squares": [280, 300],
+					"othello": [221, 246],
+					"rokumoku": [321, 346],
+					"ordo": [271, 246],
+					"soccer": [311, 235]
+				}[Game];
+				let encoder1 = new gifEncoder(dimensions[0], dimensions[1]);
+				let stream1 = fs.createWriteStream("replay_" + message.id + ".gif");
 				encoder1.createReadStream().pipe(stream1);
 				encoder1.begin();
 				encoder1.addFrame(game.replayData[0], 2500);
@@ -306,19 +306,19 @@ bot = (message) => {
 				encoder1.addFrame(game.replayData[game.replayData.length - 1], 5000)
 				encoder1.end();
 				setTimeout(() => {
-					let attachment = new Discord.Attachment(`replay_${message.id}.gif`, `replay_${message.id}.gif`);
-					let embed = new Discord.RichEmbed()
+					let attachment1 = new Discord.Attachment(`replay_${message.id}.gif`, `replay_${message.id}.gif`);
+					let embed1 = new Discord.RichEmbed()
 						.setTitle("Replay GIF:")
-						.attachFile(attachment)
+						.attachFile(attachment1)
 						.setImage(`attachment://replay_${message.id}.gif`)
 						.setFooter("Match ID: " + message.id)
 						.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`);
-					message.channel.send(embed);
+					message.channel.send(embed1);
 				}, 5000);
 				if (Game == "squares")
 				{
-					encoder2 = new gifEncoder(dimensions[0], dimensions[1]);
-					stream2 = fs.createWriteStream("counter_" + message.id + ".gif");
+					let encoder2 = new gifEncoder(dimensions[0], dimensions[1]);
+					let stream2 = fs.createWriteStream("counter_" + message.id + ".gif");
 					encoder2.createReadStream().pipe(stream2);
 					encoder2.begin();
 					encoder2.addFrame(game.squareCounterData[0], 2500);
@@ -327,13 +327,13 @@ bot = (message) => {
 					encoder2.addFrame(game.squareCounterData[game.squareCounterData.length - 1], 2500)
 					encoder2.end();
 					setTimeout(() => {
-						let attachment = new Discord.Attachment(`counter_${message.id}.gif`, `counter_${message.id}.gif`);
-						let embed = new Discord.RichEmbed()
+						let attachment2 = new Discord.Attachment(`counter_${message.id}.gif`, `counter_${message.id}.gif`);
+						let embed2 = new Discord.RichEmbed()
 							.setTitle("Final Square Count:")
-							.attachFile(attachment)
+							.attachFile(attachment2)
 							.setImage(`attachment://counter_${message.id}.gif`)
 							.setFooter("Match ID: " + message.id);
-						message.channel.send(embed);
+						message.channel.send(embed2);
 					}, 5000);
 				}
 			});
