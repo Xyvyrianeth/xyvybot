@@ -485,9 +485,9 @@ newUser = (id, message) => {
 	let image = images.ids.random(),
 		query =
 			`INSERT INTO profiles (\n` +
-			`   id,       color,      title,      titles,             background,  backgrounds,         lorr,     money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7\n` +
+			`   id,       color,      title,      titles,             background,  backgrounds,         lefty,  money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7\n` +
 			`) VALUES (\n` +
-			`   '${id}',  '#2f3136',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  'right',  500,    1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0\n` +
+			`   '${id}',  '#2f3136',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   500,    1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0\n` +
 			`)`;
 	db.query(query, (err) => {
 		if (err)
@@ -500,7 +500,7 @@ newUser = (id, message) => {
 		titles: ["default"],
 		background: image,
 		backgrounds: [image],
-		lorr: "right",
+		lefty: true,
 		money: 500,
 		elo1: 1000,
 		elo2: 1000,
