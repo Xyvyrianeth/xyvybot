@@ -1,4 +1,4 @@
-var version = "2.45.2.2";
+var version = "2.45.2.3";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -889,7 +889,8 @@ var commands = {
 					res.rows.forEach(match => {
 						gameName = {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game];
 						status = player == match.winner ? "WINNER": "LOSER \u200b";
-						time = new Date(match.timeStart).toString().substring(4, 21);
+						let time = new Date(match.timeStart);
+						time = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(' ')[time.getMonth()] + ' ' + (time.getDate() < 10 ? '0' : '') + time.getDate() + time.getFullYear() + (time.getHours() < 10 ? '0' : '') + time.getHours() + ':' + (time.getMinutes() < 10 ? '0' : '') + time.getMinutes();
 						history.push(`\`${gameName + " \u200b".repeat(14 - gameName.length)}|${status}|${time}|\`[OPEN \u200b LINK](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)|<@${match.players[0] == player ? match.players[1] : match.players[0]}>`);
 					});
 					embed.setDescription(`User: <@${player}>\n\n` + history.join('\n'));
