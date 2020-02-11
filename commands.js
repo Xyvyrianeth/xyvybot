@@ -818,6 +818,9 @@ var commands = {
 						status = player == match.winner ? "Winner": "Loser ";
 						let time = new Date(match.timestart);
 						time = `${time.getMonth() + 1}/${time.getDate()}/${time.getFullYear().toString().substring(2)} ${time.getHours()}:${time.getMinutes()}`;
+						location = match.location;
+						id = match.id;
+						opponent = match.players[0] == player ? match.players[1] : match.players[0];
 						matches.push([gameName, status, time, location, id, opponent]);
 						if (gameName.length > gameNameLength)
 							gameNameLength = gameName.length;
