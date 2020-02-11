@@ -1,4 +1,4 @@
-var version = "2.45.2.12";
+var version = "2.45.2.13";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -627,7 +627,8 @@ var commands = {
 					.setColor(new Color().random())
 			);
 		}
-		if (["leaderboard", "top"].includes(args[0]))
+		else
+		if (["leaderboard", "top", "ranking"].includes(args[0]))
 		{
 			let elos = !args[1] ?			 "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7" :
 			gms.othello.includes(args[1]) ?	 "elo1" :
@@ -676,7 +677,7 @@ var commands = {
 					else
 						game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][elos[3] - 1];
 
-					let users = [];
+					let users = ["__`\u200b RANK \u200b|\u200b Elo \u200b|\u200b \u200b W/L \u200b \u200b|WINRATE|USER`__\n"];
 					for (let i = 0; i < top.length; i++) {
 						if (i == 0)
 							top[i].place = i + 1;
@@ -693,7 +694,7 @@ var commands = {
 							los = top[i].los,
 							w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u200b \u200b N/A \u200b \u200b";
 
-						users.push('`' + '\u200b '.repeat(5 - String(place).length) + place + ')|' + '\u200b '.repeat(5 - String(elo).length) + elo + "|" + '\u200b '.repeat(3 - String(win).length) + win + "/" + los + ' \u200b'.repeat(3 - String(los).length) + "|" + '\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0) + w_l + "|`<@" + id + '>');
+							users.push(`\`${"\u200b ".repeat(5 - String(place).length)}${place})|${"\u200b ".repeat(5 - String(elo).length)}${elo}|${"\u200b ".repeat(5 - String(win).length)}${win}/${los}${"\u200b ".repeat(5 - String(los).length)}|${'\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0)}${w_l}|\`<@${id}>`);
 					}
 					if (res[1].rows.length != 0)
 					{
@@ -707,12 +708,12 @@ var commands = {
 							los = user.los,
 							w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u200b \u200b N/A \u200b \u200b";
 
-						users.push('`' + '\u200b '.repeat(5 - String(place).length) + place + ')|' + '\u200b '.repeat(5 - String(elo).length) + elo + "|" + '\u200b '.repeat(3 - String(win).length) + win + "/" + los + ' \u200b'.repeat(3 - String(los).length) + "|" + '\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0) + w_l + "|`<@" + id + '>');
+						users.push(`\`${"\u200b ".repeat(5 - String(place).length)}${place})|${"\u200b ".repeat(5 - String(elo).length)}${elo}|${"\u200b ".repeat(5 - String(win).length)}${win}/${los}${"\u200b ".repeat(5 - String(los).length)}|${"\u200b ".repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0)}${w_l}|\`<@${id}>`);
 					}
 					return message.channel.send(
 						new Discord.RichEmbed()
 							.setTitle("Leaderboard for " + game)
-							.setDescription("__`\u200b RANK \u200b|\u200b Elo \u200b|\u200b \u200b W/L \u200b \u200b|WINRATE|USER`__\n" + users.join('\n'))
+							.setDescription(users.join('\n'))
 							.setColor(new Color().random())
 					);
 				}
@@ -724,82 +725,6 @@ var commands = {
 						return message.channel.send("There are no scores for this game. Nobody has played it, yet.");
 				}
 			});
-		}
-		if (["stats", "statistics"].includes(args[0])) {
-			let id = message.author.id,
-				gm = "all";
-			let Games = [].concat(gms.othello, gms.squares, gms.rokumoku, gms.ttt3d, gms.connect4, gms.ordo, gms.soccer);
-			if (args.length == 2)
-			{
-				if (/^[0-9]+$/.test(args[1]) || /^<@!?[0-9]+>$/.test(args[1]))
-					id = args[1];
-				else
-				if (Games.includes(args[1]))
-					gm = args[1];
-				else
-					return message.channel.send("I can't do that.");
-			}
-			else
-			if (args.length == 3)
-			{
-				if ((/^[0-9]+$/.test(args[1]) || /^<@!?[0-9]+>$/.test(args[1])) && Games.includes(args[2]))
-					id = args[1],
-					gm = args[2];
-				else
-				if ((/^[0-9]+$/.test(args[2]) || /^<@!?[0-9]+>$/.test(args[2])) && Games.includes(args[1]))
-					id = args[2],
-					gm = args[1];
-				else
-					return message.channel.send("I can't do that.");
-			}
-			else
-				return message.channel.send("I can't do that.");
-
-			let Gm = false;
-
-			if (gm == "all")
-				Gm = "all";
-			else
-				Gm = Object.keys(gms).indexOf(Object.keys(gms).filter(x => gms[x].includes(gm))[0]) + 1;
-			if (Gm)
-			{
-				let query =
-					`SELECT *\n` +
-					`FROM profiles\n` +
-					`WHERE id = '${id}';`;
-				return db.query(query, (err, res) => {
-					if (err)
-						sqlError(message, err, query);
-					let user;
-					if (res.rows.length == 0)
-						user = newUser(message.author.id, message);
-					else
-						user = res.rows[0];
-
-					let embed = new Discord.RichEmbed()
-						.setTitle("User Statistics for " + (Gm == "all" ? "all games" : ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][Gm - 1]))
-						.setColor(new Color().random());
-
-					if (Gm == "all")
-					{
-						let ok = [];
-						for (let i = 0; i < 5; i++)
-						{
-							let game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][i],
-								elo = user["elo" + (i + 1)],
-								win = user["win" + (i + 1)],
-								los = user["los" + (i + 1)],
-								w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u200b \u200b N/A \u200b \u200b";
-							ok.push('`' + game + ' \u200b'.repeat(17 - game.length) + '` | `' + '\u200b '.repeat(5 - String(elo).length) + elo + "` | `" + '\u200b '.repeat(3 - String(win).length) + win + "` / `" + los + ' \u200b'.repeat(3 - String(los).length) + "` (`" + '\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0) + w_l + "`)");
-						}
-						embed.setDescription("**User**: <@" + id + ">\n__`\u200b \u200b \u200b \u200b Game Name \u200b \u200b \u200b \u200b`__ | __`\u200b Elo \u200b`__ | __`\u200b W \u200b`__ / __`\u200b L \u200b`__ (__`\u200b WIN % \u200b`__)\n" + ok.join("\n"));
-					}
-					else
-						embed.setDescription("**User**: <@" + id + ">\n**__Game__: " + ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][Gm - 1] + "\n__Elo__: " + user["elo" + Gm] + "\n__W/L (%)__: " + user["win" + Gm] + "/" + user["los" + Gm] + " (" + (user["win" + Gm] + user["los" + Gm] > 0 ? Math.round(user["win" + Gm] / (user["win" + Gm] + user["los" + Gm]) * 10000) / 100 : "N/A") + "%)**");
-
-					return message.channel.send(embed);
-				});
-			}
 		}
 		else
 		if (["info", "about"].includes(args[0]))
@@ -861,7 +786,7 @@ var commands = {
 					embed.setDescription(`<@${player}> does not have a Game History.`);
 				else
 				{
-					let history = [`__\`GAME${" \u200b".repeat(10)}|STATUS|TIME${" \u200b".repeat(13)}|\`\u200b\`REPLAY GIF\`\u200b\`|OPPONENT\`__`];
+					let history = [`__\`GAME${" \u200b".repeat(10)}|STATUS|TIME${" \u200b".repeat(13)}|\`\u200b\`REPLAY GIF\`\u200b\`| OPPONENT\`__`];
 					res.rows.forEach(match => {
 						gameName = {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game];
 						status = player == match.winner ? "Winner": "Loser \u200b";
