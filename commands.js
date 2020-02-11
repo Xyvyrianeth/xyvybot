@@ -1,4 +1,4 @@
-var version = "2.45.2.13";
+var version = "2.45.2.14";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -677,7 +677,7 @@ var commands = {
 					else
 						game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer"][elos[3] - 1];
 
-					let users = ["__`\u200b RANK \u200b|\u200b Elo \u200b|\u200b \u200b W/L \u200b \u200b|WINRATE| USER`__\n"];
+					let users = ["__`\u200b RANK \u200b|\u200b Elo \u200b|\u200b \u200b W/L \u200b \u200b|WINRATE| USER`__"];
 					for (let i = 0; i < top.length; i++) {
 						if (i == 0)
 							top[i].place = i + 1;
@@ -694,7 +694,7 @@ var commands = {
 							los = top[i].los,
 							w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u200b \u200b N/A \u200b \u200b";
 
-							users.push(`\`${"\u200b ".repeat(5 - String(place).length)}${place})|${"\u200b ".repeat(5 - String(elo).length)}${elo}|${"\u200b ".repeat(5 - String(win).length)}${win}/${los}${"\u200b ".repeat(5 - String(los).length)}|${'\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0)}${w_l}|\`<@${id}>`);
+							users.push(`\`${"\u200b ".repeat(5 - String(place).length)}${place})|${"\u200b ".repeat(3 - String(elo).length)}${elo}|${"\u200b ".repeat(5 - String(win).length)}${win}/${los}${"\u200b ".repeat(3 - String(los).length)}|${'\u200b '.repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0)}${w_l}|\`<@${id}>`);
 					}
 					if (res[1].rows.length != 0)
 					{
@@ -708,7 +708,7 @@ var commands = {
 							los = user.los,
 							w_l = win + los > 0 ? (win / (win + los) * 100).toFixed(2) + '%' : "\u200b \u200b N/A \u200b \u200b";
 
-						users.push(`\`${"\u200b ".repeat(5 - String(place).length)}${place})|${"\u200b ".repeat(5 - String(elo).length)}${elo}|${"\u200b ".repeat(5 - String(win).length)}${win}/${los}${"\u200b ".repeat(5 - String(los).length)}|${"\u200b ".repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0)}${w_l}|\`<@${id}>`);
+						users.push(`\`${"\u200b ".repeat(5 - String(place).length)}${place})|${"\u200b ".repeat(5 - String(elo).length)}${elo}|${"\u200b ".repeat(3 - String(win).length)}${win}/${los}${"\u200b ".repeat(3 - String(los).length)}|${"\u200b ".repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0)}${w_l}|\`<@${id}>`);
 					}
 					return message.channel.send(
 						new Discord.RichEmbed()
