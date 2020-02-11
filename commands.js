@@ -820,7 +820,7 @@ var commands = {
 					});
 					embed.setDescription(`for user: <@${player}>\n\n` + history[0]);
 					for (let i = 1; i < 11; i += 2)
-						embed.addField("\u200b", [history[i], history[i + 1], history[i + 2]].join('\n'), false);
+						embed.addField("\u200b", history[i] + '\n' + history[i + 1], false);
 				}
 				message.channel.send(embed);
 			});
