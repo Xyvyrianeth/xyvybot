@@ -1,4 +1,4 @@
-var version = "2.45.2.0";
+var version = "2.45.2.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -871,7 +871,7 @@ var commands = {
 
 			let query = `SELECT * FROM matches\n` +
 						`WHERE\n` +
-						`	${has.id ? `AND id = '${id}'` : `ANY (player) = '${player}' ${has.game ? `AND game = '${game}'` : ''}`}\n` +
+						`	${has.id ? `id = '${id}'` : `'${player}' = ANY (player)${has.game ? ` AND game = '${game}'` : ''}`}\n` +
 						`ORDER BY timeStart DESC\n` +
 						`LIMIT 20`;
 
