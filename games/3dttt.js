@@ -9,7 +9,7 @@ exports.newGame = function(channel, player, here) {
     let time = new Date();
     let game = {
         buffer:  {},
-		canHaveTurn: true,
+		canTakeTurn: true,
         channels: {},
         forfeit:  false,
         game: shortname,
@@ -93,15 +93,15 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
                     ctx.drawImage(exports.Images[game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
 
                 if (end === 0 && highlight !== false && (x + 1) + (y + 10).toString(14).toUpperCase() + z == highlight)
-                    ctx.drawImage(exports.Images.highlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                    ctx.drawImage(exports.Images[['x', 'o'][game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()] + "Highlight"], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 else
                 if (end === 1 && highlight.includes((x + 1) + (y + 10).toString(14).toUpperCase() + z))
-                    ctx.drawImage(exports.Images.winHighlight, [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                    ctx.drawImage(exports.Images[['x', 'o'][game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()] + "WinHighlight"], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
             }
 
-	let newCanvas = new Canvas.createCanvas(316, 230);
+	let newCanvas = new Canvas.createCanvas(221, 246);
 	let newCtx = newCanvas.getContext('2d');
-	let data = ctx.getImageData(0, 0, 316, 230);
+	let data = ctx.getImageData(0, 0, 221, 246);
 	newCtx.putImageData(data, 0, 0);
 	game.replayData.push(newCtx);
 
@@ -131,6 +131,7 @@ exports.takeTurn = function(channel, move) {
 
     if (game.board[X][Y][Z] !== false)
     {
+		game.canHaveTurn = true;
         return exports.say(game.channels, ["Illegal move: this space is not empty.", {}]);
     }
     else
@@ -322,11 +323,17 @@ Canvas.loadImage("/app/assets/games/3dttt/turn.png").then(image => {
 Canvas.loadImage("/app/assets/games/3dttt/win.png").then(image => {
     exports.Images.win = image;
 });
-Canvas.loadImage("/app/assets/games/3dttt/highlight.png").then(image => {
-    exports.Images.highlight = image;
+Canvas.loadImage("/app/assets/games/3dttt/xHighlight.png").then(image => {
+    exports.Images.XHighlight = image;
 });
-Canvas.loadImage("/app/assets/games/3dttt/winHighlight.png").then(image => {
-    exports.Images.winHighlight = image;
+Canvas.loadImage("/app/assets/games/3dttt/oHighlight.png").then(image => {
+    exports.Images.OHighlight = image;
+});
+Canvas.loadImage("/app/assets/games/3dttt/xWinHighlight.png").then(image => {
+    exports.Images.XWinHighlight = image;
+});
+Canvas.loadImage("/app/assets/games/3dttt/oWinHighlight.png").then(image => {
+    exports.Images.OWinHighlight = image;
 });
 Canvas.loadImage("/app/assets/games/3dttt/tie.png").then(image => {
     exports.Images.tie = image;

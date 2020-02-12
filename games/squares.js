@@ -166,6 +166,7 @@ exports.takeTurn = function(channel, Move) {
 
 	if (game.board[move[0]][move[1]] !== false)
 	{
+		game.canHaveTurn = true;
 		return exports.say(channel ["Illegal move: this space is not empty.", {}]);
 	}
 	else

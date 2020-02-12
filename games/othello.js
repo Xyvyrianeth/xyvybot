@@ -165,10 +165,12 @@ exports.takeTurn = function(channel, Move) {
     game.highlight = [];
     if (typeof game.board[move[0]][move[1]] !== "boolean")
     {
+		game.canHaveTurn = true;
         return exports.say(JSON.parse(`{"${channel}":[]}`), ["Illegal move: this space is not empty.", {}]);
     }
     if (game.board[move[0]][move[1]] === false)
     {
+		game.canHaveTurn = true;
         return exports.say(JSON.parse(`{"${channel}":[]}`), ["Illegal move: playing in this space would not capture anything.", {}]);
     }
     game.possible.forEach(p => {

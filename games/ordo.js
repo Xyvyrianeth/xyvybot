@@ -129,19 +129,37 @@ exports.takeTurn = function(channel, Move) {
         let distance = move.from[0][1] == move.to[0][1] ? Math.abs(move.from[0][0] - move.to[0][0]) : Math.abs(move.from[0][1] - move.to[0][1]);
 
         if (game.board[move.from[0][0]][move.from[0][1]] === false)
-            return exports.say(channel, ["Illegal move: there is no stone to move in that space."]);
+		{
+			game.canHaveTurn = true;
+			return exports.say(channel, ["Illegal move: there is no stone to move in that space."]);
+		}
         if (game.board[move.from[0][0]][move.from[0][1]] == [1, 0][game.turn])
-            return exports.say(channel, ["Illegal move: that stone is not yours."]);
+		{
+			game.canHaveTurn = true;
+			return exports.say(channel, ["Illegal move: that stone is not yours."]);
+		}
         if (direction == 8 || distance == 0)
-            return exports.say(channel, ["Illegal move: you actually have to move the stone."]);
+		{
+			game.canHaveTurn = true;
+			return exports.say(channel, ["Illegal move: you actually have to move the stone."]);
+		}
         if (move.from[0][0] != move.to[0][0] && move.from[0][1] != move.to[0][1] && Math.abs(move.from[0][0] - move.to[0][0]) != Math.abs(move.from[0][1] - move.to[0][1]))
-            return exports.say(channel, ["Illegal move: stones can only be moved diagonally or orthagonally."]);
+		{
+			game.canHaveTurn = true;
+			return exports.say(channel, ["Illegal move: stones can only be moved diagonally or orthagonally."]);
+		}
         for (let i = 1; i <= distance; i++)
-        {
+		{
             if (i < distance && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][direction] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][direction] * i)] !== false)
-                return exports.say(channel, ["Illegal move: a stone is blocking this movement."]);
+			{
+				game.canHaveTurn = true;
+				return exports.say(channel, ["Illegal move: a stone is blocking this movement."]);
+			}
             if (i == distance && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][direction] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][direction] * i)] === game.turn)
-                return exports.say(channel, ["Illegal move: you cannot capture your own stone."]);
+			{
+				game.canHaveTurn = true;
+				return exports.say(channel, ["Illegal move: you cannot capture your own stone."]);
+			}
         }
     }
     else
@@ -165,12 +183,21 @@ exports.takeTurn = function(channel, Move) {
         let width;
         let Stones = [];
         if (stones[0][0] == stones[1][0] && stones[0][1] == stones[1][1])
-            return exports.say(channel, ["This is a singleton move, please use the singleton move format!"]);
+		{
+			game.canHaveTurn = true;
+			return exports.say(channel, ["This is a singleton move, please use the singleton move format!"]);
+		}
         if (stones[0][0] != stones[1][0] && stones[0][1] != stones[1][1])
-            return exports.say(channel, ["Illegal move: stones trying to be moved are not alligned orthagonally."]);
+		{
+			game.canHaveTurn = true;
+			return exports.say(channel, ["Illegal move: stones trying to be moved are not alligned orthagonally."]);
+		}
         else
         if ((stones[0][1] == stones[1][1] && (direction == 0 || direction == 2)) || (stones[0][0] == stones[1][0] && (direction == 1 || direction == 3)))
-            return exports.say(channel, ["Illegal move: multiple stones cannot be moved single-file."]);
+		{
+			game.canHaveTurn = true;
+			return exports.say(channel, ["Illegal move: multiple stones cannot be moved single-file."]);
+		}
         else
         if (stones[0][0] == stones[1][0])
         {
@@ -193,12 +220,18 @@ exports.takeTurn = function(channel, Move) {
             to:   Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * distance), p[1] + ([0, 1, 0, -1][direction] * distance)])
         }   // { from: [ [4, 0], [5, 0], [6, 0] ], to: [ [4, 4], [5, 4], [6, 4] ] }
         if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
-            return exports.say(channel, ["Illegal move: one or more of the stones you're trying to move aren't yours."]);
+		{
+			game.canHaveTurn = true;
+			return exports.say(channel, ["Illegal move: one or more of the stones you're trying to move aren't yours."]);
+		}
         if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y <  move.from[0][0] && y >= move.to[0][0] 	 && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
             (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y >  move.from[0][0] && y <= move.to[0][0] 	 && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
             (direction == 1 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x >  move.from[0][1] && x <= move.to[0][1] 	   && game.board[y][x] !== false))) ||
             (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x <  move.from[0][1] && x >= move.to[0][1]     && game.board[y][x] !== false))))
-                return exports.say(channel, ["Illegal move: one or more stones are blocking that movement (ordo moves cannot capture enemy stones)."]);
+			{
+				game.canHaveTurn = true;
+				return exports.say(channel, ["Illegal move: one or more stones are blocking that movement (ordo moves cannot capture enemy stones)."]);
+			}
     }
 
     let pieces = [];
@@ -261,6 +294,7 @@ exports.takeTurn = function(channel, Move) {
     }
     if (queue[game.turn].length != 0)
     {   // Attempting to split yourself up
+		game.canHaveTurn = true;
         return exports.say(channel, ["Illegal move: would split your stones into more than one group.", "Illegal move: would not reconnect your stones into one group."][game.split]);
     }
     else
