@@ -9,7 +9,7 @@ exports.newGame = function(channel, player, here) {
     let time = new Date();
     let game = {
         buffer: {},
-		canTakeTurn: true,
+		canHaveTurn: true,
         channels: {},
         forfeit: false,
         game: shortname,
