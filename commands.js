@@ -1,4 +1,4 @@
-var version = "2.45.4.3";
+var version = "2.45.4.4";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -810,7 +810,7 @@ var commands = {
 						gameName = {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game];
 						status = player == match.winner ? "Winner": "Loser ";
 						let time = new Date(match.timestart);
-						time = `${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${time.getDate()}/${time.getFullYear().toString().substring(2)} ${time.getHours()}:${time.getMinutes()}`;
+						time = `${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${time.getDate()}/${time.getFullYear().toString().substring(2)} ${(time.getHours() < 10 ? '0': 0) + time.getHours()}:${(time.getMinutes() < 10 ? '0': 0) + time.getMinutes()}`;
 						location = match.location;
 						id = match.id;
 						opponent = match.players[0] == player ? match.players[1] : match.players[0];
