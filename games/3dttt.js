@@ -93,10 +93,10 @@ exports.drawBoard = function(game, end, highlight, firstDisp) {
                     ctx.drawImage(exports.Images[game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
 
                 if (end === 0 && highlight !== false && (x + 1) + (y + 10).toString(14).toUpperCase() + z == highlight)
-                    ctx.drawImage(exports.Images[['x', 'o'][game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()] + "Highlight"], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                    ctx.drawImage(exports.Images[game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase() + "Highlight"], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
                 else
                 if (end === 1 && highlight.includes((x + 1) + (y + 10).toString(14).toUpperCase() + z))
-                    ctx.drawImage(exports.Images[['x', 'o'][game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase()] + "WinHighlight"], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
+                    ctx.drawImage(exports.Images[game.board[x + 1][(y + 10).toString(14).toUpperCase()][z].toUpperCase() + "WinHighlight"], [7, 145, 55, 193][x] + (y * 8) + (z * 20), [6, 54, 102, 150][x] + (y * 16));
             }
 
 	let newCanvas = new Canvas.createCanvas(221, 246);
