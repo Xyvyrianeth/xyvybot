@@ -1,4 +1,4 @@
-var version = "2.45.4.5";
+var version = "2.45.4.6";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -833,9 +833,9 @@ var commands = {
 							gameNameLength = gameName.length;
 					});
 					let hasSquares = matches.some(match => match[0] == "Squares");
-					let history = [`__\`GAME${' '.repeat(gameNameLength - 4)}|STATUS|TIME          |\`\u200b\`REPLAY ${hasSquares ? " GIFS" : "GIF"}\`\u200b\`| OPPONENT\`__`];
+					let history = [`__\`GAME${' '.repeat(gameNameLength - 4)}|STATUS|TIME          |\`\u200b\`${hasSquares ? "`REPLAY`\u200b` \u200b `\u200b`GIFS`" : "`REPLAY GIF`"}\`\u200b\`| OPPONENT\`__`];
 					matches.forEach(match => {
-						history.push(`\`${match[0] + ' '.repeat(gameNameLength - match[0].length)}|${match[1]}|${match[2]}|\`${hasSquares ? match[0] == "Squares" ? `[\`REPLAY](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif) [SCORE\`](https://cdn.discordapp.com/attachments/${match[6]}/counter_${match[4]}.gif)` : `[\`OPEN   LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)` : `[\`OPEN  LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)`}\`|\`<@${match[5]}>`);
+						history.push(`\`${match[0] + ' '.repeat(gameNameLength - match[0].length)}|${match[1]}|${match[2]}|\`${hasSquares ? match[0] == "Squares" ? `[\`REPLAY](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)` `[SCORE\`](https://cdn.discordapp.com/attachments/${match[6]}/counter_${match[4]}.gif)` : `[\`\u200b OPEN\` \u200b \`LINK \u200b\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)` : `[\`OPEN  LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)`}\`|\`<@${match[5]}>`);
 					})
 					embed.setDescription(`for user: <@${player}>\n\n` + history.join('\n'));
 				}
