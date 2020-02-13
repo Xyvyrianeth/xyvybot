@@ -776,9 +776,7 @@ var commands = {
 				id: false,
 				unknown: []
 			};
-			console.log(args);
 			args.shift();
-			console.log(args);
 			if (args.length == 0)
 				player = message.author.id;
 			else
@@ -797,7 +795,7 @@ var commands = {
 					else
 						has.unknown.push(arg);
 				});
-			if (has.unknown)
+			if (has.unknown.length > 0)
 				return message.channel.send("Unknown arguments: `" + has.unknown.join("`, `") + '`');
 
 			let query = `SELECT * FROM matches\n` +
