@@ -1,4 +1,4 @@
-var version = "2.45.4.8";
+var version = "2.45.4.9";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -771,18 +771,16 @@ var commands = {
 		{
 			let player, game, id;
 			let has = {
+				player: false,
 				game: false,
 				id: false,
-				none: false
+				unknown: []
 			};
 			args.shift();
 			if (args.length == 0)
 				player = message.author.id;
 			else
 				args.forEach(arg => {
-					if (/^[0-9]+$/.test(arg))
-						id = arg, has.id = true;
-					else
 					if (Object.keys(gms).some(gm => gms[gm].includes(arg)))
 						Object.keys(gms).forEach(gm => {
 							if (gms[gm].includes(arg))
@@ -790,12 +788,15 @@ var commands = {
 						});
 					else
 					if (/^<@!?[0-9]+>$/.test(arg) && client.users.get(args.filter(arg => /^<@!?[0-9]+>$/.test(arg))) != undefined)
-						player = arg.match(/[0-9]+/)[0];
+						player = arg.match(/[0-9]+/)[0], has.player = true;
 					else
-						has.none = true;
+					if (/^[0-9]+$/.test(arg))
+						id = arg, has.id = true;
+					else
+						has.unknown.push(arg);
 				});
-			if (has.none)
-				message.channel.send("Unknown arguments.")
+			if (has.unknown)
+				message.channel.send("Unknown arguments: `" + has.unknown.join("`, `") + '`');
 
 			let query = `SELECT * FROM matches\n` +
 						`WHERE\n` +
@@ -811,10 +812,14 @@ var commands = {
 					.setTitle("Game History");
 				if (res.rows.length == 0)
 				{
-					if (res.rows.length == 0)
-						embed.setDescription(`<@${player}> does not have a Game History.`);
 					if (has.id)
-						embed.setDescription(`<@${''}>`);
+						embed.setDescription(`A game with the ID, \`${id}\`, does not exist.`);
+					else
+					if (has.player)
+						embed.setDescription(`<@${player}> does not have a Game History.`);
+					else
+						embed.setDescription(`<@${player}>, you do not have a Game History.`);
+
 				}
 				else
 				{
@@ -838,7 +843,7 @@ var commands = {
 						text = 
 							hasSquares ? 
 								match[0] == "Squares" ? 
-									`[\`REPLAY\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\` \`[\`SCORE\`](https://cdn.discordapp.com/attachments/${match[6]}/counter_${match[4]}.gif)` : 
+									`[\`REPLAY\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\`|\`[\`SCORE\`](https://cdn.discordapp.com/attachments/${match[6]}/counter_${match[4]}.gif)` : 
 									`\u200b\` \`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\` \`\u200b` : 
 									`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)`
 						history.push(`\`${match[0] + ' '.repeat(gameNameLength - match[0].length)}|${match[1]}|${match[2]}|\`${text}\`|\`<@${match[5]}>`);
