@@ -1,4 +1,4 @@
-var version = "2.45.4.9";
+var version = "2.45.4.10";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -787,7 +787,7 @@ var commands = {
 								game = Object.keys, has.game = true;
 						});
 					else
-					if (/^<@!?[0-9]+>$/.test(arg) && client.users.get(args.filter(arg => /^<@!?[0-9]+>$/.test(arg))) != undefined)
+					if (/^<@!?[0-9]+>$/.test(arg) && client.users.get(arg.match(/[0-9]+/)[0]) != undefined)
 						player = arg.match(/[0-9]+/)[0], has.player = true;
 					else
 					if (/^[0-9]+$/.test(arg))
@@ -796,7 +796,7 @@ var commands = {
 						has.unknown.push(arg);
 				});
 			if (has.unknown)
-				message.channel.send("Unknown arguments: `" + has.unknown.join("`, `") + '`');
+				return message.channel.send("Unknown arguments: `" + has.unknown.join("`, `") + '`');
 
 			let query = `SELECT * FROM matches\n` +
 						`WHERE\n` +
@@ -820,6 +820,19 @@ var commands = {
 					else
 						embed.setDescription(`<@${player}>, you do not have a Game History.`);
 
+				}
+				else
+				if (has.id)
+				{
+					let match = res.rows[0];
+					embed.setDescription(`__**PLAYERS**__\n<@${match.players[0]}> and <@${match.players[1]}>\n\n`);
+					embed.addField("\u200b", "__**GAME**__\n" + {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game]);
+					embed.addField("\u200b", `__**WINNER**__\n<@${match.winner}>`);
+					if (match.game == "squares")
+						embed.addField("\u200b", `[REPLAY GIF](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)\n[FINAL SCORE COUNT](https://cdn.discordapp.com/attachments/${match.squaresreplay}/counter_${match.id}.gif)`);
+					else
+						embed.addField("\u200b", `[REPLAY GIF](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)`);
+					embed.setFooter(`TIME: ${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${time.getDate()}/${time.getFullYear().toString().substring(2)} ${(time.getHours() < 10 ? '0': 0) + time.getHours()}:${(time.getMinutes() < 10 ? '0': 0) + time.getMinutes()}`);
 				}
 				else
 				{
