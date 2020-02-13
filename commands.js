@@ -767,7 +767,7 @@ var commands = {
 					.setColor(new Color().random()));
 		}
 		else
-		if (["history"].includes(args[0]))
+		if (["history", "recent"].includes(args[0]))
 		{
 			let player, game, id;
 			let has = {
@@ -776,7 +776,9 @@ var commands = {
 				id: false,
 				unknown: []
 			};
+			console.log(args);
 			args.shift();
+			console.log(args);
 			if (args.length == 0)
 				player = message.author.id;
 			else
