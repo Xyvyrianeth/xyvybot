@@ -832,6 +832,7 @@ var commands = {
 						embed.addField("\u200b", `[REPLAY GIF](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)\n[FINAL SCORE COUNT](https://cdn.discordapp.com/attachments/${match.squaresreplay}/counter_${match.id}.gif)`);
 					else
 						embed.addField("\u200b", `[REPLAY GIF](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)`);
+					let time = new Date(match.timestart);
 					embed.setFooter(`TIME: ${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${time.getDate()}/${time.getFullYear().toString().substring(2)} ${(time.getHours() < 10 ? '0': 0) + time.getHours()}:${(time.getMinutes() < 10 ? '0': 0) + time.getMinutes()}`);
 				}
 				else
