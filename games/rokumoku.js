@@ -148,23 +148,12 @@ exports.takeTurn = function(channel, Move) {
         {
             for (let x = 0; x < [12, 7, 7, 12][d]; x++)
             {
-                if (![
-                    a[y][x],
-                    a[y + (e[d] * 1)][x + (f[d] * 1)],
-                    a[y + (e[d] * 2)][x + (f[d] * 2)],
-                    a[y + (e[d] * 3)][x + (f[d] * 3)],
-                    a[y + (e[d] * 4)][x + (f[d] * 4)],
-                    a[y + (e[d] * 5)][x + (f[d] * 5)]
-                ].some(c => c !== b))
+                let g = [];
+                for (let i = 0; i < 6; i++)
+                    g.push(a[y + (e[d] * i)][x + (f[d] * i)]);
+                if (!g.some(c => c !== b))
                 {
-                    game.highlight = [
-                        a[y][x],
-                        a[y + (e[d] * 1)][x + (f[d] * 1)],
-                        a[y + (e[d] * 2)][x + (f[d] * 2)],
-                        a[y + (e[d] * 3)][x + (f[d] * 3)],
-                        a[y + (e[d] * 4)][x + (f[d] * 4)],
-                        a[y + (e[d] * 5)][x + (f[d] * 5)]
-                    ];
+                    game.highlight = g;
                     end = 1;
                     break;
                 }
@@ -172,13 +161,12 @@ exports.takeTurn = function(channel, Move) {
         }
     }
 
-    if (game.turn == Math.floor(game.turn))
+    if (end !== 1)
     {
-        game.highlight = [move];
-    }
-    else
-    {
-        game.highlight.push(move);
+        if (game.turn == Math.floor(game.turn))
+            game.highlight = [move];
+        else
+            game.highlight.push(move);
     }
 
     exports.nextTurn(channel, end);
