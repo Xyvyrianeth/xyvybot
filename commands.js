@@ -1,4 +1,4 @@
-var version = "2.45.4.12";
+var version = "2.45.6.0";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1564,88 +1564,180 @@ var commands = {
 
 	"iq": (cmd, args, input, message) => {
 		if (games.minigames.some((minigame) => minigame.channel == message.channel.id)) return;
-		let a, b, c, d, ans, equ;
-		let A = Math.random() * 4 | 0;
+		let a, b, c, d, ans, type, que, end, time;
+		let A = Math.random() * 10 | 0;
 		switch (A) {
 			case 0:
-				a = [];
-				for (let i = 0; i < 18; i++)
 				{
-					b = (Math.random() * 26 + 10 | 0).toString(36).toUpperCase();
-					if (a.includes(b)) i--;
-					else a.push(b);
+					type = "Which letter appears twice?";
+					a = [];
+					for (let i = 0; i < 18; i++)
+					{
+						b = (Math.random() * 26 + 10 | 0).toString(36).toUpperCase();
+						if (a.includes(b)) i--;
+						else a.push(b);
+					}
+					a = a.shuffle();
+					do {
+						b = (Math.random() * 26 + 10 | 0).toString(36).toUpperCase();
+						if (a.includes(b)) b = false;
+					} while (b == false);
+					ans = b;
+					c = Math.random() * 18 | 0;
+					do {
+						d = Math.random() * 18 | 0;
+					} while (Math.abs(c - d) < 7);
+					a.splice(c, 0, b);
+					a.splice(d, 0, b);
+					que = "`" + a.join("` `") + "`";
+					end = que + "\nAnswer: **" + ans + "** appears twice!";
+					time = 20;
+					break;
 				}
-				a = a.shuffle();
-				do {
-					b = (Math.random() * 26 + 10 | 0).toString(36).toUpperCase();
-					if (a.includes(b)) b = false;
-				} while (b == false);
-				ans = b;
-				c = Math.random() * 18 | 0;
-				do {
-					d = Math.random() * 18 | 0;
-				} while (Math.abs(c - d) < 7);
-				a.splice(c, 0, b);
-				a.splice(d, 0, b);
-				equ = a.join('` `');
-				break;
 			case 1:
-				a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
-				b = Math.random() * 10 | 0;
-				ans = a[b];
-				a.splice(b, 1);
-				equ = a.shuffle().join('` `');
-				break;
-			case 2:
-				a = Math.random() * 3 | 0;
-				[b, c, d] = [
-					[Math.random() * 200 + 1,	Math.random() * 20 + 1,	Math.random() * 20 + 1][a] | 0,
-					[Math.random() * 25 + 5,	Math.random() * 4 + 2,	Math.random() * 20 + 1][a] | 0,
-					[undefined,					undefined,				Math.random() * 20 + 1][a] | 0	];
-				[b, c, d] = [b * [1, -1].random(), c * [1, -1].random(), d * [1, -1].random()];
-				equ = b;
-				for (let i = 0; i <= 2; i++)
 				{
-					if (a == 2) c += d;
-					b = [b + c, b * c, b + c][a];
-					if (i == 2) ans = b;
-					else equ += ', ' + b;
+					type = "Which digit is missing?";
+					a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+					b = Math.random() * 10 | 0;
+					ans = a[b];
+					a.splice(b, 1);
+					que = "`" + a.shuffle().join("` `") + "`";
+					end = que + "\nAnswer: **" + ans + "** is missing!";
+					time = 20;
+					break;
 				}
-				break;
+			case 2:
+				{
+					type = "What is the next number in the pattern?";
+					b = (Math.random() * 200 + 1 | 0) * [1, -1].random();
+					c = (Math.random() * 25  + 5 | 0) * [1, -1].random();
+					let equ = [b];
+					for (let i = 0; i <= 2; i++)
+					{
+						b += c;
+						if (i == 2) ans = b;
+						else equ.push(b);
+					}
+					que = equ.join(", ") + ", __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
+					end = equ.join(", ") + ", __" + ans + "__";
+					diff = "\nDifficulty: **Easy**";
+					time = 20;
+					break;
+				}
 			case 3:
-				a = Math.random() * 4 | 0;
-				[b, c] = [
-					[Math.random() * 500 + 1,	Math.random() * 500 + 1,	Math.random() * 50 + 1,	Math.random() * 20 + 5][a] | 0,
-					[Math.random() * 500 + 1,	Math.random() * 500 + 1,	Math.random() * 50 + 1,	Math.random() * 20 + 5][a] | 0];
-				[b, c] = a > 1 ? [b * [1, -1].random(), c * [1, -1].random()] : [b, c];
-				[ans, equ] = [
-					[b + c, b - c, b * c, b][a],
-					('**' + [b, b, b, b * c][a] + '** x **' + c + '**').replace('x', '+-×÷'.split('')[a])];
-				break;
-
+				{
+					type = "What is the next number in the pattern?";
+					a = Math.random() * 3 | 0;
+					b = (Math.random() * 20 + 1 | 0) * [1, -1].random();
+					c = (Math.random() * 4  + 2 | 0) * [1, -1].random();
+					let equ = [b];
+					for (let i = 0; i <= 2; i++)
+					{
+						b *= c;
+						if (i == 2) ans = b;
+						else equ.push(b);
+					}
+					que = equ.join(", ") + ", __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
+					end = equ.join(", ") + ", __" + ans + "__";
+					diff = "\nDifficulty: **Medium**";
+					time = 30;
+					break;
+				}
+			case 4:
+				{
+					type = "What is the next number in the pattern?";
+					a = Math.random() * 3 | 0;
+					b = (Math.random() * 20 + 1 | 0) * [1, -1].random();
+					c = (Math.random() * 20 + 1 | 0) * [1, -1].random();
+					d = (Math.random() * 20 + 1 | 0) * [1, -1].random();
+					let equ = [b];
+					for (let i = 0; i <= 2; i++)
+					{
+						c += d;
+						b += c;
+						if (i == 2) ans = b;
+						else equ.push(b);
+					}
+					que = equ.join(", ") + ", __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
+					end = equ.join(", ") + ", __" + ans + "__";
+					diff = "\nDifficulty: **Hard**";
+					time = 40;
+					break;
+				}
+			case 5:
+				{
+					type = "What is the next number in the pattern?";
+					a = Math.random() * 3 | 0;
+					b = (Math.random() * 20 + 1 | 0) * [1, -1].random();
+					c = (Math.random() * 20 + 1 | 0) * [1, -1].random();
+					d = (Math.random() * 20 + 1 | 0) * [1, -1].random();
+					let equ = [];
+					let ans = b;
+					for (let i = 0; i <= 2; i++)
+					{
+						c += d;
+						b += c;
+						equ.unshift(b);
+					}
+					que = equ.join(", ") + ", __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
+					end = equ.join(", ") + ", __" + ans + "__";
+					diff = "\nDifficulty: **Hard**";
+					time = 45;
+					break;
+				}
+			case 6:
+				{
+					type = "Solve this:";
+					a = Math.random() * 4 | 0;
+					b = (Math.random() * 500 + 1 | 0) * [1, -1].random();
+					c = (Math.random() * 500 + 1 | 0) * [1, -1].random();
+					ans = b + c;
+					que = "**" + b + "** + **" + c + "** = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
+					end = "**" + b + "** + **" + c + "** = __" + ans + "__!";
+					diff = "\nDifficulty: **Easy**";
+					time = 15;
+					break;
+				}
+			case 7:
+				{
+					type = "Solve this:";
+					a = Math.random() * 4 | 0;
+					b = (Math.random() * 500 + 1 | 0) * [1, -1].random();
+					c = (Math.random() * 500 + 1 | 0) * [1, -1].random();
+					ans = b - c;
+					que = "**" + b + "** - **" + c + "** = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
+					end = "**" + b + "** - **" + c + "** = __" + ans + "__!";
+					diff = "\nDifficulty: **Easy**";
+					time = 30;
+					break;
+				}
+			case 8:
+				{
+					type = "Solve this:";
+					a = Math.random() * 4 | 0;
+					b = (Math.random() * 100 + 1 | 0) * [1, -1].random();
+					c = (Math.random() * 100 + 1 | 0) * [1, -1].random();
+					ans = b * c;
+					que = "**" + b + "** × **" + c + "** = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
+					end = "**" + b + "** × **" + c + "** = __" + ans + "__!";
+					diff = "\nDifficulty: **Medium**";
+					time = 40;
+					break;
+				}
+			case 9:
+				{
+					type = "Solve this:";
+					a = Math.random() * 4 | 0;
+					b = (Math.random() * 20 + 5 | 0) * [1, -1].random();
+					c = (Math.random() * 20 + 5 | 0) * [1, -1].random();
+					ans = b;
+					que = "**" + (b * c) + "** ÷ **" + c + "** = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__" ;
+					end = "**" + (b * c) + "** + **" + c + "** = __" + ans + "__!";
+					diff = "\nDifficulty: **Hard**";
+					time = 45;
+					break;
+				}
 		}
-		let type = [
-			"Which letter appears twice?",
-			"Which digit is missing?",
-			"What is the next number in the pattern?",
-			"Solve this:"
-		][A];
-		let que = [
-			'`' + equ + '`',
-			'`' + equ + '`',
-			equ + ", __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__",
-			equ + " = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__"
-		][A];
-		let diff = [
-			"", "", "\nDifficulty: **" + ["Easy", "Medium", "Hard"][a] + "**", "\nDifficulty: **" + ["Easy", "Easy", "Medium", "Hard"][a] + "**"
-		][A];
-		let end = [
-			que + "\nAnswer: **" + ans + "** appears twice!",
-			que + "\nAnswer: **" + ans + "** is missing!",
-			equ + ", __" + ans + "__",
-			equ + " = `" + ans + "`!"
-		][A];
-		let time = [20, 10, 10 * a + 20, 15 + [15, 15, 30, 45][a]][A];
 
 		let embed = new Discord.RichEmbed()
 			.setColor(new Color(176, 14, 223).toHexa())
