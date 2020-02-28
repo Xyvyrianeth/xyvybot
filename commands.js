@@ -1,4 +1,4 @@
-var version = "2.45.6.0";
+var version = "2.45.6.1";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -854,11 +854,11 @@ var commands = {
 					let hasSquares = matches.some(match => match[0] == "Squares");
 					let history = [`__\`GAME${' '.repeat(gameNameLength - 4)}|STATUS|TIME          |\`\u200b${hasSquares ? "`REPLAY`\u200b` \u200b `\u200b`GIFS`" : "`REPLAY GIF`"}\u200b\`| OPPONENT\`__`];
 					matches.forEach(match => {
-						text = 
-							hasSquares ? 
-								match[0] == "Squares" ? 
-									`[\`REPLAY\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\`|\`[\`SCORE\`](https://cdn.discordapp.com/attachments/${match[6]}/counter_${match[4]}.gif)` : 
-									`\u200b\` \`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\` \`\u200b` : 
+						text =
+							hasSquares ?
+								match[0] == "Squares" ?
+									`[\`REPLAY\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\`|\`[\`SCORE\`](https://cdn.discordapp.com/attachments/${match[6]}/counter_${match[4]}.gif)` :
+									`\u200b\` \`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\` \`\u200b` :
 									`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)`
 						history.push(`\`${match[0] + ' '.repeat(gameNameLength - match[0].length)}|${match[1]}|${match[2]}|\`${text}\`|\`<@${match[5]}>`);
 					})
@@ -1565,7 +1565,7 @@ var commands = {
 	"iq": (cmd, args, input, message) => {
 		if (games.minigames.some((minigame) => minigame.channel == message.channel.id)) return;
 		let a, b, c, d, ans, type, que, end, time;
-		let A = Math.random() * 10 | 0;
+		let A = Math.random() * 9 | 0;
 		switch (A) {
 			case 0:
 				{
@@ -1592,6 +1592,7 @@ var commands = {
 					que = "`" + a.join("` `") + "`";
 					end = que + "\nAnswer: **" + ans + "** appears twice!";
 					time = 20;
+					diff = '';
 					break;
 				}
 			case 1:
@@ -1604,6 +1605,7 @@ var commands = {
 					que = "`" + a.shuffle().join("` `") + "`";
 					end = que + "\nAnswer: **" + ans + "** is missing!";
 					time = 20;
+					diff = '';
 					break;
 				}
 			case 2:
@@ -1619,7 +1621,7 @@ var commands = {
 						else equ.push(b);
 					}
 					que = equ.join(", ") + ", __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
-					end = equ.join(", ") + ", __" + ans + "__";
+					end = equ.join(", ") + ", **__" + ans + "__**";
 					diff = "\nDifficulty: **Easy**";
 					time = 20;
 					break;
@@ -1638,7 +1640,7 @@ var commands = {
 						else equ.push(b);
 					}
 					que = equ.join(", ") + ", __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
-					end = equ.join(", ") + ", __" + ans + "__";
+					end = equ.join(", ") + ", **__" + ans + "__**";
 					diff = "\nDifficulty: **Medium**";
 					time = 30;
 					break;
@@ -1659,7 +1661,7 @@ var commands = {
 						else equ.push(b);
 					}
 					que = equ.join(", ") + ", __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
-					end = equ.join(", ") + ", __" + ans + "__";
+					end = equ.join(", ") + ", **__" + ans + "__**";
 					diff = "\nDifficulty: **Hard**";
 					time = 40;
 					break;
@@ -1672,7 +1674,7 @@ var commands = {
 					c = (Math.random() * 20 + 1 | 0) * [1, -1].random();
 					d = (Math.random() * 20 + 1 | 0) * [1, -1].random();
 					let equ = [];
-					let ans = b;
+					ans = b;
 					for (let i = 0; i <= 2; i++)
 					{
 						c += d;
@@ -1680,7 +1682,7 @@ var commands = {
 						equ.unshift(b);
 					}
 					que = equ.join(", ") + ", __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
-					end = equ.join(", ") + ", __" + ans + "__";
+					end = equ.join(", ") + ", **__" + ans + "__**";
 					diff = "\nDifficulty: **Hard**";
 					time = 45;
 					break;
@@ -1690,10 +1692,11 @@ var commands = {
 					type = "Solve this:";
 					a = Math.random() * 4 | 0;
 					b = (Math.random() * 500 + 1 | 0) * [1, -1].random();
-					c = (Math.random() * 500 + 1 | 0) * [1, -1].random();
-					ans = b + c;
-					que = "**" + b + "** + **" + c + "** = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
-					end = "**" + b + "** + **" + c + "** = __" + ans + "__!";
+					c = Math.random() * 500 + 1 | 0;
+					d = [1, -1].random();
+					ans = b + (c * d);
+					que = "**" + b + "** " + (d == 1 ? "+" : "-") + " **" + c + "** = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
+					end = "**" + b + "** " + (d == 1 ? "+" : "-") + " **" + c + "** = **__" + ans + "__**!";
 					diff = "\nDifficulty: **Easy**";
 					time = 15;
 					break;
@@ -1702,29 +1705,16 @@ var commands = {
 				{
 					type = "Solve this:";
 					a = Math.random() * 4 | 0;
-					b = (Math.random() * 500 + 1 | 0) * [1, -1].random();
-					c = (Math.random() * 500 + 1 | 0) * [1, -1].random();
-					ans = b - c;
-					que = "**" + b + "** - **" + c + "** = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
-					end = "**" + b + "** - **" + c + "** = __" + ans + "__!";
-					diff = "\nDifficulty: **Easy**";
-					time = 30;
-					break;
-				}
-			case 8:
-				{
-					type = "Solve this:";
-					a = Math.random() * 4 | 0;
 					b = (Math.random() * 100 + 1 | 0) * [1, -1].random();
 					c = (Math.random() * 100 + 1 | 0) * [1, -1].random();
 					ans = b * c;
 					que = "**" + b + "** × **" + c + "** = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__";
-					end = "**" + b + "** × **" + c + "** = __" + ans + "__!";
+					end = "**" + b + "** × **" + c + "** = **__" + ans + "__**!";
 					diff = "\nDifficulty: **Medium**";
-					time = 40;
+					time = 35;
 					break;
 				}
-			case 9:
+			case 8:
 				{
 					type = "Solve this:";
 					a = Math.random() * 4 | 0;
@@ -1732,7 +1722,7 @@ var commands = {
 					c = (Math.random() * 20 + 5 | 0) * [1, -1].random();
 					ans = b;
 					que = "**" + (b * c) + "** ÷ **" + c + "** = __\u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b \u200b__" ;
-					end = "**" + (b * c) + "** + **" + c + "** = __" + ans + "__!";
+					end = "**" + (b * c) + "** + **" + c + "** = **__" + ans + "__**!";
 					diff = "\nDifficulty: **Hard**";
 					time = 45;
 					break;
