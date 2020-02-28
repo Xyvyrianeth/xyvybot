@@ -1,4 +1,4 @@
-var version = "2.45.6.1";
+var version = "2.45.6.2";
 
 const Discord = require("discord.js");
 const Canvas = require("canvas");
@@ -1564,7 +1564,7 @@ var commands = {
 
 	"iq": (cmd, args, input, message) => {
 		if (games.minigames.some((minigame) => minigame.channel == message.channel.id)) return;
-		let a, b, c, d, ans, type, que, end, time;
+		let a, b, c, d, ans, type, que, end, time, diff;
 		let A = Math.random() * 9 | 0;
 		switch (A) {
 			case 0:
