@@ -54,7 +54,7 @@ var games = {
 	soccer: require("/app/games/soccer.js")
 };
 
-botError = (message, err) => { return client.channels.get("467902250128506880").send(
+botError = (message, err) => { return client.channels.cache.get("467902250128506880").send(
 	`\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
 	`Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
 	`\`\`\`User errored on:\`\`\`<@${message.author.id}>\n\n` +
@@ -73,7 +73,7 @@ sqlError = (message, err, res) => {
 		console.log("If you can't see all of this, it'll post again in one minute.");
 		setTimeout(function() { console.log(res); }, 60000);
 	}
-	return client.guilds.get("399327996076621825").channels.get("478371618620571648").send(
+	return client.guilds.cache.get("399327996076621825").channels.cache.get("478371618620571648").send(
 		`\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
 		`Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
 		`\`\`\`\n` +
@@ -117,7 +117,7 @@ other = (message) => {
 	if (message.channel.type == "dm" && Array.from(message.attachments).length > 0)
 	{
 		images = Array.from(message.attachments).map(m => m[1].url);
-		client.guilds.get("399327996076621825").channels.get("537098266685472788").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
+		client.guilds.cache.get("399327996076621825").channels.cache.get("537098266685472788").send(`Images from user <@${message.author.id}>: \n${images.join('\n')}`);
 	}
 	if (games.games.some((game) => game.channels.hasOwnProperty(message.channel.id) && game.started && game.canHaveTurn))
 	{
@@ -132,7 +132,7 @@ other = (message) => {
 			"soccer": /^([0-7]|([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?))$/i
 		}[game.game].test(message.content))
 		{
-			if (message.channel.type !== "dm" && message.channel.guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
+			if (message.channel.type !== "dm" && message.channel.guild.members.cache.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
 				setTimeout(() => message.delete(), 1000);
 			try
 			{
@@ -144,7 +144,7 @@ other = (message) => {
 					if (game.channels.hasOwnProperty(message.channel.id))
 					{
 						for (let channel in game.channels)
-							client.channels.get(channel).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough!```");
+							client.channels.cache.get(channel).send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!\nFor safety, I've ended the game, but don't worry! You'll be able to have a rematch soon enough!```");
 						delete game;
 						return games.games.splice(index, 1);
 					}
@@ -157,7 +157,7 @@ other = (message) => {
 					else
 						errs.push(error.stack.split('\n')[i]);
 				}
-				return client.channels.get("467902250128506880").send(botError(message, errs));
+				return client.channels.cache.get("467902250128506880").send(botError(message, errs));
 			}
 		}
 		if (["board", "showboard"].includes(message.content))
@@ -435,7 +435,7 @@ bot = (message) => {
 						let text = '';
 						for (let i = 0; i < wits.length; i++)
 							text += `[${titles[wits[i]]}](${wits[i]})\n`
-						client.users.get(wins.id).send(
+						client.users.cache.get(wins.id).send(
 							"You've just received the following titles to use for your `x!profile`:\n" +
 							"```md\n" +
 							text +
@@ -447,7 +447,7 @@ bot = (message) => {
 						let text = '';
 						for (let i = 0; i < lits.length; i++)
 							text += `[${titles[lits[i]]}](${lits[i]})\n`
-						client.users.get(lose.id).send(
+						client.users.cache.get(lose.id).send(
 							"You've just received the following titles to use for your `x!profile`:\n" +
 							"```md\n" +
 							text +
@@ -787,7 +787,7 @@ var commands = {
 								game = Object.keys, has.game = true;
 						});
 					else
-					if (/^<@!?[0-9]+>$/.test(arg) && client.users.get(arg.match(/[0-9]+/)[0]) != undefined)
+					if (/^<@!?[0-9]+>$/.test(arg) && client.users.cache.get(arg.match(/[0-9]+/)[0]) != undefined)
 						player = arg.match(/[0-9]+/)[0], has.player = true;
 					else
 					if (/^[0-9]+$/.test(arg))
@@ -1154,7 +1154,7 @@ var commands = {
 				return message.channel.send("The rules for " + GameName + " have been sent to you via DMs!");
 		}
 		if (["tourney", "tournament"].includes(args[0]))
-			if (message.channel.guild.members.get(message.author.id).roles.some(x => x.id == "597901572843896841"))
+			if (message.channel.guild.members.cache.get(message.author.id).roles.some(x => x.id == "597901572843896841"))
 			{
 				let player1 = args[1].match(/[0-9]+/)[0],
 					player2 = args[2].match(/[0-9]+/)[0];
@@ -1167,10 +1167,10 @@ var commands = {
 		{
 			let member;
 			if (!input)
-				member = message.channel.guild.members.get(message.author.id);
+				member = message.channel.guild.members.cache.get(message.author.id);
 			else
 			if (message.channel.type !== "dm")
-				member = message.channel.guild.members.get(input.match(/[0-9]+/)[0]);
+				member = message.channel.guild.members.cache.get(input.match(/[0-9]+/)[0]);
 			else
 				return message.channel.send("Cannot display other users' profiles in DMs, yet, sorry!");
 
@@ -1931,7 +1931,7 @@ var commands = {
 							`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.${message.author.avatar.startsWith("a_") ? "gif" : "png"}?size=2048`)
 						.setDescription("**Command**: " + com + "\n\n" + desc)
 						.setColor(new Color().random());
-					client.guilds.get("399327996076621825").channels.get("467853697528102912").send(embed);
+					client.guilds.cache.get("399327996076621825").channels.cache.get("467853697528102912").send(embed);
 					message.channel.send("Bug report sent! Thanks for helping out!");
 					if (res.rows.length == 0)
 						return db.query(`INSERT INTO timers (id, bug, req) VALUES (${message.author.id}, 7200, 0);`);
@@ -1964,7 +1964,7 @@ var commands = {
 								`https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.${message.author.avatar.startsWith("a_") ? "gif" : "png"}?size=2048`)
 							.setDescription("**Suggestion**:\n" + input)
 							.setColor(new Color().random());
-						client.guilds.get("399327996076621825").channels.get("468245442388295691").send(embed);
+						client.guilds.cache.get("399327996076621825").channels.cache.get("468245442388295691").send(embed);
 						message.channel.send("Request sent! Thanks for the suggestion!");
 						if (res.rows.length == 0)
 							return db.query(`INSERT INTO timers (id, bug, req) VALUES (${message.author.id}, 0, 7200);`);
