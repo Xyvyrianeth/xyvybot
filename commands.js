@@ -182,7 +182,7 @@ other = (message) => {
 		games.minigames.forEach((minigame, index) => {
 			if (minigame.type == "hangman" && minigame.channel == message.channel.id)
 			{
-				let embed = new Discord.RichEmbed()
+				let embed = new Discord.MessageEmbed()
 					.setTitle("Hangman");
 				if (/^[a-z0-9]$/i.test(message.content) && !minigame.guesses.includes(guess))
 				{
@@ -308,7 +308,7 @@ bot = (message) => {
 				encoder1.end();
 				setTimeout(() => {
 					let attachment1 = new Discord.Attachment(`replay_${message.id}.gif`, `replay_${message.id}.gif`);
-					let embed1 = new Discord.RichEmbed()
+					let embed1 = new Discord.MessageEmbed()
 						.setTitle("Replay GIF:")
 						.attachFile(attachment1)
 						.setImage(`attachment://replay_${message.id}.gif`)
@@ -329,7 +329,7 @@ bot = (message) => {
 					encoder2.end();
 					setTimeout(() => {
 						let attachment2 = new Discord.Attachment(`counter_${message.id}.gif`, `counter_${message.id}.gif`);
-						let embed2 = new Discord.RichEmbed()
+						let embed2 = new Discord.MessageEmbed()
 							.setTitle("Final Square Count:")
 							.attachFile(attachment2)
 							.setImage(`attachment://counter_${message.id}.gif`)
@@ -626,7 +626,7 @@ var commands = {
 		if (!args[0])
 		{
 			return message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setTitle("Available subcommands for x!games")
 					.setDescription(
 						"x!games `subcommand`\n" +
@@ -729,7 +729,7 @@ var commands = {
 						users.push(`\`${"\u200b ".repeat(5 - String(place).length)}${place})|${"\u200b ".repeat(5 - String(elo).length)}${elo}|${"\u200b ".repeat(3 - String(win).length)}${win}/${los}${"\u200b ".repeat(3 - String(los).length)}|${"\u200b ".repeat(w_l !== "\u200b \u200b N/A \u200b \u200b" ? 7 - w_l.length : 0)}${w_l}|\`<@${id}>`);
 					}
 					return message.channel.send(
-						new Discord.RichEmbed()
+						new Discord.MessageEmbed()
 							.setTitle("Leaderboard for " + game)
 							.setDescription(users.join('\n'))
 							.setColor(new Color().random())
@@ -748,7 +748,7 @@ var commands = {
 		if (["info", "about"].includes(args[0]))
 		{
 			return message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setTitle("Information")
 					.setDescription("I, Xyvyrianeth (I'm speaking through this bot), am a big fan of [abstract strategy games](https://en.wikipedia.org/wiki/Abstract_strategy_game). I like them so much I tried to create my own competetive social network in Discord that revolves around a select few of these types of games. Whether or not that dream will come true is yet to be seen, but I still have hope and am still pushing towards that goal.")
 					.addField("\u200b", "Like every network of competition, there needs to be a way to evaluate who's better than who. Most PvP games, like League of Legends, have a score called attached to each player called Elo. Elo is most likely a number of some sort, and the method in which players can gain or lose Elo differs for each game. In some games, you gain Elo exclusively by winning and lose it exclusively from losing. In other games, Elo gained or lossed is based on the player's personal evaluation in a given match, and winning or losing only somewhat or doesn't affect it.")
@@ -762,7 +762,7 @@ var commands = {
 		if (["games"].includes(args[0]))
 		{
 			return message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setDescription("I currently have 7 games, and plan to add more.\n\n**Games**: Othello, Squares, Rokumoku, 3D Tic-Tac-Toe, Connect Four, Ordo, Paper Soccer\n**Planned**: Rokumoku\n\nI chose these games ~~mostly because they're very simple games with very simple rules and mechanics and they're easy to calculate who won and who lost and~~ because they're easy for people to learn, easy for people to get into, easy for people to get good at. I'm never going to add Chess or Go ~~because they're both complicated in terms of mechanics and win/lose/end-game criteria and~~ because they're not easy to learn, not easy to play, not easy to become skilled at. Plus, they take ***foreverrrrrr*** to play.\n\nBefore I decide the bot is \"complete,\" I want at least 10 games. However, deciding what games I want to add to the bot is not gonna be easy, so toss me some suggestions using x!request (make sure it's an [abstract strategy game](https://en.wikipedia.org/wiki/Abstract_strategy_game) before you suggest it my way).")
 					.setColor(new Color().random()));
 		}
@@ -807,7 +807,7 @@ var commands = {
 			db.query(query, (err, res) => {
 				if (err)
 					return sqlError(message, err, query);
-				let embed = new Discord.RichEmbed()
+				let embed = new Discord.MessageEmbed()
 					.setColor(new Color().random())
 					.setTitle("Game History");
 				if (res.rows.length == 0)
@@ -994,7 +994,7 @@ var commands = {
 				attt: "[Advanced Tic Tac Toe](https://wikipedia.org/wiki/M,n,k-game)",
 				ghuc: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/"
 			},
-				embed = new Discord.RichEmbed()
+				embed = new Discord.MessageEmbed()
 				.setTitle("How to play: " + GameName);
 			switch (gameName)
 			{
@@ -1195,7 +1195,7 @@ var commands = {
 				Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.${member.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then((image1) => {
 					Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then((image2) => {
 						return message.channel.send(
-							new Discord.RichEmbed()
+							new Discord.MessageEmbed()
 							.setTitle("User Profile")
 							.setDescription(`<@${member.id}>`)
 							.attachFile(new Discord.Attachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
@@ -1393,7 +1393,7 @@ var commands = {
 		if (["help"].includes(input))
 		{
 			return message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setTitle("Available subcommands for x!profile")
 					.setDescription(
 						"x!profile `subcommand`\n" +
@@ -1415,7 +1415,7 @@ var commands = {
 		if (["help"].includes(input))
 		{
 			return message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setAuthor("MineSweeper", exports.Images.minesweeper)
 					.setDescription(
 						"You can control 3 aspects of a game: height, width, and the number of bombs. Here are the 3 possible syntaxes:\n" +
@@ -1448,7 +1448,7 @@ var commands = {
 		if (["diff", "difficulty", "difficulties"].includes(input))
 		{
 			return message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setAuthor("MineSweeper", exports.Images.minesweeper)
 					.addField("5%", "`novice`\n`beginner`")
 					.addField("10%", "`easy`\n`apprentice`")
@@ -1553,7 +1553,7 @@ var commands = {
 						a[y][x] = "0⃣ 1⃣ 2⃣ 3⃣ 4⃣ 5⃣ 6⃣ 7⃣ 8⃣".split(' ')[a[y][x]];
 			for (let y = h; y--;)
 				a[y] = a[y].join("||||");
-			let embed = new Discord.RichEmbed()
+			let embed = new Discord.MessageEmbed()
 				.setAuthor("MineSweeper", exports.Images.minesweeper)
 				.setDescription("||" + a.join("||\n||") + "||")
 				.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d)
@@ -1729,15 +1729,15 @@ var commands = {
 				}
 		}
 
-		let embed = new Discord.RichEmbed()
+		let embed = new Discord.MessageEmbed()
 			.setColor(new Color(176, 14, 223).toHexa())
 			.setTitle("IQ")
 			.addField(type, que + diff + "\n\nYou have " + time + " seconds.");
-		let embed2 = new Discord.RichEmbed()
+		let embed2 = new Discord.MessageEmbed()
 			.setColor(new Color(46, 204, 113).toHexa())
 			.setTitle("IQ")
 			.addField("Correct!", "$WINNER$ got it right!\n" + end);
-		let embed3 = new Discord.RichEmbed()
+		let embed3 = new Discord.MessageEmbed()
 			.setColor(new Color(231, 76, 60).toHexa())
 			.setTitle("IQ")
 			.addField("Nobody got it in time!", end);
@@ -1774,7 +1774,7 @@ var commands = {
 			else display.push(right[i]);
 		}
 		category = ["Tabletop/Board/Card Games", "Movies", "TV Shows", "Video Games", "Anime", "Countries"][category];
-		let embed = new Discord.RichEmbed()
+		let embed = new Discord.MessageEmbed()
 			.setTitle("Hangman")
 			.setColor(new Color(176, 14, 223).toHexa())
 			.addField("Guess letters and fill out the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${category}**\n${ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!" : ""}\n\nWrong guesses: \`7\``);
@@ -1808,7 +1808,7 @@ var commands = {
 				helps[2] += "  `bugreport`  `request`";
 			else
 				helps[2] += "  `kick`  `ban`";
-			let embed = new Discord.RichEmbed()
+			let embed = new Discord.MessageEmbed()
 				.setTitle("Help")
 				.setDescription("A list of all commands supported by Xyvybot\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "\nFor more help about any specific command, do \"x!`command` help\"")
 				.addField("Games", helps[0])
@@ -1856,7 +1856,7 @@ var commands = {
 						["x!nsfw `tag`", "Get a naughty hentai image. This command can only be used in channels marked as NSFW or in direct messages.", "x!nsfw gif"]
 					][index];
 					return message.channel.send(
-						new Discord.RichEmbed()
+						new Discord.MessageEmbed()
 							.setTitle("Help!")
 							.setAuthor("Command: " + Object.keys(aliases.guild)[index])
 							.setDescription("__**Usage**__:\n" + help[0] + "\n\n" + help[1] + "\n\n__**Example**__:\n" + help[2])
@@ -1872,7 +1872,7 @@ var commands = {
 
 	"about": (cmd, args, input, message) => {
 		return message.channel.send(
-			new Discord.RichEmbed()
+			new Discord.MessageEmbed()
 				.setTitle(
 					"About me",
 					exports.Images.avatar)
@@ -1894,7 +1894,7 @@ var commands = {
 		for (let i in aliases.guild)
 			if (aliases.guild[i].includes(input))
 				return message.channel.send(
-					new Discord.RichEmbed()
+					new Discord.MessageEmbed()
 						.setTitle("Aliases for " + i)
 						.setDescription('`' + aliases.guild.join("`  `") + '`')
 						.setColor(new Color().random()));
@@ -1924,7 +1924,7 @@ var commands = {
 					if (!a)
 						return message.channel.send("That command does not exist!");
 
-					let embed = new Discord.RichEmbed()
+					let embed = new Discord.MessageEmbed()
 						.setTitle("Bug Report")
 						.setAuthor(
 							message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')',
@@ -1957,7 +1957,7 @@ var commands = {
 						if (res.rows.length == 1 && res.rows[0].req > 0)
 							return message.channel.send("You can submit 1 request every 2 hours. Xyvy doesn't like being spammed, you know.");
 
-						let embed = new Discord.RichEmbed()
+						let embed = new Discord.MessageEmbed()
 							.setTitle("User Request")
 							.setAuthor(
 								message.author.username + '#' + message.author.discriminator + " (" + message.author.id + ')',
@@ -1979,7 +1979,7 @@ var commands = {
 
 	"credits": (cmd, args, input, message) => {
 		return message.channel.send(
-			new Discord.RichEmbed()
+			new Discord.MessageEmbed()
 				.setTitle(
 					"Credits",
 					exports.Images.avatar)
@@ -2009,7 +2009,7 @@ var commands = {
 	"nekos": (cmd, args, input, message) => {
 		Nekos.sfw.neko().then(neko => {
 			return message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setAuthor("x!nsfw", exports.Images.nekosLife)
 					.setImage(neko.url)
 					.setDescription("Have a neko!")
@@ -2033,7 +2033,7 @@ var commands = {
 	"graph": (cmd, args, input, message) => {
 		if (["info", "about", "history"].includes(args[0])) {
 			return message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setTitle("Brief History of the Xyvyrianethian Graphic Calculator")
 					.setAuthor("By Xyvyrianeth", exports.Images.avatar)
 					.setDescription(
@@ -2168,7 +2168,7 @@ var commands = {
 			}
 			let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
 			return message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setTitle("x!graph")
 					.setDescription("```\n" + text + "```")
 					.attachFile(new Discord.Attachment(canvas.toBuffer(), "graph.png"))
@@ -2179,7 +2179,7 @@ var commands = {
 
 	"ai": (cmd, args, input, message) => {
 		return message.channel.send(
-			new Discord.RichEmbed()
+			new Discord.MessageEmbed()
 				.setDescription("One day I needed to test a change I made to Squares, but I had nobody to test it with, so I created another bot to play the game with me and holy shit it kicks ass.\n\nI decided to make this new bot as public as Xyvybot so that other people can play against it, too! [Click here to invite it to your server](https://discordapp.com/oauth2/authorize?client_id=561578790837289002&scope=bot&permissions=3072)! Once you have it, just request a game with Xyvybot and then ping it!\nNote that this bot is completely useless if your server does not also have Xyvybot in it.\nAlso, the only game it can play right now is Squares. I haven't gotten around to letting it play other games, yet.")
 				.setAuthor("Xyvybot - AI", exports.Images.AIvatar)
 				.setColor(new Color().random()));
@@ -2187,7 +2187,7 @@ var commands = {
 
 	"botsbyxyvy": (cmd, args, input, message) => {
 		return message.channel.send(
-			new Discord.RichEmbed()
+			new Discord.MessageEmbed()
 				.setTitle("Bots by Xyvy")
 				.setDescription("Are you tired of sorting through countless Discord bot listings trying to find one that does exactly what you need one to do? Well, stop doing that. Sometimes, a bot that does what you need it to do just doesn't exist. But it *can*, and that's where I come in! If you have money and a lack of programming knowledge and really need a bot that doesn't exist, I'll make it for you! Just click [this link](https://sites.google.com/site/botsbyxyvy/), read the information, and submit a commission request so we can get to work!")
 				.setColor(new Color().random()));
@@ -2204,7 +2204,7 @@ var commands = {
 		{
 			let type = tags.random();
 			return Nekos.nsfw[type]().then((nsfw) => message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setAuthor("x!nsfw", exports.Images.nekosLife)
 					.setDescription(`Tag: \`${type}\` | Do \`x!nsfw ${type}\` to see more like this\nDo \`x!nsfw tags\` to see all tags`)
 					.setFooter("Powered by Nekos.Life")
@@ -2221,7 +2221,7 @@ var commands = {
 			for (let i = 0; i < tags.length; i++)
 				joined += tags[i] + ' '.repeat(16 - (tags[i].length % 16));
 			Nekos.nsfw.eroNeko().then((help) => message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setAuthor("x!nsfw", exports.Images.nekosLife)
 					.setTitle("NSFW Tags")
 					.setDescription('```md\n' + joined.trim() + '```\n**Usage**: `x!nsfw [tag]`')
@@ -2260,7 +2260,7 @@ var commands = {
 			}
 
 			return Nekos.nsfw[type]().then(nsfw => message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setAuthor("x!nsfw", exports.Images.nekosLife)
 					.setDescription(`Tag: \`${type}\`\nSelected randomly from: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`)
 					.setFooter("Powered by Nekos.Life")
@@ -2305,7 +2305,7 @@ var commands = {
 					return message.channel.send("None of those tags exist.");
 			}
 			return Nekos.nsfw[type]().then(nsfw => message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setAuthor("x!nsfw", exports.Images.nekosLife)
 					.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`)
 					.setFooter("Powered by Nekos.Life")
@@ -2347,7 +2347,7 @@ var commands = {
 						for (let x = 0; x < Types.length; x++)
 							Tags.push(`[${types[x]}](${Types[x]})`);
 						return message.channel.send(
-							new Discord.RichEmbed()
+							new Discord.MessageEmbed()
 								.setAuthor("x!nsfw", exports.Images.nekosLife)
 								.setDescription(`Tags: [\`${queue.join('`, `')}\`]${types.length > 5 ? `\nMaximum of 5 tags allowed` : ''}\n\n[${Tags.join(']\n\n[')}]`)
 								.setFooter("Powered by Nekos.Life")
@@ -2368,7 +2368,7 @@ var commands = {
 				return message.channel.send("Sorry, I don't have that!");
 
 			return Nekos.nsfw[type]().then(nsfw => message.channel.send(
-				new Discord.RichEmbed()
+				new Discord.MessageEmbed()
 					.setAuthor("x!nsfw", exports.Images.nekosLife)
 					.setDescription(`Tag: \`${type}\``)
 					.setFooter("Powered by Nekos.Life")
@@ -2384,7 +2384,7 @@ var commands = {
 		if (message.content.startsWith("x!js ```js\n") && message.content.endsWith("```"))
 		{
 			let toEval = input.substring(6, input.length - 3);
-			let embed = new Discord.RichEmbed()
+			let embed = new Discord.MessageEmbed()
 				.setTitle("x!js")
 				.setColor(new Color().random())
 				.setTimestamp();
@@ -2440,7 +2440,7 @@ var commands = {
 			return;
 		if (message.content.startsWith("x!pg ```sql\n") && message.content.endsWith("```"))
 			return db.query(input.substring(7, input.length - 3), (err, res) => {
-				let embed = new Discord.RichEmbed()
+				let embed = new Discord.MessageEmbed()
 					.setTitle("x!pg")
 					.setColor(new Color().random())
 					.setTimestamp();
