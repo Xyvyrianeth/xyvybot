@@ -14,7 +14,7 @@ client.on("ready", () => {
     setInterval(function() {
         let splash = [
             "version " + commands.version + "!",
-            "in " + client.guilds.array().length + " servers!",
+            "in " + client.guilds.cache.array().length + " servers!",
             "Say \"x!help\" for a list of commands!",
             "Used by at least one person every day!",
             "You know what they say",
@@ -92,7 +92,7 @@ function messageReaction(reaction) {
     }
 }
 client.on('messageReactionAdd', messageReaction);
-client.on('messageReactionRemove', messageReaction); 
+client.on('messageReactionRemove', messageReaction);
 
 var reactions = [];
 setInterval(function() {
