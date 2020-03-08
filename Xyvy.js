@@ -1,4 +1,4 @@
-var version = "3.0.0.1";
+var version = "3.0.0.3";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
