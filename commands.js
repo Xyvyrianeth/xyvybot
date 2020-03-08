@@ -310,7 +310,7 @@ bot = (message) => {
 					let attachment1 = new Discord.MessageAttachment(`replay_${message.id}.gif`, `replay_${message.id}.gif`);
 					let embed1 = new Discord.MessageEmbed()
 						.setTitle("Replay GIF:")
-						.attachFile(attachment1)
+						.attachFiles(attachment1)
 						.setImage(`attachment://replay_${message.id}.gif`)
 						.setFooter("Match ID: " + message.id)
 						.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`);
@@ -331,7 +331,7 @@ bot = (message) => {
 						let attachment2 = new Discord.MessageAttachment(`counter_${message.id}.gif`, `counter_${message.id}.gif`);
 						let embed2 = new Discord.MessageEmbed()
 							.setTitle("Final Square Count:")
-							.attachFile(attachment2)
+							.attachFiles(attachment2)
 							.setImage(`attachment://counter_${message.id}.gif`)
 							.setFooter("Match ID: " + message.id);
 						message.channel.send(embed2);
@@ -1198,7 +1198,7 @@ var commands = {
 							new Discord.MessageEmbed()
 							.setTitle("User Profile")
 							.setDescription(`<@${member.id}>`)
-							.attachFile(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
+							.attachFiles(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
 							.setImage("attachment://profile.png")
 							.setTimestamp()
 							.setColor(profile.color)
@@ -2171,7 +2171,7 @@ var commands = {
 				new Discord.MessageEmbed()
 					.setTitle("x!graph")
 					.setDescription("```\n" + text + "```")
-					.attachFile(new Discord.MessageAttachment(canvas.toBuffer(), "graph.png"))
+					.attachFiles(new Discord.MessageAttachment(canvas.toBuffer(), "graph.png"))
 					.setImage("attachment://graph.png")
 					.setColor(new Color().random()));
 		}
@@ -2397,7 +2397,7 @@ var commands = {
 				}
 				let image = (canvas) => {
 					attachment = new Discord.MessageAttachment(canvas.toBuffer(), "image.png");
-					embed.attachFile(attachment);
+					embed.attachFiles(attachment);
 					embed.setImage("attachment://image.png");
 				}
 				evaled = eval(toEval);
