@@ -1,4 +1,4 @@
-var version = "3.0.0.9";
+var version = "3.0.0.10";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
@@ -718,6 +718,7 @@ exports.client = client;
 exports.db = db;
 exports.minigames = require("/app/games/minigames.js").minigames;
 exports.aliases = aliases;
+exports.version = version;
 exports.Images = {
 	graph: null,
 	avatar: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png",
