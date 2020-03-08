@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-exports.js = (cmd, args, input, message) => {
+exports.command = (cmd, args, input, message) => {
 	if (message.author.id != "357700219825160194")
 		return;
 	if (message.content.startsWith("x!js ```js\n") && message.content.endsWith("```"))

@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 var { aliases } = require("/app/Xyvy.js");
-exports.help = (cmd, args, input, message) => {
+exports.command = (cmd, args, input, message) => {
 	if (!input)
 	{
 		let helps =

@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 var { equ } = require("/app/assets/misc/equ.js");
-exports.graph = (cmd, args, input, message) => {
+exports.command = (cmd, args, input, message) => {
 	if (["info", "about", "history"].includes(args[0])) {
 		return message.channel.send(
 			new Discord.MessageEmbed()

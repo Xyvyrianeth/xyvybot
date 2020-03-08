@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-exports.about = (cmd, args, input, message) => {
+exports.command = (cmd, args, input, message) => {
 	return message.channel.send(
 		new Discord.MessageEmbed()
 			.setTitle(

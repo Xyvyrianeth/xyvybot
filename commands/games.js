@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const { db, sqlError } = require("/app/Xyvy.js");
 
-exports.games = (cmd, args, input, message) => {
+exports.command = (cmd, args, input, message) => {
 	let gms = {
 		"othello": ["othello", "reversi"],
 		"squares": ["squares"],

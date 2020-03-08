@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-exports.botsbyxyvy = (cmd, args, input, message) => {
+exports.command = (cmd, args, input, message) => {
 	return message.channel.send(
 		new Discord.MessageEmbed()
 			.setTitle("Bots by Xyvy")

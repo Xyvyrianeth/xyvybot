@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 var { table } = require("/app/assets/misc/table.js");
-exports.pg = (cmd, args, input, message) => {
+exports.command = (cmd, args, input, message) => {
 	if (message.author.id != "357700219825160194")
 		return;
 	if (message.content.startsWith("x!pg ```sql\n") && message.content.endsWith("```"))

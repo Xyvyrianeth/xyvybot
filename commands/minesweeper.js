@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-exports.minesweeper =  (cmd, args, input, message) => {
+exports.command =  (cmd, args, input, message) => {
 	let w, h, d;
 	if (["help"].includes(input))
 	{

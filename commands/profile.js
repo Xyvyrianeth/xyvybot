@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const { db } = require("/app/Xyvy.js");
-exports.profile = (cmd, args, input, message) => {
+exports.command = (cmd, args, input, message) => {
 	if (!input || /^<@!?[0-9]+>$/.test(input) || /^[0-9]+$/.test(input))
 	{
 		let member;

@@ -9,7 +9,7 @@ var games = {
 	ordo: require("/app/games/ordo.js"),
 	soccer: require("/app/games/soccer.js")
 };
-exports.game = (cmd, args, input, message) => {
+exports.command = (cmd, args, input, message) => {
 	let gameNicks = {
 		"othello": ["othello", "reversi"],
 		"squares": ["squares"],
