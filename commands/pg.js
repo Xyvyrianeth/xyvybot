@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+var { Color } = require("/app/assets/misc/color.js");
 var { table } = require("/app/assets/misc/table.js");
 exports.command = (cmd, args, input, message) => {
 	if (message.author.id != "357700219825160194")

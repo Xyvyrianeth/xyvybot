@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+var { Color } = require("/app/assets/misc/color.js");
 exports.command = (cmd, args, input, message) => {
 	return message.channel.send(
 		new Discord.MessageEmbed()

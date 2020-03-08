@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const { db } = require("/app/Xyvy.js");
+var { Color } = require("/app/assets/misc/color.js");
 exports.command = (cmd, args, input, message) => {
 	if (!input || /^<@!?[0-9]+>$/.test(input) || /^[0-9]+$/.test(input))
 	{

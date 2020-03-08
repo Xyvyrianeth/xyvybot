@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+var { Color } = require("/app/assets/misc/color.js");
 var games = {
 	games: require("/app/games/games.js").games,
 	othello: require("/app/games/othello.js"),

@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+var { Color } = require("/app/assets/misc/color.js");
 var { equ } = require("/app/assets/misc/equ.js");
 exports.command = (cmd, args, input, message) => {
 	if (!input)

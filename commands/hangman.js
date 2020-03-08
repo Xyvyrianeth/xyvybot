@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+var { Color } = require("/app/assets/misc/color.js");
 var { words } = require("/app/games/hangmanWords.js");
 var { minigames } = require("/app/Xyvy.js");
 exports.command = (cmd, args, input, message) => {

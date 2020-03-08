@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+var { Color } = require("/app/assets/misc/color.js");
 var { minigames } = require("/app/Xyvy.js");
 exports.command = (cmd, args, input, message) => {
 	if (minigames.some((minigame) => minigame.channel == message.channel.id)) return;
