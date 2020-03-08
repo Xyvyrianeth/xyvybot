@@ -1,4 +1,4 @@
-var version = "3.0.0.6";
+var version = "3.0.0.7";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
@@ -12,7 +12,18 @@ var { Color } = require("/app/assets/misc/color.js"),
 	{ table } = require("/app/assets/misc/table.js"),
 	Profile = require("/app/assets/profile/profile.js"),
 	titles = require("/app/assets/profile/titles.json"),
-	images = require("/app/assets/backgrounds/images.json");
+	images = require("/app/assets/backgrounds/images.json"),
+	games = {
+		games: require("/app/games/games.js").games,
+		minigames: require("/app/games/minigames.js").minigames,
+		othello: require("/app/games/othello.js"),
+		squares: require("/app/games/squares.js"),
+		rokumoku: require("/app/games/rokumoku.js"),
+		ttt3d: require("/app/games/3dttt.js"),
+		connect4: require("/app/games/connect4.js"),
+		ordo: require("/app/games/ordo.js"),
+		soccer: require("/app/games/soccer.js")
+	}
 
 client.login(process.env.TOKEN);
 client.on("ready", () => {
@@ -100,27 +111,6 @@ exports.sqlError = (message, err, res) => {
 		`\`\`\`\n` +
 		`${err}\`\`\``);
 }
-
-var timers = setInterval(() => {
-	db.query("SELECT * FROM timers", (err, res) => {
-		if (err)
-			return exports.sqlError("Internal (var timers @ line 23)", err, "SELECT * FROM timers");
-
-		res.rows.forEach(row => {
-			if (row.time > 0)
-				db.query(`UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'`, (err) => {
-					if (err)
-						exports.sqlError("Internal (var timers @ line 23 | db.query @ line 36)", err, `UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'`);
-				});
-			else
-				db.query(`DELETE FROM timers WHERE id = '${row.id}'`, (err) => {
-						if (err)
-							exports.sqlError("Internal (var timers @ line 23 | db.query @ line 53)", err, `DELETE FROM timers WHERE id = '${row.id}'`);
-				});
-		});
-	});
-}, 1000);
-
 newUser = (id, message) => {
 	let image = images.ids.random(),
 		query =
@@ -165,6 +155,25 @@ newUser = (id, message) => {
 		los7: 0
 	};
 }
+var timers = setInterval(() => {
+	db.query("SELECT * FROM timers", (err, res) => {
+		if (err)
+			return exports.sqlError("Internal (var timers @ line 23)", err, "SELECT * FROM timers");
+
+		res.rows.forEach(row => {
+			if (row.time > 0)
+				db.query(`UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'`, (err) => {
+					if (err)
+						exports.sqlError("Internal (var timers @ line 23 | db.query @ line 36)", err, `UPDATE timers SET time = ${row.time - 1} WHERE id = '${row.id}'`);
+				});
+			else
+				db.query(`DELETE FROM timers WHERE id = '${row.id}'`, (err) => {
+						if (err)
+							exports.sqlError("Internal (var timers @ line 23 | db.query @ line 53)", err, `DELETE FROM timers WHERE id = '${row.id}'`);
+				});
+		});
+	});
+}, 1000);
 
 Object.defineProperty(Array.prototype, 'clone', {
 	value: function() {
@@ -573,7 +582,7 @@ client.on('message', (message) => {
 					setTimeout(() => message.delete(), 1000);
 				try
 				{
-					return games[game.game].takeTurn(message.channel.id, message.content);
+					return games.[game.game].takeTurn(message.channel.id, message.content);
 				}
 				catch (error)
 				{
@@ -707,7 +716,6 @@ client.on('message', (message) => {
 
 exports.client = client;
 exports.db = db;
-exports.games = require("/app/games/games.js").games;
 exports.minigames = require("/app/games/minigames.js").minigames;
 exports.aliases = aliases;
 exports.Images = {
