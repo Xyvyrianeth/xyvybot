@@ -1,4 +1,4 @@
-var version = "3.0.0.10";
+var version = "3.0.0.11";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
@@ -263,56 +263,6 @@ Object.defineProperty(Math, 'fraction', {
 	}
 });
 
-var aliases = {
-	// Games
-	"games": ["games"],
-	"game": ["othello", "reversi", "squares", "rokumoku", "connect6", "connectsix", "3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe", "connectfour", "connect4", "cfour", "c4", "ordo", "soccer", "papersoccer", "psoccer"],
-	"profile": ["profile", "scorecard", "prof"],
-	// Minigames
-	"minesweeper": ["minesweeper", "ms", "mines"],
-	"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],
-	"hangman": ["hangman", "hm"],
-	// Utility
-	"about": ["about", "info", "bot"],
-	"credits": ["credits", "acknowledgements"],
-	"help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
-	"aliases": ["aliases"],
-	// Miscellaneous
-	"nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
-	"calc": ["calc", "calculate", "domath"],
-	"graph": ["graph"],
-	"ai": ["ai", "aibot", "xyvyai"],
-	"botsbyxyvy": ["botsbyxyvy", "xyvybots"],
-	"bug": ["reportbug", "bugreport", "bug", "report"],
-	"request": ["request", "suggest", "suggestion", "requestion"],
-	// NSFW
-	"nsfw": ["nsfw", "hentai", "lewd", "porn"],
-	// Admin-only
-	"js": ["js"],
-	"pg": ["pg"],
-}
-var commands = {
-	"about": 		require("/app/commands/about.js").command,
-	"ai": 			require("/app/commands/ai.js").command,
-	"aliases": 		require("/app/commands/aliases.js").command,
-	"botsbyxyvy": 	require("/app/commands/botsbyxyvy.js").command,
-	"bug": 			require("/app/commands/bug.js").command,
-	"calc": 		require("/app/commands/calc.js").command,
-	"credits": 		require("/app/commands/credits.js").command,
-	"game": 		require("/app/commands/game.js").command,
-	"games": 		require("/app/commands/games.js").command,
-	"graph": 		require("/app/commands/graph.js").command,
-	"hangman": 		require("/app/commands/hangman.js").command,
-	"help": 		require("/app/commands/help.js").command,
-	"iq": 			require("/app/commands/iq.js").command,
-	"js": 			require("/app/commands/js.js").command,
-	"minesweeper": 	require("/app/commands/minesweeper.js").command,
-	"nekos": 		require("/app/commands/nekos.js").command,
-	"nsfw": 		require("/app/commands/nsfw.js").command,
-	"pg": 			require("/app/commands/pg.js").command,
-	"profile": 		require("/app/commands/profile.js").command,
-	"request": 		require("/app/commands/request.js").command
-};
 client.on('message', (message) => {
     if (message.author.bot && message.author.id == client.user.id)
     {
@@ -729,3 +679,54 @@ exports.Images = {
 Canvas.loadImage("/app/assets/misc/graph.png").then(image => {
 	exports.Images.graph = image;
 });
+
+var aliases = {
+	// Games
+	"games": ["games"],
+	"game": ["othello", "reversi", "squares", "rokumoku", "connect6", "connectsix", "3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe", "connectfour", "connect4", "cfour", "c4", "ordo", "soccer", "papersoccer", "psoccer"],
+	"profile": ["profile", "scorecard", "prof"],
+	// Minigames
+	"minesweeper": ["minesweeper", "ms", "mines"],
+	"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],
+	"hangman": ["hangman", "hm"],
+	// Utility
+	"about": ["about", "info", "bot"],
+	"credits": ["credits", "acknowledgements"],
+	"help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
+	"aliases": ["aliases"],
+	// Miscellaneous
+	"nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
+	"calc": ["calc", "calculate", "domath"],
+	"graph": ["graph"],
+	"ai": ["ai", "aibot", "xyvyai"],
+	"botsbyxyvy": ["botsbyxyvy", "xyvybots"],
+	"bug": ["reportbug", "bugreport", "bug", "report"],
+	"request": ["request", "suggest", "suggestion", "requestion"],
+	// NSFW
+	"nsfw": ["nsfw", "hentai", "lewd", "porn"],
+	// Admin-only
+	"js": ["js"],
+	"pg": ["pg"],
+}
+var commands = {
+	"about": 		require("/app/commands/about.js").command,
+	"ai": 			require("/app/commands/ai.js").command,
+	"aliases": 		require("/app/commands/aliases.js").command,
+	"botsbyxyvy": 	require("/app/commands/botsbyxyvy.js").command,
+	"bug": 			require("/app/commands/bug.js").command,
+	"calc": 		require("/app/commands/calc.js").command,
+	"credits": 		require("/app/commands/credits.js").command,
+	"game": 		require("/app/commands/game.js").command,
+	"games": 		require("/app/commands/games.js").command,
+	"graph": 		require("/app/commands/graph.js").command,
+	"hangman": 		require("/app/commands/hangman.js").command,
+	"help": 		require("/app/commands/help.js").command,
+	"iq": 			require("/app/commands/iq.js").command,
+	"js": 			require("/app/commands/js.js").command,
+	"minesweeper": 	require("/app/commands/minesweeper.js").command,
+	"nekos": 		require("/app/commands/nekos.js").command,
+	"nsfw": 		require("/app/commands/nsfw.js").command,
+	"pg": 			require("/app/commands/pg.js").command,
+	"profile": 		require("/app/commands/profile.js").command,
+	"request": 		require("/app/commands/request.js").command
+};
