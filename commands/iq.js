@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-var { minigames } = require("Xyvy.js");
+var { minigames } = require("/app/Xyvy.js");
 exports.iq = (cmd, args, input, message) => {
 	if (minigames.some((minigame) => minigame.channel == message.channel.id)) return;
 	let a, b, c, d, ans, type, que, end, time, diff;

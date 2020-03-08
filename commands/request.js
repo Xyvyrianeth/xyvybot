@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { db } = require("Xyvy.js");
+const { db } = require("/app/Xyvy.js");
 exports.request = (cmd, args, input, message) => {
 	return db.query(`SELECT req FROM bans`, (err, res) => {
 		if (err)

@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 var { words } = require("/app/games/hangmanWords.js");
-var { minigames } = require("Xyvy.js");
+var { minigames } = require("/app/Xyvy.js");
 exports.hangman = (cmd, args, input, message) => {
 	if (minigames.some((minigame) => minigame.channel == message.channel.id)) return;
 	let category = Math.random() * 6 | 0;
