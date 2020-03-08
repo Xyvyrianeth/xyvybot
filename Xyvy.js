@@ -1,4 +1,4 @@
-var version = "3.0.0.12";
+var version = "3.0.0.13";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
@@ -9,8 +9,6 @@ const Discord = require("discord.js"),
 	  fs = require("fs");
 
 var { Color } = require("/app/assets/misc/color.js"),
-	{ table } = require("/app/assets/misc/table.js"),
-	Profile = require("/app/assets/profile/profile.js"),
 	titles = require("/app/assets/profile/titles.json"),
 	images = require("/app/assets/backgrounds/images.json"),
 	games = {
