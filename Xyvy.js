@@ -1,4 +1,4 @@
-var version = "3.0.0.4";
+var version = "3.0.0.5";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
@@ -521,10 +521,9 @@ client.on('message', (message) => {
     }
     if (message.content.startsWith("x!"))
     {
-		let a = message.channel.type == "dm" ? "user" : "guild";
 		let args = message.content.split(/ +/);
 		let arg = args.shift().replace("x!", '').toLowerCase();
-		let cmd = Object.keys(aliases[a]).filter(alias => aliases[a][alias].includes(arg))[0] || false;
+		let cmd = Object.keys(aliases).filter(alias => aliases[alias].includes(arg))[0] || false;
 		let input = args.join(' ');
 		if (!cmd)
 			return;
