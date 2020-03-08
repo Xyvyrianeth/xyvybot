@@ -61,7 +61,7 @@ exports.startGame = function(channel1, channel2, player2) {
 		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
 	}
 
-	game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
 	exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Black, and <@${game.players[1]}> will be Red!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
 
@@ -103,7 +103,7 @@ exports.newTourney = function(channel, player1, player2) {
 		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
 	}
 
-	game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
 	exports.say(game.channels, [`A tourney match has been started between <@${game.players[0]}> and <@${game.players[1]}>!\n<@${game.players[0]}> will be Black, and <@${game.players[1]}> will be Red!`, game.buffer]);
 }
 
@@ -255,7 +255,7 @@ exports.nextTurn = function(channel, end) {
 	else
 		game.winner = game.score[0] > game.score[1] ? 0 : 1;
 
-	game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`squares_0_${game.players[0]}vs${game.players[1]}.png`, `squares_1_${game.players[game.winner]}.png`, `squares_2_tie.png`][end]);
+	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, end), [`squares_0_${game.players[0]}vs${game.players[1]}.png`, `squares_1_${game.players[game.winner]}.png`, `squares_2_tie.png`][end]);
 	for (let ch in game.channels)
 	{
 		if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))

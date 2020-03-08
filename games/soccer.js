@@ -76,7 +76,7 @@ exports.startGame = function(channel1, channel2, player2) {
 		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
 	}
 
-	game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
 	exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be Red!`, game.buffer]);
 }
 
@@ -135,7 +135,7 @@ exports.newTourney = function(channel, player1, player2) {
 		message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
 	}
 
-	game.buffer = new Discord.Attachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, 0, false), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
 	exports.say(game.channels, [`A tourney match has been started between <@${game.players[0]}> and <@${game.players[1]}>!\n<@${game.players[0]}> will be Blue, and <@${game.players[1]}> will be Red!`, game.buffer]);
 }
 
@@ -297,7 +297,7 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 		}
 	}
 
-	game.buffer = new Discord.Attachment(exports.drawBoard(game, end, highlight), [`soccer_0_${game.players[0]}vs${game.players[1]}.png`, `soccer_1_${game.players[game.winner]}.png`, `soccer_1_${game.players[game.winner]}.png`][end]);
+	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, end, highlight), [`soccer_0_${game.players[0]}vs${game.players[1]}.png`, `soccer_1_${game.players[game.winner]}.png`, `soccer_1_${game.players[game.winner]}.png`][end]);
 	for (let ch in game.channels)
 	{
 		if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))

@@ -84,7 +84,7 @@ exports.startGame = function(channel1, channel2, player2) {
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
 
-    game.buffer =  new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+    game.buffer =  new Discord.MessageAttachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Black, and <@${game.players[1]}> will be White!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
 
@@ -316,7 +316,7 @@ exports.nextTurn = function(channel, end) {
 	}
 
 	game.player = game.players[game.turn];
-	game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`othello_0_${game.players[0]}vs${game.players[1]}.png`, `othello_1_${game.players[game.winner]}.png`, `othello_2_tie.png`][end]);
+	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, end), [`othello_0_${game.players[0]}vs${game.players[1]}.png`, `othello_1_${game.players[game.winner]}.png`, `othello_2_tie.png`][end]);
 
     for (let ch in game.channels)
     {

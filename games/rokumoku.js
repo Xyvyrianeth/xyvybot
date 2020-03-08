@@ -62,7 +62,7 @@ exports.startGame = function(channel1, channel2, player2) {
         message: `Whoops, it looks like <@${game.players[0]}> has run out of time, so the game is over!`
     }
 
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
+    game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, 0), `${shortname}_0_${game.players[0]}vs${game.players[1]}.png`);
     exports.say(game.channels, [`The game has started! <@${game.players[0]}> will be Black, and <@${game.players[1]}> will be White!\nUse the command \"x!${shortname} rules\" if you don't know how to play the game!`, game.buffer]);
 }
 
@@ -186,7 +186,7 @@ exports.nextTurn = function(channel, end) {
 	else
 	if (end == 1)
         game.winner = Math.floor(game.turn);
-    game.buffer = new Discord.Attachment(exports.drawBoard(game, end), [`rokumoku_0_${game.players[0]}vs${game.players[1]}.png`, `rokumoku_1_${game.winner}.png`, 'rokumoku_2_tie.png'][end]);
+    game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, end), [`rokumoku_0_${game.players[0]}vs${game.players[1]}.png`, `rokumoku_1_${game.winner}.png`, 'rokumoku_2_tie.png'][end]);
     for (let ch in game.channels)
     {
         if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))

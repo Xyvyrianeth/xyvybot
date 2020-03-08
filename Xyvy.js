@@ -65,8 +65,9 @@ var config = {
 };
 exports.config = config;
 
-var commands = require("/app/commands.js"); /*
+var commands = require("/app/commands.js");
 
+/*
 var reactions = [];
 setInterval(function() {
     reactions.forEach((m, i) => {
@@ -119,7 +120,8 @@ function messageReaction(reaction) {
     }
 }
 client.on('messageReactionAdd', messageReaction);
-client.on('messageReactionRemove', messageReaction); */
+client.on('messageReactionRemove', messageReaction);
+*/
 
 client.on('message', message => {
     if (message.author.bot && message.author.id == client.user.id)

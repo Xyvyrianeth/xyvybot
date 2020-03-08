@@ -307,7 +307,7 @@ bot = (message) => {
 				encoder1.addFrame(game.replayData[game.replayData.length - 1], 5000)
 				encoder1.end();
 				setTimeout(() => {
-					let attachment1 = new Discord.Attachment(`replay_${message.id}.gif`, `replay_${message.id}.gif`);
+					let attachment1 = new Discord.MessageAttachment(`replay_${message.id}.gif`, `replay_${message.id}.gif`);
 					let embed1 = new Discord.MessageEmbed()
 						.setTitle("Replay GIF:")
 						.attachFile(attachment1)
@@ -328,7 +328,7 @@ bot = (message) => {
 					encoder2.addFrame(game.squareCounterData[game.squareCounterData.length - 1], 2500)
 					encoder2.end();
 					setTimeout(() => {
-						let attachment2 = new Discord.Attachment(`counter_${message.id}.gif`, `counter_${message.id}.gif`);
+						let attachment2 = new Discord.MessageAttachment(`counter_${message.id}.gif`, `counter_${message.id}.gif`);
 						let embed2 = new Discord.MessageEmbed()
 							.setTitle("Final Square Count:")
 							.attachFile(attachment2)
@@ -1198,7 +1198,7 @@ var commands = {
 							new Discord.MessageEmbed()
 							.setTitle("User Profile")
 							.setDescription(`<@${member.id}>`)
-							.attachFile(new Discord.Attachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
+							.attachFile(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
 							.setImage("attachment://profile.png")
 							.setTimestamp()
 							.setColor(profile.color)
@@ -1220,9 +1220,9 @@ var commands = {
 					if (res.rows.length == 0)
 						return message.channel.send("You have not yet created a profile, so you do not yet have a background. If you want to change that fact, say \"x!profile\" right now!");
 					if (res.rows[0].backgrounds.length == 1)
-						return message.channel.send("This is your current background, <@" + message.author.id + ">!\nTo get more backgrounds, say \"x!profile background purchase\" to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 500 money.", new Discord.Attachment("./assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+						return message.channel.send("This is your current background, <@" + message.author.id + ">!\nTo get more backgrounds, say \"x!profile background purchase\" to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 500 money.", new Discord.MessageAttachment("./assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
 
-					return message.channel.send("This is your current background, <@" + message.author.id + ">! New backgrounds cost 500 money.\nSay \"x!profile backgrounds\" to view the other backgrounds you own.", new Discord.Attachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+					return message.channel.send("This is your current background, <@" + message.author.id + ">! New backgrounds cost 500 money.\nSay \"x!profile backgrounds\" to view the other backgrounds you own.", new Discord.MessageAttachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
 				});
 			}
 			else
@@ -1274,7 +1274,7 @@ var commands = {
 						if (err)
 							sqlError(message, err, `UPDATE profiles\nSET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "''")}, money = '${res.rows[0].money - 500}'\nWHERE id = '${message.author.id}'`);
 						else
-							return message.channel.send("Successfully purchased a new background! To equip it, say \"x!profile background **`background ID`**\". New background ID: `" + newbg + '`', new Discord.Attachment("./assets/backgrounds/" + newbg.substring(0, 7) + (newbg.substring(7) == 'j' ? ".jpg" : ".png")));
+							return message.channel.send("Successfully purchased a new background! To equip it, say \"x!profile background **`background ID`**\". New background ID: `" + newbg + '`', new Discord.MessageAttachment("./assets/backgrounds/" + newbg.substring(0, 7) + (newbg.substring(7) == 'j' ? ".jpg" : ".png")));
 					});
 				});
 			}
@@ -1384,7 +1384,7 @@ var commands = {
 						ctx = canvas.getContext('2d');
 					ctx.fillStyle = (args[1].startsWith('#') ? '' : '#') + args[1];
 					ctx.fillRect(0, 0, 100, 40);
-					return message.channel.send("Successfully updated your color to `" + (args[1].startsWith('#') ? '' : '#') + args[1] + "`!", new Discord.Attachment(canvas.toBuffer()));
+					return message.channel.send("Successfully updated your color to `" + (args[1].startsWith('#') ? '' : '#') + args[1] + "`!", new Discord.MessageAttachment(canvas.toBuffer()));
 				});
 			});
 		}
@@ -2171,7 +2171,7 @@ var commands = {
 				new Discord.MessageEmbed()
 					.setTitle("x!graph")
 					.setDescription("```\n" + text + "```")
-					.attachFile(new Discord.Attachment(canvas.toBuffer(), "graph.png"))
+					.attachFile(new Discord.MessageAttachment(canvas.toBuffer(), "graph.png"))
 					.setImage("attachment://graph.png")
 					.setColor(new Color().random()));
 		}
@@ -2396,7 +2396,7 @@ var commands = {
 						output += '\n' + i;
 				}
 				let image = (canvas) => {
-					attachment = new Discord.Attachment(canvas.toBuffer(), "image.png");
+					attachment = new Discord.MessageAttachment(canvas.toBuffer(), "image.png");
 					embed.attachFile(attachment);
 					embed.setImage("attachment://image.png");
 				}
