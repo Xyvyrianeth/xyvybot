@@ -1,4 +1,4 @@
-var version = "3.0.0.7";
+var version = "3.0.0.8";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
@@ -582,7 +582,7 @@ client.on('message', (message) => {
 					setTimeout(() => message.delete(), 1000);
 				try
 				{
-					return games.[game.game].takeTurn(message.channel.id, message.content);
+					return games[game.game].takeTurn(message.channel.id, message.content);
 				}
 				catch (error)
 				{
