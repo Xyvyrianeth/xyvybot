@@ -1,4 +1,4 @@
-var version = "3.0.0.0";
+var version = "3.0.0.1";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
@@ -283,26 +283,26 @@ var aliases = {
 	"pg": ["pg"],
 }
 var commands = {
-	"about": require("app/commands/about.js"),
-	"ai": require("app/commands/ai.js"),
-	"aliases": require("app/commands/aliases.js"),
-	"botsbyxyvy": require("app/commands/botsbyxyvy.js"),
-	"bug": require("app/commands/bug.js"),
-	"calc": require("app/commands/calc.js"),
-	"credits": require("app/commands/credits.js"),
-	"game": require("app/commands/game.js"),
-	"games": require("app/commands/games.js"),
-	"graph": require("app/commands/graph.js"),
-	"hangman": require("app/commands/hangman.js"),
-	"help": require("app/commands/help.js"),
-	"iq": require("app/commands/iq.js"),
-	"js": require("app/commands/js.js"),
-	"minesweeper": require("app/commands/minesweeper.js"),
-	"nekos": require("app/commands/nekos.js"),
-	"nsfw": require("app/commands/nsfw.js"),
-	"pg": require("app/commands/pg.js"),
-	"profile": require("app/commands/profile.js"),
-	"request": require("app/commands/request.js")
+	"about": require("/app/commands/about.js"),
+	"ai": require("/app/commands/ai.js"),
+	"aliases": require("/app/commands/aliases.js"),
+	"botsbyxyvy": require("/app/commands/botsbyxyvy.js"),
+	"bug": require("/app/commands/bug.js"),
+	"calc": require("/app/commands/calc.js"),
+	"credits": require("/app/commands/credits.js"),
+	"game": require("/app/commands/game.js"),
+	"games": require("/app/commands/games.js"),
+	"graph": require("/app/commands/graph.js"),
+	"hangman": require("/app/commands/hangman.js"),
+	"help": require("/app/commands/help.js"),
+	"iq": require("/app/commands/iq.js"),
+	"js": require("/app/commands/js.js"),
+	"minesweeper": require("/app/commands/minesweeper.js"),
+	"nekos": require("/app/commands/nekos.js"),
+	"nsfw": require("/app/commands/nsfw.js"),
+	"pg": require("/app/commands/pg.js"),
+	"profile": require("/app/commands/profile.js"),
+	"request": require("/app/commands/request.js")
 };
 client.on('message', (message) => {
     if (message.author.bot && message.author.id == client.user.id)
