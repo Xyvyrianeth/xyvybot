@@ -300,9 +300,9 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, end, highlight), [`soccer_0_${game.players[0]}vs${game.players[1]}.png`, `soccer_1_${game.players[game.winner]}.png`, `soccer_1_${game.players[game.winner]}.png`][end]);
 	for (let ch in game.channels)
 	{
-		if (client.channels.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
+		if (client.channels.cache.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
             for (let i = 0; i < game.channels[ch].length; i++)
-                client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
+                client.channels.cache.get(ch).messages.get(game.channels[ch][i]).delete();
 		game.channels[ch] = [];
 	}
 
@@ -311,13 +311,13 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 
 exports.say = function(channels, message) {
     if (typeof channels == "string") {
-        client.channels.get(channels).send(message[0], message[1]);
+        client.channels.cache.get(channels).send(message[0], message[1]);
     }
     else
     {
         for (let i in channels)
         {
-            client.channels.get(i).send(message[0], message[1]);
+            client.channels.cache.get(i).send(message[0], message[1]);
         }
     }
 }

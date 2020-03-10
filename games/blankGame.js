@@ -97,7 +97,7 @@ exports.nextTurn = function(channel, end, highlight) {
 	{
 		for (let i = 0; i < game.channels[ch].length; i++)
 		{
-			client.channels.get(ch).messages.get(game.channels[ch][i]).delete();
+			client.channels.cache.get(ch).messages.get(game.channels[ch][i]).delete();
 		}
 		game.channels[ch] = [];
 	}
@@ -108,7 +108,7 @@ exports.nextTurn = function(channel, end, highlight) {
 exports.say = function(channels, message) {
 	for (let i in channels)
 	{
-		client.channels.get(i).send(message[0], message[1]);
+		client.channels.cache.get(i).send(message[0], message[1]);
 	}
 }
 
