@@ -150,7 +150,7 @@ client.on('message', (message) => {
 			else
 				errs.push(err.stack.split('\n')[i]);
 		}
-		message.channel.send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!```");
+		// message.channel.send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!```");
 		botError(message, errs);
 	}
 });
