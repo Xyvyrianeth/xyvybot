@@ -1,6 +1,6 @@
-const Discord = require("discord.js"),
-	  nekos = require("nekos.life"),
-	  Nekos = new nekos();
+const Discord = require("discord.js");
+const nekos = require("nekos.life");
+const Nekos = new nekos();
 var { Color } = require("/app/assets/misc/color.js"),
 	titles = require("/app/assets/profile/titles.json");
 exports.command = (cmd, args, input, message) => {

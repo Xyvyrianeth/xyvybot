@@ -1,6 +1,6 @@
-const Discord = require("discord.js"),
-	  gifEncoder = require("canvas-gif-encoder"),
-	  fs = require("fs");
+const Discord = require("discord.js");
+const gifEncoder = require("canvas-gif-encoder");
+const fs = require("fs");
 var { games, db, client } = require("/app/Xyvy.js"),
 	titles = require("/app/assets/profile/titles.json");
 exports.command = (message) => {

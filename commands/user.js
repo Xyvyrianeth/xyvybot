@@ -1,5 +1,5 @@
-const Discord = require("discord.js"),
-	  { games, client } = require("/app/Xyvy.js");
+const Discord = require("discord.js");
+const { games, client } = require("/app/Xyvy.js");
 exports.command = (message) => {
 	if (message.channel.type == "dm" && Array.from(message.attachments).length > 0)
 		{

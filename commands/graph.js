@@ -1,5 +1,5 @@
-const Discord = require("discord.js"),
-	  Canvas = require("canvas");
+const Discord = require("discord.js");
+const Canvas = require("canvas");
 var { Color } = require("/app/assets/misc/color.js"),
 	{ equ } = require("/app/assets/misc/equ.js"),
 	graph;

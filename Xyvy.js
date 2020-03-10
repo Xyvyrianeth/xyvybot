@@ -1,9 +1,9 @@
-var version = "3.0.1.6";
+var version = "3.0.1.7";
 
-const Discord = require("discord.js"),
-	  client = new Discord.Client(),
-	  PG = require("pg"),
-	  db = new PG.Client(process.env.DATABASE_URL);
+const Discord = require("discord.js");
+const client = new Discord.Client();
+const PG = require("pg");
+const db = new PG.Client(process.env.DATABASE_URL);
 
 var images = require("/app/assets/backgrounds/images.json"),
 	games = {
