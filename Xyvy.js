@@ -1,10 +1,10 @@
-var version = "3.0.1.16";
+var version = "3.0.1.17";
 exports.version = version;
 
-const Discord = require("discord.js");
-const client = new Discord.Client();
-const PG = require("pg");
-const db = new PG.Client(process.env.DATABASE_URL);
+const Discord = require("discord.js"),
+	  client = new Discord.Client(),
+	  PG = require("pg"),
+	  db = new PG.Client(process.env.DATABASE_URL);
 exports.client = client;
 exports.db = db;
 
@@ -26,8 +26,8 @@ client.login(process.env.TOKEN);
 client.on("ready", () => {
 	client.user.setPresence({
 		status: "online",
-		game: {
-			name: "version " + commands.version + "!",
+		activity: {
+			name: "version " + version + "!",
 			type: "STREAMING",
 			url: "https://twitch.tv/Xyvyrianeth"
 		}
@@ -37,7 +37,7 @@ client.on("ready", () => {
 			status: "online",
 			game: {
 				name: [
-					"version " + commands.version + "!",
+					"Version " + version + "!",
 					"in " + client.guilds.cache.array().length + " servers!",
 					"Say \"x!help\" for a list of commands!",
 					"Used by at least one person every day!",
@@ -47,7 +47,6 @@ client.on("ready", () => {
 					"I currently have 7 playable games, with at least 1 still in the planning stage. Suggest your favorite Abstract Strategy Game with the command \"x!request\"!",
 					"they don't think it be like it is, but it do",
 					"Have you seen Endgame, yet?",
-					"sub 2 pewdiepie",
 					"I will not ever support Chess. There's already a bot for that. It's literally called Chess Bot.",
 					"One day, I'll be completed.",
 					"Did you know I also have an AI bot you can play games against? Use the command \"x!ai\" for an invite link!",
@@ -56,17 +55,14 @@ client.on("ready", () => {
 					"Thanos did nothing wrong.",
 					"Yo' mixtape is trash.",
 					"The best bot for playing Abstract Strategy Games that I know of!",
-					"Don't bother clicking this link, I never stream anything. I don't have that kind of internet.",
-					"Somebody sent me a bunch of hentai one day. I have no idea why they would do such a thing. I'm a bot. I can't do anything with that. What a weird fella.",
 					"If you're reading this, why?",
 					"You can also play games via DMs! Someone else has to want to play somewhere else, though.",
 					"Some day, I'll be a popular bot.",
 					"What games do you want to see me support? Use the command \"x!request\" to lend me some suggestions!",
-					"I'm trying to create a back-up system for live games, because Heroku puts me to sleep every day and it makes me forget everything. Not working so well rn.",
 					"Ever heard of the game Ordo?",
 					"Adding Go would be a mistake because there's no guaranteed end to it. It just goes on and on until both players decide they're done.",
 					"fuck movies",
-					"I'm setting up a public server for tourneys 'n' shit for these games (it'll actually become public once all the games I want are added and the back-up system works). Look forward to it!",
+					"I'm setting up a public server for tourneys 'n' shit for these games. Look forward to it!",
 					"Now try Ordo!",
 					"A new game has been added recently! Try it out!"	].random(),
 				type: "STREAMING",
@@ -132,10 +128,10 @@ client.on('message', (message) => {
 	try {
 		if ((message.author.id == "561578790837289002" || !message.author.bot) && message.content.startsWith("x!"))
 		{
-			let args = message.content.split(/ +/);
-			let arg = args.shift().replace("x!", '').toLowerCase();
-			let cmd = Object.keys(aliases).filter(alias => aliases[alias].includes(arg))[0] || false;
-			let input = args.join(' ');
+			let args = message.content.split(/ +/),
+				arg = args.shift().replace("x!", '').toLowerCase(),
+				cmd = Object.keys(aliases).filter(alias => aliases[alias].includes(arg))[0] || false,
+				input = args.join(' ');
 			if (!cmd) return;
 			return commands[cmd](arg, args, input, message);
 		}
@@ -176,14 +172,14 @@ var aliases = {
 	"credits": ["credits", "acknowledgements"],
 	"help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
 	"aliases": ["aliases"],
+	"bug": ["reportbug", "bugreport", "bug", "report"],
+	"request": ["request", "suggest", "suggestion", "requestion"],
 	// Miscellaneous
 	"nekos": ["nekos", "neko", "nya", "catgirl", "catgirls", "nekomimi"],
 	"calc": ["calc", "calculate", "domath"],
 	"graph": ["graph"],
 	"ai": ["ai", "aibot", "xyvyai"],
 	"botsbyxyvy": ["botsbyxyvy", "xyvybots"],
-	"bug": ["reportbug", "bugreport", "bug", "report"],
-	"request": ["request", "suggest", "suggestion", "requestion"],
 	// NSFW
 	"nsfw": ["nsfw", "hentai", "lewd", "porn"],
 	// Admin-only

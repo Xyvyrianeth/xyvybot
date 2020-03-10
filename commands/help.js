@@ -7,12 +7,10 @@ exports.command = (cmd, args, input, message) => {
 		let helps =
 			[	"__**Featured Games**__\n`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__**Possible Future Releases**__:\n`go`\n__**Related Commands**__:\n`games`  `profile`",
 				"`minesweeper`  `iq`  `hangman`",
-				"`help`  `about`  `avatar`  `aliases`",
+				"`help`  `about`  `credits`  `aliases`",
 				"`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`"];
 		if (message.channel.type == "dm")
 			helps[2] += "  `bugreport`  `request`";
-		else
-			helps[2] += "  `kick`  `ban`";
 		let embed = new Discord.MessageEmbed()
 			.setTitle("Help")
 			.setDescription("A list of all commands supported by Xyvybot\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "\nFor more help about any specific command, do \"x!`command` help\"")
@@ -46,11 +44,7 @@ exports.command = (cmd, args, input, message) => {
 					["x!hangman", "Lets you and your friends play a game of Hangman with each other!", "x!hangman"],
 					["x!about", "Just a bit of information about what this bot does and some history about it.", "x!about"],
 					["x!help `command`", "Generates a list of commands, or gives a short description about a specific command.", "x!help help"],
-					["x!avatar `user`", "Get a large version of a user's profile picture.", "x!avatar 357700219825160194"],
 					["x!aliases `command`", "Get a list of all available keywords you can use to trigger a command.", "x!aliases help"],
-					["x!guild", "Get all the basic information about this server, like member count or how old it is.", "x!guild"],
-					["x!kick `user` `reason`", "Removes a user from the server without preventing them from being able to come back.", "x!kick 357700219825160194 Mic spamming in voice chat"],
-					["x!ban `user` `reason`", "Removes a user from the server with the guarantee that they will never come back. This will also delete all messages sent by that user in the last 2 days.", "x!ban 357700219825160194 Spam and harassment"],
 					["x!bug `command`\n`description`", "If you find a feature that you don't think should be a feature, use this command so that the dev will know about it. Be sure to be descriptive! Can only be used in direct messages. Can be used once per user every 2 hours.", "x!bug minesweeper\nDimensions don't match what's requested."],
 					["x!request `description`", "If there's a feature the bot does not yet support and you want to see supported, use this command so the dev will know about it. Be sure to be descriptive! Can only be used in direct messages. Can be used once per user every 2 hours.", "x!request Add more profile backgrounds"],
 					["x!neko", "Get a picture of a cute anime girl with cat ears.", "x!neko"],
