@@ -55,7 +55,6 @@ Color.prototype.toHexa = function() {
 }
 
 Color.prototype.getName = function() {
-	var hexa = this.toHexa();
 	var low = 256;
 	var name;
 	for (var n in Color.map)

@@ -1,9 +1,12 @@
-var version = "3.0.1.7";
+var version = "3.0.1.8";
+exports.version = version;
 
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const PG = require("pg");
 const db = new PG.Client(process.env.DATABASE_URL);
+exports.client = client;
+exports.db = db;
 
 var images = require("/app/assets/backgrounds/images.json"),
 	games = {
@@ -17,6 +20,7 @@ var images = require("/app/assets/backgrounds/images.json"),
 		ordo: require("/app/games/ordo.js"),
 		soccer: require("/app/games/soccer.js")
 	}
+exports.games = games;
 
 client.login(process.env.TOKEN);
 client.on("ready", () => {
@@ -121,6 +125,8 @@ newUser = (id, message) => {
 		los1: 0,	los2: 0,	los3: 0,	los4: 0,	los5: 0,	los6: 0,	los7: 0
 	};
 }
+exports.sqlError = sqlError;
+exports.newUser = newUser;
 
 client.on('message', (message) => {
 	try {
@@ -183,7 +189,7 @@ var aliases = {
 	// Admin-only
 	"js": ["js"],
 	"pg": ["pg"],
-}
+};
 var commands = {
 	"about": 		require("/app/commands/about.js").command,
 	"ai": 			require("/app/commands/ai.js").command,
@@ -206,14 +212,7 @@ var commands = {
 	"profile": 		require("/app/commands/profile.js").command,
 	"request": 		require("/app/commands/request.js").command
 };
-
-exports.client = client;
-exports.db = db;
-exports.games = games;
 exports.aliases = aliases;
-exports.version = version;
-exports.sqlError = sqlError;
-exports.newUser = newUser;
 
 Object.defineProperty(Math, 'sum', {
 	value: (n, a, b) => {

@@ -3,7 +3,8 @@ const Canvas = require("canvas");
 const Profile = require("/app/assets/profile/profile.js");
 const { db } = require("/app/Xyvy.js");
 var { Color } = require("/app/assets/misc/color.js"),
-	titles = require("/app/assets/profile/titles.json");
+	titles = require("/app/assets/profile/titles.json"),
+	images = require("/app/assets/backgrounds/images.json");
 exports.command = (cmd, args, input, message) => {
 	if (!input || /^<@!?[0-9]+>$/.test(input) || /^[0-9]+$/.test(input))
 	{
