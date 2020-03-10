@@ -1,26 +1,15 @@
-const Discord = require("discord.js");
-const Canvas = require("canvas");
-var { Color } = require("/app/assets/misc/color.js");
-var { equ } = require("/app/assets/misc/equ.js");
+const Discord = require("discord.js"),
+	  Canvas = require("canvas");
+var { Color } = require("/app/assets/misc/color.js"),
+	{ equ } = require("/app/assets/misc/equ.js"),
+	graph;
 exports.command = (cmd, args, input, message) => {
-	if (["info", "about", "history"].includes(args[0])) {
+	if (["info", "about", "help"].includes(args[0])) {
 		return message.channel.send(
 			new Discord.MessageEmbed()
-				.setTitle("Brief History of the Xyvyrianethian Graphic Calculator")
-				.setAuthor("By Xyvyrianeth", exports.Images.avatar)
-				.setDescription(
-					"Okay, well, I made this simply because I had nothing better to do with my time. When I started, it was 100% text-drawn, " +
-					"and it was really cool because I could add a lot of features to it when it didn't have to be accurate. Then I moved to " +
-					"Node Canvas and had to start over. I'm still not anywhere near the level of Desmos, but I'm proud of myself with what " +
-					"I have.\n" +
-					"\n" +
-					"In order to have a more advanced calculator, there needs to be a more strict syntax. I had to change a lot of things in " +
-					"the old syntax just to enable something simple like square root, cube root, or n-root of x, and I'll have to change even " +
-					"more if I want to add something like Π and ∑. I also had to change the method it uses to calculate almost entirely: instead " +
-					"of it trying to do everything at once, it has to solve it step by step. It has its own order of operation it has to follow.\n" +
-					"\n" +
-					"I'm constantly refining it little by little, and soon it'll be something. Maybe not great, but something.")
-				.addField("Full Cheat Sheet:", "https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph")
+				.setTitle("How to use x!graph")
+				.setThumbnail("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png")
+				.setDescription("[Click here to go to the Wiki (github.com)](https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph)")
 				.setColor(new Color().random()));
 	}
 	else
@@ -28,7 +17,7 @@ exports.command = (cmd, args, input, message) => {
 		// Draw blank graph
 		canvas = new Canvas.createCanvas(301, 301);
 		ctx = canvas.getContext('2d');
-		ctx.drawImage(exports.Images.graph, 0, 0);
+		ctx.drawImage(graph, 0, 0);
 		ctx.translate(150.5, 150.5);
 		e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
 		input = input.split('\n');
@@ -144,7 +133,56 @@ exports.command = (cmd, args, input, message) => {
 				.setTitle("x!graph")
 				.setDescription("```\n" + text + "```")
 				.attachFiles(new Discord.MessageAttachment(canvas.toBuffer(), "graph.png"))
+				.setThumbnail("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png")
 				.setImage("attachment://graph.png")
 				.setColor(new Color().random()));
 	}
 };
+Canvas.loadImage("/app/assets/misc/graph.png").then(image => {
+	graph = image;
+});
+Object.defineProperty(Math, 'sum', {
+	value: (n, a, b) => {
+		n = Math.round(n),
+		a = Math.round(a),
+		c = 0;
+		for (let i = n; i <= a; i++)
+			c += b;
+		return c;
+	}
+});
+Object.defineProperty(Math, 'prod', {
+	value: (n, a, b) => {
+		n = Math.round(n),
+		a = Math.round(a),
+		c = 0;
+		for (let i = n; i <= a; i++)
+			c *= b;
+		return c;
+	}
+});
+Object.defineProperty(Math, 'gcd', {
+	value: (a, b) => {
+		if (!b)
+			return a;
+		else
+			return Math.gcd(b, a % b);
+	}
+});
+Object.defineProperty(Math, 'fraction', {
+	value: (a, n) => {
+		let num = 0,
+			den = 0;
+		do
+		{
+			den++;
+			num = a * den;
+		}
+		while (num != Math.round(num));
+
+		if (n == undefined)
+			return [num, den, num + '/' + den];
+		else
+			return [num, den, num + '/' + den][n];
+	}
+});

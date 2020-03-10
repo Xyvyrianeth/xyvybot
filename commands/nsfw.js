@@ -1,6 +1,6 @@
-const Discord = require("discord.js");
-const nekos = require("nekos.life");
-const Nekos = new nekos();
+const Discord = require("discord.js"),
+	  nekos = require("nekos.life"),
+	  Nekos = new nekos();
 var { Color } = require("/app/assets/misc/color.js");
 exports.command = (cmd, args, input, message) => {
 	let tags = Object.keys(Nekos.nsfw).sort();
@@ -13,7 +13,7 @@ exports.command = (cmd, args, input, message) => {
 		let type = tags.random();
 		return Nekos.nsfw[type]().then((nsfw) => message.channel.send(
 			new Discord.MessageEmbed()
-				.setAuthor("x!nsfw", exports.Images.nekosLife)
+				.setAuthor("x!nsfw", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/nekos_life.png")
 				.setDescription(`Tag: \`${type}\` | Do \`x!nsfw ${type}\` to see more like this\nDo \`x!nsfw tags\` to see all tags`)
 				.setFooter("Powered by Nekos.Life")
 				.setColor(new Color().random())
@@ -30,7 +30,7 @@ exports.command = (cmd, args, input, message) => {
 			joined += tags[i] + ' '.repeat(16 - (tags[i].length % 16));
 		Nekos.nsfw.eroNeko().then((help) => message.channel.send(
 			new Discord.MessageEmbed()
-				.setAuthor("x!nsfw", exports.Images.nekosLife)
+				.setAuthor("x!nsfw", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/nekos_life.png")
 				.setTitle("NSFW Tags")
 				.setDescription('```md\n' + joined.trim() + '```\n**Usage**: `x!nsfw [tag]`')
 				.setFooter("Powered by Nekos.Life")
@@ -69,7 +69,7 @@ exports.command = (cmd, args, input, message) => {
 
 		return Nekos.nsfw[type]().then(nsfw => message.channel.send(
 			new Discord.MessageEmbed()
-				.setAuthor("x!nsfw", exports.Images.nekosLife)
+				.setAuthor("x!nsfw", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/nekos_life.png")
 				.setDescription(`Tag: \`${type}\`\nSelected randomly from: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`)
 				.setFooter("Powered by Nekos.Life")
 				.setColor(new Color().random())
@@ -114,7 +114,7 @@ exports.command = (cmd, args, input, message) => {
 		}
 		return Nekos.nsfw[type]().then(nsfw => message.channel.send(
 			new Discord.MessageEmbed()
-				.setAuthor("x!nsfw", exports.Images.nekosLife)
+				.setAuthor("x!nsfw", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/nekos_life.png")
 				.setDescription(`Tag: \`${type}\`\nTags excluded: [\`${types.join('`, `')}\`]${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`)
 				.setFooter("Powered by Nekos.Life")
 				.setColor(new Color().random())
@@ -156,7 +156,7 @@ exports.command = (cmd, args, input, message) => {
 						Tags.push(`[${types[x]}](${Types[x]})`);
 					return message.channel.send(
 						new Discord.MessageEmbed()
-							.setAuthor("x!nsfw", exports.Images.nekosLife)
+							.setAuthor("x!nsfw", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/nekos_life.png")
 							.setDescription(`Tags: [\`${queue.join('`, `')}\`]${types.length > 5 ? `\nMaximum of 5 tags allowed` : ''}\n\n[${Tags.join(']\n\n[')}]`)
 							.setFooter("Powered by Nekos.Life")
 							.setColor(new Color().random())
@@ -177,10 +177,34 @@ exports.command = (cmd, args, input, message) => {
 
 		return Nekos.nsfw[type]().then(nsfw => message.channel.send(
 			new Discord.MessageEmbed()
-				.setAuthor("x!nsfw", exports.Images.nekosLife)
+				.setAuthor("x!nsfw", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/nekos_life.png")
 				.setDescription(`Tag: \`${type}\``)
 				.setFooter("Powered by Nekos.Life")
 				.setColor(new Color().random())
 				.setImage(nsfw.url)));
 	}
 };
+Object.defineProperty(Array.prototype, 'random', {
+	value: function(a) {
+		if (!a)
+			return this[Math.random() * this.length | 0];
+		else
+		{
+			let b = [],
+				c = [];
+			if (this.length < a)
+				a = this.length;
+			for (let i = a; i--;)
+			{
+				let d = Math.random() * this.length | 0;
+				if (c.includes(d))
+					i++;
+				else
+					c.push(d);
+			}
+			for (let i = a; i--;)
+				b.push(this[c[i]]);
+			return b;
+		}
+	}
+});

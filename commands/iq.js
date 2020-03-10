@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
-var { Color } = require("/app/assets/misc/color.js");
-var { minigames } = require("/app/Xyvy.js");
+var { Color } = require("/app/assets/misc/color.js"),
+	{ minigames } = require("/app/Xyvy.js");
 exports.command = (cmd, args, input, message) => {
 	if (minigames.some((minigame) => minigame.channel == message.channel.id)) return;
 	let a, b, c, d, ans, type, que, end, time, diff;
@@ -194,3 +194,40 @@ exports.command = (cmd, args, input, message) => {
 		}
 	});
 };
+Object.defineProperty(Array.prototype, 'random', {
+	value: function(a) {
+		if (!a)
+			return this[Math.random() * this.length | 0];
+		else
+		{
+			let b = [],
+				c = [];
+			if (this.length < a)
+				a = this.length;
+			for (let i = a; i--;)
+			{
+				let d = Math.random() * this.length | 0;
+				if (c.includes(d))
+					i++;
+				else
+					c.push(d);
+			}
+			for (let i = a; i--;)
+				b.push(this[c[i]]);
+			return b;
+		}
+	}
+});
+Object.defineProperty(Array.prototype, 'shuffle', {
+	value: function() {
+		let a = this.clone(),
+			b = [];
+		for (let i = 0; i < this.length; i++)
+		{
+			let c = a[Math.random() * a.length | 0];
+			b.push(c);
+			a.splice(a.indexOf(c), 1);
+		}
+		return b;
+	}
+});

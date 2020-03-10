@@ -6,7 +6,7 @@ exports.command =  (cmd, args, input, message) => {
 	{
 		return message.channel.send(
 			new Discord.MessageEmbed()
-				.setAuthor("MineSweeper", exports.Images.minesweeper)
+				.setAuthor("MineSweeper", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/minesweeper.png")
 				.setDescription(
 					"You can control 3 aspects of a game: height, width, and the number of bombs. Here are the 3 possible syntaxes:\n" +
 					"```md\n" +
@@ -39,7 +39,7 @@ exports.command =  (cmd, args, input, message) => {
 	{
 		return message.channel.send(
 			new Discord.MessageEmbed()
-				.setAuthor("MineSweeper", exports.Images.minesweeper)
+				.setAuthor("MineSweeper", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/minesweeper.png")
 				.addField("5%", "`novice`\n`beginner`")
 				.addField("10%", "`easy`\n`apprentice`")
 				.addField("15%", "`medium`\n`normal`\n`adept`")
@@ -144,7 +144,7 @@ exports.command =  (cmd, args, input, message) => {
 		for (let y = h; y--;)
 			a[y] = a[y].join("||||");
 		let embed = new Discord.MessageEmbed()
-			.setAuthor("MineSweeper", exports.Images.minesweeper)
+			.setAuthor("MineSweeper", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/minesweeper.png")
 			.setDescription("||" + a.join("||\n||") + "||")
 			.setFooter("Height: " + h + " | Width: " + w + " | Bombs: " + d)
 			.setColor(new Color().random());

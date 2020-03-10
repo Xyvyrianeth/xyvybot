@@ -1,5 +1,5 @@
-const Discord = require("discord.js");
-const { db } = require("/app/Xyvy.js");
+const Discord = require("discord.js"),
+	  { db } = require("/app/Xyvy.js");
 var { Color } = require("/app/assets/misc/color.js");
 exports.command = (cmd, args, input, message) => {
 	return db.query(`SELECT bug FROM bans`, (err, res) => {

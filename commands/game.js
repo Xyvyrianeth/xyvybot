@@ -1,15 +1,15 @@
 const Discord = require("discord.js");
-var { Color } = require("/app/assets/misc/color.js");
-var games = {
-	games: require("/app/games/games.js").games,
-	othello: require("/app/games/othello.js"),
-	squares: require("/app/games/squares.js"),
-	rokumoku: require("/app/games/rokumoku.js"),
-	ttt3d: require("/app/games/3dttt.js"),
-	connect4: require("/app/games/connect4.js"),
-	ordo: require("/app/games/ordo.js"),
-	soccer: require("/app/games/soccer.js")
-};
+var { Color } = require("/app/assets/misc/color.js"),
+	games = {
+		games: require("/app/games/games.js").games,
+		othello: require("/app/games/othello.js"),
+		squares: require("/app/games/squares.js"),
+		rokumoku: require("/app/games/rokumoku.js"),
+		ttt3d: require("/app/games/3dttt.js"),
+		connect4: require("/app/games/connect4.js"),
+		ordo: require("/app/games/ordo.js"),
+		soccer: require("/app/games/soccer.js")
+	};
 exports.command = (cmd, args, input, message) => {
 	let gameNicks = {
 		"othello": ["othello", "reversi"],

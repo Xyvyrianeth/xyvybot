@@ -5,7 +5,7 @@ exports.command = (cmd, args, input, message) => {
 		new Discord.MessageEmbed()
 			.setTitle(
 				"Credits",
-				exports.Images.avatar)
+				"https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png")
 			.addField(
 				"Created, Authored, and Primarily Tested by",
 				"Xyvyrianeth")

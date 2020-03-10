@@ -5,7 +5,7 @@ exports.command = (cmd, args, input, message) => {
 		new Discord.MessageEmbed()
 			.setTitle(
 				"About me",
-				exports.Images.avatar)
+				"https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png")
 			.setDescription(
 				"Let's start off by saying that the only reason this bot exists is because someone else told me I should make it. Not for any reason in particular, they were just testing me to see if I could do it.\n" +
 				"Well, I did it, and then I found I enjoyed making it, so I kept building on it. It's still kinda rough on the edges, but it works, and that's all that matters, right?\n" +
