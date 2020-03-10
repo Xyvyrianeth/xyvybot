@@ -300,9 +300,9 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, end, highlight), [`soccer_0_${game.players[0]}vs${game.players[1]}.png`, `soccer_1_${game.players[game.winner]}.png`, `soccer_1_${game.players[game.winner]}.png`][end]);
 	for (let ch in game.channels)
 	{
-		if (client.channels.cache.get(ch).guild.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
+		if (client.channels.cache.get(ch).guild.cache.members.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
             for (let i = 0; i < game.channels[ch].length; i++)
-                client.channels.cache.get(ch).messages.get(game.channels[ch][i]).delete();
+                client.channels.cache.get(ch).messages.cache.get(game.channels[ch][i]).delete();
 		game.channels[ch] = [];
 	}
 
