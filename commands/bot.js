@@ -5,12 +5,12 @@ const Discord = require("discord.js"),
 var { games } = require("/app/Xyvy.js"),
 	titles = require("/app/assets/profile/titles.json");
 exports.command = (message) => {
-	console.log("ok so bot actually attempts to do something");
 	if (message.attachments.array().length != 0)
 	{
 		let img = message.attachments.first().filename;
 		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)_(0_[0-9]+vs[0-9]+|1_[0-9]+|2_tie)\.png$/.test(img))
 		{
+			console.log("ok so bot actually attempts to do something");
 			game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
 			end = img.match(/_[0-2]_/)[0].substring(1, 2);
 			game.canHaveTurn = true;
