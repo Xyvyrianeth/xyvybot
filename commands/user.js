@@ -1,6 +1,6 @@
 const Discord = require("discord.js"),
 	  { games, client } = require("/app/Xyvy.js");
-exports.command = () => {
+exports.command = (message) => {
 	if (message.channel.type == "dm" && Array.from(message.attachments).length > 0)
 		{
 			images = Array.from(message.attachments).map(m => m[1].url);
