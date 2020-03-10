@@ -1,4 +1,4 @@
-var version = "3.0.1.10";
+var version = "3.0.1.11";
 exports.version = version;
 
 const Discord = require("discord.js");
@@ -294,5 +294,10 @@ Object.defineProperty(Array.prototype, 'shuffle', {
 			a.splice(a.indexOf(c), 1);
 		}
 		return b;
+	}
+});
+Object.defineProperty(Array.prototype, 'clone', {
+	value: function() {
+		return JSON.parse(JSON.stringify(this));
 	}
 });
