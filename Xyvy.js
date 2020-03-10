@@ -1,4 +1,4 @@
-var version = "3.0.1.3";
+var version = "3.0.1.4";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
@@ -64,7 +64,7 @@ client.on("ready", () => {
 					"fuck movies",
 					"I'm setting up a public server for tourneys 'n' shit for these games (it'll actually become public once all the games I want are added and the back-up system works). Look forward to it!",
 					"Now try Ordo!",
-					"A new game has been added recently! Try it out!"	][Math.random() * splash.length | 0],
+					"A new game has been added recently! Try it out!"	].random(),
 				type: "STREAMING",
 				url: "https://twitch.tv/Xyvyrianeth"
 			}
