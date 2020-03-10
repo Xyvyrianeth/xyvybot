@@ -1,4 +1,4 @@
-var version = "3.0.1.14";
+var version = "3.0.1.15";
 exports.version = version;
 
 const Discord = require("discord.js");
@@ -130,7 +130,7 @@ exports.newUser = newUser;
 
 client.on('message', (message) => {
 	try {
-		if (!message.author.bot && message.content.startsWith("x!"))
+		if ((message.author.id == "561578790837289002" || !message.author.bot) && message.content.startsWith("x!"))
 		{
 			let args = message.content.split(/ +/);
 			let arg = args.shift().replace("x!", '').toLowerCase();
@@ -156,7 +156,7 @@ client.on('message', (message) => {
 			else
 				errs.push(err.stack.split('\n')[i]);
 		}
-		if (!message.author.bot && message.content.startsWith("x!"))
+		if ((message.author.id == "561578790837289002" || !message.author.bot) && message.content.startsWith("x!"))
 			message.channel.send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!```");
 		botError(message, errs);
 	}
