@@ -1,9 +1,9 @@
 const Discord = require("discord.js");
 var { Color } = require("/app/assets/misc/color.js"),
 	{ words } = require("/app/games/hangmanWords.js"),
-	{ minigames } = require("/app/Xyvy.js");
+	{ games } = require("/app/Xyvy.js");
 exports.command = (cmd, args, input, message) => {
-	if (minigames.some((minigame) => minigame.channel == message.channel.id)) return;
+	if (games.minigames.some((minigame) => minigame.channel == message.channel.id)) return;
 	let category = Math.random() * 6 | 0;
 	let word = words[category].split('|').random(), ans = [], right = [];
 	for (let i = 0; i < word.length; i++)
@@ -25,7 +25,7 @@ exports.command = (cmd, args, input, message) => {
 		.setColor(new Color(176, 14, 223).toHexa())
 		.addField("Guess letters and fill out the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${category}**\n${ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!" : ""}\n\nWrong guesses: \`7\``);
 	message.channel.send(embed);
-	minigames.push({
+	games.minigames.push({
 		type: "hangman",
 		category: category,
 		ans: ans,

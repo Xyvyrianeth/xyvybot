@@ -1,8 +1,8 @@
 const Discord = require("discord.js");
 var { Color } = require("/app/assets/misc/color.js"),
-	{ minigames } = require("/app/Xyvy.js");
+	{ games } = require("/app/Xyvy.js");
 exports.command = (cmd, args, input, message) => {
-	if (minigames.some((minigame) => minigame.channel == message.channel.id)) return;
+	if (games.minigames.some((minigame) => minigame.channel == message.channel.id)) return;
 	let a, b, c, d, ans, type, que, end, time, diff;
 	let A = Math.random() * 9 | 0;
 	switch (A) {
@@ -182,7 +182,7 @@ exports.command = (cmd, args, input, message) => {
 		.addField("Nobody got it in time!", end);
 
 	message.channel.send(embed);
-	minigames.push({
+	games.minigames.push({
 		type: "iq",
 		ans: ans,
 		timer: time,
