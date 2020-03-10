@@ -1,5 +1,7 @@
 const Discord = require("discord.js");
+const { client, db } = require("/app/Xyvy.js");
 var { Color } = require("/app/assets/misc/color.js");
+var { games } = require("/app/Xyvy.js");
 exports.command = (cmd, args, input, message) => {
 	if (message.author.id != "357700219825160194")
 		return;

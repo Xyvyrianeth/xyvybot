@@ -1,10 +1,7 @@
 const Discord = require("discord.js");
-const { client, config } = require("/app/Xyvy.js");
+const { client } = require("/app/Xyvy.js");
 var { Color } = require("/app/assets/misc/color.js");
-
-var backup = true;
-
-var timer = setInterval(function() {
+setInterval(function() {
     let minigames = exports.minigames;
     minigames.forEach((minigame, index) => {
         minigame.timer--;
@@ -12,7 +9,7 @@ var timer = setInterval(function() {
         {
 			if (minigame.type == "iq")
 			{
-				client.channels.get(minigame.channel).send(minigame.embeds.lose);
+				client.channels.cache.get(minigame.channel).send(minigame.embeds.lose);
 				delete minigames[index];
 				minigames.splice(index, 1);
 			}
@@ -28,7 +25,7 @@ var timer = setInterval(function() {
 					.setTitle("Hangman")
 					.setColor(new Color(231, 76, 60).toHexa())
 					.addField("Looks like nobody's playing anymore!", `**${display.join("\u200b \u200b")}**\n\nGuesses: \`` + minigame.guesses.join("` `") + '`');
-				client.channels.get(minigame.channel).send(embed);
+				client.channels.cache.get(minigame.channel).send(embed);
 				delete minigames[index];
 				minigames.splice(index, 1);
 			}
@@ -36,5 +33,4 @@ var timer = setInterval(function() {
     });
     exports.minigames = minigames;
 }, 1000);
-
 exports.minigames = [];
