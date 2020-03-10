@@ -36,27 +36,3 @@ exports.command = (cmd, args, input, message) => {
 		channel: message.channel.id
 	});
 }
-Object.defineProperty(Array.prototype, 'random', {
-	value: function(a) {
-		if (!a)
-			return this[Math.random() * this.length | 0];
-		else
-		{
-			let b = [],
-				c = [];
-			if (this.length < a)
-				a = this.length;
-			for (let i = a; i--;)
-			{
-				let d = Math.random() * this.length | 0;
-				if (c.includes(d))
-					i++;
-				else
-					c.push(d);
-			}
-			for (let i = a; i--;)
-				b.push(this[c[i]]);
-			return b;
-		}
-	}
-});

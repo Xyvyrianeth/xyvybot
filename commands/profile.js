@@ -260,27 +260,3 @@ exports.command = (cmd, args, input, message) => {
 	else
 		return message.channel.send("Invalid syntax. Try \"x!profile help\" for more information on how to use this.");
 }
-Object.defineProperty(Array.prototype, 'random', {
-	value: function(a) {
-		if (!a)
-			return this[Math.random() * this.length | 0];
-		else
-		{
-			let b = [],
-				c = [];
-			if (this.length < a)
-				a = this.length;
-			for (let i = a; i--;)
-			{
-				let d = Math.random() * this.length | 0;
-				if (c.includes(d))
-					i++;
-				else
-					c.push(d);
-			}
-			for (let i = a; i--;)
-				b.push(this[c[i]]);
-			return b;
-		}
-	}
-});

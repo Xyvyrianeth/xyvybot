@@ -259,3 +259,40 @@ Object.defineProperty(Math, 'fraction', {
 			return [num, den, num + '/' + den][n];
 	}
 });
+Object.defineProperty(Array.prototype, 'random', {
+	value: function(a) {
+		if (!a)
+			return this[Math.random() * this.length | 0];
+		else
+		{
+			let b = [],
+				c = [];
+			if (this.length < a)
+				a = this.length;
+			for (let i = a; i--;)
+			{
+				let d = Math.random() * this.length | 0;
+				if (c.includes(d))
+					i++;
+				else
+					c.push(d);
+			}
+			for (let i = a; i--;)
+				b.push(this[c[i]]);
+			return b;
+		}
+	}
+});
+Object.defineProperty(Array.prototype, 'shuffle', {
+	value: function() {
+		let a = this.clone(),
+			b = [];
+		for (let i = 0; i < this.length; i++)
+		{
+			let c = a[Math.random() * a.length | 0];
+			b.push(c);
+			a.splice(a.indexOf(c), 1);
+		}
+		return b;
+	}
+});
