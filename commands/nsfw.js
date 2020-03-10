@@ -46,7 +46,7 @@ exports.command = (cmd, args, input, message) => {
 		if (!args[1])
 		{
 			type = tags.random();
-			types = "all tags.";
+			types = " all tags.";
 		}
 		else
 		{
@@ -67,7 +67,7 @@ exports.command = (cmd, args, input, message) => {
 			if (types.length > 0)
 			{
 				type = types.random();
-				types = "[`" + types.join("`, `") + "`]";
+				types = ": [`" + types.join("`, `") + "`]";
 			}
 			else
 				return message.channel.send("None of those tags exist.");
@@ -76,7 +76,7 @@ exports.command = (cmd, args, input, message) => {
 		return Nekos.nsfw[type]().then(nsfw => message.channel.send(
 			new Discord.MessageEmbed()
 				.setAuthor("x!nsfw", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/nekos_life.png")
-				.setDescription(`Tag: \`${type}\`\nSelected randomly from:${types}${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`)
+				.setDescription(`Tag: \`${type}\`\nSelected randomly from${types}${nopes.length > 0 ? `\nQueried tags that don't exist: [\`${nopes.join('`, `')}\`]` : ''}`)
 				.setFooter("Powered by Nekos.Life")
 				.setColor(new Color().random())
 				.setImage(nsfw.url)));
