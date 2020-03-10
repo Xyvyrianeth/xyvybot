@@ -1,4 +1,4 @@
-var version = "3.0.1.4";
+var version = "3.0.1.5";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
@@ -148,7 +148,7 @@ client.on('message', (message) => {
 			if (err.stack.split('\n')[i].includes("at Client.emit"))
 				break;
 			else
-				errs.push(error.stack.split('\n')[i]);
+				errs.push(err.stack.split('\n')[i]);
 		}
 		message.channel.send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!```");
 		botError(message, errs);
