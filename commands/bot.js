@@ -5,6 +5,7 @@ const Discord = require("discord.js"),
 var { games } = require("/app/Xyvy.js"),
 	titles = require("/app/assets/profile/titles.json");
 exports.command = (message) => {
+	console.log("ok so bot actually attempts to do something");
 	if (message.attachments.array().length != 0)
 	{
 		let img = message.attachments.first().filename;
