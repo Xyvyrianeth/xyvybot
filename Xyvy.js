@@ -1,4 +1,4 @@
-var version = "3.0.1.1";
+var version = "3.0.1.3";
 
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
@@ -143,9 +143,9 @@ client.on('message', (message) => {
 	catch (err)
 	{
 		let errs = [];
-		for (let i = 0; i < error.stack.split('\n').length; i++)
+		for (let i = 0; i < err.stack.split('\n').length; i++)
 		{
-			if (error.stack.split('\n')[i].includes("at Client.emit"))
+			if (err.stack.split('\n')[i].includes("at Client.emit"))
 				break;
 			else
 				errs.push(error.stack.split('\n')[i]);
