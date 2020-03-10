@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const { games, client } = require("/app/Xyvy.js");
+var { Color } = require("/app/assets/misc/color.js");
 exports.command = (message) => {
 	if (message.channel.type == "dm" && Array.from(message.attachments).length > 0)
 		{
