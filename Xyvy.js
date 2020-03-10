@@ -1,4 +1,4 @@
-var version = "3.0.1.17";
+var version = "3.0.1.18";
 exports.version = version;
 
 const Discord = require("discord.js"),
@@ -126,21 +126,22 @@ exports.newUser = newUser;
 
 client.on('message', (message) => {
 	try {
-		if ((message.author.id == "561578790837289002" || !message.author.bot) && message.content.startsWith("x!"))
-		{
-			let args = message.content.split(/ +/),
-				arg = args.shift().replace("x!", '').toLowerCase(),
-				cmd = Object.keys(aliases).filter(alias => aliases[alias].includes(arg))[0] || false,
-				input = args.join(' ');
-			if (!cmd) return;
-			return commands[cmd](arg, args, input, message);
-		}
-
-		if (message.author.bot && message.author.id == client.user.id)
-			require("/app/commands/bot.js").command(message);
-
 		if (message.author.id == "561578790837289002" || !message.author.bot)
-			require("/app/commands/user.js").command(message);
+		{
+			if (message.content.startsWith("x!"))
+			{
+				let args = message.content.split(/ +/),
+					arg = args.shift().replace("x!", '').toLowerCase(),
+					cmd = Object.keys(aliases).filter(alias => aliases[alias].includes(arg))[0] || false,
+					input = args.join(' ');
+				if (!cmd) return;
+				return commands[cmd](arg, args, input, message);
+			}
+			else
+				require("/app/commands/user.js").command(message);
+		}
+		if (message.author.id == client.user.id)
+			require("/app/commands/bot.js").command(message);
 	}
 	catch (err)
 	{
