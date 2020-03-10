@@ -5,10 +5,9 @@ const Discord = require("discord.js"),
 var { games } = require("/app/Xyvy.js"),
 	titles = require("/app/assets/profile/titles.json");
 exports.command = (message) => {
-	console.log(message.attachments);
 	if (message.attachments.array().length != 0)
 	{
-		let img = message.attachments.first().filename;
+		let img = message.attachments.array()[0].name;
 		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer)_(0_[0-9]+vs[0-9]+|1_[0-9]+|2_tie)\.png$/.test(img))
 		{
 			game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
