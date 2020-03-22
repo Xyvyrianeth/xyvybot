@@ -67,7 +67,7 @@ exports.command = (cmd, args, input, message) => {
 				if (res.rows[0].backgrounds.length == 1)
 					return message.channel.send("This is your current background, <@" + message.author.id + ">!\nTo get more backgrounds, say \"x!profile background purchase\" to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 500 money.", new Discord.MessageAttachment("./assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
 
-				return message.channel.send("This is your current background, <@" + message.author.id + ">! New backgrounds cost 500 money.\nSay \"x!profile backgrounds own\" to view a list of the other backgrounds you own.", new Discord.MessageAttachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+				return message.channel.send("This is your only background, <@" + message.author.id + ">! New backgrounds cost 500 money.\nSay \"x!profile backgrounds owned\" to view a list of the other backgrounds you own.", new Discord.MessageAttachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
 			});
 		}
 		else

@@ -1,4 +1,4 @@
-var version = "3.0.2.0";
+var version = "3.0.2.1";
 exports.version = version;
 
 const Discord = require("discord.js"),
@@ -100,14 +100,14 @@ newUser = (id, message) => {
 			`INSERT INTO profiles (\n` +
 			`   id,       color,      title,      titles,             background,  backgrounds,         lefty,  money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7\n` +
 			`) VALUES (\n` +
-			`   '${id}',  '#2f3136',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  true,   500,    1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0\n` +
+			`   '${id}',  '#2f3136',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  ${images.display.right.includes(image) ? false : true},   500,    1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0\n` +
 			`)`;
 	db.query(query, (err) => {
 		if (err)
 			return exports.sqlError(message, err, query);
 	});
 	return {
-		id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lefty: true, money: 500,
+		id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lefty: images.display.right.includes(image) ? false : true, money: 500,
 		elo1: 1000, elo2: 1000, elo3: 1000, elo4: 1000, elo5: 1000, elo6: 1000, elo7: 1000,
 		win1: 0,	win2: 0,	win3: 0,	win4: 0,	win5: 0,	win6: 0,	win7: 0,
 		los1: 0,	los2: 0,	los3: 0,	los4: 0,	los5: 0,	los6: 0,	los7: 0
@@ -122,7 +122,6 @@ client.on('message', (message) => {
 		{
 			if (message.content.startsWith("x!"))
 			{
-				dailyCommandUsage += 1;
 				let args = message.content.split(/ +/),
 					arg = args.shift().replace("x!", '').toLowerCase(),
 					cmd = Object.keys(aliases).filter(alias => aliases[alias].includes(arg))[0] || false,
