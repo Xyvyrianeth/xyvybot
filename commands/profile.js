@@ -80,7 +80,7 @@ exports.command = (cmd, args, input, message) => {
 				if (res.rows.length == 0)
 					return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
 				let a,
-					b;
+					b,
 					curr,
 					max = Math.ceil(res.rows[0].backgrounds.length / 15);
 				if (!args[2])
