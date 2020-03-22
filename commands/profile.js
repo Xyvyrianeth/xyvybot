@@ -81,13 +81,15 @@ exports.command = (cmd, args, input, message) => {
 					return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
 				let a,
 					b;
+					curr,
 					max = Math.ceil(res.rows[0].backgrounds.length / 15);
 				if (!args[2])
 				{
-					if (res.rows[0].backgrounds.length > 10)
+					curr = 1;
+					if (res.rows[0].backgrounds.length > 15)
 					{
 						a = 0;
-						b = 10;
+						b = 15;
 					}
 					else
 					{
@@ -102,11 +104,13 @@ exports.command = (cmd, args, input, message) => {
 					{
 						a = (max - 1) * 15;
 						b = res.rows[0].background.length;
+						curr = max;
 					}
 					else
 					{
 						b = args[2] * 15;
 						a = b - 15;
+						curr = args[2];
 					}
 				}
 				else
@@ -122,6 +126,8 @@ exports.command = (cmd, args, input, message) => {
 				let embed = new Discord.MessageEmbed()
 					.setColor(new Color().random())
 					.setTitle("x!profile backgrounds")
+					.setDescription(`Backgrounds owned by <@${message.author.id}> (Page ${curr} of ${max}):\n` + b2.join('\n'));
+				return message.channel.send(embed);
 			});
 		}
 		else
