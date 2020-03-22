@@ -56,40 +56,72 @@ exports.command = (cmd, args, input, message) => {
 	else
 	if (["background", "backgrounds", "bg", "bgs"].includes(args[0]))
 	{
-		if (!args[1] && !["backgrounds", "bgs"].includes(args[0]))
+		if (!args[1])
 		{
 			let query1 = `SELECT *\nFROM profiles\nWHERE id = '${message.author.id}'`;
 			return db.query(query1, (err, res) => {
 				if (err)
 					return sqlError(message, err, query1);
 				if (res.rows.length == 0)
-					return message.channel.send("You have not yet created a profile, so you do not yet have a background. If you want to change that fact, say \"x!profile\" right now!");
+					return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
 				if (res.rows[0].backgrounds.length == 1)
 					return message.channel.send("This is your current background, <@" + message.author.id + ">!\nTo get more backgrounds, say \"x!profile background purchase\" to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 500 money.", new Discord.MessageAttachment("./assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
 
-				return message.channel.send("This is your current background, <@" + message.author.id + ">! New backgrounds cost 500 money.\nSay \"x!profile backgrounds\" to view the other backgrounds you own.", new Discord.MessageAttachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
+				return message.channel.send("This is your current background, <@" + message.author.id + ">! New backgrounds cost 500 money.\nSay \"x!profile backgrounds own\" to view a list of the other backgrounds you own.", new Discord.MessageAttachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
 			});
 		}
 		else
-		if (["owned"].includes(args[1]) || (!args[1] && ["backgrounds", "bgs"].includes(args[0])))
+		if (["owned"].includes(args[1]))
 		{
 			let query1 = `SELECT *\nFROM profiles\nWHERE id = '${message.author.id}'`;
 			return db.query(query1, (err, res) => {
 				if (err)
 					return sqlError(message, err, query1);
 				if (res.rows.length == 0)
-					return message.channel.send("You have not yet created a profile, so you cannot view the backgrounds you own. If you want to change that fact, say \"x!profile\" right now!");
-				if (res.rows[0].backgrounds.length == 1)
-					return message.channel.send("You only have 1 background, and it's the one you have equipped.");
+					return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
+				let a,
+					b;
+					max = Math.ceil(res.rows[0].backgrounds.length / 15);
+				if (!args[2])
+				{
+					if (res.rows[0].backgrounds.length > 10)
+					{
+						a = 0;
+						b = 10;
+					}
+					else
+					{
+						a = 0;
+						b = res.rows[0].backgrounds.length;
+					}
+				}
+				else
+				if (/^[0-9]+$/.test(args[2]))
+				{
+					if (args[2] >= max)
+					{
+						a = (max - 1) * 15;
+						b = res.rows[0].background.length;
+					}
+					else
+					{
+						b = args[2] * 15;
+						a = b - 15;
+					}
+				}
+				else
+					return message.channel.send("Invalid page number.");
 				let b1 = res.rows[0].backgrounds,
 					b2 = [];
-				for (let i = 0; i < res.rows[0].backgrounds.length; i++) {
+				for (let i = a; i < b; i++) {
 					if (b1[i] !== res.rows[0].background)
-						b2.push('[' + images.titles[b1[i]] + "](" + b1[i] + ')');
+						b2.push('`' + b1[i] + "`[" + images.titles[b1[i]] + "](https://i.imgur.com/" + b1[i].substring(0, 6) + {j: ".jpg", p: ".png"}[b1[i][7]] + ')');
 					else
-						b2.push('[' + images.titles[b1[i]] + "](" + b1[i] + ') (Equipped)');
+						b2.push('`' + b1[i] + "`[" + images.titles[b1[i]] + "](https://i.imgur.com/" + b1[i].substring(0, 6) + {j: ".jpg", p: ".png"}[b1[i][7]] + ') **(Equipped)**');
 				}
-				return message.channel.send(`\`\`\`md\n# All Backgrounds owned by user ${res.rows[0].id}:\n\n  [Background Title](background ID)\n\n  ${b2.join("\n  ")}\n\nIf you wish to equip any of these, do "x!profile background **\`title ID\`**" (capitals are important!)\`\`\``);
+				let embed = new Discord.MessageEmbed()
+					.setColor(new Color().random())
+					.setTitle("x!profile backgrounds")
 			});
 		}
 		else
@@ -100,7 +132,7 @@ exports.command = (cmd, args, input, message) => {
 				if (err)
 					return sqlError(message, err, query1);
 				if (res.rows.length == 0)
-					return message.channel.send("You have not yet created a profile, so you cannot yet purchase a new background. If you want to change that fact, say \"**x!profile**\" right now!");
+					return message.channel.send("You have not yet created a profile. To do that, say \"**x!profile**\" right now!");
 				if (res.rows[0].backgrounds.length == images.ids.length)
 					return message.channel.send("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, ok?");
 				if (res.rows[0].money < 500)
@@ -125,18 +157,18 @@ exports.command = (cmd, args, input, message) => {
 		if (/^[a-zA-Z0-9]{7}[jp]$/.test(args[1]))
 		{
 			if (!images.ids.includes(args[1]))
-				return message.channel.send("That image ID does not exist. Did you make sure you capitalized the correct letters? That's important, you know.");
+				return message.channel.send("This background ID does not exist.");
 
 			let query1 = `SELECT *\nFROM profiles\nWHERE id = '${message.author.id}'`;
 			return db.query(query1, (err, res) => {
 				if (err)
 					return sqlError(message, err, query1);
 				if (res.rows.length == 0)
-					return message.channel.send("You have not yet created a profile, so you cannot yet equip a new background. If you want to change that fact, say \"**x!profile**\" right now!");
+					return message.channel.send("You have not yet created a profile. To do that, say \"**x!profile**\" right now!");
 				if (!res.rows[0].backgrounds.includes(args[1]))
-					return message.channel.send("You do not own that background!");
+					return message.channel.send("You do not own that background.");
 
-				let query2 = `UPDATE profiles\nSET background = '${args[1]}'\nWHERE id = '${message.author.id}'`;
+				let query2 = `UPDATE profiles\nSET background = '${args[1]}', lefty = '${images.display.left.includes(args[1]) ? true : images.display.right.includes(args[1]) ? false : res.rows[0].lefty}'\nWHERE id = '${message.author.id}'`;
 				return db.query(query2, (err) => {
 					if (err)
 						return sqlError(message, err, query2);
@@ -157,9 +189,9 @@ exports.command = (cmd, args, input, message) => {
 			if (err)
 				return sqlError(message, err, query1);
 			if (res.rows.length == 0)
-				return message.channel.send("You have not yet created a profile, so your information is displayed on neither the left nor the right. If you want to change that fact, say \"**x!profile**\" right now!");
+				return message.channel.send("You have not yet created a profile. To do that, say \"**x!profile**\" right now!");
 
-			let query2 = `UPDATE profiles\nSET lefty = '${res.rows[0].lefty ? false : true}'\nWHERE id = '${message.author.id}'`;
+			let query2 = `UPDATE profiles\nSET lefty = '${!res.rows[0].lefty}'\nWHERE id = '${message.author.id}'`;
 			return db.query(query2, (err) => {
 				if (err)
 					return sqlError(message, err, query2);
@@ -179,7 +211,7 @@ exports.command = (cmd, args, input, message) => {
 				if (err)
 					return sqlError(message, err, query1);
 				if (res.rows.length == 0)
-					return message.channel.send("You have not yet created a profile, so you do not yet have any titles. If you want to change that fact, say \"x!profile\" right now!");
+					return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
 				if (res.rows[0].titles.length == 1)
 					return message.channel.send("The only title you own is the title you currently have equipped. Get some more and then check back with me, ok?");
 				let t1 = res.rows[0].titles,
@@ -203,7 +235,7 @@ exports.command = (cmd, args, input, message) => {
 			if (err)
 				return sqlError(message, err, query1);
 			if (res.rows.length == 0)
-				return message.channel.send("You have not yet created a profile, so you do not yet have the ability to change your title. If you want to change that fact, say \"x!profile\" right now!");
+				return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
 
 			let query2 = `UPDATE profiles\nSET title = '${args[1]}'\nWHERE id = '${message.author.id}'`;
 			return db.query(query2, (err) => {
@@ -227,7 +259,7 @@ exports.command = (cmd, args, input, message) => {
 			if (err)
 				return sqlError(message, err, query1);
 			if (res.rows.length == 0)
-				return message.channel.send("You have not yet created a profile, so you do not yet have the ability to change your profile's color. If you want to change that fact, say \"x!profile\" right now!");
+				return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
 
 			let query2 = `UPDATE profiles\nSET color = '${(args[1].startsWith('#') ? '' : '#') + args[1]}'\nWHERE id = '${message.author.id}'`;
 			return db.query(query2, (err) => {
@@ -252,7 +284,7 @@ exports.command = (cmd, args, input, message) => {
 					"x!profile `subcommand`\n" +
 					"\n" +
 					"**`backgrounds`** - Opens the background menu for changing your profile's background.\n" +
-					"**`displayside`** - Allows you to change which side all the text n stuff is displayed on in your profile.\n" +
+					"**`displayside`** - Allows you to change which side all the text n stuff is displayed on in your profile. Changing backgrounds will sometimes do that automatically to pick the optimal side.\n" +
 					"**`title`** - Displays your currently equipped title, your currently owned titles, or allows you to change your currently equipped title (if you know the ID for it).\n" +
 					"**`color`** - Allows you to change the color your profile uses to display information.")
 				.setColor(new Color().random()));

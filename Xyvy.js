@@ -1,4 +1,4 @@
-var version = "3.0.1.20";
+var version = "3.0.2.0";
 exports.version = version;
 
 const Discord = require("discord.js"),
@@ -41,30 +41,22 @@ client.on("ready", () => {
 					"in " + client.guilds.cache.array().length + " servers!",
 					"Say \"x!help\" for a list of commands!",
 					"Used by at least one person every day!",
-					"You know what they say",
 					"reversi and chill",
-					"Shit inside me is being fixed, be patient.",
-					"I currently have 7 playable games, with at least 1 still in the planning stage. Suggest your favorite Abstract Strategy Game with the command \"x!request\"!",
+					"I currently have 8 playable games, with at least 1 still in the planning stage. Suggest your favorite Abstract Strategy Game with the command \"x!request\"!",
 					"they don't think it be like it is, but it do",
-					"Have you seen Endgame, yet?",
 					"I will not ever support Chess. There's already a bot for that. It's literally called Chess Bot.",
 					"One day, I'll be completed.",
 					"Did you know I also have an AI bot you can play games against? Use the command \"x!ai\" for an invite link!",
 					"No human has ever beaten my AI bot in a game of Squares!",
 					"Want your own Discord bot to do things other bots don't? Use the command \"x!botsbyxyvy\" for more information!",
-					"Thanos did nothing wrong.",
-					"Yo' mixtape is trash.",
 					"The best bot for playing Abstract Strategy Games that I know of!",
-					"If you're reading this, why?",
 					"You can also play games via DMs! Someone else has to want to play somewhere else, though.",
 					"Some day, I'll be a popular bot.",
 					"What games do you want to see me support? Use the command \"x!request\" to lend me some suggestions!",
 					"Ever heard of the game Ordo?",
 					"Adding Go would be a mistake because there's no guaranteed end to it. It just goes on and on until both players decide they're done.",
-					"fuck movies",
 					"I'm setting up a public server for tourneys 'n' shit for these games. Look forward to it!",
-					"Now try Ordo!",
-					"A new game has been added recently! Try it out!"	].random(),
+					"Now try Ordo!"	].random(),
 				type: "STREAMING",
 				url: "https://twitch.tv/Xyvyrianeth"
 			}
@@ -130,6 +122,7 @@ client.on('message', (message) => {
 		{
 			if (message.content.startsWith("x!"))
 			{
+				dailyCommandUsage += 1;
 				let args = message.content.split(/ +/),
 					arg = args.shift().replace("x!", '').toLowerCase(),
 					cmd = Object.keys(aliases).filter(alias => aliases[alias].includes(arg))[0] || false,
