@@ -63,10 +63,10 @@ exports.command = (cmd, args, input, message) => {
 				if (res.rows.length == 0)
 					return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
 
-				let  max = Math.ceil(res.rows[0].backgrounds.length / 25),
+				let  max = Math.ceil(res.rows[0].backgrounds.length / 20),
 					curr = !args[2] ? 1                                                                         : /^[0-9]+$/.test(args[2]) ? args[2] >= max ? max                           : args[2]            : false,
-					   a = !args[2] ? res.rows[0].backgrounds.length > 25 ? 0  : 0                              : /^[0-9]+$/.test(args[2]) ? args[2] >= max ? (max - 1) * 25                : (args[2] - 1) * 25 : false,
-					   b = !args[2] ? res.rows[0].backgrounds.length > 25 ? 25 : res.rows[0].backgrounds.length : /^[0-9]+$/.test(args[2]) ? args[2] >= max ? res.rows[0].background.length : args[2] * 25       : false;
+					   a = !args[2] ? res.rows[0].backgrounds.length > 20 ? 0  : 0                              : /^[0-9]+$/.test(args[2]) ? args[2] >= max ? (max - 1) * 20                : (args[2] - 1) * 20 : false,
+					   b = !args[2] ? res.rows[0].backgrounds.length > 20 ? 20 : res.rows[0].backgrounds.length : /^[0-9]+$/.test(args[2]) ? args[2] >= max ? res.rows[0].background.length : args[2] * 20       : false;
 				if (curr == false)
 				   return message.channel.send("Invalid page number.");
 
@@ -74,15 +74,14 @@ exports.command = (cmd, args, input, message) => {
 					b2 = [];
 				for (let i = a; i < b; i++) {
 					if (b1[i] == res.rows[0].background)
-						b2.push(`\`${b1[i]}\` [${images.titles[b1[i]]}](https://i.imgur.com/${b1[i].substring(0, 7) + {j: ".jpg", p: ".png"}[b1[i][7]]}) **(Equipped)**`);
+						b2.push(`\`${b1[i]}\` [${images.titles[b1[i]]}](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/${b1[i].substring(0, 7) + {j: ".jpg", p: ".png"}[b1[i][7]]}) **(Equipped)**`);
 					else
-						b2.push(`\`${b1[i]}\` [${images.titles[b1[i]]}](https://i.imgur.com/${b1[i].substring(0, 7) + {j: ".jpg", p: ".png"}[b1[i][7]]})`);
+						b2.push(`\`${b1[i]}\` [${images.titles[b1[i]]}](https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/${b1[i].substring(0, 7) + {j: ".jpg", p: ".png"}[b1[i][7]]})`);
 				}
 				let embed = new Discord.MessageEmbed()
 					.setColor(new Color().random())
 					.setAuthor("x!profile")
-					.setTitle(`Backgrounds owned by <@${message.author.id}> (Page ${curr} of ${max})`)
-					.setDescription(b2.join('\n'));
+					.setDescription(`Backgrounds owned by <@${message.author.id}> (Page ${curr} of ${max}):\n\n` + b2.join('\n'));
 				return message.channel.send(embed);
 			});
 		}
@@ -210,7 +209,7 @@ exports.command = (cmd, args, input, message) => {
 				let embed = new Discord.MessageEmbed()
 					.setColor(new Color().random())
 					.setAuthor("x!profile")
-					.setDescription("All titles owned by <@" + res.rows[0].id + ">:\n```md\n  [Title Text](titleID)\n\n  " + t2.join("\n  ") + "```\nIf you wish to equip any of these, do \"x!profile title `titleID`\" (capitals are important!)!");
+					.setDescription("All titles owned by <@" + res.rows[0].id + ">:\n```md\n  [Title Text](titleID)\n\n" + t2.join("\n") + "```\nIf you wish to equip any of these, do \"x!profile title `titleID`\" (capitals are important!)!");
 				return message.channel.send(embed);
 			});
 		}
