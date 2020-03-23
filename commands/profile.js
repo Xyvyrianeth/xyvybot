@@ -38,14 +38,13 @@ exports.command = (cmd, args, input, message) => {
 
 			Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.${member.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then((image1) => {
 				Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then((image2) => {
-					return message.channel.send(
-						new Discord.MessageEmbed()
+					let embed = new Discord.MessageEmbed()
 						.setAuthor("x!profile")
 						.setDescription(`User Profile: <@${member.id}>`)
 						.attachFiles(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
 						.setImage("attachment://profile.png")
-						.setColor(profile.color)
-					);
+						.setColor(profile.color);
+					return message.channel.send(embed);
 				});
 			})
 			.catch(err => message.channel.send("```" + err + "```"));
@@ -111,6 +110,7 @@ exports.command = (cmd, args, input, message) => {
 					if (err)
 						return sqlError(message, err, query2);
 					else
+					{
 						let embed = new Discord.MessageEmbed()
 							.setColor(new Color().random())
 							.setAuthor("x!profile")
@@ -118,6 +118,7 @@ exports.command = (cmd, args, input, message) => {
 							.attachFiles(new Discord.MessageAttachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + newbg.substring(0, 7) + {j: ".jpg", p: ".png"}[newbg[8]], "new_background.png"))
 							.setImage("attachment://new_background.png");
 						return message.channel.send(embed);
+					}
 				});
 			});
 		}
@@ -147,14 +148,13 @@ exports.command = (cmd, args, input, message) => {
 						profile.background = args[1];
 						Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.${member.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then((image1) => {
 							Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then((image2) => {
-								return message.channel.send(
-									new Discord.MessageEmbed()
+								let embed = new Discord.MessageEmbed()
 									.setAuthor("x!profile")
 									.setDescription(`Your new profile background has been equipped, <@${member.id}>! Take a look!`)
 									.attachFiles(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
 									.setImage("attachment://profile.png")
-									.setColor(profile.color)
-								);
+									.setColor(profile.color);
+								return message.channel.send(embed);
 							});
 						})
 						.catch(err => message.channel.send("```" + err + "```"));
