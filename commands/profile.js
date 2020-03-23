@@ -104,7 +104,7 @@ exports.command = (cmd, args, input, message) => {
 					newbg = images.ids.random();
 				while (res.rows[0].backgrounds.includes(newbg));
 
-				let query2 = `UPDATE profiles\nSET backgrounds = array_append(backgrounds, '${newbg}'), money = money - 500'\nWHERE id = '${message.author.id}'`;
+				let query2 = `UPDATE profiles\nSET backgrounds = array_append(backgrounds, '${newbg}'), money = money - 500\nWHERE id = '${message.author.id}'`;
 				return db.query(query2, (err) => {
 					if (err)
 						return sqlError(message, err, query2);
