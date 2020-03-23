@@ -40,11 +40,10 @@ exports.command = (cmd, args, input, message) => {
 				Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then((image2) => {
 					return message.channel.send(
 						new Discord.MessageEmbed()
-						.setTitle("User Profile")
-						.setDescription(`<@${member.id}>`)
+						.setAuthor("x!profile")
+						.setDescription(`User Profile: <@${member.id}>`)
 						.attachFiles(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
 						.setImage("attachment://profile.png")
-						.setTimestamp()
 						.setColor(profile.color)
 					);
 				});
@@ -64,69 +63,27 @@ exports.command = (cmd, args, input, message) => {
 					return sqlError(message, err, query1);
 				if (res.rows.length == 0)
 					return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
-				if (res.rows[0].backgrounds.length == 1)
-					return message.channel.send("This is your current background, <@" + message.author.id + ">!\nTo get more backgrounds, say \"x!profile background purchase\" to get a new one!\n**Note**: buying a new background will give you a random one, but you will be able to keep it along with any previously owned backgrounds, such as the one you were given when you first created a profile. All backgrounds cost 500 money.", new Discord.MessageAttachment("./assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
 
-				return message.channel.send("This is your only background, <@" + message.author.id + ">! New backgrounds cost 500 money.\nSay \"x!profile backgrounds owned\" to view a list of the other backgrounds you own.", new Discord.MessageAttachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + res.rows[0].background.substring(0, 7) + (res.rows[0].background.substring(7) == 'j' ? ".jpg" : ".png")));
-			});
-		}
-		else
-		if (["owned"].includes(args[1]))
-		{
-			let query1 = `SELECT *\nFROM profiles\nWHERE id = '${message.author.id}'`;
-			return db.query(query1, (err, res) => {
-				if (err)
-					return sqlError(message, err, query1);
-				if (res.rows.length == 0)
-					return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
-				let a,
-					b,
-					curr,
-					max = Math.ceil(res.rows[0].backgrounds.length / 15);
-				if (!args[2])
-				{
-					curr = 1;
-					if (res.rows[0].backgrounds.length > 15)
-					{
-						a = 0;
-						b = 15;
-					}
-					else
-					{
-						a = 0;
-						b = res.rows[0].backgrounds.length;
-					}
-				}
-				else
-				if (/^[0-9]+$/.test(args[2]))
-				{
-					if (args[2] >= max)
-					{
-						a = (max - 1) * 15;
-						b = res.rows[0].background.length;
-						curr = max;
-					}
-					else
-					{
-						b = args[2] * 15;
-						a = b - 15;
-						curr = args[2];
-					}
-				}
-				else
-					return message.channel.send("Invalid page number.");
+				let  max = Math.ceil(res.rows[0].backgrounds.length / 25),
+					curr = !args[2] ? 1                                                                         : /^[0-9]+$/.test(args[2]) ? args[2] >= max ? max                           : args[2]            : false,
+					   a = !args[2] ? res.rows[0].backgrounds.length > 25 ? 0  : 0                              : /^[0-9]+$/.test(args[2]) ? args[2] >= max ? (max - 1) * 25                : (args[2] - 1) * 25 : false,
+					   b = !args[2] ? res.rows[0].backgrounds.length > 25 ? 25 : res.rows[0].backgrounds.length : /^[0-9]+$/.test(args[2]) ? args[2] >= max ? res.rows[0].background.length : args[2] * 25       : false;
+				if (curr == false)
+				   return message.channel.send("Invalid page number.");
+
 				let b1 = res.rows[0].backgrounds,
 					b2 = [];
 				for (let i = a; i < b; i++) {
-					if (b1[i] !== res.rows[0].background)
-						b2.push('`' + b1[i] + "`[" + images.titles[b1[i]] + "](https://i.imgur.com/" + b1[i].substring(0, 6) + {j: ".jpg", p: ".png"}[b1[i][7]] + ')');
+					if (b1[i] == res.rows[0].background)
+						b2.push(`\`${b1[i]}\` [${images.titles[b1[i]]}](https://i.imgur.com/${b1[i].substring(0, 7) + {j: ".jpg", p: ".png"}[b1[i][7]]}) **(Equipped)**`);
 					else
-						b2.push('`' + b1[i] + "`[" + images.titles[b1[i]] + "](https://i.imgur.com/" + b1[i].substring(0, 6) + {j: ".jpg", p: ".png"}[b1[i][7]] + ') **(Equipped)**');
+						b2.push(`\`${b1[i]}\` [${images.titles[b1[i]]}](https://i.imgur.com/${b1[i].substring(0, 7) + {j: ".jpg", p: ".png"}[b1[i][7]]})`);
 				}
 				let embed = new Discord.MessageEmbed()
 					.setColor(new Color().random())
-					.setTitle("x!profile backgrounds")
-					.setDescription(`Backgrounds owned by <@${message.author.id}> (Page ${curr} of ${max}):\n` + b2.join('\n'));
+					.setAuthor("x!profile")
+					.setTitle(`Backgrounds owned by <@${message.author.id}> (Page ${curr} of ${max})`)
+					.setDescription(b2.join('\n'));
 				return message.channel.send(embed);
 			});
 		}
@@ -148,14 +105,19 @@ exports.command = (cmd, args, input, message) => {
 				do
 					newbg = images.ids.random();
 				while (res.rows[0].backgrounds.includes(newbg));
-				res.rows[0].backgrounds.push(newbg);
 
-				let query2 = `UPDATE profiles\nSET backgrounds = ARRAY ${JSON.stringify(res.rows[0].backgrounds).replace(/"/g, "'")}, money = '${res.rows[0].money - 500}'\nWHERE id = '${message.author.id}'`;
+				let query2 = `UPDATE profiles\nSET backgrounds = array_append(backgrounds, '${newbg}'), money = money - 500'\nWHERE id = '${message.author.id}'`;
 				return db.query(query2, (err) => {
 					if (err)
 						return sqlError(message, err, query2);
 					else
-						return message.channel.send("Successfully purchased a new background! To equip it, say \"x!profile background **`background ID`**\". New background ID: `" + newbg + '`', new Discord.MessageAttachment("./assets/backgrounds/" + newbg.substring(0, 7) + (newbg.substring(7) == 'j' ? ".jpg" : ".png")));
+						let embed = new Discord.MessageEmbed()
+							.setColor(new Color().random())
+							.setAuthor("x!profile")
+							.setDescription("Successfully purchased a new background! ID: `" + newbg + "`\nTo Equip it, say \"x!profile background")
+							.attachFiles(new Discord.MessageAttachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + newbg.substring(0, 7) + {j: ".jpg", p: ".png"}[newbg[8]], "new_background.png"))
+							.setImage("attachment://new_background.png");
+						return message.channel.send(embed);
 				});
 			});
 		}
@@ -179,7 +141,24 @@ exports.command = (cmd, args, input, message) => {
 					if (err)
 						return sqlError(message, err, query2);
 					else
-						return message.channel.send("Successfully equipped the background to `" + args[1] + "`!");
+					{
+						let member = message.channel.guild.members.cache.get(message.author.id),
+							profile = res.rows[0];
+						profile.background = args[1];
+						Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.${member.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then((image1) => {
+							Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then((image2) => {
+								return message.channel.send(
+									new Discord.MessageEmbed()
+									.setAuthor("x!profile")
+									.setDescription(`Your new profile background has been equipped, <@${member.id}>! Take a look!`)
+									.attachFiles(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
+									.setImage("attachment://profile.png")
+									.setColor(profile.color)
+								);
+							});
+						})
+						.catch(err => message.channel.send("```" + err + "```"));
+					}
 				});
 			});
 		}
@@ -218,8 +197,7 @@ exports.command = (cmd, args, input, message) => {
 					return sqlError(message, err, query1);
 				if (res.rows.length == 0)
 					return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
-				if (res.rows[0].titles.length == 1)
-					return message.channel.send("The only title you own is the title you currently have equipped. Get some more and then check back with me, ok?");
+
 				let t1 = res.rows[0].titles,
 					t2 = [];
 				for (let i = 0; i < res.rows[0].titles.length; i++)
@@ -229,7 +207,11 @@ exports.command = (cmd, args, input, message) => {
 					else
 						t2.push('[' + titles[t1[i]] + "](" + t1[i] + ') (Equipped)');
 				}
-				return message.channel.send("```md\n# All Titles owned by user:" + res.rows[0].id + ":\n\n  [Title Text](titleID)\n\n  " + t2.join("\n  ") + "\n\nIf you wish to equip any of these, do \"x!profile title `titleID`\" (capitals are important!)!```");
+				let embed = new Discord.MessageEmbed()
+					.setColor(new Color().random())
+					.setAuthor("x!profile")
+					.setDescription("All titles owned by <@" + res.rows[0].id + ">:\n```md\n  [Title Text](titleID)\n\n  " + t2.join("\n  ") + "```\nIf you wish to equip any of these, do \"x!profile title `titleID`\" (capitals are important!)!");
+				return message.channel.send(embed);
 			});
 		}
 
@@ -285,14 +267,15 @@ exports.command = (cmd, args, input, message) => {
 	{
 		return message.channel.send(
 			new Discord.MessageEmbed()
+				.setAuthor("x!profile")
 				.setTitle("Available subcommands for x!profile")
 				.setDescription(
 					"x!profile `subcommand`\n" +
 					"\n" +
-					"**`backgrounds`** - Opens the background menu for changing your profile's background.\n" +
-					"**`displayside`** - Allows you to change which side all the text n stuff is displayed on in your profile. Changing backgrounds will sometimes do that automatically to pick the optimal side.\n" +
+					"**`backgrounds`** - Shows you all of your owned backgrounds or allows you to buy more or equip them.\n" +
 					"**`title`** - Displays your currently equipped title, your currently owned titles, or allows you to change your currently equipped title (if you know the ID for it).\n" +
-					"**`color`** - Allows you to change the color your profile uses to display information.")
+					"**`color`** - Allows you to change the color your profile uses to display information.\n" +
+					"**`displayside`** - Allows you to change which side all the text n stuff is displayed on in your profile. Changing backgrounds will sometimes do that automatically to pick the optimal side.")
 				.setColor(new Color().random()));
 	}
 
