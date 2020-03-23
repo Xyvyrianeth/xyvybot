@@ -95,14 +95,11 @@ exports.command = (cmd, args, input, message) => {
 				if (res.rows.length == 0)
 					return message.channel.send("You have not yet created a profile. To do that, say \"**x!profile**\" right now!");
 				if (res.rows[0].backgrounds.length == images.ids.length)
-					return message.channel.send("There are no more backgrounds for you to purchase, because you've got them all already! When new ones are added, you'll be able to buy more, ok?");
+					return message.channel.send("There are no more backgrounds for you to purchase, because you've got them all already!");
 				if (res.rows[0].money < 500)
 					return message.channel.send("You do not have enough money to buy another background! Backgrounds cost 500 money each! Get more money by playing games (and winning)!");
 
-				newbg = images.ids.random();
-				do
-					newbg = images.ids.random();
-				while (res.rows[0].backgrounds.includes(newbg));
+				newbg = images.ids.filter(id => !res.rows[0].backgrounds.includes(id)).random();
 
 				let query2 = `UPDATE profiles\nSET backgrounds = array_append(backgrounds, '${newbg}'), money = money - 500\nWHERE id = '${message.author.id}'`;
 				return db.query(query2, (err) => {
@@ -113,7 +110,7 @@ exports.command = (cmd, args, input, message) => {
 						let embed = new Discord.MessageEmbed()
 							.setColor(new Color().random())
 							.setAuthor("x!profile")
-							.setDescription("Successfully purchased a new background! ID: `" + newbg + "`\nTo Equip it, say \"x!profile background")
+							.setDescription("Successfully purchased a new background! ID: `" + newbg + "`\nTo Equip it, say \"x!profile background " + newbg + "\"!")
 							.attachFiles(new Discord.MessageAttachment("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/backgrounds/" + newbg.substring(0, 7) + {j: ".jpg", p: ".png"}[newbg[8]], "new_background.png"))
 							.setImage("attachment://new_background.png");
 						return message.channel.send(embed);
