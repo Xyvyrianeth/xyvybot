@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const { client, db } = require("/app/Xyvy.js");
+const Canvas = require("canvas");
 var { Color } = require("/app/assets/misc/color.js");
 var { games } = require("/app/Xyvy.js");
 exports.command = (cmd, args, input, message) => {

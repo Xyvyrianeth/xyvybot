@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<body>
+	<img id="bg">
+	<img id="ol" src="left.png">
+	<div id="id">ID GOES HERE</div>
+	<div id="next" onclick="next()">NEXT</div>
+	<div id="prev" onclick="prev()">PREV</div>
+	<div id="swap" onclick="swap()">SWAP</div>
+</body>
+<head>
+	<style>
+		#bg {
+			max-height: 300px;
+			max-width: 400px;
+			position: fixed;
+			top: 20px;
+			left: 20px;
+		}
+		#ol {
+			position: fixed;
+			top: 20px;
+		}
+		div {
+			position: fixed;
+			top: 360px;
+			height: 40px;
+			width: 80px;
+			background-color: #abc;
+			text-align: center;
+			font-size: 30px;
+		}
+		#id {
+			left: 30px;
+			top: 310px;
+			width: 380px;
+		}
+		#next {
+			left: 330px;
+		}
+		#prev {
+			left: 30px;
+		}
+		#swap {
+			left: 180px;
+		}
+	</style>
+	<script type="text/javascript">
+		function next() {
+			if (index < images.ids.length - 1) index++;
+			document.getElementById("bg").src = ("file:///C:/Users/Xyvyrianeth/Desktop/profile%20background%20tester/temp/" + images.ids[index].substring(0, 7) + {j: ".jpg", p: ".png"}[images.ids[index][7]]);
+			autoswap();
+			adjust();
+			text();
+		}
+		function prev() {
+			if (index > 0) index--;
+			document.getElementById("bg").src = ("file:///C:/Users/Xyvyrianeth/Desktop/profile%20background%20tester/temp/" + images.ids[index].substring(0, 7) + {j: ".jpg", p: ".png"}[images.ids[index][7]]);
+			autoswap();
+			adjust();
+			text();
+		}
+		function swap() {
+			if (document.getElementById("ol").src.endsWith("left.png"))
+				document.getElementById("ol").src = "right.png";
+			else
+			if (document.getElementById("ol").src.endsWith("right.png"))
+				document.getElementById("ol").src = "left.png";
+			adjust();
+		}
+		function autoswap() {
+			if (images.display.right.includes(images.ids[index]))
+				document.getElementById("ol").src = "right.png";
+			if (images.display.left.includes(images.ids[index]))
+				document.getElementById("ol").src = "left.png";
+		}
+		function adjust() {
+			if (document.getElementById("ol").src.endsWith("left.png"))
+				document.getElementById("ol").style.left = "20px";
+			if (document.getElementById("ol").src.endsWith("right.png"))
+				document.getElementById("ol").style.left = (document.getElementById("bg").width - 180) + "px";
+		}
+		function text() {
+			if (images.titles.hasOwnProperty(images.ids[index]))
+				document.getElementById("id").innerText = images.titles[images.ids[index]];
+			else
+				document.getElementById("id").innerText = images.ids[index];
+		}
+		images = {
+			"ids": ["0B6w8kuj","0DAbLN7j","1rFDU4cj","31vPRQaj","36L2Gytj","3fV8Oajj","3JJaMToj","5Gh9W2sj","5H4Zu7Zp","AZIbn2Uj","5rlwrMPj","6u7aJevj","73CIFZSj","78hkuD6j","8bsZfDwj","8PrVRTvj","aftUp3Gj","aHwavK4j"],
+			"display": {
+				"right": [
+					"7ZwG2OYp",
+					"it85X8rj",
+					"SjAvgnXj",
+					"5mIh6CRp",
+					"5edsBKNp",
+					"R1B2jZhp",
+					"x4nlpw4p",
+					"wc3NJcwp",
+					"QvRsHtGp",
+					"rZnwTBYp",
+					"HQZPLugp",
+					"2MnyZoYp",
+					"6hx5YpZp",
+					"lomI2XBp",
+					"RXUcuflp",
+					"Q1n8x53j",
+					"uYfpJKDj",
+					"KI0neewj",
+					"OyAHrMdp",
+					"8I6m3WDj",
+					"Lpagj1xj",
+					"XGaIaHij",
+					"pJ82KkJj",
+					"NXi5L7nj",
+					"2GpqqF7p",
+					"Hc5Rfpzj",
+					"gZoXqVTj",
+					"M7T2Mhzj",
+					"XX4zn6qj",
+					"DQqpYiOj",
+					"OUscSSrp",
+					"bCHw7ZHj",
+					"ys0OALuj",
+					"psW7uFTj",
+					"WWIaZcsj",
+					"JHe2FWgj",
+					"Q6GDRxyj",
+					"t4k5JkMj",
+					"QmDbBZpj",
+					"lb1i5w2j",
+					"HMJDc2Cj",
+					"hbkSeSrj",
+					"EZ9fGKQj",
+					"QYSgRQtj",
+					"t55d5alj",
+					"hfPaP20j",
+					"wXfEwqsj",
+					"d45Spgtj",
+					"c5bIKlFj",
+					"SB1Szhrj",
+					"LMVt9eYj",
+					"0F3rYWxj",
+					"qzjpihmj",
+					"VHy0ufPj",
+					"fEcBV55j",
+					"G72N2kuj",
+					"Wy2NzAoj",
+					"CvkyjAUj",
+					"nQt5RNGj",
+					"4XF3EZ5j",
+					"S0wkQosj",
+					"1Vs58eVj",
+					"4OLpzfwj",
+					"wIlLMXvp",
+					"ifVrQ9xj",
+					"ZfMIYm2j",
+					"glfXZH0j",
+					"AVw4ejkj",
+					"BREHc3Qj",
+					"ZnGuqAWp"
+				],
+				"left": [
+					"Qi95CqJj",
+					"8E0RMGap",
+					"XKUsO93p",
+					"xbr6Lqzp",
+					"EvL6S5Yp",
+					"MU4KPakp",
+					"WJjORNHp",
+					"oiqVcHFp",
+					"npU0uFxp",
+					"iPlx4H1p",
+					"9gFx2R6p",
+					"nYsYrP7p",
+					"BwyZHxpp",
+					"wsjLGAvp",
+					"9C2zPNjp",
+					"biL7RNtj",
+					"3R4nztWp",
+					"6sO5eYfp",
+					"p3ZVbMap",
+					"M1gpwanp",
+					"aPaMNBEj",
+					"eHJ1mFPj",
+					"9YULNkhp",
+					"etDm4MAj",
+					"iiEEXvlp",
+					"GYpdMM9j",
+					"we9JSlhj",
+					"OywpeYFp",
+					"3b5sn2Zj",
+					"qgzof47p",
+					"rfrkEiRj",
+					"IH1S4h2j",
+					"n6ctMwXj",
+					"GM2BoN3j",
+					"EUTNMf3j",
+					"cDkoE2mj",
+					"C4rde9oj",
+					"ouB6FlLj",
+					"tFiOVr9j",
+					"VvuuTIBj",
+					"4B0mbUpj",
+					"eAcr2hAj",
+					"WubGeQHj",
+					"Cqlf9TDj",
+					"AWINNT2j",
+					"d1r2Ghuj",
+					"WuSOxPvj",
+					"tXLubvHj",
+					"Llfnuqaj",
+					"VNYkQZIj",
+					"MaR74Eaj",
+					"rHMifP6j",
+					"WUSVAWBj",
+					"JALZPrtj",
+					"oqn6y9Mp",
+					"DducT1Nj",
+					"Ur4NZWmj",
+					"QpT74FVj",
+					"8IgwmFIj",
+					"FgJIREyj",
+					"7BmTGSoj",
+					"xQwP7glj",
+					"Oa56NT0j",
+					"r8fRcC0j",
+					"mYiexyaj",
+					"bwKVQT3j",
+					"F3q7jzIj",
+					"0ta8j85j",
+					"vdZPtEnj",
+					"rQ1M1JMj",
+					"cRdvMtkj",
+					"P0DLcWnj",
+					"9YufYlHj"
+				],
+				"either": [
+					"mJPbQHdp",
+					"W9msTX7j",
+					"6ozRblop",
+					"wRHb9rbp",
+					"IPcXIgpp",
+					"iMCZTMep",
+					"NLgrYrtp",
+					"vUyy6lIp",
+					"w5i7E5Qj",
+					"3WhvKAlj",
+					"2vufb3jp",
+					"RN8F8e4p",
+					"7wwBlDKj",
+					"x884xQ5j",
+					"81QLOA0j",
+					"BdFDzckj",
+					"t1D9XLqp",
+					"TiYZ5pdj",
+					"jREg6fNj",
+					"iVUrJCRj",
+					"Vq05LTuj",
+					"tfWjTJIj",
+					"GJucF0xj",
+					"ogYPdNWj",
+					"d9UiNC6j",
+					"jFVefnoj",
+					"TY4BWGij",
+					"dtOTREXj",
+					"dfUXnAxj",
+					"62y3TkBj",
+					"XTrlFjHj",
+					"lIf35dWj",
+					"dO0UKxfj",
+					"h2bWAR4j",
+					"bx2N2dNj",
+					"HaJ4eP7j",
+					"Z31OOTYj",
+					"Z6xaUMWj",
+					"YCuKgrlj"
+				]
+			},
+			"titles": {
+				"ZnGuqAWp": "Coffee Break",
+				"Z31OOTYj": "Under the Rain",
+				"Z6xaUMWj": "Walking on the Sky",
+				"YCuKgrlj": "RE:Zero Afterschool Practice",
+				"xQwP7glj": "Miku Looking Over the City",
+				"wXfEwqsj": "The Shining City",
+				"WWIaZcsj": "Morning Photography",
+				"wRHb9rbp": "Dragon Slayer",
+				"wc3NJcwp": "Cloud Magic",
+				"W9msTX7j": "Angel in the Water",
+				"w5i7E5Qj": "In Darkness and in Light",
+				"vUyy6lIp": "The Wrath of Rem",
+				"Vq05LTuj": "A Vast Empty Field",
+				"uYfpJKDj": "Running at Dusk",
+				"TY4BWGij": "Celty Sturluson",
+				"tXLubvHj": "Sora and Shiro",
+				"t55d5alj": "Fighting Club Mako",
+				"t4k5JkMj": "Charlotte by the Ocean",
+				"t1D9XLqp": "Dark Sky",
+				"RXUcuflp": "Guitarist Under the Clouds",
+				"rQ1M1JMj": "Sunset in the Mountains",
+				"RN8F8e4p": "Nana Abe on a Bridge",
+				"R1B2jZhp": "Kiss-Shot (Sleeping)",
+				"QYSgRQtj": "\"Sunrise\"",
+				"QmDbBZpj": "Kill la Kill",
+				"Qi95CqJj": "Rem's Death",
+				"qgzof47p": "A Small Flame in the Darkness",
+				"psW7uFTj": "Balloons",
+				"OyAHrMdp": "Megumin X Emilia",
+				"ogYPdNWj": "Roronoa Zoro",
+				"iMCZTMep": "Megumin",
+				"nQt5RNGj": "Sunset by the Bay",
+				"NLgrYrtp": "Magenta Sky",
+				"MU4KPakp": "Shinobu's Helmet",
+				"mJPbQHdp": "A Vast Field",
+				"MaR74Eaj": "Watching the Sky",
+				"Lpagj1xj": "Shirou Kotomine",
+				"LMVt9eYj": "Howl's Castle",
+				"Llfnuqaj": "Yuki Nagato",
+				"lIf35dWj": "2B",
+				"lb1i5w2j": "Sitting on the Edge",
+				"iVUrJCRj": "Cyber City in the Rain",
+				"IPcXIgpp": "Ruined Shrine",
+				"HQZPLugp": "Kobayashi and Tohru",
+				"hfPaP20j": "A Break from the Hot Day",
+				"Hc5Rfpzj": "Grim Altar",
+				"hbkSeSrj": "Blood",
+				"HaJ4eP7j": "No Sleep",
+				"GM2BoN3j": "Fire Magic",
+				"GJucF0xj": "Rem on the Water",
+				"G72N2kuj": "Kiss-Shot (Sitting)",
+				"FgJIREyj": "Under the Stars",
+				"fEcBV55j": "Under a Blue Moon",
+				"EZ9fGKQj": "Kaede's Wings",
+				"EvL6S5Yp": "A Den of Thieves",
+				"dfUXnAxj": "Shelter",
+				"DducT1Nj": "A Sniper's Nest",
+				"d9UiNC6j": "The Beautiful Forest",
+				"d45Spgtj": "Snake",
+				"CvkyjAUj": "Drifting Petals",
+				"cDkoE2mj": "Across the Fence",
+				"C4rde9oj": "Powerlines",
+				"bx2N2dNj": "Nier Automata",
+				"BREHc3Qj": "Piano",
+				"biL7RNtj": "Yayoi",
+				"AWINNT2j": "Paradise Above the Clouds",
+				"AVw4ejkj": "Sniper Girl",
+				"9YULNkhp": "Laying Her Head in Her Lap",
+				"9gFx2R6p": "A Photo by the Beach",
+				"8IgwmFIj": "Music with the Stars",
+				"8I6m3WDj": "Miku with Cherry Blossoms",
+				"7ZwG2OYp": "Dragons",
+				"7wwBlDKj": "A Walk Through the Forest",
+				"6ozRblop": "A Calm Day in the Countryside",
+				"62y3TkBj": "Strumming Through the Dystopia",
+				"5edsBKNp": "Enjoy the Penguin Train Ride",
+				"4OLpzfwj": "A Kiss Under Aincrad",
+				"3WhvKAlj": "\"Smug\"",
+				"3R4nztWp": "\"Come With Me\"",
+				"3b5sn2Zj": "A Walk With Rem",
+				"2vufb3jp": "Lost in the Flood",
+				"2MnyZoYp": "Rem On Fire",
+				"wIlLMXvp": "2B's Oasis",
+				"0ta8j85j": "Dawn",
+				"0F3rYWxj": "Monogatari Girls",
+				"5mIh6CRp": "Rem on the Bed",
+				"8E0RMGap": "Kataware-Doki",
+				"XKUsO93p": "Emilia",
+				"x4nlpw4p": "Relaxing on the Docks",
+				"xbr6Lqzp": "Coming Out of the Woods",
+				"QvRsHtGp": "Hitagi Looking Over the Rails",
+				"WJjORNHp": "Cold Night",
+				"rZnwTBYp": "Yuudachi To Battle",
+				"oiqVcHFp": "\"EXPLOSION!!\"",
+				"npU0uFxp": "Saber Lily",
+				"iPlx4H1p": "Saber Artoria",
+				"6hx5YpZp": "A Sunset Kiss",
+				"lomI2XBp": "Wrapped in the Red String",
+				"nYsYrP7p": "Tailgating",
+				"BwyZHxpp": "Biking Through Shooting Stars",
+				"wsjLGAvp": "Mysterious Blue Orb",
+				"9C2zPNjp": "Dark Dress Saber",
+				"Q1n8x53j": "Hatsune's Photo Gallery",
+				"KI0neewj": "Holding Her Sword",
+				"6sO5eYfp": "Barefoot on the Beach",
+				"p3ZVbMap": "Pulling Up Her Scarf",
+				"SjAvgnXj": "Shooting Star",
+				"M1gpwanp": "\"Tell Your World\"",
+				"aPaMNBEj": "Taking a Bite",
+				"eHJ1mFPj": "You Didn't Knock...",
+				"XGaIaHij": "A Kid with a Sword",
+				"pJ82KkJj": "Misty Vines",
+				"x884xQ5j": "Clouds and Butterflies",
+				"etDm4MAj": "Excitement",
+				"NXi5L7nj": "Swinging Over the Water",
+				"iiEEXvlp": "Down the Hall",
+				"2GpqqF7p": "Elizabeth on the Bed",
+				"GYpdMM9j": "Snow Magic",
+				"81QLOA0j": "Hot Pink Kimono",
+				"we9JSlhj": "Fantasy Kingdom",
+				"BdFDzckj": "Idols",
+				"gZoXqVTj": "Taking a Break from Practice",
+				"OywpeYFp": "No Game No Life",
+				"M7T2Mhzj": "Hamakaze",
+				"XX4zn6qj": "Swordswoman Wearing Headphones",
+				"rfrkEiRj": "Yuudachi by the Bay",
+				"DQqpYiOj": "Stealing a Bite of Her Sundae",
+				"TiYZ5pdj": "Cozy Home",
+				"jREg6fNj": "Sitting in the Forest",
+				"IH1S4h2j": "Kiss-Shot (Walking)",
+				"OUscSSrp": "Gundam",
+				"bCHw7ZHj": "Bleeding",
+				"n6ctMwXj": "Red Flowers",
+				"ys0OALuj": "Shinobu Donuts",
+				"JHe2FWgj": "Genryusai Yamamoto",
+				"Q6GDRxyj": "Turning from the Fire",
+				"tfWjTJIj": "Characters in Anime",
+				"EUTNMf3j": "Todoroki",
+				"ouB6FlLj": "Another Sunset",
+				"jFVefnoj": "Casual Attire Saber",
+				"tFiOVr9j": "Walking by the River",
+				"VvuuTIBj": "Boa Hancock",
+				"4B0mbUpj": "Blue-Haired Swordswoman",
+				"HMJDc2Cj": "Donquixote Doflamingo",
+				"dtOTREXj": "Light VS Dark",
+				"eAcr2hAj": "Revy",
+				"WubGeQHj": "Rem on a Bench",
+				"Cqlf9TDj": "Roberta",
+				"d1r2Ghuj": "Hatsune Miku",
+				"WuSOxPvj": "Rainbow Hatsune Miku",
+				"c5bIKlFj": "On the Staircase",
+				"XTrlFjHj": "Attack on Titan",
+				"SB1Szhrj": "The Coffin Princess",
+				"VNYkQZIj": "Halloween Witch",
+				"qzjpihmj": "Over the City",
+				"rHMifP6j": "Feathers on the Beach",
+				"WUSVAWBj": "Painting the Town",
+				"JALZPrtj": "Dark Parasol",
+				"VHy0ufPj": "Rocks and a Swimsuit",
+				"oqn6y9Mp": "Umbrella Duck",
+				"Ur4NZWmj": "White Catgirl",
+				"QpT74FVj": "Restful Trainride",
+				"7BmTGSoj": "Beach Vacation",
+				"it85X8rj": "Saber's Battle",
+				"Wy2NzAoj": "Driving Through the City",
+				"Oa56NT0j": "Shipgirl and Doves",
+				"dO0UKxfj": "Floating Lanterns",
+				"r8fRcC0j": "Rayquaza",
+				"mYiexyaj": "Witch Pulling a String",
+				"4XF3EZ5j": "Gazing Over the City",
+				"bwKVQT3j": "Hatsune Miku and a Light Rain",
+				"F3q7jzIj": "On a Leaning Palm Tree",
+				"h2bWAR4j": "Darkness",
+				"S0wkQosj": "Light-Armored Shipgirl",
+				"1Vs58eVj": "Catgirl on the Couch",
+				"vdZPtEnj": "Having a Smoke",
+				"ifVrQ9xj": "Horns and Blue Hair",
+				"ZfMIYm2j": "A Warm Sunset",
+				"cRdvMtkj": "Feitan Portor",
+				"glfXZH0j": "Jamming in the Ocean",
+				"P0DLcWnj": "On Her Knees",
+				"9YufYlHj": "Tennis Girl"
+			}
+		};
+		index = 0;
+		document.getElementById("bg").src = ("file:///C:/Users/Xyvyrianeth/Desktop/profile%20background%20tester/temp/" + images.ids[index].substring(0, 7) + {j: ".jpg", p: ".png"}[images.ids[index][7]]);
+		autoswap();
+		adjust();
+		text();
+	</script>
+</head>

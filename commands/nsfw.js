@@ -138,7 +138,7 @@ exports.command = (cmd, args, input, message) => {
 					return true;
 			});
 			if (tag.length == 0)
-				nopes = nopes.push(args[i]);
+				nopes.push(args[i]);
 			else
 				types = types.concat(tag);
 		}

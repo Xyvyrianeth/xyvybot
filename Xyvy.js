@@ -1,4 +1,4 @@
-var version = "3.0.2.8";
+var version = "3.0.2.9";
 exports.version = version;
 
 const Discord = require("discord.js"),
@@ -19,7 +19,7 @@ var images = require("/app/assets/backgrounds/images.json"),
 		connect4: require("/app/games/connect4.js"),
 		ordo: require("/app/games/ordo.js"),
 		soccer: require("/app/games/soccer.js")
-	}
+	};
 exports.games = games;
 
 client.login(process.env.TOKEN);
