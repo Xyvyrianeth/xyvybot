@@ -52,7 +52,7 @@ exports.command = (cmd, args, input, message) => {
 						"pink": "#ffc0cb"
 					}[ic[1].toLowerCase()];
 			}
-			let egl = y.match(/^(y|f(x))(?:=|>|>=|__>__|≥|<|<=|__<__|≤)/);
+			let egl = y.match(/^(y|f(x))(?:=|>=|>|__>__|≥|<=|<|__<__|≤)/);
 			if (egl != null)
 				switch (egl[0])
 				{
