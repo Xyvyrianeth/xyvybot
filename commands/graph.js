@@ -24,21 +24,19 @@ exports.command = (cmd, args, input, message) => {
 		colors = ["#ff0000", "#ff7f00", "#fefe33", "#90EE90", "#008000", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
 		if (/;$/.test(input))
 			e.pop();
-		if (e.length > colors.length)
-			return message.channel.send("`Too many equations!`");
 		let display = [];
 
 		for (let i = 0; i < e.length; i++)
 		{
 			// decide color
 			let ic = e[i].split(';'),
-				color = colors[i],
+				color = colors[i % 10],
 				y = ic[0];
 			if (ic.length == 2)
 			{
 				if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase()))
 					color = ic[1].toLowerCase();
-				if (/^(red|orange|yellow|(?:light||blue)green|blue|purple|brown|pink)$/i.test(ic[1]))
+				if (/^(red|orange|yellow|(light||blue)green|blue|purple|brown|pink)$/i.test(ic[1]))
 					color = {
 						"red": "#ff0000",
 						"orange": "#ff7F00",
@@ -52,7 +50,7 @@ exports.command = (cmd, args, input, message) => {
 						"pink": "#ffc0cb"
 					}[ic[1].toLowerCase()];
 			}
-			let egl = y.match(/^(y|f(x))(?:=|>=|>|__>__|≥|<=|<|__<__|≤)/);
+			let egl = y.match(/^(y|f(x))(=|>=|>|__>__|≥|<=|<|__<__|≤)/);
 			if (egl != null)
 				switch (egl[0])
 				{
@@ -84,13 +82,15 @@ exports.command = (cmd, args, input, message) => {
 			else
 				egl = 0;
 
-			y = y.replace(/^(y|f(x))(?:=|>=|>|__>__|≥|<=|<|__<__|≤)/, '');
+			yf = y.match(/^(y|f(x))(=|>=|>|__>__|≥|<=|<|__<__|≤)/)[0];
+			y = y.replace(yf, '');
+			yf = yf.match(/^(y|f(x))/)[0];
 
 			// start graphing
 			let canEquate = true,
 				result;
 
-			if ((y.includes('y') || y.includes('f(x)')) && !y.includes("infinity"))
+			if (y.includes('y') && !y.includes("infinity"))
 				canEquate = false,
 				result = "Output (*y*) must remain isolated in all equations.";
 			else
@@ -111,10 +111,10 @@ exports.command = (cmd, args, input, message) => {
 					}
 				}
 				if (result[0] === false)
-					display.push('y ' + ['=', '≤', '≥', '<', '>'][egl] + ' ' + y + '  -  ' + result[1]);
+					display.push(yf + ' ' + ['=', '≤', '≥', '<', '>'][egl] + ' ' + y + '  -  ' + result[1]);
 				else
 				{
-					display.push('y ' + ['=', '≤', '≥', '<', '>'][egl] + ' ' + y + '  -  ' + (new Color(color).getName()));
+					display.push(yf + ' ' + ['=', '≤', '≥', '<', '>'][egl] + ' ' + y + '  -  ' + (new Color(color).getName()));
 					for (let i = 0; i < result.length; i++)
 					{
 						XY = result[i];
@@ -145,9 +145,9 @@ exports.command = (cmd, args, input, message) => {
 		return message.channel.send(
 			new Discord.MessageEmbed()
 				.setTitle("x!graph")
+				.setAuthor("[Wiki]", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png", "https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph")
 				.setDescription("```\n" + text + "```")
 				.attachFiles(new Discord.MessageAttachment(canvas.toBuffer(), "graph.png"))
-				.setThumbnail("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png")
 				.setImage("attachment://graph.png")
 				.setColor(new Color().random()));
 	}
