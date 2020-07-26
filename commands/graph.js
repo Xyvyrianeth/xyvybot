@@ -84,7 +84,7 @@ exports.command = (cmd, args, input, message) => {
 			else
 				egl = 0;
 
-			y = y.replace(/^(y|f(x))(?:=|>|>=|__>__|≥|<|<=|__<__|≤)/, '');
+			y = y.replace(/^(y|f(x))(?:=|>=|>|__>__|≥|<=|<|__<__|≤)/, '');
 
 			// start graphing
 			let canEquate = true,
