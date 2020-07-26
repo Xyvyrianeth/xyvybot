@@ -65,14 +65,14 @@ exports.command = (cmd, args, input, message) => {
 					case 'f(x)≤':     egl = 1; break;
 					case 'y<='	 :    egl = 1; break;
 					case 'f(x)<=':    egl = 1; break;
-					case 'y__<	 __': egl = 1; break;
+					case 'y__<__':	  egl = 1; break;
 					case 'f(x)__<__': egl = 1; break;
 					// ≥
 					case 'y≥':	      egl = 2; break;
 					case 'f(x)≥':     egl = 2; break;
 					case 'y>='	 :    egl = 2; break;
 					case 'f(x)>=':    egl = 2; break;
-					case 'y__>	 __': egl = 2; break;
+					case 'y__>__':	  egl = 2; break;
 					case 'f(x)__>__': egl = 2; break;
 					// <
 					case 'y<':	      egl = 3; break;
