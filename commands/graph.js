@@ -52,6 +52,7 @@ exports.command = (cmd, args, input, message) => {
 			}
 			let egl = y.match(/^(y|f(x))(=|>=|>|__>__|≥|<=|<|__<__|≤)/);
 			if (egl != null)
+			{
 				switch (egl[0])
 				{
 					// =
@@ -79,12 +80,16 @@ exports.command = (cmd, args, input, message) => {
 					case 'y>':	      egl = 4; break;
 					case 'f(x)>':     egl = 4; break;
 				}
-			else
-				egl = 0;
 
-			yf = y.match(/^(y|f(x))(=|>=|>|__>__|≥|<=|<|__<__|≤)/)[0];
-			y = y.replace(yf, '');
-			yf = yf.match(/^(y|f(x))/)[0];
+				yf = y.match(/^(y|f\(x\))(=|>=|>|__>__|≥|<=|<|__<__|≤)/)[0];
+				y = y.replace(yf, '');
+				yf = yf.match(/^(y|f\(x\))/)[0];
+			}
+			else
+			{
+				egl = 0;
+				yf = "f(x)";
+			}
 
 			// start graphing
 			let canEquate = true,
