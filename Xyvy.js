@@ -1,4 +1,4 @@
-var version = "3.0.2.9";
+var version = "3.0.2.10";
 exports.version = version;
 
 const Discord = require("discord.js"),
@@ -85,7 +85,7 @@ sqlError = (message, err, res) => {
 		console.log("If you can't see all of this, it'll post again in one minute.");
 		setTimeout(function() { console.log(res); }, 60000);
 	}
-	return client.guilds.cache.get("399327996076621825").channels.cache.get("478371618620571648").send(
+	client.guilds.cache.get("399327996076621825").channels.cache.get("478371618620571648").send(
 		`\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
 		`Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
 		`\`\`\`\n` +
@@ -104,7 +104,7 @@ newUser = (id, message) => {
 			`)`;
 	db.query(query, (err) => {
 		if (err)
-			return exports.sqlError(message, err, query);
+			exports.sqlError(message, err, query);
 	});
 	return {
 		id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lefty: images.display.right.includes(image) ? false : true, money: 500,
@@ -249,26 +249,29 @@ Object.defineProperty(Math, 'fraction', {
 	}
 });
 Object.defineProperty(Array.prototype, 'random', {
-	value: function(a) {
+	value: function() {
 		if (!a)
 			return this[Math.random() * this.length | 0];
 		else
+		if (typeof a != "number")
+			return "Invalid request: first argument must be a number.";
+		else
 		{
-			let b = [],
-				c = [];
-			if (this.length < a)
+			let b = [];
+			if (a > this.length)
 				a = this.length;
-			for (let i = a; i--;)
+			for (i = a; i--;)
 			{
-				let d = Math.random() * this.length | 0;
-				if (c.includes(d))
-					i++;
+				let c = Math.random() * this.length | 0;
+				if (!b.includes(c))
+					b.push(c);
 				else
-					c.push(d);
+					i++;
 			}
-			for (let i = a; i--;)
-				b.push(this[c[i]]);
-			return b;
+			let d = [];
+			for (i = a; i--;)
+				d.push(this[b[i]]);
+			return d;
 		}
 	}
 });

@@ -71,7 +71,8 @@ exports.command = (message) => {
 			if (minigame.type == "hangman" && minigame.channel == message.channel.id)
 			{
 				let embed = new Discord.MessageEmbed()
-					.setTitle("Hangman");
+					.setTitle("Hangman")
+					.setAuthor("Hangman", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/hangman.png");
 				if (/^[a-z0-9]$/i.test(message.content) && !minigame.guesses.includes(guess))
 				{
 					minigame.guesses.push(guess);
@@ -83,11 +84,10 @@ exports.command = (message) => {
 						if (!minigame.right.includes('\u200b \u200b \u200b \u200b'))
 						{
 							let display = [];
-							for (let i = 0; i < minigame.ans.length; i++)
-							{
-								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
-								else display.push(minigame.ans[i]);
-							}
+							minigame.ans.forEach((i) => {
+								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/i.test(i)) display.push("__" + i + "__");
+								else display.push(i);
+							});
 							embed.addField(guess + " is in the word!", `<@!${message.author.id}> has finished the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**${minigame.ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!\n" : ""}\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\``);
 							embed.setColor(new Color(46, 204, 113).toHexa());
 							delete games.minigames[index];
@@ -96,11 +96,10 @@ exports.command = (message) => {
 						else
 						{
 							let display = [];
-							for (let i = 0; i < minigame.right.length; i++)
-							{
-								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/i.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
-								else display.push(minigame.right[i]);
-							}
+							minigame.right.forEach((i) => {
+								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/i.test(i)) display.push("__" + i + "__");
+								else display.push(i);
+							});
 							embed.addField(guess + " is in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**${minigame.ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!\n" : ""}\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
 							embed.setColor(new Color(52, 152, 219).toHexa());
 							minigame.timer = 180;
@@ -112,11 +111,10 @@ exports.command = (message) => {
 						if (minigame.tries == 0)
 						{
 							let display = [];
-							for (let i = 0; i < minigame.ans.length; i++)
-							{
-								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
-								else display.push(minigame.ans[i]);
-							}
+							minigame.ans.forEach((i) => {
+								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/i.test(i)) display.push("__" + i + "__");
+								else display.push(i);
+							});
 							embed.addField(guess + " is not in the word!", `You guessed incorrectly too many times!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**${minigame.ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!\n" : ""}\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\``);
 							embed.setColor(new Color(231, 76, 60).toHexa());
 							delete games.minigames[index];
@@ -125,11 +123,10 @@ exports.command = (message) => {
 						else
 						{
 							let display = [];
-							for (let i = 0; i < minigame.right.length; i++)
-							{
-								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.right[i])) display.push("__" + minigame.right[i] + "__");
-								else display.push(minigame.right[i]);
-							}
+							minigame.right.forEach((i) => {
+								if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/i.test(i)) display.push("__" + i + "__");
+								else display.push(i);
+							});
 							embed.addField(guess + " is not in the word!", `**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**${minigame.ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!\n" : ""}\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\`\nWrong guesses${(minigame.tries == 7 ? "" : " left")}: \`${minigame.tries}\``);
 							embed.setColor(new Color(214, 196, 15).toHexa());
 							minigame.timer = 180;
@@ -139,11 +136,10 @@ exports.command = (message) => {
 				else
 				{
 					let display = [];
-					for (let i = 0; i < minigame.ans.length; i++)
-					{
-						if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(minigame.ans[i])) display.push("__" + minigame.ans[i] + "__");
-						else display.push(minigame.ans[i]);
-					}
+					minigame.ans.forEach((i) => {
+						if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/i.test(i)) display.push("__" + i + "__");
+						else display.push(i);
+					});
 					embed.addField("Solved!", `<@!${message.author.id}> has solved the word!\n**${display.join("\u200b \u200b")}**\nCategory: **${minigame.category}**${minigame.ans.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!\n" : ""}\n\nGuesses: \`${minigame.guesses.length == 0 ? "None" : minigame.guesses.join("` `")}\``);
 					embed.setColor(new Color(46, 204, 113).toHexa());
 					delete games.minigames[index];

@@ -52,31 +52,45 @@ exports.command = (cmd, args, input, message) => {
 						"pink": "#ffc0cb"
 					}[ic[1].toLowerCase()];
 			}
-			let egl = y.match(/^y(?:=|>|>=|__>__|≥|<|<=|__<__|≤)/);
+			let egl = y.match(/^(y|f(x))(?:=|>|>=|__>__|≥|<|<=|__<__|≤)/);
 			if (egl != null)
 				switch (egl[0])
 				{
-					default:       egl = 0; break;
-					case 'y=':     egl = 0; break;
-					case 'y≤':     egl = 1; break;
-					case 'y<=':    egl = 1; break;
-					case 'y__<__': egl = 1; break;
-					case 'y≥':     egl = 2; break;
-					case 'y>=':    egl = 2; break;
-					case 'y__>__': egl = 2; break;
-					case 'y<':     egl = 3; break;
-					case 'y>':     egl = 4; break;
+					// =
+					default:		  egl = 0; break;
+					case 'y=':	      egl = 0; break;
+					case 'f(x)=':     egl = 0; break;
+					// ≤
+					case 'y≤':	      egl = 1; break;
+					case 'f(x)≤':     egl = 1; break;
+					case 'y<='	 :    egl = 1; break;
+					case 'f(x)<=':    egl = 1; break;
+					case 'y__<	 __': egl = 1; break;
+					case 'f(x)__<__': egl = 1; break;
+					// ≥
+					case 'y≥':	      egl = 2; break;
+					case 'f(x)≥':     egl = 2; break;
+					case 'y>='	 :    egl = 2; break;
+					case 'f(x)>=':    egl = 2; break;
+					case 'y__>	 __': egl = 2; break;
+					case 'f(x)__>__': egl = 2; break;
+					// <
+					case 'y<':	      egl = 3; break;
+					case 'f(x)<':     egl = 3; break;
+					// >
+					case 'y>':	      egl = 4; break;
+					case 'f(x)>':     egl = 4; break;
 				}
 			else
 				egl = 0;
 
-			y = y.replace(/^y(?:=|>|>=|__>__|≥|<|<=|__<__|≤)/, '');
+			y = y.replace(/^(y|f(x))(?:=|>|>=|__>__|≥|<|<=|__<__|≤)/, '');
 
 			// start graphing
 			let canEquate = true,
 				result;
 
-			if (y.includes('y') && !y.includes("infinity"))
+			if ((y.includes('y') || y.includes('f(x)')) && !y.includes("infinity"))
 				canEquate = false,
 				result = "Output (*y*) must remain isolated in all equations.";
 			else
@@ -120,7 +134,10 @@ exports.command = (cmd, args, input, message) => {
 							ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
 							ctx.beginPath();
 							ctx.moveTo(XY[0], -XY[1]);
-							ctx.lineTo(XY[0], [-155, 155][egl % 2]);
+							if (egl % 2 == 0 && XY[0] <= 155)
+								ctx.lineTo(XY[0], [-155, 155][egl % 2]);
+							if (egl % 2 == 1 && XY[0] >= -155)
+								ctx.lineTo(XY[0], [-155, 155][egl % 2]);
 							ctx.stroke();
 						}
 					}

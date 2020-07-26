@@ -3,9 +3,7 @@ const Discord = require("discord.js"),
 var { Color } = require("/app/assets/misc/color.js"),
 	{ table } = require("/app/assets/misc/table.js");
 exports.command = (cmd, args, input, message) => {
-	if (message.author.id != "357700219825160194")
-		return;
-	if (message.content.startsWith("x!pg ```sql\n") && message.content.endsWith("```"))
+	if (message.author.id == "357700219825160194" && message.content.startsWith("x!pg ```sql\n") && message.content.endsWith("```"))
 		return db.query(input.substring(7, input.length - 3), (err, res) => {
 			let embed = new Discord.MessageEmbed()
 				.setTitle("x!pg")

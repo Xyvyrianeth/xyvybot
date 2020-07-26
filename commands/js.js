@@ -4,9 +4,7 @@ const Canvas = require("canvas");
 var { Color } = require("/app/assets/misc/color.js");
 var { games } = require("/app/Xyvy.js");
 exports.command = (cmd, args, input, message) => {
-	if (message.author.id != "357700219825160194")
-		return;
-	if (message.content.startsWith("x!js ```js\n") && message.content.endsWith("```"))
+	if (message.author.id == "357700219825160194" && message.content.startsWith("x!js ```js\n") && message.content.endsWith("```"))
 	{
 		let toEval = input.substring(6, input.length - 3);
 		let embed = new Discord.MessageEmbed()

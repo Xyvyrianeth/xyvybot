@@ -5,7 +5,7 @@ var { Color } = require("/app/assets/misc/color.js"),
 	titles = require("/app/assets/profile/titles.json");
 exports.command = (cmd, args, input, message) => {
 	Nekos.sfw.neko().then(neko => {
-		return message.channel.send(
+		message.channel.send(
 			new Discord.MessageEmbed()
 				.setAuthor("x!nsfw", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/nekos_life.png")
 				.setImage(neko.url)
