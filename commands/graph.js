@@ -106,7 +106,7 @@ exports.command = (cmd, args, input, message) => {
 					}
 					else
 					{
-						X = Math.abs(Y[1]) > 160 ? 160 : Y[1];
+						X = Y[1] > 160 ? 160 : Y[1] < -160 ? -160 : Y[1];
 						result.push([x, X]);
 					}
 				}
@@ -134,10 +134,7 @@ exports.command = (cmd, args, input, message) => {
 							ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.4)`;
 							ctx.beginPath();
 							ctx.moveTo(XY[0], -XY[1]);
-							if (egl % 2 == 0 && XY[0] <= 155)
-								ctx.lineTo(XY[0], [-155, 155][egl % 2]);
-							if (egl % 2 == 1 && XY[0] >= -155)
-								ctx.lineTo(XY[0], [-155, 155][egl % 2]);
+							ctx.lineTo(XY[0], [-155, 155][egl % 2]);
 							ctx.stroke();
 						}
 					}
