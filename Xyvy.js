@@ -1,4 +1,4 @@
-var version = "3.0.2.10";
+var version = "3.0.2.11";
 exports.version = version;
 
 const Discord = require("discord.js"),
@@ -249,7 +249,7 @@ Object.defineProperty(Math, 'fraction', {
 	}
 });
 Object.defineProperty(Array.prototype, 'random', {
-	value: function() {
+	value: function(a) {
 		if (!a)
 			return this[Math.random() * this.length | 0];
 		else
