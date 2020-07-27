@@ -50,12 +50,13 @@ exports.command = (cmd, args, input, message) => {
 						"pink": "#ffc0cb"
 					}[ic[1].toLowerCase()];
 			}
-			let egl = y.match(/^(y|[a-zA-Z]\(x\))(=|>=|>|__>__|≥|<=|<|__<__|≤)/);
+			let egl = y.match(/^(y|[a-zA-Z]\(x\))(=|>=|>|__>__|≥|<=|<|__<__|≤)/),
+				yf;
 			if (egl != null)
 			{
-				yf = y.split(egl[0])[0];
-				y = y.replace(yf + egl[0], '');
-				switch (egl[0].match(/(=|>=|>|__>__|≥|<=|<|__<__|≤)/))
+				yf = egl[1];
+				y = y.replace(egl[0], '');
+				switch (egl[2])
 				{
 					// =
 					default:		egl = 0; break;
