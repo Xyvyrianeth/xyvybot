@@ -15,10 +15,10 @@ exports.command = (cmd, args, input, message) => {
 	else
 	{
 		// Draw blank graph
-		canvas = new Canvas.createCanvas(301, 301);
+		canvas = new Canvas.createCanvas(299, 299);
 		ctx = canvas.getContext('2d');
 		ctx.drawImage(graph, 0, 0);
-		ctx.translate(150.5, 150.5);
+		ctx.translate(149.5, 149.5);
 		e = input.toLowerCase().replace(/ /g, "").split('\n').filter(x => x != '');
 		input = input.split('\n');
 		colors = ["#ff0000", "#ff7f00", "#fefe33", "#90EE90", "#008000", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
