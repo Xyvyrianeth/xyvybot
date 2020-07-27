@@ -36,54 +36,43 @@ exports.command = (cmd, args, input, message) => {
 			{
 				if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase()))
 					color = ic[1].toLowerCase();
-				if (/^(red|orange|yellow|(light||blue)green|blue|purple|brown|pink)$/i.test(ic[1]))
+				if (/^(red|orange|yellow|lime|green|teal|blue|purple|brown|pink)$/i.test(ic[1]))
 					color = {
 						"red": "#ff0000",
 						"orange": "#ff7F00",
 						"yellow": "#fefe33",
-						"lightgreen": "90EE90",
+						"lime": "90EE90",
 						"green": "#008000",
-						"bluegreen": "#0d98ba",
+						"teal": "#0d98ba",
 						"blue": "#0000ff",
 						"purple": "#a020f0",
 						"brown": "#964b00",
 						"pink": "#ffc0cb"
 					}[ic[1].toLowerCase()];
 			}
-			let egl = y.match(/^(y|f\(x\))(=|>=|>|__>__|≥|<=|<|__<__|≤)/);
+			let egl = y.match(/^(y|[a-zA-Z]\(x\))(=|>=|>|__>__|≥|<=|<|__<__|≤)/);
 			if (egl != null)
 			{
-				switch (egl[0])
+				yf = y.split(egl[0])[0];
+				y = y.replace(yf + egl[0], '');
+				switch (egl[0].match(/(=|>=|>|__>__|≥|<=|<|__<__|≤)/))
 				{
 					// =
-					default:		  egl = 0; break;
-					case 'y=':	      egl = 0; break;
-					case 'f(x)=':     egl = 0; break;
+					default:		egl = 0; break;
+					case '=':		egl = 0; break;
 					// ≤
-					case 'y≤':	      egl = 1; break;
-					case 'f(x)≤':     egl = 1; break;
-					case 'y<='	 :    egl = 1; break;
-					case 'f(x)<=':    egl = 1; break;
-					case 'y__<__':	  egl = 1; break;
-					case 'f(x)__<__': egl = 1; break;
+					case '≤':		egl = 1; break;
+					case '<='	 :	egl = 1; break;
+					case '__<__':	egl = 1; break;
 					// ≥
-					case 'y≥':	      egl = 2; break;
-					case 'f(x)≥':     egl = 2; break;
-					case 'y>='	 :    egl = 2; break;
-					case 'f(x)>=':    egl = 2; break;
-					case 'y__>__':	  egl = 2; break;
-					case 'f(x)__>__': egl = 2; break;
+					case '≥':		egl = 2; break;
+					case '>='	 :	egl = 2; break;
+					case '__>__':	egl = 2; break;
 					// <
-					case 'y<':	      egl = 3; break;
-					case 'f(x)<':     egl = 3; break;
+					case '<':		egl = 3; break;
 					// >
-					case 'y>':	      egl = 4; break;
-					case 'f(x)>':     egl = 4; break;
+					case '>':		egl = 4; break;
 				}
-
-				yf = y.match(/^(y|f\(x\))(=|>=|>|__>__|≥|<=|<|__<__|≤)/)[0];
-				y = y.replace(yf, '');
-				yf = yf.match(/^(y|f\(x\))/)[0];
 			}
 			else
 			{
@@ -95,7 +84,7 @@ exports.command = (cmd, args, input, message) => {
 			let canEquate = true,
 				result;
 
-			if (y.includes('y') && !y.includes("infinity"))
+			if (/(?<!infinit)y/.test(y))
 				canEquate = false,
 				result = "Output (*y*) must remain isolated in all equations.";
 			else
