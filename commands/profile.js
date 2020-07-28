@@ -133,7 +133,8 @@ exports.command = (cmd, args, input, message) => {
 				if (!res.rows[0].backgrounds.includes(args[1]))
 					return message.channel.send("You do not own that background.");
 
-				let query2 = `UPDATE profiles\nSET background = '${args[1]}', lefty = '${images.display.left.includes(args[1]) ? true : images.display.right.includes(args[1]) ? false : res.rows[0].lefty}'\nWHERE id = '${message.author.id}'`;
+				let lorr = images.display.left.includes(args[1]) ? true : images.display.right.includes(args[1]) ? false : res.rows[0].lefty,
+					query2 = `UPDATE profiles\nSET background = '${args[1]}', lefty = '${lorr}'\nWHERE id = '${message.author.id}'`;
 				return db.query(query2, (err) => {
 					if (err)
 						return sqlError(message, err, query2);
@@ -147,7 +148,7 @@ exports.command = (cmd, args, input, message) => {
 								let embed = new Discord.MessageEmbed()
 									.setAuthor("x!profile")
 									.setDescription(`Your new profile background has been equipped, <@${member.id}>! Take a look!`)
-									.attachFiles(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
+									.attachFiles(new Discord.MessageAttachment(Profile["draw" + (lorr ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
 									.setImage("attachment://profile.png")
 									.setColor(profile.color);
 								return message.channel.send(embed);
