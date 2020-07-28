@@ -1,4 +1,4 @@
-var version = "3.0.3.5";
+var version = "3.0.3.6";
 exports.version = version;
 
 const Discord = require("discord.js"),
@@ -154,7 +154,7 @@ client.on('message', (message) => {
 var aliases = {
 	// Games
 	"games": ["games"],
-	"game": ["othello", "reversi", "squares", "rokumoku", "connect6", "connectsix", "3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe", "connectfour", "connect4", "cfour", "c4", "ordo", "soccer", "papersoccer", "psoccer"],
+	"game": ["othello", "reversi", "squares", "rokumoku", "rm", "rokum", "rmoku", "connect6", "connectsix", "c6", "csix", "3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe", "connectfour", "connect4", "cfour", "c4", "ordo", "soccer", "papersoccer", "psoccer"],
 	"profile": ["profile", "scorecard", "prof"],
 	// Minigames
 	"minesweeper": ["minesweeper", "ms", "mines"],

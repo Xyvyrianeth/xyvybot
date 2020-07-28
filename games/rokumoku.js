@@ -161,14 +161,16 @@ exports.takeTurn = function(channel, Move) {
 		{
 			for (let x = 0; x < [12, 7, 7, 12][d]; x++)
 			{
-				let g = [];
+				let g = [],
+					h = [];
 				for (let i = 0; i < 6; i++)
 				{
 					g.push(a[y + (e[d] * i)][x + (f[d] * i)]);
+					h.push([y + (e[d] * i), x + (f[d] * i)]);
 				}
 				if (!g.some(c => c !== b))
 				{
-					game.highlight = g;
+					game.highlight = h;
 					end = 1;
 					break;
 				}
