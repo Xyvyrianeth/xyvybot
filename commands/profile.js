@@ -139,7 +139,7 @@ exports.command = (cmd, args, input, message) => {
 						return sqlError(message, err, query2);
 					else
 					{
-						let member = message.channel.guild.members.cache.get(message.author.id),
+						let member = message.channel.guild.members.cache.get(message.author.id).user,
 							profile = res.rows[0];
 						profile.background = args[1];
 						Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.${member.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then((image1) => {
