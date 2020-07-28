@@ -78,6 +78,8 @@ exports.drawBoard = function(game, end) {
 
 	ctx.drawImage(exports.Images.board, 0, 0);
 
+	console.log(end, game.highlight);
+
 	for (let x = 0; x < 12; x++)
 	{
 		for (let y = 0; y < 12; y++)
