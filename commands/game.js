@@ -14,7 +14,7 @@ exports.command = (cmd, args, input, message) => {
 	let gameNicks = {
 		"othello": ["othello", "reversi"],
 		"squares": ["squares"],
-		"rokumoku": ["rokumoku", "connect6", "connectsix"],
+		"rokumoku": ["rokumoku", "rm", "rokum", "rmoku", "connect6", "connectsix", "c6", "csix"],
 		"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
 		"connect4": ["connectfour", "connect4", "cfour", "c4"],
 		"ordo": ["ordo"],
