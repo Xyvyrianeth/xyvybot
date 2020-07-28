@@ -142,18 +142,18 @@ exports.command = (cmd, args, input, message) => {
 					"In order to place a stone in an empty space, that space must be at the end of a line of your opponent's stones with one of your own stones at the other end of it. For simplicity, legal spaces will be highlighted in blue for you.\n" +
 					"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
 					"The stone placed on any given turn will be highlighted in yellow.\n" +
-					`[Example](${wiki.ghuc}/othello/placement.png)`)
+					`[Example not yet available](${wiki.ghuc}/othello/placement.png)`)
 				.addField(
 					"Capturing Stones",
 					"Once you place a stone, all lines of your opponent's stones that have the stone you just placed at one end with one of your other stones at the other end are \"captured\" and will immediately turn into your stones.\n" +
 					"Placing a stone can capture your opponent's stones in any diagonal and orthagonal direction. You can also capture in multiple directions at once.\n" +
 					"Stones that have been captured on any given turn will be highlighted in green.\n" +
-					`[Example](${wiki.ghuc}/othello/scoring.png)`)
+					`[Example not yet available](${wiki.ghuc}/othello/scoring.png)`)
 				.addField(
 					"Endgame",
 					"The game officially ends when both players can no longer make a legal move to capture their opponent's stones.\n" +
 					"Once this happens, all stones on the board are counted that the player with the most stones is declared the winner.\n" +
-					`[Example](${wiki.ghuc}/othello/winning.png)`);
+					`[Example not yet available](${wiki.ghuc}/othello/winning.png)`);
 				break;
 			case "squares":
 				embed.setDescription(
@@ -164,18 +164,18 @@ exports.command = (cmd, args, input, message) => {
 					"Stone Placement",
 					"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
 					"The stones placed on any given turn will be highlighted in yellow.\n" +
-					`[Example](${wiki.ghuc}/squares/placement.png)`)
+					`[Example not yet available](${wiki.ghuc}/squares/placement.png)`)
 				.addField(
 					"Creating Squares",
 					"For every set of 4 stones of the same color that are arranged into a perfect square, the player of that color gets 1 point.\n" +
 					"When a player places a stone that completes a square, the other 3 stones of that square will be highlighted in green.\n" +
 					"A single stone can contribute to multiple squares.\n" +
-					`[Example](${wiki.ghuc}/squares/scoring.png)`)
+					`[Example not yet available](${wiki.ghuc}/squares/scoring.png)`)
 				.addField(
 					"Endgame",
 					"The game officially ends when there are no longer any empty spaces on the board.\n" +
 					"Once this happens, all squares are counted and the player with the most squares is declared the winner.\n" +
-					`[Example](${wiki.ghuc}/squares/winning.png)`);
+					`[Example not yet available](${wiki.ghuc}/squares/winning.png)`);
 				break;
 			case "rokumoku":
 				embed.setDescription(
@@ -186,12 +186,12 @@ exports.command = (cmd, args, input, message) => {
 					"Stone Placement",
 					"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
 					"The stones placed on any given turn will be highlighted in yellow.\n" +
-					`[Example](${wiki.ghuc}/rokumoku/placement.png)`)
+					`[Example not yet available](${wiki.ghuc}/rokumoku/placement.png)`)
 				.addField(
 					"Endgame",
 					"The game officially ends when either player has created a line of 6 of their own stones, either diagonally or orthagonally.\n" +
 					"Once this happens, the 6 stones that constitute the winning line will be highlighted in green.\n" +
-					`[Example](${wiki.ghuc}/rokumoku/winning.png)`);
+					`[Example not yet available](${wiki.ghuc}/rokumoku/winning.png)`);
 				break;
 			case "ttt3d":
 				embed.setDescription(
@@ -202,12 +202,12 @@ exports.command = (cmd, args, input, message) => {
 					"Marker Placement",
 					"To place a marker in the playing area, simply say which *y*-plane you wish to place in, followed by the location of that *y*-plane; for example, say \"34C\" to place a marker in Row 4–Column C in the 3rd *y*-plane.\n" +
 					"The marker placed on any given turn will be highlighted in yellow.\n" +
-					`[Example](${wiki.ghuc}/3dttt/placement.png)`)
+					`[Example not yet available](${wiki.ghuc}/3dttt/placement.png)`)
 				.addField(
 					"Endgame",
 					"The game officially ends when either player has created a line of 4 of their own markers going across any number of planes.\n" +
 					"Once this happens, the 4 markers that constitute the winning line will be highlighted in green.\n" +
-					`[Example](${wiki.ghuc}/3dttt/winning.png)`);
+					`[Example not yet available](${wiki.ghuc}/3dttt/winning.png)`);
 				break;
 			case "connect4":
 				embed.setDescription(
@@ -219,12 +219,12 @@ exports.command = (cmd, args, input, message) => {
 					"To place a stone on the board, simply say the column number of the empty space you wish to play in; for example, say \"4\" to place a stone in Column 4.\n" +
 					"When placing a stone, it will automatically be placed in the lowest empty space of the column you placed it in.\n" +
 					"The stone placed on any given turn will be highlighted in yellow.\n" +
-					`[Example](${wiki.ghuc}/connect4/placement.png)`)
+					`[Example not yet available](${wiki.ghuc}/connect4/placement.png)`)
 				.addField(
 					"Endgame",
 					"The game officially ends when either player has create a line of 4 of their own stones, either diagonally or orthagonally.\n" +
 					"Once this happens, the 4 stones that constitute the winning line will be highlighted in green.\n" +
-					`[Example](${wiki.ghuc}/connect4/winning.png)`);
+					`[Example not yet available](${wiki.ghuc}/connect4/winning.png)`);
 				break;
 			case "ordo":
 				embed.setDescription(
@@ -235,7 +235,7 @@ exports.command = (cmd, args, input, message) => {
 					"Singleton moves consist of one stone being moved in any direction, either diagonally or orthagonally, any number of spaces. These moves can end in either an empty space or on a space occupied by one of your opponent's stones (which effectively \"captures\" and removes that stone from the game).\n" +
 					"You make a singleton move by saying the coordinates of the stone you want to move followed by the coordinates of the space you wish to move it to; for example, say \"4C 7F\" to move a stone from Row 4–Column C to Row 7–Column F.\n" +
 					"Stones that have been moved will be highlighted in yellow with the space they were moved from being highlighted in red.\n" +
-					`[Example](${wiki.ghuc}ordo/singleton_move.png)`)
+					`[Example not yet available](${wiki.ghuc}ordo/singleton_move.png)`)
 				.addField(
 					"Ordo Moves",
 					"Ordo moves consist of multiple stones that are adjacent orthagonally from each other being moved in either perpendicular direction (if the stones being moved are aligned vertically, they can only be moved horizontally, and vice versa).\n" +
@@ -251,9 +251,9 @@ exports.command = (cmd, args, input, message) => {
 				.addField(
 					"Endgame",
 					"There are 3 conditions for ending the game:\n" +
-					` -A player moves a stone into any space in their opponent's \"home row\" (for blue it's Row 8, and for white it's Row 1). This player is the winner. [Example](${wiki.ghuc}ordo/ending_1.png)\n` +
-					` -All of a player's stones have been captured and removed from the game. This player is the loser. [Example](${wiki.ghuc}ordo/ending_2.png)\n` +
-					` -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser. [Example](${wiki.ghuc}ordo/ending_3.png)`);
+					` -A player moves a stone into any space in their opponent's \"home row\" (for blue it's Row 8, and for white it's Row 1). This player is the winner. [Example not yet available](${wiki.ghuc}ordo/ending_1.png)\n` +
+					` -All of a player's stones have been captured and removed from the game. This player is the loser. [Example not yet available](${wiki.ghuc}ordo/ending_2.png)\n` +
+					` -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser. [Example not yet available](${wiki.ghuc}ordo/ending_3.png)`);
 				break;
 			case "soccer":
 				embed.setDescription(
@@ -264,12 +264,12 @@ exports.command = (cmd, args, input, message) => {
 					"On a player's turn, they can move the ball to an adjacent gridpoint both diagonally and orthagonally. Doing so marks the path between the two points, and that path cannot be taken again for the rest of the game.\n" +
 					"If a player moves the ball to a gridpoint that already has a path connected to it, the player gets to go again. If the player touches the edge of the board, they also get to go again; but they cannot move along the edge of the board, they have to bounce off of it.\n" +
 					"You move the ball by saying the direction you wish to move it. The bot accepts combinations of up/down/left/right, north/south/east/west, or a simple digit with 0 being north, 1 being northeast, etc.\n" +
-					`[Example](${wiki.ghuc}/soccer/movement.png)`)
+					`[Example not yet available](${wiki.ghuc}/soccer/movement.png)`)
 				.addField(
 					"Endgame",
 					"There are two possible ways to end the game:\n" +
-					` -The ball enters one of the two goals located at either ends of the board The winner is whoever owns the goal the ball went into, even if the other player put it there. [Example](${wiki.ghuc}/soccer/winning.png)\n` +
-					` -The ball becomes immovable, which can be achieved by having all 8 directions blocked by previous movements or the edge(s) of the board. In this situation, the player who didn't get the ball stuck wins. [Example](${wiki.ghuc}/soccer/losing.png)`);
+					` -The ball enters one of the two goals located at either ends of the board The winner is whoever owns the goal the ball went into, even if the other player put it there. [Example not yet available](${wiki.ghuc}/soccer/winning.png)\n` +
+					` -The ball becomes immovable, which can be achieved by having all 8 directions blocked by previous movements or the edge(s) of the board. In this situation, the player who didn't get the ball stuck wins. [Example not yet available](${wiki.ghuc}/soccer/losing.png)`);
 				break;
 		}
 		embed.setColor(new Color().random());
