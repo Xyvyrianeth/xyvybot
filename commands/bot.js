@@ -49,7 +49,7 @@ exports.command = (message) => {
 							.attachFiles(attachment1)
 							.setImage(`attachment://replay_${message.id}.gif`)
 							.setFooter("Match ID: " + message.id)
-							.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: <@${game.players[game.winner]}>`);
+							.setDescription(`<@${game.players[0]}> VS <@${game.players[1]}>\nWinner: ` + (game.winner == undefined ? "No one" : "<@" + game.players[game.winner] + ">"));
 					message.channel.send(embed1);
 				}, 5000);
 				if (Game == "squares")
