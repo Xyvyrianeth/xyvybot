@@ -134,7 +134,7 @@ exports.equ = (equation, x, a, equations) => {
 			console.log(equations);
 			f_ = equation.match(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
 			x_ = equation.match(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
-			fx = exports.equ(equations[f_], x_, true);
+			fx = exports.equ(equations[f_], x_, true, equations);
 			equation = equation.replace(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
 			if (a) console.log(x, equation);
 		}
