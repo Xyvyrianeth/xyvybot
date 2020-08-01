@@ -141,6 +141,7 @@ exports.command = (cmd, args, input, message) => {
 				}
 			}
 		}
+		console.log(equations);
 		let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
 		return message.channel.send(
 			new Discord.MessageEmbed()
