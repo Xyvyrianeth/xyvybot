@@ -24,7 +24,8 @@ exports.command = (cmd, args, input, message) => {
 		colors = ["#ff0000", "#ff7f00", "#fefe33", "#90EE90", "#008000", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
 		if (/;$/.test(input))
 			e.pop();
-		let display = [];
+		let display = [],
+			equations = {};
 
 		for (let i = 0; i < e.length; i++)
 		{
@@ -51,8 +52,7 @@ exports.command = (cmd, args, input, message) => {
 					}[ic[1].toLowerCase()];
 			}
 			let egl = y.match(/^(y|[a-zA-Z]\(x\))(=|>=|>|__>__|≥|<=|<|__<__|≤)/),
-				yf,
-				equations = {};
+				yf;
 			if (egl != null)
 			{
 				yf = egl[1];
@@ -145,7 +145,7 @@ exports.command = (cmd, args, input, message) => {
 		return message.channel.send(
 			new Discord.MessageEmbed()
 				.setAuthor("x!graph | [Wiki]", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png", "https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph")
-				.setDescription("```\n" + text + "```")
+				.setDescription("```\n" + text.replace(/\\/g, '') + "```")
 				.attachFiles(new Discord.MessageAttachment(canvas.toBuffer(), "graph.png"))
 				.setImage("attachment://graph.png")
 				.setColor(new Color().random()));
