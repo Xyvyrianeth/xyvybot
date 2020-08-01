@@ -26,7 +26,7 @@ exports.command = (cmd, args, input, message) => {
 			e.pop();
 		let display = [],
 			equations = {},
-			a = true;
+			a = false;
 
 		for (let i = 0; i < e.length; i++)
 		{
