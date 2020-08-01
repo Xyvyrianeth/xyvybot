@@ -51,7 +51,8 @@ exports.command = (cmd, args, input, message) => {
 					}[ic[1].toLowerCase()];
 			}
 			let egl = y.match(/^(y|[a-zA-Z]\(x\))(=|>=|>|__>__|≥|<=|<|__<__|≤)/),
-				yf;
+				yf,
+				equations = {};
 			if (egl != null)
 			{
 				yf = egl[1];
@@ -78,7 +79,7 @@ exports.command = (cmd, args, input, message) => {
 			else
 			{
 				egl = 0;
-				yf = "f(x)";
+				yf = "y";
 			}
 
 			// start graphing
@@ -93,7 +94,7 @@ exports.command = (cmd, args, input, message) => {
 				result = [];
 				for (let x = -150; x <= 150; x += 0.5)
 				{
-					let Y = equ(y, x);
+					let Y = equ(y, x, false, equations);
 					if (Y[0] == "err")
 					{
 						result = [false, Y[1]];
@@ -101,6 +102,10 @@ exports.command = (cmd, args, input, message) => {
 					}
 					else
 					{
+						if (/^[a-zA-Z]\(x\)$/.test(yf))
+						{
+							equations[yf[0]] = y;
+						}
 						X = Y[1] > 160 ? 160 : Y[1] < -160 ? -160 : Y[1];
 						result.push([x, X]);
 					}

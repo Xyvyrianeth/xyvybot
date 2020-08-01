@@ -22,7 +22,8 @@ exports.newGame = function(channel, player, here) {
         replayData: [],
         started: false,
 		timeStart: `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
-        turn: 0
+		turn: 0,
+		turns: 0
     };
     game.channels[channel] = [];
     games.push(game);
@@ -148,7 +149,7 @@ exports.takeTurn = function(channel, Move) {
             }
         }
     }
-
+	game.turns += 1;
     exports.nextTurn(channel, end);
 }
 

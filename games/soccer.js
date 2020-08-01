@@ -84,8 +84,10 @@ exports.newTourney = function(channel, player1, player2) {
 	let game = {
 		buffer: {},
 		channels: {},
+		curr: 0,
 		forfeit: false,
 		game: shortname,
+		highest: [0, 0],
 		highlight: false,
 		lastmove: '',
 		player: false,
@@ -93,6 +95,7 @@ exports.newTourney = function(channel, player1, player2) {
 		started: false,
 		timeStart: new Date(),
 		turn: 0
+
 	};
 	game.channels[channel] = [];
 	games.push(game);
@@ -167,16 +170,13 @@ exports.drawBoard = function(game, end, highlight) {
 		data.data[i + 3] *= 4;
 	}
 	ltx.putImageData(data, 0, 0);
-
 	ctx.drawImage(lines, 0, 0);
 	ctx.drawImage(exports.Images.ball, game.board.ball[1] * 25 + 1, game.board.ball[0] * 25);
 
-	// ....
-
 	let newCanvas = new Canvas.createCanvas(311, 235);
 	let newCtx = newCanvas.getContext('2d');
-	let data = ctx.getImageData(0, 0, 311, 235);
-	newCtx.putImageData(data, 0, 0);
+	let data2 = ctx.getImageData(0, 0, 311, 235);
+	newCtx.putImageData(data2, 0, 0);
     game.replayData.push(newCtx);
 
 	if (end === 0)
@@ -286,9 +286,13 @@ exports.nextTurn = function(channel, end, highlight, goagain) {
 	let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
 	if (end == 0)
 	{
+		game.curr += 1;
+		if (game.curr > game.highest[game.turn])
+			game.highest[game.turn] = game.curr;
 		if (!goagain)
 		{
 			game.turn = game.turn == 0 ? 1 : 0;
+			game.curr = 0;
 			game.player = game.players[game.turn];
 		}
 		game.timer = {

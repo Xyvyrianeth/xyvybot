@@ -55,7 +55,7 @@ exports.command = (message) => {
 				if (Game == "squares")
 				{
 					let stream2 = fs.createWriteStream("counter_" + message.id + ".gif"),
-						encoder2 = new gifEncoder(dimensions[0], dimensions[1]);
+						encoder2 = new gifEncoder(280, 300);
 
 					encoder2.createReadStream().pipe(stream2);
 					encoder2.begin();
@@ -81,8 +81,12 @@ exports.command = (message) => {
 					winner: game.players[game.winner],
 					loser: game.players[[1, 0][game.winner]],
 					game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer"].indexOf(game.game) + 1),
-					score: game.score
+					score: game.winner == 0 ? game.score : game.score.reverse()
 				};
+				if (result.game == 5)
+					result.turns = game.turns
+				if (result.game == 7)
+					result.highest = game.winner == 0 ? game.highest : game.highest.reverse();
 			if (end != 0)
 				games.games.forEach((game, index) => {
 					if (game.channels.hasOwnProperty(message.channel.id))
@@ -96,95 +100,134 @@ exports.command = (message) => {
 				db.query(`SELECT *\n` + `FROM profiles\n` + `WHERE id = '${result.winner}' OR id = '${result.loser}'`, (err, res) => {
 					if (err)
 						return exports.sqlError(message, err, `SELECT *\n` + `FROM profiles\n` + `WHERE id = '${result.winner}' OR id = '${result.loser}'` );
-					let wins, lose;
+					let wp, lp;
 
 					if (res.rows.length == 0)
-						wins = newUser(result.winner, message),
-						lose = newUser(result.loser, message);
+						wp = newUser(result.winner, message),
+						lp = newUser(result.loser, message);
 					else
 					if (res.rows.length == 2)
-						wins = res.rows.find(x => x.id == result.winner),
-						lose = res.rows.find(x => x.id == result.loser);
+						wp = res.rows.find(x => x.id == result.winner),
+						lp = res.rows.find(x => x.id == result.loser);
 					else
 					if (res.rows[0].id == result.winner)
-						lose = newUser(result.loser, message),
-						wins = res.rows[0];
+						lp = newUser(result.loser, message),
+						wp = res.rows[0];
 					else
 					if (res.rows[0].id == result.loser)
-						lose = res.rows[0],
-						wins = newUser(result.winner, message);
+						lp = res.rows[0],
+						wp = newUser(result.winner, message);
 
-					if (lose["elo" + result.game] > wins["elo" + result.game])
-						lose.money += 25,
-						wins.money += 100;
-					if (lose["elo" + result.game] == wins["elo" + result.game])
-						lose.money += 50,
-						wins.money += 75;
-					if (lose["elo" + result.game] < wins["elo" + result.game])
-						lose.money += 75,
-						wins.money += 50;
+					if (lp["elo" + result.game] > wp["elo" + result.game])
+						lp.money += 25,
+						wp.money += 100;
+					if (lp["elo" + result.game] == wp["elo" + result.game])
+						lp.money += 50,
+						wp.money += 75;
+					if (lp["elo" + result.game] < wp["elo" + result.game])
+						lp.money += 75,
+						wp.money += 50;
 
 					// Titles
-					let wits = [];
-					if (wins["elo" + result.game] >= 2000 && !wins.titles.includes("2k_elo" + result.game))
+					let wt = [];
+					let lt = [];
+					// General
+					for (let i = 0; i < 8; i++)
+						if (wp.elo1 + wp.elo2 + wp.elo3 + wp.elo4 + wp.elo5 + wp.elo6 + wp.elo7 >= [15E3, 2E4, 25E3, 3E4, 4E4, 5E4, 75E3, 1E5][i] && !wp.titles.includes(["15k_elo", "20k_elo", "25k_elo", "30k_elo", "40k_elo", "50k_elo", "75k_elo", "100kelo"][i]))
+							wt.push(["15k_elo", "20k_elo", "25k_elo", "30k_elo", "40k_elo", "50k_elo", "75k_elo", "100kelo"][i]);
+					for (let i = 0; i < 8; i++)
+						if (wp.win1 + wp.win2 + wp.win3 + wp.win4 + wp.win5 + wp.win6 + wp.win7 + wp.los1 + wp.los2 + wp.los3 + wp.los4 + wp.los5 + wp.los6 + wp.los7 >= [50, 75, 100, 200, 300, 400, 500, 1E3] && !wp.titles.includes(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]))
+							wt.push(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]);
+					for (let i = 0; i < 8; i++)
+						if (lp.elo1 + lp.elo2 + lp.elo3 + lp.elo4 + lp.elo5 + lp.elo6 + lp.elo7 <= [2500, 2E3, 1500, 1E3, 750, 500, 250, 0][i] && !lp.titles.includes(["2500elo", "2000elo", "1500elo", "1000elo", "750_elo", "500_elo", "250_elo", "eloGone"][i]))
+							lt.push(["2500elo", "2000elo", "1500elo", "1000elo", "750_elo", "500_elo", "250_elo", "eloGone"][i]);
+					for (let i = 0; i < 8; i++)
+						if (loss.win1 + loss.win2 + loss.win3 + loss.win4 + loss.win5 + loss.win6 + loss.win7 + loss.los1 + loss.los2 + loss.los3 + loss.los4 + loss.los5 + loss.los6 + loss.los7 >= [50, 75, 100, 200, 300, 400, 500, 1E3] && !loss.titles.includes(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]))
+							wt.push(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]);
+					// Game Specific
+					if (wp["elo" + result.game] >= 2000 && !wp.titles.includes(`2elo${result.game}_1`))
 					{
-						wits.push("2k_elo" + result.game);
-						if (result.game == 1)
-							wits.push("2k_ELO1");
+						wt.push(`2elo${result.game}_1`);
+						if (result.game == 1 || result.game == 2)
+							wt.push(`2elo${result.game}_2`);
 					}
-					if (result.game == 5 && lose.id == "238916443402534914" && !wins.titles.includes("beatRDB"))
-						wits.push("beatRDB");
-					if (result.game == 2 && lose.id == "561578790837289002" && !wins.titles.includes("beatXAI"))
-						wits.push("beatXAI");
-					for (let i = 0; i < 8; i++)
-						if (wins.elo1 + wins.elo2 + wins.elo3 + wins.elo4 + wins.elo5 + wins.elo6 + wins.elo7 >= [15E3, 2E4, 25E3, 3E4, 4E4, 5E4, 75E3, 1E5][i] && !wins.titles.includes(["15k_elo", "20k_elo", "25k_elo", "30k_elo", "40k_elo", "50k_elo", "75k_elo", "100kelo"][i]))
-							wits.push(["15k_elo", "20k_elo", "25k_elo", "30k_elo", "40k_elo", "50k_elo", "75k_elo", "100kelo"][i]);
+					if (wp["win" + result.game] + wp["los" + result.game] >= 100)
+					{
+						wt.push(`100g${result.game}_1`);
+						if (relult.game == 1 || result.game == 2)
+							wt.push(`100g${result.game}_2`);
+					}
+					// Othello
+					if (result.game == 1 && result.score[1] == 0 && !wp.titles.includes("cap_all"))
+						wt.push("cap_all");
+					// Squares
+					if (result.game == 2 && lp.id == "561578790837289002" && !wp.titles.includes("beatXAI"))
+						wt.push("beatXAI");
+					// Rokumoku
+					// 3D Tic Tac Toe
+					if (result.game == 4 && game.turn <= 8)
+					{
+						if (!wp.titles.includes("winsIn4"))
+							wt.push("winsIn4");
+						if (!lp.titles.includes("aCasual"))
+							lt.push("aCasual");
+					}
+					// Connect 4
+					if (result.game == 5 && lp.id == "238916443402534914" && !wp.titles.includes("beatRDB"))
+						wt.push("beatRDB");
+					if (result.game == 5 && game.turn <= 8)
+					{
+						if (!wp.titles.includes("winsIn4"))
+							wt.push("winsIn4");
+						if (!lp.titles.includes("aCasual"))
+							lt.push("aCasual");
+					}
+					// Ordo
+					// Paper Soccer
+					if (result.game == 7 && result.highest[0] >= 10 && !wp.titles.includes(""))
+						wt.push("10moves");
+					if (result.game == 7 && result.highest[1] >= 10 && !lp.titles.includes(""))
+						lt.push("10moves");
 
-					let lits = [];
-					for (let i = 0; i < 8; i++)
-						if (lose.elo1 + lose.elo2 + lose.elo3 + lose.elo4 + lose.elo5 + lose.elo6 + lose.elo7 <= [2500, 2E3, 1500, 1E3, 750, 500, 250, 0][i] && !lose.titles.includes(["2500elo", "2000elo", "1500elo", "1000elo", "750_elo", "500_elo", "250_elo", "eloGone"][i]))
-							lits.push(["2500elo", "2000elo", "1500elo", "1000elo", "750_elo", "500_elo", "250_elo", "eloGone"][i]);
-
-
-					let booty = Math.ceil(lose["elo" + result.game] / 10),
+					let booty = Math.ceil(lp["elo" + result.game] / 10),
 						query = `UPDATE profiles\n` +
 							`SET\n` +
-							`   elo${result.game} = ${wins["elo" + result.game] + booty},\n` +
-							`   win${result.game} = ${wins["win" + result.game] + 1},\n` +
-							`   money = ${wins.money},\n` +
-							`   titles = ARRAY${JSON.stringify(wins.titles.concat(wits)).replace(/"/g, "'")}\n` +
-							`WHERE id = '${wins.id}';\n` +
+							`   elo${result.game} = ${wp["elo" + result.game] + booty},\n` +
+							`   win${result.game} = ${wp["win" + result.game] + 1},\n` +
+							`   money = ${wp.money},\n` +
+							`   titles = ARRAY${JSON.stringify(wp.titles.concat(wt)).replace(/"/g, "'")}\n` +
+							`WHERE id = '${wp.id}';\n` +
 							`\n` +
 							`UPDATE profiles\n` +
 							`SET\n` +
-							`   elo${result.game} = ${lose["elo" + result.game] - booty},\n` +
-							`   los${result.game} = ${lose["los" + result.game] + 1},\n` +
-							`   money = ${lose.money},\n` +
-							`   titles = ARRAY${JSON.stringify(lose.titles.concat(lits)).replace(/"/g, "'")}\n` +
-							`WHERE id = '${lose.id}';`
+							`   elo${result.game} = ${lp["elo" + result.game] - booty},\n` +
+							`   los${result.game} = ${lp["los" + result.game] + 1},\n` +
+							`   money = ${lp.money},\n` +
+							`   titles = ARRAY${JSON.stringify(lp.titles.concat(lt)).replace(/"/g, "'")}\n` +
+							`WHERE id = '${lp.id}';`
 					db.query(query, (err) => {
 						if (err)
 							return exports.sqlError(message, err, query);
 					});
-					if (wits.length > 0)
+					if (wt.length > 0)
 					{
 						let text = '';
-						for (let i = 0; i < wits.length; i++)
-							text += `[${titles[wits[i]]}](${wits[i]})\n`
-						client.users.cache.get(wins.id).send(
-							"You've just received the following titles to use for your `x!profile`:\n" +
+						for (let i = 0; i < wt.length; i++)
+							text += `[${titles[wt[i]]}](${wt[i]})\n`
+						client.users.cache.get(wp.id).send(
+							`You've just received ${wt.length == 1 ? "this title" : "the following titles"} to use for your \`x!profile\`:\n` +
 							"```md\n" +
 							text +
 							"```\n" +
 							"Use the command `x!profile titles` to see all your owned titles.");
 					}
-					if (lits.length > 0)
+					if (lt.length > 0)
 					{
 						let text = '';
-						for (let i = 0; i < lits.length; i++)
-							text += `[${titles[lits[i]]}](${lits[i]})\n`
-						client.users.cache.get(lose.id).send(
-							"You've just received the following titles to use for your `x!profile`:\n" +
+						for (let i = 0; i < lt.length; i++)
+							text += `[${titles[lt[i]]}](${lt[i]})\n`
+						client.users.cache.get(lp.id).send(
+							`You've just received ${wt.length == 1 ? "this title" : "the following titles"} to use for your \`x!profile\`:\n` +
 							"```md\n" +
 							text +
 							"```");

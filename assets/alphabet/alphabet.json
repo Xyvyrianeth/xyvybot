@@ -1,4 +1,5 @@
 {
+	"CHARACTER": ["row", "column", "width", "start one pixel to the left"],
     "A": [0, 0, 7, false],
     "B": [1, 0, 7, false],
     "C": [2, 0, 7, false],
@@ -104,5 +105,20 @@
     "¥": [4, 12, 6, false],
     "°": [5, 12, 3, false],
     "•": [6, 12, 5, false],
-    " ": [7, 12, 6, false]
+	" ": [7, 12, 6, false],
+	"©": [0, 13, 0, false],
+	"®": [1, 13, 0, false],
+	"¢": [2, 13, 0, false],
+	"™": [3, 13, 0, false],
+	"✓": [4, 13, 0, false],
+	"¶": [5, 13, 0, false],
+	"∆": [6, 13, 0, false],
+	"π": [7, 13, 0, false],
+	"Ω": [1, 13, 0, false],
+	"Π": [2, 13, 0, false],
+	"μ": [3, 13, 0, false],
+	"§": [4, 13, 0, false],
+	"∞": [5, 13, 0, false],
+	"≠": [6, 13, 0, false],
+	"≈": [7, 13, 0, false]
 }
