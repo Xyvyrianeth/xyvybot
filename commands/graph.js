@@ -25,7 +25,8 @@ exports.command = (cmd, args, input, message) => {
 		if (/;$/.test(input))
 			e.pop();
 		let display = [],
-			equations = {};
+			equations = {},
+			a = true;
 
 		for (let i = 0; i < e.length; i++)
 		{
@@ -33,6 +34,7 @@ exports.command = (cmd, args, input, message) => {
 			let ic = e[i].split(';'),
 				color = colors[i % 10],
 				y = ic[0];
+			if (a) console.log(y);
 			if (ic.length == 2)
 			{
 				if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase()))
@@ -94,7 +96,7 @@ exports.command = (cmd, args, input, message) => {
 				result = [];
 				for (let x = -150; x <= 150; x += 0.5)
 				{
-					let Y = equ(y, x, false, equations);
+					let Y = equ(y, x, a, equations);
 					if (Y[0] == "err")
 					{
 						result = [false, Y[1]];
