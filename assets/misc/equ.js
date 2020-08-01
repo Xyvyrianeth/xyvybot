@@ -110,53 +110,61 @@ exports.equ = (equation, x, a, equations) => {
 	{
 		lastEquation = equation;
 		if (/\(Math.(PI|Infinity)\)/g.test(equation))
-			equation = equation.replace(/\(Math.PI\)/g, Math.PI),
+		{
+			equation = equation.replace(/\(Math.PI\)/g, Math.PI);
 			equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
-		if (a) console.log(x, equation);
+			if (a) console.log(x, equation);
+		}
 		if (/\([0-9.+\-/*]+\)/.test(equation))
 		{
 			equate = equation.match(/\([0-9.+\-/*]+\)/g);
 			for (let i = 0; i < equate.length; i++)
 				if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
 					equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+			if (a) console.log(x, equation);
 		}
-		if (a) console.log(x, equation);
 		for (let i = 0; i < methods.length; i++)
-			equation = equation.replace(methods[i][0], methods[i][1]);
-		if (a) console.log(x, equation);
+			if (methods[i][0].test(equation))
+			{
+				equation = equation.replace(methods[i][0], methods[i][1]);
+				if (a) console.log(x, equation);
+			}
 		if (/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/.test(equation))
 		{
-			f = equation.match(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
-			fx = equation.match(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
-			y = exports.equ(equations[f], fx, true);
-			equation.replace(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, y);
+			console.log(equations);
+			f_ = equation.match(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
+			x_ = equation.match(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
+			fx = exports.equ(equations[f_], x_, true);
+			equation = equation.replace(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
+			if (a) console.log(x, equation);
 		}
-		if (a) console.log(x, equation);
 		if (/\(([0-9.]+){1}([+\-*/%][0-9.]+)+\)/.test(equation))
 		{
 			equate = equation.match(/\(([0-9.]+){1}([+\-*/%][0-9.]+)+\)/g);
 			for (let i = 0; i < equate.length; i++)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+			if (a) console.log(x, equation);
 		}
-		if (a) console.log(x, equation);
 		if (/\[([0-9.]+){1}([+\-*/%][0-9.]+)+\]/.test(equation))
 		{
 			equate = equation.match(/\[([0-9.]+){1}([+\-*/%][0-9.]+)+\]/g);
 			for (let i = 0; i < equate.length; i++)
 				if (/\[/.test(equate[i]) && /\]/.test(equate[i]) && equate[i].match(/\[/g).length == equate[i].match(/\]/g).length)
 					equation = equation.replace(equate[i], '[' + eval(equate[i]) + ']');
+			if (a) console.log(x, equation);
 		}
-		if (a) console.log(x, equation);
 		if (/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g.test(equation))
 		{
 			equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g);
 			for (let i = 0; i < equate.length; i++)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+			if (a) console.log(x, equation);
 		}
-		if (a) console.log(x, equation);
 		if (/(?<!\])\(-?[0-9.]+\)/g.test(equation))
+		{
 			equation = equation.replace(/(?!\])\((-?[0-9.]+)\)/g, "$1");
-		if (a) console.log(x, equation);
+			if (a) console.log(x, equation);
+		}
 	}
 	while (equation != lastEquation);
 
