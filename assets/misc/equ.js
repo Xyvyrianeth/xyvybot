@@ -125,7 +125,7 @@ exports.equ = (equation, x, a, equations) => {
 				if (a) console.log(x, equation);
 			}
 
-		while (/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)
+		while (/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/.test(equation))
 		{
 			f_ = equation.match(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
 			x_ = equation.match(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
