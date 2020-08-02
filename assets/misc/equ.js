@@ -115,12 +115,12 @@ exports.equ = (equation, x, a, equations) => {
 				if (a) console.log(x, equation);
 			}
 
-		while (/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/.test(equation))
+		while (/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/.test(equation))
 		{
-			f_ = equation.match(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
-			x_ = equation.match(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
+			f_ = equation.match(/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
+			x_ = equation.match(/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
 			fx = exports.equ(equations[f_], x_, a, equations)[1];
-			equation = equation.replace(/\\([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
+			equation = equation.replace(/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
 		}
 
 		equate = equation.match(/\(([0-9.]+){1}([+\-*/%][0-9.]+)+\)/g);
