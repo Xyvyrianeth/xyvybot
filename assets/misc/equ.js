@@ -134,7 +134,7 @@ exports.equ = (equation, x, a, equations) => {
 		}
 
 		equate = equation.match(/\(([0-9.]+){1}([+\-*/%][0-9.]+)+\)/g);
-		for (let i = 0; i < equate.length; i++)
+		if (equate !== null) for (let i = 0; i < equate.length; i++)
 			equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 
 		equate = equation.match(/\[([0-9.]+){1}([+\-*/%][0-9.]+)+\]/g);
