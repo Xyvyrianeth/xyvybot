@@ -1,4 +1,5 @@
 exports.equ = (equation, x, a, equations) => {
+	if (a) console.log(x, equation);
 	if (x !== undefined)
 		equation = equation.replace(/x/g, '(' + x + ')');
 	let terms = [
@@ -95,6 +96,7 @@ exports.equ = (equation, x, a, equations) => {
 		"($1)" ]
 		// (--50) => (50)
 	];
+	if (a) console.log(x, equation);
 	let lastEquation;
 	do
 	{
@@ -105,8 +107,11 @@ exports.equ = (equation, x, a, equations) => {
 
 		equate = equation.match(/\([0-9.+\-/*]+\)/g);
 		if (equate !== null) for (let i = 0; i < equate.length; i++)
+		{
 			if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+			if (a) console.log(x, equation);
+		}
 
 		for (let i = 0; i < methods.length; i++)
 			if (methods[i][0].test(equation))
@@ -121,22 +126,35 @@ exports.equ = (equation, x, a, equations) => {
 			x_ = equation.match(/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
 			fx = exports.equ(equations[f_], x_, a, equations)[1];
 			equation = equation.replace(/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
+			if (a) console.log(x, equation);
 		}
 
 		equate = equation.match(/\(([0-9.]+){1}([+\-*/%][0-9.]+)+\)/g);
-		if (equate !== null) for (let i = 0; i < equate.length; i++)
-			equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+		if (equate !== null)
+		{
+			for (let i = 0; i < equate.length; i++)
+				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+			if (a) console.log(x, equation);
+		}
 
 		equate = equation.match(/\[([0-9.]+){1}([+\-*/%][0-9.]+)+\]/g);
-		if (equate !== null) for (let i = 0; i < equate.length; i++)
-			if (/\[/.test(equate[i]) && /\]/.test(equate[i]) && equate[i].match(/\[/g).length == equate[i].match(/\]/g).length)
-				equation = equation.replace(equate[i], '[' + eval(equate[i]) + ']');
+		if (equate !== null)
+		{
+			for (let i = 0; i < equate.length; i++)
+				if (/\[/.test(equate[i]) && /\]/.test(equate[i]) && equate[i].match(/\[/g).length == equate[i].match(/\]/g).length)
+					equation = equation.replace(equate[i], '[' + eval(equate[i]) + ']');
+			if (a) console.log(x, equation);
+		}
 
 		equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g);
 		if (equate !== null) for (let i = 0; i < equate.length; i++)
+		{
 			equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+			if (a) console.log(x, equation);
+		}
 
 		equation = equation.replace(/(?<!\]|\\[a-zA-Z])\((-?[0-9.]+)\)/g, "$1");
+		if (a) console.log(x, equation);
 	}
 	while (equation != lastEquation);
 
