@@ -116,13 +116,7 @@ exports.equ = (equation, x, a, equations) => {
 		equate = equation.match(/\([0-9.+\-/*]+\)/g);
 		if (equate !== null) for (let i = 0; i < equate.length; i++)
 			if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
-				try {
-					equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-				}
-				catch (err)
-				{
-					console.log(equate[i]);
-				}
+				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 
 		for (let i = 0; i < methods.length; i++)
 			if (methods[i][0].test(equation))
