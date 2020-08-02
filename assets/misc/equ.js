@@ -81,7 +81,7 @@ exports.equ = (equation, x, a, equations) => {
 		// (5)(7) => (5)(7)
 
 		// Minus a negative number
-	  [ /(?<:[0-9.])--([0-9.])/,
+	  [ /(?<=[0-9.])--([0-9.])/,
 		"+$1" ],
 		// 5--7 => 5+7
 
