@@ -1,4 +1,4 @@
-var version = "3.0.4.7";
+var version = "3.0.4.8";
 exports.version = version;
 
 const Discord = require("discord.js"),
