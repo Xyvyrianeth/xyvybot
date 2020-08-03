@@ -33,7 +33,6 @@ exports.command = (cmd, args, input, message) => {
 			let ic = e[i].split(';'),
 				color = colors[i % 10],
 				y = ic[0];
-			if (a) console.log(y);
 			if (ic.length == 2)
 			{
 				if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase()))
@@ -142,7 +141,6 @@ exports.command = (cmd, args, input, message) => {
 				}
 			}
 		}
-		if (a) console.log(equations);
 		let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
 		return message.channel.send(
 			new Discord.MessageEmbed()
