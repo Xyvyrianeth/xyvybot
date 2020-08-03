@@ -1,12 +1,16 @@
-var version = "3.0.6.0";
-exports.version = version;
-
 const Discord = require("discord.js"),
 	  client = new Discord.Client(),
 	  PG = require("pg"),
-	  db = new PG.Client(process.env.DATABASE_URL);
+	  db = new PG.Client(process.env.DATABASE_URL),
+	  package = require("package.json");
 exports.client = client;
 exports.db = db;
+
+var version = package.version + ".1";
+exports.version = version;
+
+require("/app/assets/prototypes/math.js");
+require("/app/assets/prototypes/object.js");
 
 var images = require("/app/assets/backgrounds/images.json"),
 	games = {
