@@ -1,5 +1,5 @@
 exports.equ = (equation, x, a, equations) => {
-	if (a) console.log(x, equation);
+	if (a) console.log(0, x, equation);
 	if (x !== undefined)
 		equation = equation.replace(/x/g, '(' + x + ')');
 	let terms = [
@@ -82,12 +82,12 @@ exports.equ = (equation, x, a, equations) => {
 		// (5)(7) => (5)(7)
 
 		// Minus a negative number
-	  [ /(?<=[0-9.])--([0-9.])/,
+	  [ /(?<=[0-9.\)])--([0-9.])/,
 		"+$1" ],
 		// 5--7 => 5+7
 
 		// Minus a negative number in parentheses
-	  [ /-\(-([0-9.]+)\)/,
+	  [ /(?<=[0-9.\)])-\(-([0-9.]+)\)/,
 		"+($1)" ],
 		// 5-(-7) => 5+(7)
 
@@ -105,10 +105,10 @@ exports.equ = (equation, x, a, equations) => {
 		equation = equation.replace(/\(Math.PI\)/g, Math.PI);
 		equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
 
-		equate = equation.match(/\([0-9.+\-/*]+\)/g);
+		equate = equation.match(/\([0-9.+\-/*()]+\)/g);
 		if (equate !== null) for (let i = 0; i < equate.length; i++)
 		{
-			if (/\(/.test(equate[i]) && /\)/.test(equate[i]) && equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
+			if (equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			if (a) console.log(1, x, equation);
 		}
@@ -146,7 +146,7 @@ exports.equ = (equation, x, a, equations) => {
 			if (a) console.log(5, x, equation);
 		}
 
-		equate = equation.match(/Math\.(a?sinh?|a?cosh?|a?tanh?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g);
+		equate = equation.match(/Math\.(a?(?:sin|cos|tan|sec|csc|cot)h?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g);
 		if (equate !== null) for (let i = 0; i < equate.length; i++)
 		{
 			equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
