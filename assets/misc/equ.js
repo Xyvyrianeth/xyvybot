@@ -1,5 +1,4 @@
 exports.equ = (equation, x, a, equations) => {
-	if (a) console.log(0, x, equation);
 	if (x !== undefined)
 		equation = equation.replace(/x/g, '(' + x + ')');
 	let terms = [
@@ -93,11 +92,16 @@ exports.equ = (equation, x, a, equations) => {
 
 		// Double negative in parentheses
 	  [	/\(--([0-9.]+)\)/,
-		"($1)" ]
+		"($1)" ],
 		// (--50) => (50)
+
+		// Double Parentheses
+	  [ /\((\(-?[0-9.]+\))\)/,
+		"$1" ]
+		// ((x)) => (x)
 	];
-	if (a) console.log(x, equation);
 	let lastEquation;
+	if (a) console.log(0, x, equation);
 	do
 	{
 		lastEquation = equation;
@@ -105,26 +109,13 @@ exports.equ = (equation, x, a, equations) => {
 		equation = equation.replace(/\(Math.PI\)/g, Math.PI);
 		equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
 
-		equate = equation.match(/\([0-9.+\-/*()]+\)/g);
-		if (equate !== null) equate.forEach(i => {
-			if (i.match(/\(/g).length == i.match(/\)/g).length)
-			{
-				p = 0;
-				for (ii = 0; ii < i.length; ii++)
-				{
-					if (i[ii] == "(") p++;
-					if (i[ii] == ")") p--;
-					if (p <= 0)
-					{
-						if (ii == i.length - 1)
-							equation = equation.replace(i, '(' + eval(i) + ')');
-						else
-							break;
-					}
-				}
-			}
+		equate = equation.match(/\((?:[0-9.+\-/*]+|\([0-9.+\-/*]+\))+\)/g)
+		if (equate !== null)
+		{
+			for (i = 0; i < equate.lenght; i++)
+				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			if (a) console.log(1, x, equation);
-		});
+		}
 
 		for (let i = 0; i < methods.length; i++)
 			if (methods[i][0].test(equation))
