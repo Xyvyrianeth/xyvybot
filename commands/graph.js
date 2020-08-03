@@ -25,8 +25,7 @@ exports.command = (cmd, args, input, message) => {
 		if (/;$/.test(input))
 			e.pop();
 		let display = [],
-			equations = {},
-			a = false;
+			equations = {};
 
 		for (let i = 0; i < e.length; i++)
 		{
@@ -96,7 +95,7 @@ exports.command = (cmd, args, input, message) => {
 				result = [];
 				for (let x = -150; x <= 150; x += 0.5)
 				{
-					let Y = equ(y, x, a, equations);
+					let Y = equ(y, x, false, equations);
 					if (Y[0] == "err")
 					{
 						result = [false, Y[1]];

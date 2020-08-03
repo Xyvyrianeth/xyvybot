@@ -75,6 +75,16 @@ exports.equ = (equation, x, a, equations) => {
 		"$1*M" ],
 		// 5Math.sin(x) => 5*Math.sin(x)
 
+		// A number against a Javascript Math function in parentheses
+	  [ /([0-9.])\)M/g,
+	  	"$1*M" ],
+	  	// (5)Math.sin(x) => (5)*Math.sin(x)
+
+		// A number in parentheses against a Javascript Math function
+	  [ /([0-9.])\(M/g,
+	  	"$1*M" ],
+	  	// 5(Math.sin(x)) => 5*(Math.sin(x))
+
 		// Parentheses sequence against parentheses sequence
 	  [ /\)\(/g,
 		")*(" ],
@@ -109,6 +119,13 @@ exports.equ = (equation, x, a, equations) => {
 		equation = equation.replace(/\(Math.PI\)/g, '(' + Math.PI + ')');
 		equation = equation.replace(/\(Math.Infinity\)/g, '(' + Math.Infinity + ')');
 
+		for (let i = 0; i < methods.length; i++)
+			if (methods[i][0].test(equation))
+			{
+				equation = equation.replace(methods[i][0], methods[i][1]);
+				if (a) console.log(2, x, equation);
+			}
+
 		equate = equation.match(/\((?:[0-9.+\-/*]+|\([0-9.+\-/*]+\))+\)/g)
 		if (equate !== null)
 		{
@@ -116,13 +133,6 @@ exports.equ = (equation, x, a, equations) => {
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			if (a) console.log(1, x, equation);
 		}
-
-		for (let i = 0; i < methods.length; i++)
-			if (methods[i][0].test(equation))
-			{
-				equation = equation.replace(methods[i][0], methods[i][1]);
-				if (a) console.log(2, x, equation);
-			}
 
 		while (/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/.test(equation))
 		{
