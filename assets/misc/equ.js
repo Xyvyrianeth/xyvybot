@@ -95,10 +95,10 @@ exports.equ = (equation, x, a, equations) => {
 		"($1)" ],
 		// (--50) => (50)
 
-		// Double Parentheses
-	  [ /\((\(-?[0-9.]+\))\)/,
-		"$1" ]
-		// ((x)) => (x)
+		// Double negative in parentheses
+	  [	/\(--([0-9.]+)\)/,
+	  	"($1)" ],
+	  	// (--50) => (50)
 	];
 	let lastEquation;
 	if (a) console.log(0, x, equation);
@@ -106,13 +106,13 @@ exports.equ = (equation, x, a, equations) => {
 	{
 		lastEquation = equation;
 
-		equation = equation.replace(/\(Math.PI\)/g, Math.PI);
-		equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
+		equation = equation.replace(/\(Math.PI\)/g, '(' + Math.PI + ')');
+		equation = equation.replace(/\(Math.Infinity\)/g, '(' + Math.Infinity + ')');
 
 		equate = equation.match(/\((?:[0-9.+\-/*]+|\([0-9.+\-/*]+\))+\)/g)
 		if (equate !== null)
 		{
-			for (i = 0; i < equate.lenght; i++)
+			for (i = 0; i < equate.length; i++)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			if (a) console.log(1, x, equation);
 		}
