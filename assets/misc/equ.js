@@ -106,12 +106,25 @@ exports.equ = (equation, x, a, equations) => {
 		equation = equation.replace(/\(Math.Infinity\)/g, Math.Infinity);
 
 		equate = equation.match(/\([0-9.+\-/*()]+\)/g);
-		if (equate !== null) for (let i = 0; i < equate.length; i++)
-		{
-			if (equate[i].match(/\(/g).length == equate[i].match(/\)/g).length)
-				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+		if (equate !== null) equate.forEach(i => {
+			if (i.match(/\(/g).length == i.match(/\)/g).length)
+			{
+				p = 0;
+				for (ii = 0; ii < i.length; ii++)
+				{
+					if (i[ii] == "(") p++;
+					if (i[ii] == ")") p--;
+					if (p <= 0)
+					{
+						if (ii == i.length - 1)
+							equation = equation.replace(i, '(' + eval(i) + ')');
+						else
+							break;
+					}
+				}
+			}
 			if (a) console.log(1, x, equation);
-		}
+		});
 
 		for (let i = 0; i < methods.length; i++)
 			if (methods[i][0].test(equation))
