@@ -80,11 +80,12 @@ exports.command = (message) => {
 				result = {
 					winner: game.players[game.winner],
 					loser: game.players[[1, 0][game.winner]],
-					game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer"].indexOf(game.game) + 1),
-					score: game.winner == 0 ? game.score : game.score.reverse()
+					game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer"].indexOf(game.game) + 1)
 				};
+				if (result.game == 1 || result.game == 2)
+					result.score = game.winner == 0 ? game.score : game.score.reverse();
 				if (result.game == 5)
-					result.turns = game.turns
+					result.turns = game.turns;
 				if (result.game == 7)
 					result.highest = game.winner == 0 ? game.highest : game.highest.reverse();
 			if (end != 0)
