@@ -84,7 +84,7 @@ exports.command = (message) => {
 				};
 				if (result.game == 1 || result.game == 2)
 					result.score = game.winner == 0 ? game.score : game.score.reverse();
-				if (result.game == 5)
+				if (result.game == 4 || result.game == 5)
 					result.turns = game.turns;
 				if (result.game == 7)
 					result.highest = game.winner == 0 ? game.highest : game.highest.reverse();
@@ -166,7 +166,7 @@ exports.command = (message) => {
 						wt.push("beatXAI");
 					// Rokumoku
 					// 3D Tic Tac Toe
-					if (result.game == 4 && game.turn <= 8)
+					if (result.game == 4 && result.turns <= 8)
 					{
 						if (!wp.titles.includes("winsIn4"))
 							wt.push("winsIn4");
@@ -176,7 +176,7 @@ exports.command = (message) => {
 					// Connect 4
 					if (result.game == 5 && lp.id == "238916443402534914" && !wp.titles.includes("beatRDB"))
 						wt.push("beatRDB");
-					if (result.game == 5 && game.turn <= 8)
+					if (result.game == 5 && result.turns <= 8)
 					{
 						if (!wp.titles.includes("winsIn4"))
 							wt.push("winsIn4");
