@@ -142,7 +142,7 @@ exports.command = (message) => {
 						if (lp.elo1 + lp.elo2 + lp.elo3 + lp.elo4 + lp.elo5 + lp.elo6 + lp.elo7 <= [2500, 2E3, 1500, 1E3, 750, 500, 250, 0][i] && !lp.titles.includes(["2500elo", "2000elo", "1500elo", "1000elo", "750_elo", "500_elo", "250_elo", "eloGone"][i]))
 							lt.push(["2500elo", "2000elo", "1500elo", "1000elo", "750_elo", "500_elo", "250_elo", "eloGone"][i]);
 					for (let i = 0; i < 8; i++)
-						if (loss.win1 + loss.win2 + loss.win3 + loss.win4 + loss.win5 + loss.win6 + loss.win7 + loss.los1 + loss.los2 + loss.los3 + loss.los4 + loss.los5 + loss.los6 + loss.los7 >= [50, 75, 100, 200, 300, 400, 500, 1E3] && !loss.titles.includes(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]))
+						if (lp.win1 + lp.win2 + lp.win3 + lp.win4 + lp.win5 + lp.win6 + lp.win7 + lp.los1 + lp.los2 + lp.los3 + lp.los4 + lp.los5 + lp.los6 + lp.los7 >= [50, 75, 100, 200, 300, 400, 500, 1E3] && !lp.titles.includes(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]))
 							wt.push(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]);
 					// Game Specific
 					if (wp["elo" + result.game] >= 2000 && !wp.titles.includes(`2elo${result.game}_1`))

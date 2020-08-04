@@ -107,7 +107,7 @@ exports.equ = (equation, x, a, equations) => {
 
 		// Double negative in parentheses
 	  [	/\(--([0-9.]+)\)/,
-	  	"($1)" ],
+	  	"($1)" ]
 	  	// (--50) => (50)
 	];
 	let lastEquation;
