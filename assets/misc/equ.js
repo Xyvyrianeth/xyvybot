@@ -144,13 +144,21 @@ exports.equ = (equation, x, a, equations) => {
 			if (a) console.log(2, x, equation);
 		}
 
+		equate = equation.match(/\[(?:[0-9.+\-/*]+|\([0-9.+\-/*]+\))+\]/g)
+		if (equate !== null)
+		{
+			for (i = 0; i < equate.length; i++)
+				equation = equation.replace(equate[i], '[' + eval(equate[i].substring(1, equate[i].lenght - 1)) + ']');
+			if (a) console.log(3, x, equation);
+		}
+
 		while (/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/.test(equation))
 		{
 			f_ = equation.match(/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
 			x_ = equation.match(/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
 			fx = exports.equ(equations[f_], x_, a, equations)[1];
 			equation = equation.replace(/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
-			if (a) console.log(3, x, equation);
+			if (a) console.log(4, x, equation);
 		}
 
 		equate = equation.match(/\(([0-9.]+){1}([+\-*/%][0-9.]+)+\)/g);
@@ -158,7 +166,7 @@ exports.equ = (equation, x, a, equations) => {
 		{
 			for (let i = 0; i < equate.length; i++)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-			if (a) console.log(4, x, equation);
+			if (a) console.log(5, x, equation);
 		}
 
 		equate = equation.match(/\[([0-9.]+){1}([+\-*/%][0-9.]+)+\]/g);
@@ -167,18 +175,18 @@ exports.equ = (equation, x, a, equations) => {
 			for (let i = 0; i < equate.length; i++)
 				if (/\[/.test(equate[i]) && /\]/.test(equate[i]) && equate[i].match(/\[/g).length == equate[i].match(/\]/g).length)
 					equation = equation.replace(equate[i], '[' + eval(equate[i]) + ']');
-			if (a) console.log(5, x, equation);
-		}
-
-		equate = equation.match(/Math\.(a?(?:sin|cos|tan|sec|csc|cot)h?|log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g);
-		if (equate !== null) for (let i = 0; i < equate.length; i++)
-		{
-			equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
 			if (a) console.log(6, x, equation);
 		}
 
+		equate = equation.match(/Math\.(a?(?:sin|cos|tan|sec|csc|cot)h?|ln|Log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g);
+		if (equate !== null) for (let i = 0; i < equate.length; i++)
+		{
+			equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
+			if (a) console.log(7, x, equation);
+		}
+
 		equation = equation.replace(/\((\(-?[0-9.]+\))\)/g, "$1");
-		if (a) console.log(7, x, equation);
+		if (a) console.log(8, x, equation);
 	}
 	while (equation != lastEquation);
 
