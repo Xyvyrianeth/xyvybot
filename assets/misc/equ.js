@@ -1,4 +1,5 @@
-exports.equ = (equation, x, a, equations) => {
+exports.equ = (equation, x, equations) => {
+	let log = '';
 	if (x !== undefined)
 		equation = equation.replace(/x/g, '(' + x + ')');
 	let terms = [
@@ -6,7 +7,7 @@ exports.equ = (equation, x, a, equations) => {
 		"(Math.PI)" ],
 	  [ /(infinity|∞)/g,
 		"(Math.Infinity)" ],
-	  [ /(?<=[a-z])e/g,
+	  [ /(?<!s)e/g,
 		"(Math.E)" ],
 	  [ /(phi|φ)/g,
 		"(Math.Phi)" ] ];
@@ -119,7 +120,7 @@ exports.equ = (equation, x, a, equations) => {
 	  	// (--50) => (50)
 	];
 	let lastEquation;
-	if (a) console.log(0, x, equation);
+	log += "0 | " + x + " | " + equation + "\n";
 	do
 	{
 		lastEquation = equation;
@@ -133,7 +134,7 @@ exports.equ = (equation, x, a, equations) => {
 			if (methods[i][0].test(equation))
 			{
 				equation = equation.replace(methods[i][0], methods[i][1]);
-				if (a) console.log(1, x, equation);
+				log += "1 | " + x + " | " + equation + "\n";
 			}
 
 		equate = equation.match(/\((?:[0-9.+\-/*]+|\([0-9.+\-/*]+\))+\)/g)
@@ -141,7 +142,7 @@ exports.equ = (equation, x, a, equations) => {
 		{
 			for (i = 0; i < equate.length; i++)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-			if (a) console.log(2, x, equation);
+			log += "2 | " + x + " | " + equation + "\n";
 		}
 
 		equate = equation.match(/\[(?:[0-9.+\-/*]+|\([0-9.+\-/*]+\))+\]/g)
@@ -149,16 +150,16 @@ exports.equ = (equation, x, a, equations) => {
 		{
 			for (i = 0; i < equate.length; i++)
 				equation = equation.replace(equate[i], '[' + eval(equate[i].substring(1, equate[i].length - 1)) + ']');
-			if (a) console.log(3, x, equation);
+			log += "3 | " + x + " | " + equation + "\n";
 		}
 
-		while (/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/.test(equation))
+		while (/(?<![a-df-wz])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/.test(equation))
 		{
-			f_ = equation.match(/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
-			x_ = equation.match(/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
+			f_ = equation.match(/(?<![a-df-wz])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
+			x_ = equation.match(/(?<![a-df-wz])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
 			fx = exports.equ(equations[f_], x_, a, equations)[1];
-			equation = equation.replace(/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
-			if (a) console.log(4, x, equation);
+			equation = equation.replace(/(?<![a-df-wz])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
+			log += "4 | " + x + " | " + equation + "\n";
 		}
 
 		equate = equation.match(/\(([0-9.]+){1}([+\-*/%][0-9.]+)+\)/g);
@@ -166,7 +167,7 @@ exports.equ = (equation, x, a, equations) => {
 		{
 			for (let i = 0; i < equate.length; i++)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-			if (a) console.log(5, x, equation);
+			log += "5 | " + x + " | " + equation + "\n";
 		}
 
 		equate = equation.match(/\[([0-9.]+){1}([+\-*/%][0-9.]+)+\]/g);
@@ -175,27 +176,27 @@ exports.equ = (equation, x, a, equations) => {
 			for (let i = 0; i < equate.length; i++)
 				if (/\[/.test(equate[i]) && /\]/.test(equate[i]) && equate[i].match(/\[/g).length == equate[i].match(/\]/g).length)
 					equation = equation.replace(equate[i], '[' + eval(equate[i]) + ']');
-			if (a) console.log(6, x, equation);
+			log += "6 | " + x + " | " + equation + "\n";
 		}
 
 		equate = equation.match(/Math\.(a?(?:sin|cos|tan|sec|csc|cot)h?|ln|Log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g);
 		if (equate !== null) for (let i = 0; i < equate.length; i++)
 		{
 			equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-			if (a) console.log(7, x, equation);
+			log += "7 | " + x + " | " + equation + "\n";
 		}
 
 		equation = equation.replace(/\((\(-?[0-9.]+\))\)/g, "$1");
-		if (a) console.log(8, x, equation);
+		log += "8 | " + x + " | " + equation + "\n";
 	}
 	while (equation != lastEquation);
 
 	try
 	{
-		return [ "equated", eval(equation) ];
+		return [ "equated", eval(equation), log ];
 	}
 	catch (err)
 	{
-		return [ "error", err ];
+		return [ "error", err, log ];
 	}
 }

@@ -94,7 +94,7 @@ exports.command = (cmd, args, input, message) => {
 				result = [];
 				for (let x = -150; x <= 150; x += 0.5)
 				{
-					let Y = equ(y, x, false, equations);
+					let Y = equ(y, x, equations);
 					if (Y[0] == "err")
 					{
 						result = [false, Y[1]];
