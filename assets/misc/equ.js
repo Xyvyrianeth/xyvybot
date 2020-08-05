@@ -2,45 +2,58 @@ exports.equ = (equation, x, a, equations) => {
 	if (x !== undefined)
 		equation = equation.replace(/x/g, '(' + x + ')');
 	let terms = [
-		[ /(pi|π)/g,
-			"(Math.PI)" ],
-		[ /(infinity|∞)/g,
-			"(Math.Infinity)" ]
-	];
+	  [ /(pi|π)/g,
+		"(Math.PI)" ],
+	  [ /(infinity|∞)/g,
+		"(Math.Infinity)" ],
+	  [ /(?<=[a-z])e/g,
+		"(Math.E)" ],
+	  [ /(phi|φ)/g,
+		"(Math.Phi)" ] ];
 	for (let i = 0; i < terms.length; i++)
 		equation = equation.replace(terms[i][0], terms[i][1]);
 	let methods = [
-		// Trig functions, or natural log of a number
-	  [ /(?<!Math\.)(a?(?:sin|cos|tan|sec|csc|cot)h?|log)(-?[0-9.]+|\(-?[0-9.]+\))/g,
+		// Trig functions and natural logarithm
+	  [ /(?<!Math\.)(a?(?:sin|cos|tan|sec|csc|cot)h?|ln)(-?[0-9.]+|\(-?[0-9.]+\))/g,
 		"Math.$1($2)" ],
-		// \sin(x) => Math.sin(x)
+		// sin(x) => Math.sin(x)
+
+		// Logarithms
+	  [ /log\[(\(-?[0-9.]+\)|-?[0-9.]+)\](\(-?[0-9.]+\)|-?[0-9.]+)/g,
+		"Math.Log($1,$2)" ],
+		// log[4](x) => Math.Log(4,x)
+
+		// The absolute value of a number
+	  [ /\|(-?[0-9.+\-/*()]+)\|/g,
+		"Math.abs($1)" ],
+		// |-x| => Math.abs(-x)
 
 		// Square root of a number
 	  [ /(?:(?:sq)?rt|√)(-?[0-9.]+|\(-?[0-9.]+\))/g,
 		"Math.sqrt($1)" ],
-		// \sqrt(x) => Math.sqrt(x)
+		// sqrt(x) => Math.sqrt(x)
 
-		// If the radicand is positive
-	  [ /(?<!sq)(?:rt|√)\[(\(-?[0-9]+\)|-?[0-9]+)\](\([0-9.]+\)|[0-9.]+)/g,
-		"Math.pow($2,(1/$1))" ],
-		// \rt[2](x) => Math.pow(x,(1/5))
+		// Root; if the radicand is positive
+	  [ /(?<!sq)(?:rt|√)\[(\(-?[0-9]+\)|-?[0-9]+)\](\(-?[0-9.]+\)|-?[0-9.]+)/g,
+		"Math.pow($2,(1/($1)))" ],
+		// rt[3](x) => Math.pow(x,(1/(3)))
 
-		// If the radicand is negative and the radical is odd
+		// Root; if the radicand is negative and the radical is odd
 	  [ /(?<!sq)(?:rt|√)\[(\(\-?[0-9]*[13579]{1}\)|\-?[0-9]*[13579]{1})\](?:\(-([0-9.]+)\)|-([0-9.]+))/g,
-		"-Math.pow($2$3,(1/$1))" ],
-		// \rt[3](-x) => -Math.pow(-x,(1/3))
+		"-Math.pow($2$3,(1/($1)))" ],
+		// rt[3](-x) => -Math.pow(-x,(1/(3)))
 
-		// If the radical is not an integer
-	  [ /(?<!sq)(?:rt|√)\[(\(-?[0-9]+\.[0-9]+\)|-?[0-9]+\.[0-9]+)\](\(-?[0-9.]+\)|-?[0-9.]+)/g,
-		"Math.pow(Math.pow($2,Math.fraction($1,1)),(1/Math.fraction($1,0)))" ],
-		// \rt[1.5](-x) => Math.pow(Math.pow(-x,Math.fraction(1.5,1)),(1/Math.fraction(1.5,0)))
-
-		// If the radicand is negative and the radical is even
+		// Root; if the radicand is negative and the radical is even
 	  [ /(?<!sq)(?:rt|√)\[(?:\(-?[0-9]*[02468]{1}\)|-?[0-9]*[02468]{1})\](?:\(-[0-9.]+\)|-[0-9.]+)/g,
 		"NaN" ],
-		// \rt[2](-x) => NaN
+		// rt[2](-x) => NaN
 
-		// A number number to the power of another number
+		// Root; if the radical is not an integer
+	  [ /(?<!sq)(?:rt|√)\[(\(-?[0-9]+\.[0-9]+\)|-?[0-9]+\.[0-9]+)\](\(-?[0-9.]+\)|-?[0-9.]+)/g,
+		"Math.pow(Math.pow($2,Math.fraction($1,1)),(1/Math.fraction($1,0)))" ],
+		// rt[1.5](-x) => Math.pow(Math.pow(-x,Math.fraction(1.5,1)),(1/Math.fraction(1.5,0)))
+
+		// A number raised to the power of another number
 	  [ /(?<!Math\.)(\(-?[0-9.]+\)|(?![0-9)]-)[0-9.]+)(?!sin|cos|tan)\^(?!-1)(\((-?)[0-9.]+\)|-?[0-9.]+)/g,
 		"Math.pow($1,$2)" ],
 		// x^7 => Math.pow(x,7)
@@ -48,17 +61,12 @@ exports.equ = (equation, x, a, equations) => {
 		// Summation function
 	  [ /(?<!Math\.)(?:sum|∑)\[n=([0-9]+)\]\(([0-9]+)\)(-?[0-9.]+|\(-?[0-9.]+\))/g,
 		"Math.sum($1,$2,$3)" ],
-		// \sum[n=0](5)5 => Math.sum(0,5,5)
+		// sum[n=0](5)5 => Math.sum(0,5,5)
 
 		// Product function
 	  [ /(?<!Math\.)(?:prod|∏)\[n=([0-9]+)\]\(([0-9]+)\)(-?[0-9.]+|\(-?[0-9.]+\))/g,
 		"Math.prod($1,$2,$3)" ],
-		// \prod[n=0](5)5 => Math.prod(0,5,5)
-
-		// The absolute value of a number
-	  [ /\|(-?[0-9.+\-/*()]+)\|/g,
-		"Math.abs($1)" ],
-		// |-x| => Math.abs(-x)
+		// prod[n=0](5)5 => Math.prod(0,5,5)
 
 		// A number against a parentheses sequence
 	  [ /([0-9.])\(/g,
@@ -118,12 +126,14 @@ exports.equ = (equation, x, a, equations) => {
 
 		equation = equation.replace(/\(Math.PI\)/g, '(' + Math.PI + ')');
 		equation = equation.replace(/\(Math.Infinity\)/g, '(' + Math.Infinity + ')');
+		equation = equation.replace(/\(Math.E\)/g, '(' + Math.E + ')');
+		equation = equation.replace(/\(Math.Phi\)/g, '(' + Math.Phi + ')');
 
 		for (let i = 0; i < methods.length; i++)
 			if (methods[i][0].test(equation))
 			{
 				equation = equation.replace(methods[i][0], methods[i][1]);
-				if (a) console.log(2, x, equation);
+				if (a) console.log(1, x, equation);
 			}
 
 		equate = equation.match(/\((?:[0-9.+\-/*]+|\([0-9.+\-/*]+\))+\)/g)
@@ -131,15 +141,15 @@ exports.equ = (equation, x, a, equations) => {
 		{
 			for (i = 0; i < equate.length; i++)
 				equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');
-			if (a) console.log(1, x, equation);
+			if (a) console.log(2, x, equation);
 		}
 
-		while (/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/.test(equation))
+		while (/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/.test(equation))
 		{
-			f_ = equation.match(/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
-			x_ = equation.match(/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
+			f_ = equation.match(/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
+			x_ = equation.match(/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
 			fx = exports.equ(equations[f_], x_, a, equations)[1];
-			equation = equation.replace(/(?<![a-wzA-Z])([a-zA-Z])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
+			equation = equation.replace(/(?<![a-z])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
 			if (a) console.log(3, x, equation);
 		}
 
