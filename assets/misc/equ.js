@@ -148,7 +148,7 @@ exports.equ = (equation, x, a, equations) => {
 		if (equate !== null)
 		{
 			for (i = 0; i < equate.length; i++)
-				equation = equation.replace(equate[i], '[' + eval(equate[i].substring(1, equate[i].lenght - 1)) + ']');
+				equation = equation.replace(equate[i], '[' + eval(equate[i].substring(1, equate[i].length - 1)) + ']');
 			if (a) console.log(3, x, equation);
 		}
 
