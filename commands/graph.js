@@ -91,23 +91,26 @@ exports.command = (cmd, args, input, message) => {
 				result = "Output (*y*) must remain isolated in all equations.";
 			else
 			{
-				result = [];
-				for (let x = -150; x <= 150; x += 0.5)
+				if (color !== "hidden")
 				{
-					let Y = equ(y, x, equations);
-					if (Y[0] == "err")
+					result = [];
+					for (let x = -150; x <= 150; x += 0.5)
 					{
-						result = [false, Y[1]];
-						break;
-					}
-					else
-					{
-						if (/^[a-zA-Z]\(x\)$/.test(yf))
+						let Y = equ(y, x, equations);
+						if (Y[0] == "err")
 						{
-							equations[yf[0]] = y;
+							result = [false, Y[1]];
+							break;
 						}
-						X = Y[1] > 160 ? 160 : Y[1] < -160 ? -160 : Y[1];
-						result.push([x, X]);
+						else
+						{
+							if (/^[a-zA-Z]\(x\)$/.test(yf))
+							{
+								equations[yf[0]] = y;
+							}
+							X = Y[1] > 160 ? 160 : Y[1] < -160 ? -160 : Y[1];
+							result.push([x, X]);
+						}
 					}
 				}
 				if (result[0] === false)
@@ -115,7 +118,7 @@ exports.command = (cmd, args, input, message) => {
 				else
 				{
 					display.push(yf + ' ' + ['=', '≤', '≥', '<', '>'][egl] + ' ' + y + '  -  ' + (new Color(color).getName()));
-					for (let i = 0; i < result.length; i++)
+					for (let i = 0; i < result.length || color !== "hidden"; i++)
 					{
 						XY = result[i];
 						let c = new Color(color);
