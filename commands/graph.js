@@ -37,7 +37,7 @@ exports.command = (cmd, args, input, message) => {
 			{
 				if (/#([0-9a-f]{6,}|[0-9a-f]{3,})/.test(ic[1].toLowerCase()))
 					color = ic[1].toLowerCase();
-				if (/^(red|orange|yellow|lime|green|teal|blue|purple|brown|pink)$/i.test(ic[1]))
+				if (/^(red|orange|yellow|lime|green|teal|blue|purple|brown|pink|black|gr[ae]y)$/i.test(ic[1]))
 					color = {
 						"red": "#ff0000",
 						"orange": "#ff7f00",
@@ -48,7 +48,10 @@ exports.command = (cmd, args, input, message) => {
 						"blue": "#0000ff",
 						"purple": "#a020f0",
 						"brown": "#964b00",
-						"pink": "#ffc0cb" }[ic[1].toLowerCase()];
+						"pink": "#ffc0cb",
+						"black": "#000000",
+						"grey": "#888888",
+						"gray": "#888888" }[ic[1].toLowerCase()];
 				if (ic[1].toLowerCase() == "hidden")
 					color = "hidden";
 			}
@@ -93,10 +96,16 @@ exports.command = (cmd, args, input, message) => {
 			else
 			{
 				if (color == "hidden")
+				{
 					result = [false, "Hidden"];
+					if (/^[a-zA-Z]\(x\)$/.test(yf))
+						equations[yf[0]] = y;
+				}
 				else
 				{
 					result = [];
+					if (/^[a-zA-Z]\(x\)$/.test(yf))
+						equations[yf[0]] = y;
 					for (let x = -150; x <= 150; x += 0.5)
 					{
 						let Y = equ(y, x, equations);
@@ -107,10 +116,6 @@ exports.command = (cmd, args, input, message) => {
 						}
 						else
 						{
-							if (/^[a-zA-Z]\(x\)$/.test(yf))
-							{
-								equations[yf[0]] = y;
-							}
 							X = Y[1] > 160 ? 160 : Y[1] < -160 ? -160 : Y[1];
 							result.push([x, X]);
 						}
