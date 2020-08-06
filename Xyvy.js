@@ -3,11 +3,11 @@ const Discord = require("discord.js"),
 	  PG = require("pg"),
 	  db = new PG.Client(process.env.DATABASE_URL),
 	  package = require("/app/package.json"),
-	  Color = require("/app/assets/misc/color.js");
+	  { Color } = require("/app/assets/misc/color.js");
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".3";
+var version = package.version + ".4";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
