@@ -2,11 +2,12 @@ const Discord = require("discord.js"),
 	  client = new Discord.Client(),
 	  PG = require("pg"),
 	  db = new PG.Client(process.env.DATABASE_URL),
-	  package = require("/app/package.json");
+	  package = require("/app/package.json"),
+	  Color = require("/app/assets/misc/color.js");
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".2";
+var version = package.version + ".3";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
