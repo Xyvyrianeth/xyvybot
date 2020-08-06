@@ -6,7 +6,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".1";
+var version = package.version + ".2";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -81,7 +81,7 @@ botError = (message, err) => {
 		`${err.join("\n")}\`\`\``);
 }
 sqlError = (message, err, res) => {
-	let error = new Discord.RichEmbed()
+	let error = new Discord.MessageEmbed()
 		.setAuthor("Xyvybot", "/app/assets/misc/avatar.png")
 		.setDescription("SQL error encountered.");
 	message.channel.send({error});
@@ -154,7 +154,7 @@ client.on('message', (message) => {
 		}
 		if ((message.author.id == "561578790837289002" || !message.author.bot) && message.content.startsWith("x!"))
 		{
-			let error = new Discord.RichEmbed()
+			let error = new Discord.MessageEmbed()
 				.setAuthor("Xyvybot", "/app/assets/misc/avatar.png")
 				.setTitle("Error on command: x!" + message.content.split(' ')[0].substring(2))
 				.setDescription("Well, I appear to have made an error somewhere. Don't worry, though, these things usually get fixed pretty soon.")

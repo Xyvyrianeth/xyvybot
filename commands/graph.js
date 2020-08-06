@@ -149,7 +149,7 @@ exports.command = (cmd, args, input, message) => {
 		}
 		let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
 		return message.channel.send(
-			new Discord.RichEmbed()
+			new Discord.MessageEmbed()
 				.setAuthor("x!graph | [Wiki]", "/app/assets/misc/avatar.png", "https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph")
 				.setDescription("```\n" + text.replace(/\\/g, '') + "```")
 				.attachFiles(new Discord.MessageAttachment(canvas.toBuffer(), "graph.png"))
