@@ -157,7 +157,7 @@ exports.equ = (equation, x, equations) => {
 		{
 			f_ = equation.match(/(?<![a-df-wz])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[1];
 			x_ = equation.match(/(?<![a-df-wz])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/)[2];
-			fx = exports.equ(equations[f_], x_, a, equations)[1];
+			fx = exports.equ(equations[f_], x_, equations)[1];
 			equation = equation.replace(/(?<![a-df-wz])([a-df-wz])\((-?[0-9.]+|\(-?[0-9.]+\))\)/, fx);
 			log += "4 | " + x + " | " + equation + "\n";
 		}
