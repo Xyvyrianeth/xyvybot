@@ -6,7 +6,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".0";
+var version = package.version + ".1";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -81,7 +81,10 @@ botError = (message, err) => {
 		`${err.join("\n")}\`\`\``);
 }
 sqlError = (message, err, res) => {
-	message.channel.send("```\nWhoops! It appears there was some sort of error with the database! Not sure if it's my fault or not, but Xyvy will look into it!```");
+	let error = new Discord.RichEmbed()
+		.setAuthor("Xyvybot", "/app/assets/misc/avatar.png")
+		.setDescription("SQL error encountered.");
+	message.channel.send({error});
 	let query = res.replace(/`/g, "\\`").length > 1500 ? "Check console" : res.replace(/`/g, "\\`");
 	if (query == "Check console")
 	{
@@ -150,8 +153,15 @@ client.on('message', (message) => {
 				errs.push(err.stack.split('\n')[i]);
 		}
 		if ((message.author.id == "561578790837289002" || !message.author.bot) && message.content.startsWith("x!"))
-			message.channel.send("```\nWhoops! It appears I've made an error! My maker has been notified and he will fix it as soon as he can! It's best you try something else, for now!```");
-		botError(message, errs);
+		{
+			let error = new Discord.RichEmbed()
+				.setAuthor("Xyvybot", "/app/assets/misc/avatar.png")
+				.setTitle("Error on command: x!" + message.content.split(' ')[0].substring(2))
+				.setDescription("Well, I appear to have made an error somewhere. Don't worry, though, these things usually get fixed pretty soon.")
+				.setColor(new Color().random());
+			message.channel.send({error});
+			botError(message, errs);
+		}
 	}
 });
 

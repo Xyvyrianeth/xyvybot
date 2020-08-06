@@ -40,18 +40,19 @@ exports.command = (cmd, args, input, message) => {
 				if (/^(red|orange|yellow|lime|green|teal|blue|purple|brown|pink)$/i.test(ic[1]))
 					color = {
 						"red": "#ff0000",
-						"orange": "#ff7F00",
+						"orange": "#ff7f00",
 						"yellow": "#fefe33",
-						"lime": "BFFF00",
+						"lime": "bfff00",
 						"green": "#008000",
 						"teal": "#008080",
 						"blue": "#0000ff",
 						"purple": "#a020f0",
 						"brown": "#964b00",
-						"pink": "#ffc0cb"
-					}[ic[1].toLowerCase()];
+						"pink": "#ffc0cb" }[ic[1].toLowerCase()];
+				if (ic[1].toLowerCase() == "hidden")
+					color = "hidden";
 			}
-			let egl = y.match(/^(y|[a-zA-Z]\(x\))(=|>=|>|__>__|≥|<=|<|__<__|≤)/),
+			let egl = y.match(/^(y|[a-df-wz]\(x\))(=|>=|>|__>__|≥|<=|<|__<__|≤)/),
 				yf;
 			if (egl != null)
 			{
@@ -91,7 +92,9 @@ exports.command = (cmd, args, input, message) => {
 				result = "Output (*y*) must remain isolated in all equations.";
 			else
 			{
-				if (color !== "hidden")
+				if (color == "hidden")
+					result = [false, "Hidden"];
+				else
 				{
 					result = [];
 					for (let x = -150; x <= 150; x += 0.5)
@@ -118,7 +121,7 @@ exports.command = (cmd, args, input, message) => {
 				else
 				{
 					display.push(yf + ' ' + ['=', '≤', '≥', '<', '>'][egl] + ' ' + y + '  -  ' + (new Color(color).getName()));
-					for (let i = 0; i < result.length || color !== "hidden"; i++)
+					for (let i = 0; i < result.length; i++)
 					{
 						XY = result[i];
 						let c = new Color(color);
@@ -146,8 +149,8 @@ exports.command = (cmd, args, input, message) => {
 		}
 		let text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
 		return message.channel.send(
-			new Discord.MessageEmbed()
-				.setAuthor("x!graph | [Wiki]", "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png", "https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph")
+			new Discord.RichEmbed()
+				.setAuthor("x!graph | [Wiki]", "/app/assets/misc/avatar.png", "https://github.com/Xyvyrianeth/xyvybot/wiki/x!graph")
 				.setDescription("```\n" + text.replace(/\\/g, '') + "```")
 				.attachFiles(new Discord.MessageAttachment(canvas.toBuffer(), "graph.png"))
 				.setImage("attachment://graph.png")
