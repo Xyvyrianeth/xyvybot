@@ -34,30 +34,15 @@ exports.equ = (equation, x, equations) => {
 		"Math.sqrt($1)" ],
 		// sqrt(x) => Math.sqrt(x)
 
-		// Root; if the radicand is positive
+		// Roots
 	  [ /(?<!sq)(?:rt|√)\[(\(-?[0-9]+\)|-?[0-9]+)\](\(-?[0-9.]+\)|-?[0-9.]+)/g,
 		"Math.pow($2,(1/($1)))" ],
-		// rt[3](x) => Math.pow(x,(1/(3)))
-
-		// Root; if the radicand is negative and the radical is odd
-	  [ /(?<!sq)(?:rt|√)\[(\(\-?[0-9]*[13579]{1}\)|\-?[0-9]*[13579]{1})\](?:\(-([0-9.]+)\)|-([0-9.]+))/g,
-		"-Math.pow($2$3,(1/($1)))" ],
-		// rt[3](-x) => -Math.pow(-x,(1/(3)))
-
-		// Root; if the radicand is negative and the radical is even
-	  [ /(?<!sq)(?:rt|√)\[(?:\(-?[0-9]*[02468]{1}\)|-?[0-9]*[02468]{1})\](?:\(-[0-9.]+\)|-[0-9.]+)/g,
-		"NaN" ],
-		// rt[2](-x) => NaN
-
-		// Root; if the radical is not an integer
-	  [ /(?<!sq)(?:rt|√)\[(\(-?[0-9]+\.[0-9]+\)|-?[0-9]+\.[0-9]+)\](\(-?[0-9.]+\)|-?[0-9.]+)/g,
-		"Math.pow(Math.pow($2,Math.fraction($1,1)),(1/Math.fraction($1,0)))" ],
-		// rt[1.5](-x) => Math.pow(Math.pow(-x,Math.fraction(1.5,1)),(1/Math.fraction(1.5,0)))
+		// rt[3](x) => Math.rt(x,3)
 
 		// A number raised to the power of another number
-	  [ /(?<!Math\.)(\(-?[0-9.]+\)|(?![0-9)]-)[0-9.]+)(?!sin|cos|tan)\^(?!-1)(\((-?)[0-9.]+\)|-?[0-9.]+)/g,
-		"Math.pow($1,$2)" ],
-		// x^7 => Math.pow(x,7)
+	  [ /(?<!Math\.)(\(-?[0-9.]+\)|-?[0-9.]+)(?!sin|cos|tan)\^(?!-1)(\(-?[0-9.]+\)|-?[0-9.]+)/g,
+		"Math.pw($1,$2)" ],
+		// x^7 => Math.pw(x,7)
 
 		// Summation function
 	  [ /(?<!Math\.)(?:sum|∑)\[n=([0-9]+)\]\(([0-9]+)\)(-?[0-9.]+|\(-?[0-9.]+\))/g,
@@ -179,7 +164,7 @@ exports.equ = (equation, x, equations) => {
 			log += "6 | " + x + " | " + equation + "\n";
 		}
 
-		equate = equation.match(/Math\.(a?(?:sin|cos|tan|sec|csc|cot)h?|ln|Log|sqrt|pow|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g);
+		equate = equation.match(/Math\.(a?(sin|cos|tan|sec|csc|cot)h?|ln|Log|(sq)?rt|pw|abs|sum|prod|round|fraction)\((\(\-?[0-9.]+\)|-?[0-9.]+)(,(\(\-?[0-9.]+\)|\-?[0-9.]+))*\)/g);
 		if (equate !== null) for (let i = 0; i < equate.length; i++)
 		{
 			equation = equation.replace(equate[i], '(' + eval(equate[i]) + ')');

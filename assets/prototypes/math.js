@@ -1,5 +1,7 @@
 // Constants
-Object.defineProperty(Math, 'Phi', { value: (1 + Math.sqrt(5)) / 2 });
+Object.defineProperty(Math, 'Phi', {
+	value: (1 + Math.sqrt(5)) / 2
+});
 
 // Functions
 Object.defineProperty(Math, 'ln', {
@@ -12,6 +14,29 @@ Object.defineProperty(Math, 'Log', {
 		return Math.log(a) / Math.log(n);
 	}
 });
+Object.defineProperty(Math, 'rt', {
+	value: (a, b) => {
+	}
+})
+Object.defineProperty(Math, 'pw', {
+	value: (b, e) => {
+		if (e == 0) // EVERYTHING to the power of 0 is 1
+			return 1;
+		if (b == 0 && e > 0) // 0 to the power of anything greater than 0 is 0
+			return 0;
+
+		if (b > 0 || e == Math.round(e)) // If b is positive and e is an integer, no issues
+			return Math.pow(b, e);
+
+		let E = Math.fraction(e);
+		if (E[1] % 2 == 0) // x^(3/2) is the same as the square root of x^3. If x is negative, x^3 is also negative, and the square root of a negative number is undefined.
+			return undefined; // x raised to a fraction will be undefined if x is negative and the denominator is even.
+		if (E[0] % 2 == 0) // Odds over evens, x becomes positive
+			return Math.pow(Math.abs(a), e);
+		if (E[0] % 2 == 1) // Odds over odds, x remains negative
+			return -Math.pow(Math.abs(a), e);
+	}
+})
 
 // Trigonometry
 Object.defineProperty(Math, 'csc', {

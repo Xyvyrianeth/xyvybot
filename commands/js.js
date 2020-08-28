@@ -23,6 +23,9 @@ exports.command = (cmd, args, input, message) => {
 				embed.attachFiles(attachment);
 				embed.setImage("attachment://image.png");
 			}
+			let log = (text) => {
+				client.channels.cache.get("748930072508891277").send("```js\n" + text + "```");
+			}
 			evaled = eval(toEval);
 			if (output == "") embed.setDescription("```js\n" + evaled + "```");
 			else embed.setDescription("```md" + output + "```");
