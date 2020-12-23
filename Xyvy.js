@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".8";
+var version = package.version + ".0";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -40,28 +40,27 @@ client.on("ready", () => {
 	setInterval(() => {
 		client.user.setPresence({
 			status: "online",
-			game: {
+			activity: {
 				name: [
 					"Version " + version + "!",
 					"in " + client.guilds.cache.array().length + " servers!",
 					"Say \"x!help\" for a list of commands!",
 					"Used by at least one person every day!",
-					"reversi and chill",
-					"I currently have 8 playable games, with at least 1 still in the planning stage. Suggest your favorite Abstract Strategy Game with the command \"x!request\"!",
+					"Reversi and Chill",
+					"I currently have 7 playable games, and I want to add more. Suggest your favorite Abstract Strategy Game with the command \"x!request\"!",
+					"What games do you want to see me support? Use the command \"x!request\" to send me some suggestions!",
 					"they don't think it be like it is, but it do",
-					"I will not ever support Chess. There's already a bot for that. It's literally called Chess Bot.",
+					"I will never support Chess. There's already a bot for that. It's literally called Chess Bot.",
 					"One day, I'll be completed.",
 					"Did you know I also have an AI bot you can play games against? Use the command \"x!ai\" for an invite link!",
 					"No human has ever beaten my AI bot in a game of Squares!",
-					"Want your own Discord bot to do things other bots don't? Use the command \"x!botsbyxyvy\" for more information!",
-					"The best bot for playing Abstract Strategy Games that I know of!",
+					// "Want your own Discord bot to do things other bots don't? Use the command \"x!botsbyxyvy\" for more information!",
+					"The best bot for playing a specific collection of Abstract Strategy Games that I know of!",
 					"You can also play games via DMs! Someone else has to want to play somewhere else, though.",
 					"Some day, I'll be a popular bot.",
-					"What games do you want to see me support? Use the command \"x!request\" to lend me some suggestions!",
 					"Ever heard of the game Ordo?",
-					"Adding Go would be a mistake because there's no guaranteed end to it. It just goes on and on until both players decide they're done.",
-					"I'm setting up a public server for tourneys 'n' shit for these games. Look forward to it!",
-					"Now try Ordo!"	].random(),
+					"Adding Go would be a mistake because there's no guaranteed end to it. It just goes on and on until both players decide they're done or somebody dies.",
+					"I'm setting up a public server for tourneys 'n' shit for these games. Look forward to it!", ].random(),
 				type: "STREAMING",
 				url: "https://twitch.tv/Xyvyrianeth"
 			}
