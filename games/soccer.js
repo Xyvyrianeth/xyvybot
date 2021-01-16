@@ -206,7 +206,7 @@ exports.takeTurn = function(channel, Move) {
 		move = Number(Move)
 	}
 	else
-	if (/([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?)/.test(Move))
+	if (/([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?)/i.test(Move))
 	{
 		move = [	"north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest",
 					"n", "ne", "e", "se", "s", "sw", "w", "nw",
@@ -215,7 +215,7 @@ exports.takeTurn = function(channel, Move) {
 					"up", "upright", "right", "downright", "down", "downleft", "left", "upleft",
 					"u", "ur", "r", "dr", "d", "dl", "l", "ul",
 					"up", "rightup", "right", "rightdown", "down", "leftdown", "left", "leftup",
-					"u", "ru", "r", "rd", "d", "ld", "l", "lu"].indexOf(Move.replace(/\s{1,}/, '')) % 8
+					"u", "ru", "r", "rd", "d", "ld", "l", "lu"].indexOf(Move.toLowerCase().replace(/\s{1,}/, '')) % 8
 	}
 	let highlight = move;
 	let tempboard = JSON.parse(JSON.stringify(game.board));
