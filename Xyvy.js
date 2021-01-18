@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".3";
+var version = package.version + ".4";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -60,7 +60,8 @@ client.on("ready", () => {
 					"Some day, I'll be a popular bot.",
 					"Ever heard of the game Ordo?",
 					"Adding Go would be a mistake because there's no guaranteed end to it. It just goes on and on until both players decide they're done or somebody dies.",
-					"I'm setting up a public server for tourneys 'n' shit for these games. Look forward to it!", ].random(),
+					"I'm setting up a public server for tourneys 'n' shit for these games. Look forward to it!",
+					"Use the command x!invite to add me to your own server!" ].random(),
 				type: "STREAMING",
 				url:  "https://twitch.tv/Xyvyrianeth"
 			}
