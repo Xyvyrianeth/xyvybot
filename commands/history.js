@@ -4,11 +4,18 @@ var { Color } = require("/app/assets/misc/color.js");
 exports.command = (cmd, args, input, message) => {
 	let player, game, id;
 	let has = {
-		player: false,
-		game: false,
-		id: false,
-		unknown: []
-	};
+			player: false,
+			game: false,
+			id: false,
+			unknown: [] },
+		gms = {
+			"othello": ["othello", "reversi"],
+			"squares": ["squares"],
+			"rokumoku": ["rokumoku", "connect6", "connectsix", "c6"],
+			"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
+			"connect4": ["connectfour", "connect4", "cfour", "c4"],
+			"ordo": ["ordo"],
+			"soccer": ["soccer", "papersoccer", "psoccer"] };
 	if (args.length == 0)
 		player = message.author.id;
 	else
