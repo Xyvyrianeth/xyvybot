@@ -7,7 +7,7 @@ exports.command = (cmd, args, input, message) => {
 		let helps =
 			[	"__**Featured Games**__\n`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__**Possible Future Releases**__:\n`go`\n__**Related Commands**__:\n`profile`  `top`  `history`",
 				"`minesweeper`  `iq`  `hangman`",
-				"`help`  `about`  `credits`  `aliases`",
+				"`help`  `about`  `credits`  `aliases`  `invite`",
 				"`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`"];
 		if (message.channel.type == "dm")
 			helps[2] += "  `bugreport`  `request`";

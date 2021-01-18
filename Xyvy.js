@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".2";
+var version = package.version + ".3";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -179,6 +179,7 @@ var aliases = {
 	"credits": ["credits", "acknowledgements"],
 	"help": ["help", "hlep", "je;[", "geko", "helo", "halp", "hlp", "hekp", "he;p", "commands"],
 	"aliases": ["aliases"],
+	"invite": ["invite"],
 	"bug": ["reportbug", "bugreport", "bug", "report"],
 	"request": ["request", "suggest", "suggestion", "requestion"],
 	// Miscellaneous
