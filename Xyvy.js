@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".4";
+var version = package.version + ".5";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
