@@ -1,0 +1,101 @@
+const Discord = require("discord.js");
+const { db, sqlError } = require("/app/Xyvy.js");
+var { Color } = require("/app/assets/misc/color.js");
+exports.command = (cmd, args, input, message) => {
+	let player, game, id;
+	let has = {
+		player: false,
+		game: false,
+		id: false,
+		unknown: []
+	};
+	if (args.length == 0)
+		player = message.author.id;
+	else
+		args.forEach(arg => {
+			if (Object.keys(gms).some(gm => gms[gm].includes(arg)))
+				Object.keys(gms).forEach(gm => {
+					if (gms[gm].includes(arg))
+						game = Object.keys, has.game = true;
+				});
+			else
+			if (/^<@!?[0-9]+>$/.test(arg) && client.users.cache.get(arg.match(/[0-9]+/)[0]) != undefined)
+				player = arg.match(/[0-9]+/)[0], has.player = true;
+			else
+			if (/^[0-9]+$/.test(arg))
+				id = arg, has.id = true;
+			else
+				has.unknown.push(arg);
+		});
+	if (has.unknown.length > 0)
+		return message.channel.send("Unknown arguments: `" + has.unknown.join("`, `") + '`');
+
+	let query = `SELECT * FROM matches\n` +
+				`WHERE\n` +
+				`	${has.id ? `id = '${id}'` : `'${player}' = ANY (players)${has.game ? ` AND game = '${game}'` : ''}`}\n` +
+				`ORDER BY timeStart DESC\n` +
+				`LIMIT 10`;
+
+	db.query(query, (err, res) => {
+		if (err)
+			return sqlError(message, err, query);
+		let embed = new Discord.MessageEmbed()
+			.setColor(new Color().random())
+			.setTitle("Game History");
+		if (res.rows.length == 0)
+		{
+			if (has.id)
+				embed.setDescription(`A game with the ID, \`${id}\`, does not exist.`);
+			else
+			if (has.player)
+				embed.setDescription(`<@${player}> does not have a Game History.`);
+			else
+				embed.setDescription(`<@${player}>, you do not have a Game History.`);
+
+		}
+		else
+		if (has.id)
+		{
+			let match = res.rows[0];
+			embed.setDescription(`__**PLAYERS**__\n<@${match.players[0]}> and <@${match.players[1]}>\n\n`);
+			embed.addField("\u200b", "__**GAME**__\n" + {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game]);
+			embed.addField("\u200b", `__**WINNER**__\n<@${match.winner}>`);
+			if (match.game == "squares")
+				embed.addField("\u200b", `[REPLAY GIF](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)\n[FINAL SCORE COUNT](https://cdn.discordapp.com/attachments/${match.squaresreplay}/counter_${match.id}.gif)`);
+			else
+				embed.addField("\u200b", `[REPLAY GIF](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)`);
+			let time = new Date(match.timestart);
+			embed.setFooter(`TIME: ${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${time.getDate()}/${time.getFullYear().toString().substring(2)} ${(time.getHours() < 10 ? '0': 0) + time.getHours()}:${(time.getMinutes() < 10 ? '0': 0) + time.getMinutes()}`);
+		}
+		else
+		{
+			let matches = [];
+			gameNameLength = 0;
+			res.rows.forEach(match => {
+				gameName = {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game];
+				status = player == match.winner ? "Winner": "Loser ";
+				let time = new Date(match.timestart);
+				time = `${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${time.getDate()}/${time.getFullYear().toString().substring(2)} ${(time.getHours() < 10 ? '0': 0) + time.getHours()}:${(time.getMinutes() < 10 ? '0': 0) + time.getMinutes()}`;
+				location = match.location;
+				id = match.id;
+				opponent = match.players[0] == player ? match.players[1] : match.players[0];
+				matches.push([gameName, status, time, location, id, opponent, match.squarereplay]);
+				if (gameName.length > gameNameLength)
+					gameNameLength = gameName.length;
+			});
+			let hasSquares = matches.some(match => match[0] == "Squares");
+			let history = [`__\`GAME${' '.repeat(gameNameLength - 4)}|STATUS|TIME          |\`\u200b${hasSquares ? "`REPLAY`\u200b` \u200b `\u200b`GIFS`" : "`REPLAY GIF`"}\u200b\`| OPPONENT\`__`];
+			matches.forEach(match => {
+				text =
+					hasSquares ?
+						match[0] == "Squares" ?
+							`[\`REPLAY\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\`|\`[\`SCORE\`](https://cdn.discordapp.com/attachments/${match[6]}/counter_${match[4]}.gif)` :
+							`\u200b\` \`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\` \`\u200b` :
+							`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)`
+				history.push(`\`${match[0] + ' '.repeat(gameNameLength - match[0].length)}|${match[1]}|${match[2]}|\`${text}\`|\`<@${match[5]}>`);
+			})
+			embed.setDescription(`for user: <@${player}>\n\n` + history.join('\n'));
+		}
+		message.channel.send(embed);
+	});
+};

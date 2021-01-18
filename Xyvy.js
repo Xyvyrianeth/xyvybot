@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".1";
+var version = package.version + ".0";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -15,15 +15,15 @@ require("/app/assets/prototypes/array.js");
 
 var images = require("/app/assets/backgrounds/images.json"),
 	games = {
-		games: require("/app/games/games.js").games,
+		games: 	   require("/app/games/games.js").games,
 		minigames: require("/app/games/minigames.js").minigames,
-		othello: require("/app/games/othello.js"),
-		squares: require("/app/games/squares.js"),
-		rokumoku: require("/app/games/rokumoku.js"),
-		ttt3d: require("/app/games/3dttt.js"),
-		connect4: require("/app/games/connect4.js"),
-		ordo: require("/app/games/ordo.js"),
-		soccer: require("/app/games/soccer.js")
+		othello:   require("/app/games/othello.js"),
+		squares:   require("/app/games/squares.js"),
+		rokumoku:  require("/app/games/rokumoku.js"),
+		ttt3d:     require("/app/games/3dttt.js"),
+		connect4:  require("/app/games/connect4.js"),
+		ordo:      require("/app/games/ordo.js"),
+		soccer:    require("/app/games/soccer.js")
 	};
 exports.games = games;
 
@@ -34,7 +34,7 @@ client.on("ready", () => {
 		activity: {
 			name: "version " + version + "!",
 			type: "STREAMING",
-			url: "https://twitch.tv/Xyvyrianeth"
+			url:  "https://twitch.tv/Xyvyrianeth"
 		}
 	});
 	setInterval(() => {
@@ -62,7 +62,7 @@ client.on("ready", () => {
 					"Adding Go would be a mistake because there's no guaranteed end to it. It just goes on and on until both players decide they're done or somebody dies.",
 					"I'm setting up a public server for tourneys 'n' shit for these games. Look forward to it!", ].random(),
 				type: "STREAMING",
-				url: "https://twitch.tv/Xyvyrianeth"
+				url:  "https://twitch.tv/Xyvyrianeth"
 			}
 		});
 	}, 30000);
@@ -105,19 +105,19 @@ newUser = (id, message) => {
 	let image = images.ids.random(),
 		query =
 			`INSERT INTO profiles (\n` +
-			`   id,       color,      title,      titles,             background,  backgrounds,         lefty,  money,  elo1,  elo2,  elo3,  elo4,  elo5,  elo6,  elo7,  win1,  win2,  win3,  win4,  win5,  win6,  win7,  los1,  los2,  los3,  los4,  los5,  los6,  los7\n` +
+			`   id, color, title, titles, background, backgrounds, lefty, money, elo1, elo2, elo3, elo4, elo5, elo6, elo7, win1, win2, win3, win4, win5, win6, win7, los1, los2, los3, los4, los5, los6, los7\n` +
 			`) VALUES (\n` +
-			`   '${id}',  '#2f3136',  'default',  ARRAY ['default'],  '${image}',  ARRAY ['${image}'],  ${images.display.right.includes(image) ? false : true},   500,    1000,  1000,  1000,  1000,  1000,  1000,  1000,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0\n` +
+			`   '${id}', '#2f3136', 'default', ARRAY ['default'], '${image}', ARRAY ['${image}'], ${images.display.right.includes(image) ? false : true}, 500, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n` +
 			`)`;
 	db.query(query, (err) => {
 		if (err)
 			exports.sqlError(message, err, query);
 	});
 	return {
-		id: id, color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lefty: images.display.right.includes(image) ? false : true, money: 500,
-		elo1: 1000, elo2: 1000, elo3: 1000, elo4: 1000, elo5: 1000, elo6: 1000, elo7: 1000,
-		win1: 0,	win2: 0,	win3: 0,	win4: 0,	win5: 0,	win6: 0,	win7: 0,
-		los1: 0,	los2: 0,	los3: 0,	los4: 0,	los5: 0,	los6: 0,	los7: 0
+		id:   id,   color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lefty: images.display.right.includes(image) ? false : true, money: 500,
+		elo1: 1000, elo2:  1000,   elo3:  1000,      elo4:   1000,        elo5:       1000,  elo6:        1000,    elo7:  1000,
+		win1: 0,	win2:  0,	   win3:  0,	     win4:   0,	          win5:       0,     win6:        0,       win7:  0,
+		los1: 0,	los2:  0,	   los3:  0,	     los4:   0,           los5:       0,     los6:        0,       los7:  0
 	};
 }
 exports.sqlError = sqlError;
@@ -166,9 +166,10 @@ client.on('message', (message) => {
 
 var aliases = {
 	// Games
-	"games": ["games"],
+	"profile": ["profile", "prof", "stats", "statistics"],
+	"top": ["top", "leaderboard", "leaderboards", "rank", "ranks", "ranking", "rankings"],
+	"history": ["history", "recent"],
 	"game": ["othello", "reversi", "squares", "rokumoku", "rm", "rokum", "rmoku", "connect6", "connectsix", "c6", "csix", "3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe", "connectfour", "connect4", "cfour", "c4", "ordo", "soccer", "papersoccer", "psoccer"],
-	"profile": ["profile", "scorecard", "prof"],
 	// Minigames
 	"minesweeper": ["minesweeper", "ms", "mines"],
 	"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],
@@ -193,25 +194,27 @@ var aliases = {
 	"pg": ["pg"],
 };
 var commands = {
-	"about": 		require("/app/commands/about.js").command,
-	"ai": 			require("/app/commands/ai.js").command,
-	"aliases": 		require("/app/commands/aliases.js").command,
-	"botsbyxyvy": 	require("/app/commands/botsbyxyvy.js").command,
-	"bug": 			require("/app/commands/bug.js").command,
-	"calc": 		require("/app/commands/calc.js").command,
-	"credits": 		require("/app/commands/credits.js").command,
-	"game": 		require("/app/commands/game.js").command,
-	"games": 		require("/app/commands/games.js").command,
-	"graph": 		require("/app/commands/graph.js").command,
-	"hangman": 		require("/app/commands/hangman.js").command,
-	"help": 		require("/app/commands/help.js").command,
-	"iq": 			require("/app/commands/iq.js").command,
-	"js": 			require("/app/commands/js.js").command,
-	"minesweeper": 	require("/app/commands/minesweeper.js").command,
-	"nekos": 		require("/app/commands/nekos.js").command,
-	"nsfw": 		require("/app/commands/nsfw.js").command,
-	"pg": 			require("/app/commands/pg.js").command,
-	"profile": 		require("/app/commands/profile.js").command,
-	"request": 		require("/app/commands/request.js").command
+	"about":		require("/app/commands/about.js").command,
+	"ai":			require("/app/commands/ai.js").command,
+	"aliases":		require("/app/commands/aliases.js").command,
+	"botsbyxyvy":	require("/app/commands/botsbyxyvy.js").command,
+	"bug":			require("/app/commands/bug.js").command,
+	"calc":			require("/app/commands/calc.js").command,
+	"credits":		require("/app/commands/credits.js").command,
+	"game":			require("/app/commands/game.js").command,
+	"graph":		require("/app/commands/graph.js").command,
+	"hangman":		require("/app/commands/hangman.js").command,
+	"history":		require("/app/commands/history.js").command,
+	"help":			require("/app/commands/help.js").command,
+	"invite":		require("/app/commands/invite.js").command,
+	"iq":			require("/app/commands/iq.js").command,
+	"js":			require("/app/commands/js.js").command,
+	"minesweeper":	require("/app/commands/minesweeper.js").command,
+	"nekos":		require("/app/commands/nekos.js").command,
+	"nsfw":			require("/app/commands/nsfw.js").command,
+	"pg":			require("/app/commands/pg.js").command,
+	"profile":		require("/app/commands/profile.js").command,
+	"request":		require("/app/commands/request.js").command,
+	"top":			require("/app/commands/top.js").command
 };
 exports.aliases = aliases;
