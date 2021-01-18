@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".8";
+var version = package.version + ".9";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -93,7 +93,7 @@ sqlError = (message, err, res) => {
 		console.log("If you can't see all of this, it'll post again in one minute.");
 		setTimeout(function() { console.log(res); }, 60000);
 	}
-	client.guilds.cache.get("399327996076621825").channels.cache.get("478371618620571648").send(
+	client.channels.cache.get("478371618620571648").send(
 		`\`\`\`Server: ${message.channel.guild.name} (${message.channel.guild.id})\n` +
 		`Channel: ${message.channel.name} (${message.channel.id})\`\`\`\n` +
 		`\`\`\`\n` +
