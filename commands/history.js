@@ -65,14 +65,14 @@ exports.command = (cmd, args, input, message) => {
 			else
 				embed.addField("\u200b", `[REPLAY GIF](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)`);
 			let time = new Date(match.timestart);
-			embed.setFooter(`TIME: ${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${time.getDate()}/${time.getFullYear().toString().substring(2)} ${(time.getHours() < 10 ? '0': 0) + time.getHours()}:${(time.getMinutes() < 10 ? '0': 0) + time.getMinutes()}`);
+			embed.setFooter(`TIME: ${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${(time.getDate() < 9 ? '0' : '') + (time.getDate() + 1)}/${time.getFullYear().toString().substring(2)} ${(time.getHours() < 10 ? '0': 0) + time.getHours()}:${(time.getMinutes() < 10 ? '0': 0) + time.getMinutes()}`);
 		}
 		else
 		{
 			let matches = [];
 			gameNameLength = 0;
 			res.rows.forEach(match => {
-				gameName = {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game];
+				gameName = {"othello": "Othello ", "squares": "Squares ", "rokumoku": "Rokumoku", "ttt3d": "3D TTT  ", "connect4": "Connect4", "ordo": "Ordo    ", "soccer": "P Soccer"}[match.game];
 				status = player == match.winner ? "Winner": "Loser ";
 				let time = new Date(match.timestart);
 				time = `${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${time.getDate()}/${time.getFullYear().toString().substring(2)} ${(time.getHours() < 10 ? '0': 0) + time.getHours()}:${(time.getMinutes() < 10 ? '0': 0) + time.getMinutes()}`;
@@ -84,7 +84,7 @@ exports.command = (cmd, args, input, message) => {
 					gameNameLength = gameName.length;
 			});
 			let hasSquares = matches.some(match => match[0] == "Squares");
-			let history = [`__\`GAME${' '.repeat(gameNameLength - 4)}|STATUS|TIME          |\`\u200b${hasSquares ? "`REPLAY`\u200b` \u200b `\u200b`GIFS`" : "`REPLAY GIF`"}\u200b\`| OPPONENT\`__`];
+			let history = [`__\`GAME    |STATUS|     TIME     |\`\u200b${hasSquares ? "`REPLAY`\u200b` \u200b `\u200b`GIFS`" : "`REPLAY GIF`"}\u200b\`|OPPONENT\`__`];
 			matches.forEach(match => {
 				text =
 					hasSquares ?
