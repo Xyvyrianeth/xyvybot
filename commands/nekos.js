@@ -1,8 +1,7 @@
 const Discord = require("discord.js");
 const nekos = require("nekos.life");
 const Nekos = new nekos();
-var { Color } = require("/app/assets/misc/color.js"),
-	titles = require("/app/assets/profile/titles.json");
+var { Color } = require("/app/assets/misc/color.js");
 exports.command = (cmd, args, input, message) => {
 	Nekos.sfw.neko().then(neko => {
 		message.channel.send(

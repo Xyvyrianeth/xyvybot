@@ -181,7 +181,7 @@ exports.command = (cmd, args, input, message) => {
 	}
 
 	else
-	if (["title", "titles"].includes(args[0]))
+	if (["title", "subtext"].includes(args[0]))
 	{
 		if (!args[1])
 		{
