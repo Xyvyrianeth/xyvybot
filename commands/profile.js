@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const Profile = require("/app/assets/profile/profile.js");
-const { db, newUser } = require("/app/Xyvy.js");
+const { client, db, newUser } = require("/app/Xyvy.js");
 var { Color } = require("/app/assets/misc/color.js"),
 	images = require("/app/assets/backgrounds/images.json");
 exports.command = (cmd, args, input, message) => {
