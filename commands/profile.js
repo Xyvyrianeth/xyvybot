@@ -16,8 +16,6 @@ exports.command = (cmd, args, input, message) => {
 
 		if (player == null)
 			return message.channel.send("User not found.");
-		else
-			player = player.user;
 
 		let query1 = `SELECT * FROM profiles WHERE id = '${player.id}'`;
 		return db.query(query1, (err, res) => {
