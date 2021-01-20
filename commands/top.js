@@ -9,15 +9,15 @@ exports.command = (cmd, args, input, message) => {
 			"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
 			"connect4": ["connectfour", "connect4", "cfour", "c4"],
 			"ordo": ["ordo"],
-			"soccer": ["soccer", "papersoccer", "psoccer"] },
+			"soccer": ["soccer", "papersoccer", "psoccer"] };
 		elos = !input ?			 "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7" :
-		gms.othello.includes(input) ?	 "elo1" :
-		gms.squares.includes(input) ?	 "elo2" :
+		gms.othello.includes(input)  ? "elo1" :
+		gms.squares.includes(input)  ? "elo2" :
 		gms.rokumoku.includes(input) ? "elo3" :
-		gms.ttt3d.includes(input) ?	 "elo4" :
+		gms.ttt3d.includes(input)    ? "elo4" :
 		gms.connect4.includes(input) ? "elo5" :
-		gms.ordo.includes(input) ?	 "elo6" :
-		gms.soccer.includes(input) ?   "elo7" : false;
+		gms.ordo.includes(input)     ? "elo6" :
+		gms.soccer.includes(input)   ? "elo7" : false;
 	if (!elos)
 		return message.channel.send("Unknown game.");
 
@@ -41,12 +41,12 @@ exports.command = (cmd, args, input, message) => {
 				 `	AND id != '${message.author.id}'\n` +
 				 `	AND wins + loss > 0\n` +
 				 `	AND (\n` +
-				 `		elos > ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}') OR\n` +
-				 `		(\n` +
-				 `			elos = ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}') AND\n` +
-				 `			((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) > ANY\n` +
-				 `			(SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) FROM profiles WHERE id = '${message.author.id}')\n` +
-				 `		)\n` +
+				 `	  elos > ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}') OR\n` +
+				 `	  (\n` +
+				 `	  	elos = ANY (SELECT elos FROM profiles WHERE id = '${message.author.id}') AND\n` +
+				 `	  	((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) > ANY\n` +
+				 `	  	(SELECT ((wins + 1.9208) / (wins + loss) - 1.96 * SQRT((trunc((wins) * (loss), 1) / (wins + loss)) + 0.9604) / (wins + loss)) / (1 + 3.8416 / (wins + loss)) FROM profiles WHERE id = '${message.author.id}')\n` +
+				 `	  )\n` +
 				 `	);`).replace(/elos/g, elos).replace(/wins/g, wins).replace(/loss/g, loss);
 	return db.query(query, (err, res) => {
 		if (err)

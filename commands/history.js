@@ -2,11 +2,11 @@ const Discord = require("discord.js");
 const { client, db, sqlError } = require("/app/Xyvy.js");
 var { Color } = require("/app/assets/misc/color.js");
 exports.command = (cmd, args, input, message) => {
-	let player, game, id;
-	let has = {
+	let player, game, id,
+		has = {
 			player: false,
 			game: false,
-			id: false,
+			// page: false,
 			unknown: [] },
 		gms = {
 			"othello": ["othello", "reversi"],
@@ -16,7 +16,7 @@ exports.command = (cmd, args, input, message) => {
 			"connect4": ["connectfour", "connect4", "cfour", "c4"],
 			"ordo": ["ordo"],
 			"soccer": ["soccer", "papersoccer", "psoccer"] };
-	if (args.length == 0)
+	if (!input)
 		player = message.author.id;
 	else
 		args.forEach(arg => {
@@ -28,12 +28,13 @@ exports.command = (cmd, args, input, message) => {
 			else
 			if (/^<@!?[0-9]+>$/.test(arg) && client.users.cache.get(arg.match(/[0-9]+/)[0]) != undefined)
 				player = arg.match(/[0-9]+/)[0], has.player = true;
-			else
-			if (/^[0-9]+$/.test(arg))
-				id = arg, has.id = true;
+			// else
+			// if (/^[0-9]+$/.test(arg))
+			// 	page = arg, has.page = true;
 			else
 				has.unknown.push(arg);
 		});
+
 	if (has.unknown.length > 0)
 		return message.channel.send("Unknown arguments: `" + has.unknown.join("`, `") + '`');
 
@@ -51,28 +52,10 @@ exports.command = (cmd, args, input, message) => {
 			.setTitle("Game History");
 		if (res.rows.length == 0)
 		{
-			if (has.id)
-				embed.setDescription(`A game with the ID, \`${id}\`, does not exist.`);
-			else
 			if (has.player)
 				embed.setDescription(`<@${player}> does not have a Game History.`);
 			else
 				embed.setDescription(`<@${player}>, you do not have a Game History.`);
-
-		}
-		else
-		if (has.id)
-		{
-			let match = res.rows[0];
-			embed.setDescription(`__**PLAYERS**__\n<@${match.players[0]}> and <@${match.players[1]}>\n\n`);
-			embed.addField("\u200b", "__**GAME**__\n" + {"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic Tac Toe", "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer"}[match.game]);
-			embed.addField("\u200b", `__**WINNER**__\n<@${match.winner}>`);
-			if (match.game == "squares")
-				embed.addField("\u200b", `[REPLAY GIF](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)\n[FINAL SCORE COUNT](https://cdn.discordapp.com/attachments/${match.squaresreplay}/counter_${match.id}.gif)`);
-			else
-				embed.addField("\u200b", `[REPLAY GIF](https://cdn.discordapp.com/attachments/${match.location}/replay_${match.id}.gif)`);
-			let time = new Date(match.timestart);
-			embed.setFooter(`TIME: ${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${(time.getDate() < 9 ? '0' : '') + (time.getDate() + 1)}/${time.getFullYear().toString().substring(2)} ${(time.getHours() < 10 ? '0': 0) + time.getHours()}:${(time.getMinutes() < 10 ? '0': 0) + time.getMinutes()}`);
 		}
 		else
 		{
@@ -95,13 +78,13 @@ exports.command = (cmd, args, input, message) => {
 			matches.forEach(match => {
 				text =
 					hasSquares ?
-						match[0] == "Squares" ?
+						match[0] == "Squares " ?
 							`[\`REPLAY\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\`|\`[\`SCORE\`](https://cdn.discordapp.com/attachments/${match[6]}/counter_${match[4]}.gif)` :
 							`\u200b\` \`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)\` \`\u200b` :
 							`[\`OPEN \u200b LINK\`](https://cdn.discordapp.com/attachments/${match[3]}/replay_${match[4]}.gif)`
 				history.push(`\`${match[0] + ' '.repeat(gameNameLength - match[0].length)}|${match[1]}|${match[2]}|\`${text}\`|\`<@${match[5]}>`);
 			})
-			embed.setDescription(`for user: <@${player}>\n\n` + history.join('\n'));
+			embed.setDescription(`**USER**: <@${player}>\n\n` + history.join('\n'));
 		}
 		message.channel.send(embed);
 	});

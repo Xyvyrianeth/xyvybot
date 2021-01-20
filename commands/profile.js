@@ -1,28 +1,25 @@
 const Discord = require("discord.js");
 const Canvas = require("canvas");
 const Profile = require("/app/assets/profile/profile.js");
-const { db } = require("/app/Xyvy.js");
+const { db, newUser } = require("/app/Xyvy.js");
 var { Color } = require("/app/assets/misc/color.js"),
-	titles = require("/app/assets/profile/titles.json"),
 	images = require("/app/assets/backgrounds/images.json");
 exports.command = (cmd, args, input, message) => {
-	if (!input || /^<@!?[0-9]+>$/.test(input) || /^[0-9]+$/.test(input))
+	if (!input || /^<@!?[0-9]+>$/.test(input))
 	{
-		let member;
+		let player;
 		if (!input)
-			member = message.channel.guild.members.cache.get(message.author.id);
+			player = client.users.cache.get(message.author.id);
 		else
-		if (message.channel.type !== "dm")
-			member = message.channel.guild.members.cache.get(input.match(/[0-9]+/)[0]);
-		else
-			return message.channel.send("Cannot display other users' profiles in DMs, yet, sorry!");
+		if (message.channel.type !== "dm" && /^<@!?[0-9]+>$/.test(input))
+			player = client.users.cache.get(input.match(/[0-9]+/)[0]);
 
-		if (member == null)
+		if (player == null)
 			return message.channel.send("User not found.");
 		else
-			member = member.user;
+			player = player.user;
 
-		let query1 = `SELECT * FROM profiles WHERE id = '${member.id}'`;
+		let query1 = `SELECT * FROM profiles WHERE id = '${player.id}'`;
 		return db.query(query1, (err, res) => {
 			if (err)
 				return sqlError(message, err, query1);
@@ -36,12 +33,12 @@ exports.command = (cmd, args, input, message) => {
 			else
 				profile = res.rows[0];
 
-			Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.${member.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then((image1) => {
+			Canvas.loadImage(player.avatar ? `https://cdn.discordapp.com/avatars/${player.id}/${player.avatar}.${player.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then((image1) => {
 				Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then((image2) => {
 					let embed = new Discord.MessageEmbed()
 						.setAuthor("x!profile")
-						.setDescription(`User Profile: <@${member.id}>`)
-						.attachFiles(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
+						.setDescription(`User Profile: <@${player.id}>`)
+						.attachFiles(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](player, profile, image1, image2), "profile.png"))
 						.setImage("attachment://profile.png")
 						.setColor(profile.color);
 					return message.channel.send(embed);
@@ -140,15 +137,15 @@ exports.command = (cmd, args, input, message) => {
 						return sqlError(message, err, query2);
 					else
 					{
-						let member = message.channel.guild.members.cache.get(message.author.id).user,
+						let player = client.users.cache.get(message.author.id).user,
 							profile = res.rows[0];
 						profile.background = args[1];
-						Canvas.loadImage(member.avatar ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.${member.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then((image1) => {
+						Canvas.loadImage(player.avatar ? `https://cdn.discordapp.com/avatars/${player.id}/${player.avatar}.${player.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then((image1) => {
 							Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then((image2) => {
 								let embed = new Discord.MessageEmbed()
 									.setAuthor("x!profile")
-									.setDescription(`Your new profile background has been equipped, <@${member.id}>! Take a look!`)
-									.attachFiles(new Discord.MessageAttachment(Profile["draw" + (lorr ? "Left" : "Right")](member, profile, image1, image2), "profile.png"))
+									.setDescription(`Your new profile background has been equipped, <@${player.id}>! Take a look!`)
+									.attachFiles(new Discord.MessageAttachment(Profile["draw" + (lorr ? "Left" : "Right")](player, profile, image1, image2), "profile.png"))
 									.setImage("attachment://profile.png")
 									.setColor(profile.color);
 								return message.channel.send(embed);
@@ -193,40 +190,32 @@ exports.command = (cmd, args, input, message) => {
 				if (err)
 					return sqlError(message, err, query1);
 				if (res.rows.length == 0)
-					return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
+					newUser(message.author.id, message);
 
-				let t1 = res.rows[0].titles,
-					t2 = [];
-				for (let i = 0; i < res.rows[0].titles.length; i++)
-				{
-					if (t1[i] !== res.rows[0].title)
-						t2.push('[' + titles[t1[i]] + "](" + t1[i] + ')');
-					else
-						t2.push('[' + titles[t1[i]] + "](" + t1[i] + ') (Equipped)');
-				}
 				let embed = new Discord.MessageEmbed()
 					.setColor(new Color().random())
 					.setAuthor("x!profile")
-					.setDescription("All titles owned by <@" + res.rows[0].id + ">:\n```md\n  [Title Text](titleID)\n\n" + t2.join("\n") + "```\nIf you wish to equip any of these, do \"x!profile title `titleID`\" (capitals are important!)!");
+					.setDescription("Your current title is `" + res.rows[0].title + "`.");
 				return message.channel.send(embed);
 			});
 		}
 
-		if (!Object.keys(titles).includes(args[1]))
-			return message.channel.send("That title ID does not exist. Try again.");
+		args.shift();
+		let title = args.join(" ");
+
 
 		let query1 = `SELECT *\nFROM profiles\nWHERE id = '${message.author.id}'`;
 		return db.query(query1, (err, res) => {
 			if (err)
 				return sqlError(message, err, query1);
 			if (res.rows.length == 0)
-				return message.channel.send("You have not yet created a profile. To do that, say \"x!profile\" right now!");
+				newUser(message.author.id, message);
 
-			let query2 = `UPDATE profiles\nSET title = '${args[1]}'\nWHERE id = '${message.author.id}'`;
+			let query2 = `UPDATE profiles\nSET title = '${title}'\nWHERE id = '${message.author.id}'`;
 			return db.query(query2, (err) => {
 				if (err)
 					return sqlError(message, err, query2);
-				return message.channel.send("Successfully updated your title to `" + titles[args[1]] + "`!");
+				return message.channel.send("Successfully updated your title to `" + title + "`!");
 			});
 		});
 	}

@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-var version = package.version + ".9";
+	var version = package.version + ".0";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -106,19 +106,19 @@ newUser = (id, message) => {
 	let image = images.ids.random(),
 		query =
 			`INSERT INTO profiles (\n` +
-			`   id, color, title, titles, background, backgrounds, lefty, money, elo1, elo2, elo3, elo4, elo5, elo6, elo7, win1, win2, win3, win4, win5, win6, win7, los1, los2, los3, los4, los5, los6, los7\n` +
+			`   id, color, title, background, backgrounds, lefty, money, elo1, elo2, elo3, elo4, elo5, elo6, elo7, win1, win2, win3, win4, win5, win6, win7, los1, los2, los3, los4, los5, los6, los7\n` +
 			`) VALUES (\n` +
-			`   '${id}', '#2f3136', 'default', ARRAY ['default'], '${image}', ARRAY ['${image}'], ${images.display.right.includes(image) ? false : true}, 500, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n` +
+			`   '${id}', '#2f3136', 'Casual Gamer', '${image}', ARRAY ['${image}'], ${images.display.right.includes(image) ? false : true}, 500, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n` +
 			`)`;
 	db.query(query, (err) => {
 		if (err)
 			exports.sqlError(message, err, query);
 	});
 	return {
-		id:   id,   color: "#aaa", title: "default", titles: ["default"], background: image, backgrounds: [image], lefty: images.display.right.includes(image) ? false : true, money: 500,
-		elo1: 1000, elo2:  1000,   elo3:  1000,      elo4:   1000,        elo5:       1000,  elo6:        1000,    elo7:  1000,
-		win1: 0,	win2:  0,	   win3:  0,	     win4:   0,	          win5:       0,     win6:        0,       win7:  0,
-		los1: 0,	los2:  0,	   los3:  0,	     los4:   0,           los5:       0,     los6:        0,       los7:  0
+		id: id, color: "#aaa", title: "Casual Gamer", background: image, backgrounds: [image], lefty: images.display.right.includes(image) ? false : true, money: 500,
+		elo1: 1000, elo2: 1000, elo3: 1000, elo4: 1000, elo5: 1000, elo6: 1000, elo7: 1000,
+		win1: 0,    win2: 0,    win3: 0,    win4: 0,    win5: 0,    win6: 0,    win7: 0,
+		los1: 0,    los2: 0,    los3: 0,    los4: 0,    los5: 0,    los6: 0,    los7: 0
 	};
 }
 exports.sqlError = sqlError;
@@ -168,7 +168,7 @@ client.on('message', (message) => {
 var aliases = {
 	// Games
 	"profile": ["profile", "prof", "stats", "statistics"],
-	"top": ["top", "leaderboard", "leaderboards", "rank", "ranks", "ranking", "rankings"],
+	"top": ["top", "leaderboard", "leaderboards", "lb", "rank", "ranks", "ranking", "rankings"],
 	"history": ["history", "recent"],
 	"game": ["othello", "reversi", "squares", "rokumoku", "rm", "rokum", "rmoku", "connect6", "connectsix", "c6", "csix", "3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe", "connectfour", "connect4", "cfour", "c4", "ordo", "soccer", "papersoccer", "psoccer"],
 	// Minigames

@@ -129,74 +129,12 @@ exports.command = (message) => {
 						lp.money += 75,
 						wp.money += 50;
 
-					// Titles
-					let wt = [];
-					let lt = [];
-					// General
-					for (let i = 0; i < 8; i++)
-						if (wp.elo1 + wp.elo2 + wp.elo3 + wp.elo4 + wp.elo5 + wp.elo6 + wp.elo7 >= [15E3, 2E4, 25E3, 3E4, 4E4, 5E4, 75E3, 1E5][i] && !wp.titles.includes(["15k_elo", "20k_elo", "25k_elo", "30k_elo", "40k_elo", "50k_elo", "75k_elo", "100kelo"][i]))
-							wt.push(["15k_elo", "20k_elo", "25k_elo", "30k_elo", "40k_elo", "50k_elo", "75k_elo", "100kelo"][i]);
-					for (let i = 0; i < 8; i++)
-						if (wp.win1 + wp.win2 + wp.win3 + wp.win4 + wp.win5 + wp.win6 + wp.win7 + wp.los1 + wp.los2 + wp.los3 + wp.los4 + wp.los5 + wp.los6 + wp.los7 >= [50, 75, 100, 200, 300, 400, 500, 1E3] && !wp.titles.includes(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]))
-							wt.push(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]);
-					for (let i = 0; i < 8; i++)
-						if (lp.elo1 + lp.elo2 + lp.elo3 + lp.elo4 + lp.elo5 + lp.elo6 + lp.elo7 <= [2500, 2E3, 1500, 1E3, 750, 500, 250, 0][i] && !lp.titles.includes(["2500elo", "2000elo", "1500elo", "1000elo", "750_elo", "500_elo", "250_elo", "eloGone"][i]))
-							lt.push(["2500elo", "2000elo", "1500elo", "1000elo", "750_elo", "500_elo", "250_elo", "eloGone"][i]);
-					for (let i = 0; i < 8; i++)
-						if (lp.win1 + lp.win2 + lp.win3 + lp.win4 + lp.win5 + lp.win6 + lp.win7 + lp.los1 + lp.los2 + lp.los3 + lp.los4 + lp.los5 + lp.los6 + lp.los7 >= [50, 75, 100, 200, 300, 400, 500, 1E3] && !lp.titles.includes(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]))
-							wt.push(["50_game", "75_game", "100game", "200game", "300game", "400game", "500game", "1k_game"][i]);
-					// Game Specific
-					if (wp["elo" + result.game] >= 2000 && !wp.titles.includes(`2elo${result.game}_1`))
-					{
-						wt.push(`2elo${result.game}_1`);
-						if (result.game == 1 || result.game == 2)
-							wt.push(`2elo${result.game}_2`);
-					}
-					if (wp["win" + result.game] + wp["los" + result.game] >= 100)
-					{
-						wt.push(`100g${result.game}_1`);
-						if (relult.game == 1 || result.game == 2)
-							wt.push(`100g${result.game}_2`);
-					}
-					// Othello
-					if (result.game == 1 && result.score[1] == 0 && !wp.titles.includes("cap_all"))
-						wt.push("cap_all");
-					// Squares
-					if (result.game == 2 && lp.id == "561578790837289002" && !wp.titles.includes("beatXAI"))
-						wt.push("beatXAI");
-					// Rokumoku
-					// 3D Tic Tac Toe
-					if (result.game == 4 && result.turns <= 8)
-					{
-						if (!wp.titles.includes("winsIn4"))
-							wt.push("winsIn4");
-						if (!lp.titles.includes("aCasual"))
-							lt.push("aCasual");
-					}
-					// Connect 4
-					if (result.game == 5 && lp.id == "238916443402534914" && !wp.titles.includes("beatRDB"))
-						wt.push("beatRDB");
-					if (result.game == 5 && result.turns <= 8)
-					{
-						if (!wp.titles.includes("winsIn4"))
-							wt.push("winsIn4");
-						if (!lp.titles.includes("aCasual"))
-							lt.push("aCasual");
-					}
-					// Ordo
-					// Paper Soccer
-					if (result.game == 7 && result.highest[0] >= 10 && !wp.titles.includes(""))
-						wt.push("10moves");
-					if (result.game == 7 && result.highest[1] >= 10 && !lp.titles.includes(""))
-						lt.push("10moves");
-
 					let booty = Math.ceil(lp["elo" + result.game] / 10),
 						query = `UPDATE profiles\n` +
 							`SET\n` +
 							`   elo${result.game} = ${wp["elo" + result.game] + booty},\n` +
 							`   win${result.game} = ${wp["win" + result.game] + 1},\n` +
 							`   money = ${wp.money},\n` +
-							`   titles = ARRAY${JSON.stringify(wp.titles.concat(wt)).replace(/"/g, "'")}\n` +
 							`WHERE id = '${wp.id}';\n` +
 							`\n` +
 							`UPDATE profiles\n` +
@@ -204,35 +142,11 @@ exports.command = (message) => {
 							`   elo${result.game} = ${lp["elo" + result.game] - booty},\n` +
 							`   los${result.game} = ${lp["los" + result.game] + 1},\n` +
 							`   money = ${lp.money},\n` +
-							`   titles = ARRAY${JSON.stringify(lp.titles.concat(lt)).replace(/"/g, "'")}\n` +
 							`WHERE id = '${lp.id}';`
 					db.query(query, (err) => {
 						if (err)
 							return exports.sqlError(message, err, query);
 					});
-					if (wt.length > 0)
-					{
-						let text = '';
-						for (let i = 0; i < wt.length; i++)
-							text += `[${titles[wt[i]]}](${wt[i]})\n`
-						client.users.cache.get(wp.id).send(
-							`You've just received ${wt.length == 1 ? "this title" : "the following titles"} to use for your \`x!profile\`:\n` +
-							"```md\n" +
-							text +
-							"```\n" +
-							"Use the command `x!profile titles` to see all your owned titles.");
-					}
-					if (lt.length > 0)
-					{
-						let text = '';
-						for (let i = 0; i < lt.length; i++)
-							text += `[${titles[lt[i]]}](${lt[i]})\n`
-						client.users.cache.get(lp.id).send(
-							`You've just received ${wt.length == 1 ? "this title" : "the following titles"} to use for your \`x!profile\`:\n` +
-							"```md\n" +
-							text +
-							"```");
-					}
 				});
 		}
 	}

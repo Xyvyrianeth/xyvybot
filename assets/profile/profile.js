@@ -1,6 +1,5 @@
 const Canvas = require('canvas');
 const { Color } = require('/app/assets/misc/color.js');
-var titles = require('/app/assets/profile/titles.json');
 var gameCount = 7;
 
 exports.drawLeft = function(member, profile, avatar, background) {
@@ -53,7 +52,7 @@ exports.drawLeft = function(member, profile, avatar, background) {
 		texts = [];
 	for (let i = 0; i < 3; i++)
 	{
-		text = drawText([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]);
+		text = drawText([member.username + "#" + member.discriminator, member.id, profile.title][i]);
 		let Text = new Canvas.createCanvas(text[1], 11),
 			tectx = Text.getContext('2d');
 		tectx.drawImage(text[0], 0, 0);
@@ -172,7 +171,7 @@ exports.drawRight = function(member, profile, avatar, background) {
 	let texts = [];
 	for (let i = 0; i < 3; i++)
 	{
-		text = drawText([member.username + "#" + member.discriminator, member.id, titles[profile.title]][i]);
+		text = drawText([member.username + "#" + member.discriminator, member.id, profile.title][i]);
 		let Text = new Canvas.createCanvas(text[1], 11),
 			tectx = Text.getContext('2d');
 		tectx.drawImage(text[0], 0, 0);
