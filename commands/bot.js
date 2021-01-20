@@ -2,8 +2,7 @@ const Discord = require("discord.js"),
 	  gifEncoder = require("canvas-gif-encoder"),
 	  fs = require("fs"),
 	{ db, client } = require("/app/Xyvy.js");
-var { games } = require("/app/Xyvy.js"),
-	titles = require("/app/assets/profile/titles.json");
+var { games } = require("/app/Xyvy.js");
 exports.command = (message) => {
 	if (message.attachments.array().length != 0)
 	{
