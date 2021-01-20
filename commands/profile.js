@@ -35,7 +35,7 @@ exports.command = (cmd, args, input, message) => {
 				Canvas.loadImage('/app/assets/backgrounds/' + profile.background.substring(0, 7) + (profile.background.substring(7) == 'p' ? ".png" : ".jpg")).then((image2) => {
 					let embed = new Discord.MessageEmbed()
 						.setAuthor("x!profile")
-						.setDescription(`User Profile: <@${player.id}>`)
+						.setDescription(`<@${player.id}>`)
 						.attachFiles(new Discord.MessageAttachment(Profile["draw" + (profile.lefty ? "Left" : "Right")](player, profile, image1, image2), "profile.png"))
 						.setImage("attachment://profile.png")
 						.setColor(profile.color);
@@ -135,7 +135,7 @@ exports.command = (cmd, args, input, message) => {
 						return sqlError(message, err, query2);
 					else
 					{
-						let player = client.users.cache.get(message.author.id).user,
+						let player = client.users.cache.get(message.author.id),
 							profile = res.rows[0];
 						profile.background = args[1];
 						Canvas.loadImage(player.avatar ? `https://cdn.discordapp.com/avatars/${player.id}/${player.avatar}.${player.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png").then((image1) => {
