@@ -192,7 +192,7 @@ exports.takeTurn = function(channel, Move) {
 					a[0] + [-1, -1, 0, 1, 1, 1, 0, -1][d],
 					a[1] + [0, 1, 1, 1, 0, -1, -1, -1][d]
 				];
-				if (typeof game.board[dir[0]][dir[1]] != "boolean" && game.board[dir[0]][dir[1]] == game.turn && queue.some(a => a[0] == dir[0] && a[1] == dir[1]) && confirmed.some(a => a[0] == dir[0] && a[1] == dir[1]))
+				if (dir[0] >= 0 && dir[0] < 8 && dir[1] >= 0 && dir[1] < 8 && typeof game.board[dir[0]][dir[1]] != "boolean" && game.board[dir[0]][dir[1]] == game.turn && queue.some(a => a[0] == dir[0] && a[1] == dir[1]) && confirmed.some(a => a[0] == dir[0] && a[1] == dir[1]))
 					queue.push(dir);
 			}
 		}
