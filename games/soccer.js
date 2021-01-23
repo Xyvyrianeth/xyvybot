@@ -201,9 +201,9 @@ exports.takeTurn = function(channel, Move) {
 	let move;
 	let end = 0;
 	let goagain = false;
-	if (/[0-7]/.test(Move))
+	if (/[1-8]/.test(Move))
 	{
-		move = Number(Move)
+		move = Number(Move) - 1
 	}
 	else
 	if (/([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?)/i.test(Move))

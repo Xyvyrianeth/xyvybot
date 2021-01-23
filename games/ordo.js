@@ -163,7 +163,7 @@ exports.takeTurn = function(channel, Move) {
         }
     }
     else
-    if (/^([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]) [1-9]$/.test(Move)) // Ordo moves
+    if (/^([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]|north|east|south|west|[nesw]) [1-9]$/.test(Move)) // Ordo moves
     {   // Exampe: "5A-7A right 4"
         let direction = {
             "up": 0,
@@ -173,7 +173,19 @@ exports.takeTurn = function(channel, Move) {
             "down": 2,
             "d": 2,
             "left": 3,
-            "l": 3
+			"l": 3,
+			"north": 0,
+			"n": 0,
+			"east": 1,
+			"e": 1,
+			"south": 2,
+			"s": 2,
+			"west": 3,
+			"w": 3,
+			"1": 0,
+			"2": 1,
+			"3": 2,
+			"4": 3
         }[Move.split(' ')[1]]; // 1
         let distance = Number(Move.split(' ')[2]); // 4
 		let pieces = [

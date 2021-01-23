@@ -262,7 +262,7 @@ exports.command = (cmd, args, input, message) => {
 					"Movement",
 					"On a player's turn, they can move the ball to an adjacent gridpoint both diagonally and orthogonally. Doing so marks the path between the two points, and that path cannot be taken again for the rest of the game.\n" +
 					"If a player moves the ball to a gridpoint that already has a path connected to it, the player gets to go again. If the player touches the edge of the board, they also get to go again; but they cannot move along the edge of the board, they have to bounce off of it.\n" +
-					"You move the ball by saying the direction you wish to move it. The bot accepts combinations of up/down/left/right, north/south/east/west, or a simple digit with 0 being north, 1 being northeast, etc.\n" +
+					"You move the ball by saying the direction you wish to move it. The bot accepts combinations of up/down/left/right, north/south/east/west, or a simple digit with 1 being north, 2 being northeast, etc.\n" +
 					`[Example not yet available](${wiki.ghuc}/soccer/movement.png)`)
 				.addField(
 					"Endgame",
