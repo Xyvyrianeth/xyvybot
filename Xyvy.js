@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-	var version = package.version + ".0";
+	var version = package.version + ".1";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -171,7 +171,15 @@ var aliases = {
 	"profile": ["profile", "prof", "stats", "statistics"],
 	"top": ["top", "leaderboard", "leaderboards", "lb", "rank", "ranks", "ranking", "rankings"],
 	"history": ["history", "recent"],
-	"game": ["othello", "reversi", "squares", "rokumoku", "rm", "rokum", "rmoku", "connect6", "connectsix", "c6", "csix", "3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe", "connectfour", "connect4", "cfour", "c4", "ordo", "soccer", "papersoccer", "psoccer", "linesofaction", "loa"],
+	"game": [
+		"othello", "reversi",
+		"squares",
+		"rokumoku", "rm", "rokum", "rmoku", "connect6", "connectsix", "c6", "csix",
+		"3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe",
+		"connectfour", "connect4", "cfour", "c4",
+		"ordo",
+		"soccer", "papersoccer", "psoccer",
+		"linesofaction", "loa", "lines" ],
 	// Minigames
 	"minesweeper": ["minesweeper", "ms", "mines"],
 	"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],

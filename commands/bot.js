@@ -84,10 +84,6 @@ exports.command = (message) => {
 				};
 				if (result.game == 1 || result.game == 2)
 					result.score = game.winner == 0 ? game.score : game.score.reverse();
-				if (result.game == 4 || result.game == 5)
-					result.turns = game.turns;
-				if (result.game == 7)
-					result.highest = game.winner == 0 ? game.highest : game.highest.reverse();
 			if (end != 0)
 				games.games.forEach((game, index) => {
 					if (game.channels.hasOwnProperty(message.channel.id))
@@ -154,7 +150,7 @@ exports.command = (message) => {
 	if (games.games.some(game => game.channels.hasOwnProperty(message.channel.id)))
 	{
 		let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
-		if (/<@[0-9]+> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo|Paper Soccer|Lines of Action)!/.test(message.content) || message.content.startsWith("Illegal move:") || message.content == "This is a singleton move, please use the singleton move format!")
+		if (/<@[0-9]+> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo|Paper Soccer|Lines of Action)!/.test(message.content) || message.content.startsWith("Illegal move:"))
 			game.channels[message.channel.id].push(message.id);
 	}
 	else

@@ -15,7 +15,8 @@ exports.command = (cmd, args, input, message) => {
 			"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
 			"connect4": ["connectfour", "connect4", "cfour", "c4"],
 			"ordo": ["ordo"],
-			"soccer": ["soccer", "papersoccer", "psoccer"] };
+			"soccer": ["soccer", "papersoccer", "psoccer"],
+			"loa": ["linesofaction", "loa", "lines"] };
 	if (!input)
 		player = message.author.id;
 	else

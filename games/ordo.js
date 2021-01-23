@@ -197,7 +197,7 @@ exports.takeTurn = function(channel, Move) {
 		if (pieces[0][0] == pieces[1][0] && pieces[0][1] == pieces[1][1])
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["This is a singleton move, please use the singleton move format!"]);
+			return exports.say(channel, ["Illegal move: this is a singleton move, please use the singleton move format!"]);
 		}
 		if (pieces[0][0] != pieces[1][0] && pieces[0][1] != pieces[1][1])
 		{

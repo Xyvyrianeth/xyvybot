@@ -20,7 +20,7 @@ exports.command = (cmd, args, input, message) => {
 		"connect4": ["connectfour", "connect4", "cfour", "c4"],
 		"ordo": ["ordo"],
 		"soccer": ["soccer", "papersoccer", "psoccer"],
-		"loa": ["linesofaction", "loa"] };
+		"loa": ["linesofaction", "loa", "lines"] };
 	let gameName = null;
 	Object.keys(gameNicks).forEach(game => {
 		if (gameNicks[game].includes(cmd)) gameName = game; });
