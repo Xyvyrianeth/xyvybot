@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-	var version = package.version + ".1";
+	var version = package.version + ".2";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -199,7 +199,6 @@ var commands = {
 	"about":		require("/app/commands/about.js").command,
 	"ai":			require("/app/commands/ai.js").command,
 	"aliases":		require("/app/commands/aliases.js").command,
-	"botsbyxyvy":	require("/app/commands/botsbyxyvy.js").command,
 	"bug":			require("/app/commands/bug.js").command,
 	"calc":			require("/app/commands/calc.js").command,
 	"credits":		require("/app/commands/credits.js").command,
