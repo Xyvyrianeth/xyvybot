@@ -144,7 +144,7 @@ exports.command = (cmd, args, input, message) => {
 				.addField(
 					"Capturing pieces",
 					"Once you place a piece, all lines of your opponent's pieces that have the piece you just placed at one end with one of your other pieces at the other end are \"captured\" and will immediately turn into your pieces.\n" +
-					"Placing a piece can capture your opponent's pieces in any diagonal and orthagonal direction. You can also capture in multiple directions at once.\n" +
+					"Placing a piece can capture your opponent's pieces in any diagonal and orthogonal direction. You can also capture in multiple directions at once.\n" +
 					"pieces that have been captured on any given turn will be highlighted in green.\n" +
 					`[Example not yet available](${wiki.ghuc}/othello/scoring.png)`)
 				.addField(
@@ -188,7 +188,7 @@ exports.command = (cmd, args, input, message) => {
 					`[Example not yet available](${wiki.ghuc}/rokumoku/placement.png)`)
 				.addField(
 					"Endgame",
-					"The game officially ends when either player has created a line of 6 of their own pieces, either diagonally or orthagonally.\n" +
+					"The game officially ends when either player has created a line of 6 of their own pieces, either diagonally or orthogonally.\n" +
 					"Once this happens, the 6 pieces that constitute the winning line will be highlighted in green.\n" +
 					`[Example not yet available](${wiki.ghuc}/rokumoku/winning.png)`);
 				break;
@@ -221,29 +221,29 @@ exports.command = (cmd, args, input, message) => {
 					`[Example not yet available](${wiki.ghuc}/connect4/placement.png)`)
 				.addField(
 					"Endgame",
-					"The game officially ends when either player has create a line of 4 of their own pieces, either diagonally or orthagonally.\n" +
+					"The game officially ends when either player has create a line of 4 of their own pieces, either diagonally or orthogonally.\n" +
 					"Once this happens, the 4 pieces that constitute the winning line will be highlighted in green.\n" +
 					`[Example not yet available](${wiki.ghuc}/connect4/winning.png)`);
 				break;
 			case "ordo":
 				embed.setDescription(
 					`Ordo is an ${wiki.asg} that has rules and gameplay similar to that of Checkers. The game consists of pieces of both blue and white and is played on an 8x10 tile board. The game starts with all pieces on the board in a set pattern. Blue goes first.\n` +
-					"Players take turns moving 1 piece around the board in diagonal or orthagonal directions (or multiple pieces, but only orthagonally), making sure that all of their pieces are connected in the same group.")
+					"Players take turns moving 1 piece around the board in diagonal or orthogonal directions (or multiple pieces, but only orthogonally), making sure that all of their pieces are connected in the same group.")
 				.addField(
 					"Singleton Moves",
-					"Singleton moves consist of one piece being moved in any direction, either diagonally or orthagonally, any number of tiles. These moves can end in either an empty tile or on a tile occupied by one of your opponent's pieces (which effectively \"captures\" and removes that piece from the game).\n" +
+					"Singleton moves consist of one piece being moved in any direction, either diagonally or orthogonally, any number of tiles. These moves can end in either an empty tile or on a tile occupied by one of your opponent's pieces (which effectively \"captures\" and removes that piece from the game).\n" +
 					"You make a singleton move by saying the coordinates of the piece you want to move followed by the coordinates of the tile you wish to move it to; for example, say \"4C 7F\" to move a piece from Row 4–Column C to Row 7–Column F.\n" +
 					"pieces that have been moved will be highlighted in yellow with the tile they were moved from being highlighted in red.\n" +
 					`[Example not yet available](${wiki.ghuc}ordo/singleton_move.png)`)
 				.addField(
 					"Ordo Moves",
-					"Ordo moves consist of multiple pieces that are adjacent orthagonally from each other being moved in either perpendicular direction (if the pieces being moved are aligned vertically, they can only be moved horizontally, and vice versa).\n" +
+					"Ordo moves consist of multiple pieces that are adjacent orthogonally from each other being moved in either perpendicular direction (if the pieces being moved are aligned vertically, they can only be moved horizontally, and vice versa).\n" +
 					"You make an ordo move by saying the 2 coordinates of the pieces located at both ends of the line of pieces you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many tiles you wish to move it in that direction; for example, say \"5A-7A right 4\" to move 3 pieces aligned vertically in Column A to the right 4 tiles each.\n" +
 					"These moves cannot capture enemy pieces.\n" +
 					`[Example](${wiki.ghuc}ordo/ordo_move.png)`)
 				.addField(
 					"Groups",
-					"At the end of either player's turn, all of their pieces must be connected into a single group where all pieces are adjacent to at least one other, either diagonally or orthagonally. If a move is attempted and the moved piece(s) is not connected to the primary group, it is not a legal move.\n" +
+					"At the end of either player's turn, all of their pieces must be connected into a single group where all pieces are adjacent to at least one other, either diagonally or orthogonally. If a move is attempted and the moved piece(s) is not connected to the primary group, it is not a legal move.\n" +
 					"If a player were to make a move that would separate their opponent's pieces into two or more groups, their opponent must immediately make a move that would reconnect their pieces into a single group again.\n" +
 					"If a player's pieces were to be split into two or more groups and that player cannot reconnect them into a single group again on their next turn, the game immediately ends.\n" +
 					`[Example](${wiki.ghuc}ordo/group_split.png)`)
@@ -260,7 +260,7 @@ exports.command = (cmd, args, input, message) => {
 					"Two players take turns \"kicking\" the ball around along the gridlines, leaving trails where they go, until the ball enters one of the two goals.")
 				.addField(
 					"Movement",
-					"On a player's turn, they can move the ball to an adjacent gridpoint both diagonally and orthagonally. Doing so marks the path between the two points, and that path cannot be taken again for the rest of the game.\n" +
+					"On a player's turn, they can move the ball to an adjacent gridpoint both diagonally and orthogonally. Doing so marks the path between the two points, and that path cannot be taken again for the rest of the game.\n" +
 					"If a player moves the ball to a gridpoint that already has a path connected to it, the player gets to go again. If the player touches the edge of the board, they also get to go again; but they cannot move along the edge of the board, they have to bounce off of it.\n" +
 					"You move the ball by saying the direction you wish to move it. The bot accepts combinations of up/down/left/right, north/south/east/west, or a simple digit with 0 being north, 1 being northeast, etc.\n" +
 					`[Example not yet available](${wiki.ghuc}/soccer/movement.png)`)
@@ -273,18 +273,18 @@ exports.command = (cmd, args, input, message) => {
 			case "loa":
 				embed.setDescription(
 					`Lines of Action (or LOA) is an ${wiki.asg} played between two people. The object of the game is for a player to combine all of their pieces into a single connected group.\n` +
-					"The game is played on an 8x8 tile board with players taking turns moving individual pieces around orthagonally or diagonally. Black goes first\n" +
+					"The game is played on an 8x8 tile board with players taking turns moving individual pieces around orthogonally or diagonally. Black goes first\n" +
 					"Players start with 12 pieces aligned along all 4 edges of the board, with the 4 corner tiles being empty, with one player's pieces along the top and bottom edges and the other player's along the left and right edges.")
 				.addField(
 					"Movement",
-					"In LOA, pieces must move as many tiles as there are total pieces along the line of tiles the piece is being moved, both orthagonally and diagonally.\n" +
+					"In LOA, pieces must move as many tiles as there are total pieces along the line of tiles the piece is being moved, both orthogonally and diagonally.\n" +
 					"For example, if the active player wants to move a piece along row 4 and there are 3 pieces total in row 4, the piece being moved has to move exactly 3 tiles to the left or right.\n",
 					"Enemy pieces cannot be jumped over. However a player can jump over their own pieces freely. Enemy pieces can be captured if a piece lands on it, removing it from the game.\n" +
 					"To move a piece, say the location of the piece you wish to move and the direction you wish to move it in, separated by a space.\n" +
 					`[Example not yet available](${wiki.ghuc}/loa/movement.png)`)
 				.addField(
 					"Endgame",
-					"The game ends when all of one player's pieces are adjacent into a single group. A group can have pieces adjoined both orthagonally and diagonally.\n" +
+					"The game ends when all of one player's pieces are adjacent into a single group. A group can have pieces adjoined both orthogonally and diagonally.\n" +
 					`[Example not yet available](${wiki.ghuc}/loa/groups.png)\n` +
 					"If a player were to have all but one of their pieces captured and only have one piece remaining, then that counts as a single grouping and therefor they win, unless the final capture combined their opponent's pieces into one group.\n" +
 					`[Example not yet available](${wiki.ghuc}/loa/lastbutlost.png)`
