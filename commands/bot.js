@@ -1,7 +1,7 @@
 const Discord = require("discord.js"),
 	  gifEncoder = require("canvas-gif-encoder"),
 	  fs = require("fs"),
-	{ db, client } = require("/app/Xyvy.js");
+	{ db, client, sqlError } = require("/app/Xyvy.js");
 var { games } = require("/app/Xyvy.js");
 exports.command = (message) => {
 	if (message.attachments.array().length != 0)
@@ -20,7 +20,7 @@ exports.command = (message) => {
 						`VALUES ('${message.id}', '${Game}', '${message.channel.id}/blank', ARRAY['${game.players[0]}', '${game.players[1]}'], '${game.players[game.winner]}', '${game.timeStart}', 'false')`;
 			db.query(query, err => {
 				if (err)
-					return exports.sqlError(message, err, query);
+					return sqlError(message, err, query);
 
 				// Replay Creation
 				let dimensions = {
@@ -96,7 +96,7 @@ exports.command = (message) => {
 			if (result)
 				db.query(`SELECT *\n` + `FROM profiles\n` + `WHERE id = '${result.winner}' OR id = '${result.loser}'`, (err, res) => {
 					if (err)
-						return exports.sqlError(message, err, `SELECT *\n` + `FROM profiles\n` + `WHERE id = '${result.winner}' OR id = '${result.loser}'` );
+						return sqlError(message, err, `SELECT *\n` + `FROM profiles\n` + `WHERE id = '${result.winner}' OR id = '${result.loser}'` );
 					let wp, lp;
 
 					if (res.rows.length == 0)
@@ -141,7 +141,7 @@ exports.command = (message) => {
 							`WHERE id = '${lp.id}';`
 					db.query(query, (err) => {
 						if (err)
-							return exports.sqlError(message, err, query);
+							return sqlError(message, err, query);
 					});
 				});
 		}
@@ -160,12 +160,12 @@ exports.command = (message) => {
 			if (embed.title == "Replay GIF:")
 			{
 				let query = `UPDATE matches SET location = '${message.channel.id}/${embed.image.url.split('/')[5]}' WHERE id = '${embed.footer.text.match(/[0-9]+$/)[0]}'`;
-				db.query(query, err => { if (err) return exports.sqlError(message, err, query); });
+				db.query(query, err => { if (err) return sqlError(message, err, query); });
 			}
 			if (embed.title == "Final Square Count:")
 			{
 				let query = `UPDATE matches SET squareReplay = '${message.channel.id}/${embed.image.url.split('/')[5]}' WHERE id = '${embed.footer.text.match(/[0-9]+$/)[0]}'`;
-				db.query(query, err => { if (err) return exports.sqlError(message, err, query); });
+				db.query(query, err => { if (err) return sqlError(message, err, query); });
 			}
 		});
 	}

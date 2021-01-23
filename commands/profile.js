@@ -209,7 +209,7 @@ exports.command = (cmd, args, input, message) => {
 			if (res.rows.length == 0)
 				newUser(message.author.id, message);
 
-			let query2 = `UPDATE profiles\nSET title = '${title.replace("'", "\\'")}'\nWHERE id = '${message.author.id}'`;
+			let query2 = `UPDATE profiles\nSET title = '${title.replace("'", "&quot")}'\nWHERE id = '${message.author.id}'`;
 			return db.query(query2, (err) => {
 				if (err)
 					return sqlError(message, err, query2);
