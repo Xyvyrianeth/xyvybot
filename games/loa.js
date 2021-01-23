@@ -276,11 +276,3 @@ Canvas.loadImage("/app/assets/games/loa/win.png").then(image => {
 Canvas.loadImage("/app/assets/games/loa/tie.png").then(image => {
     exports.Images.tie = image;
 });
-
-exports.Images.numbers = new Array(10);
-for (let i = 0; i < 10; i++)
-{
-	Canvas.loadImage(`/app/assets/games/gamename/numbers/${i}.png`).then(image => {
-		exports.Images.numbers[i] = image;
-	});
-}
