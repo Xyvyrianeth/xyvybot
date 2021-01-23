@@ -130,14 +130,14 @@ exports.command = (message) => {
 							`SET\n` +
 							`   elo${result.game} = ${wp["elo" + result.game] + booty},\n` +
 							`   win${result.game} = ${wp["win" + result.game] + 1},\n` +
-							`   money = ${wp.money},\n` +
+							`   money = ${wp.money}\n` +
 							`WHERE id = '${wp.id}';\n` +
 							`\n` +
 							`UPDATE profiles\n` +
 							`SET\n` +
 							`   elo${result.game} = ${lp["elo" + result.game] - booty},\n` +
 							`   los${result.game} = ${lp["los" + result.game] + 1},\n` +
-							`   money = ${lp.money},\n` +
+							`   money = ${lp.money}\n` +
 							`WHERE id = '${lp.id}';`
 					db.query(query, (err) => {
 						if (err)
