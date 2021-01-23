@@ -1,6 +1,6 @@
 const Canvas = require('canvas');
 const { Color } = require('/app/assets/misc/color.js');
-var gameCount = 7;
+var gameCount = 8;
 
 exports.drawLeft = function(member, profile, avatar, background) {
 	let width,
