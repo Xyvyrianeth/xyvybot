@@ -236,10 +236,16 @@ exports.nextTurn = function(channel, end, highlight) {
 }
 
 exports.say = function(channels, message) {
-	for (let i in channels)
-	{
-		client.channels.cache.get(i).send(message[0], message[1]);
-	}
+    if (typeof channels == "string") {
+        client.channels.cache.get(channels).send(message[0], message[1]);
+    }
+    else
+    {
+        for (let i in channels)
+        {
+            client.channels.cache.get(i).send(message[0], message[1]);
+        }
+    }
 }
 
 // Images

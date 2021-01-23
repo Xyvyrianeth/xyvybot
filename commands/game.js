@@ -280,7 +280,7 @@ exports.command = (cmd, args, input, message) => {
 					"In LOA, pieces must move as many tiles as there are total pieces along the line of tiles the piece is being moved, both orthogonally and diagonally.\n" +
 					"For example, if the active player wants to move a piece along row 4 and there are 3 pieces total in row 4, the piece being moved has to move exactly 3 tiles to the left or right.\n",
 					"Enemy pieces cannot be jumped over. However a player can jump over their own pieces freely. Enemy pieces can be captured if a piece lands on it, removing it from the game.\n" +
-					"To move a piece, say the location of the piece you wish to move and the direction you wish to move it in, separated by a space.\n" +
+					"To move a piece, say the location of the piece you wish to move and the direction you wish to move it in, separated by a space, like \"C1 downleft\".\n" +
 					`[Example not yet available](${wiki.ghuc}/loa/movement.png)`)
 				.addField(
 					"Endgame",
