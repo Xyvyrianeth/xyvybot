@@ -131,8 +131,8 @@ exports.takeTurn = function(channel, Move) {
 	let count = 1;
 	for (let f = 1; f < 8; f++)
 	{
-		let F = [from[0] + (f * from[2]), from[1] + (f + from[3])];
-		let B = [from[0] - (f * from[2]), from[1] - (f + from[3])];
+		let F = [from[0] + (f * from[2]), from[1] + (f * from[3])];
+		let B = [from[0] - (f * from[2]), from[1] - (f * from[3])];
 		if (F[0] >= 0 && F[0] < 8 && F[1] >= 0 && F[1] < 8 && typeof game.board[F[0]][F[1]] != "boolean")
 			count++;
 		if (B[0] >= 0 && B[0] < 8 && B[1] >= 0 && B[1] < 8 && typeof game.board[B[0]][B[1]] != "boolean")
