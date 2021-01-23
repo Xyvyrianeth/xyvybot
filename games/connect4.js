@@ -106,7 +106,7 @@ exports.takeTurn = function(channel, Move) {
 	if (game.board[move].length == 6)
 	{
 		game.canHaveTurn = true;
-        return exports.say(game.channels, ["Illegal move: this column is full.", {}]);
+        return exports.say(channel, ["Illegal move: this column is full."]);
 	}
 
     game.board[move].push(game.turn);
@@ -179,8 +179,16 @@ exports.nextTurn = function(channel, end) {
 }
 
 exports.say = function(channels, message) {
-    for (let i in channels)
-        client.channels.cache.get(i).send(message[0], message[1]);
+    if (typeof channels == "string") {
+        client.channels.cache.get(channels).send(message[0], message[1]);
+    }
+    else
+    {
+        for (let i in channels)
+        {
+            client.channels.cache.get(i).send(message[0], message[1]);
+        }
+    }
 }
 
 // Images

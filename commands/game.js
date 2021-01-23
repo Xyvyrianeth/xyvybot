@@ -1,14 +1,15 @@
 const Discord = require("discord.js");
 var { Color } = require("/app/assets/misc/color.js"),
 	games = {
-		games: require("/app/games/games.js").games,
-		othello: require("/app/games/othello.js"),
-		squares: require("/app/games/squares.js"),
+		games:    require("/app/games/games.js").games,
+		othello:  require("/app/games/othello.js"),
+		squares:  require("/app/games/squares.js"),
 		rokumoku: require("/app/games/rokumoku.js"),
-		ttt3d: require("/app/games/3dttt.js"),
+		ttt3d:    require("/app/games/3dttt.js"),
 		connect4: require("/app/games/connect4.js"),
-		ordo: require("/app/games/ordo.js"),
-		soccer: require("/app/games/soccer.js")
+		ordo:     require("/app/games/ordo.js"),
+		soccer:   require("/app/games/soccer.js"),
+		loa:      require("/app/games/loa.js")
 	};
 exports.command = (cmd, args, input, message) => {
 	let gameNicks = {
@@ -18,11 +19,11 @@ exports.command = (cmd, args, input, message) => {
 		"ttt3d": ["3dttt", "3dtictactoe", "ttt3d", "tictactoe3d", "ttt", "tictactoe"],
 		"connect4": ["connectfour", "connect4", "cfour", "c4"],
 		"ordo": ["ordo"],
-		"soccer": ["soccer", "papersoccer", "psoccer"]	};
+		"soccer": ["soccer", "papersoccer", "psoccer"],
+		"loa": ["linesofaction", "loa"] };
 	let gameName = null;
 	Object.keys(gameNicks).forEach(game => {
-		if (gameNicks[game].includes(cmd)) gameName = game;
-	});
+		if (gameNicks[game].includes(cmd)) gameName = game; });
 	let GameName = {
 		"othello": "Othello",
 		"squares": "Squares",
@@ -30,8 +31,8 @@ exports.command = (cmd, args, input, message) => {
 		"ttt3d": "3D Tic Tac Toe",
 		"connect4": "Connect Four",
 		"ordo": "Ordo",
-		"soccer": "Paper Soccer"
-	}[gameName];
+		"soccer": "Paper Soccer",
+		"loa": "Lines of Action" }[gameName];
 	if (!input)
 		return message.channel.send(`__**${GameName}**__\nTo start a game, type "x!${cmd} start"!\nTo learn the rules, type "x!${cmd} rules"!`);
 	condition = (condition) => {
@@ -48,9 +49,7 @@ exports.command = (cmd, args, input, message) => {
 			"nothingHere":		 (game) => game.channels.hasOwnProperty(message.channel.id),
 			"participant":		 (game) => game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id),
 			"dontStart":		 (game) => game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && !game.started,
-			"quit":				 (game) => game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.started
-		}[condition];
-	}
+			"quit":				 (game) => game.channels.hasOwnProperty(message.channel.id) && game.players.includes(message.author.id) && game.started }[condition]; }
 	if (["start"].includes(args[0]))
 	{
 		if (games.games.some(condition("alreadyQueued")))
@@ -116,10 +115,8 @@ exports.command = (cmd, args, input, message) => {
 		let wiki = {
 			asg: "[Abstract Strategy Game](https://wikipedia.org/wiki/Abstract_strategy_game)",
 			attt: "[Advanced Tic Tac Toe](https://wikipedia.org/wiki/M,n,k-game)",
-			ghuc: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/"
-		},
-			embed = new Discord.MessageEmbed()
-			.setTitle("How to play: " + GameName);
+			ghuc: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/wiki/" },
+			embed = new Discord.MessageEmbed().setTitle("How to play: " + GameName);
 		switch (gameName)
 		{
 			/**
@@ -131,73 +128,75 @@ exports.command = (cmd, args, input, message) => {
 				[ ] connect4
 				[×] ordo
 				[ ] soccer
+				[ ] loa
 			*/
 			case "othello":
 				embed.setDescription(
-					`Othello, or Reversi, is an ${wiki.asg}. The game consists of stones of both black and white and is played on an 8x8 board. The game starts with 2 stones of each color placed in the middle of the board with stones of the same color diagonal to each other. Black goes first.\n` +
-					"Players take turns placing 1 stone in a manner that would \"capture\" lines of opponent's stones at either end, effectively changing the opponent's stones into the player's.\n" +
-					"The obective of the game is to have the most stones on the board before both player can no longer make a legal move.")
+					`Othello, or Reversi, is an ${wiki.asg}. The game consists of pieces of both black and white and is played on an 8x8 board. The game starts with 2 pieces of each color placed in the middle of the board with pieces of the same color diagonal to each other. Black goes first.\n` +
+					"Players take turns placing 1 piece in a manner that would \"capture\" lines of opponent's pieces at either end, effectively changing the opponent's pieces into the player's.\n" +
+					"The obective of the game is to have the most pieces on the board before both player can no longer make a legal move.")
 				.addField(
-					"Stone Placement",
-					"In order to place a stone in an empty space, that space must be at the end of a line of your opponent's stones with one of your own stones at the other end of it. For simplicity, legal spaces will be highlighted in blue for you.\n" +
-					"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
-					"The stone placed on any given turn will be highlighted in yellow.\n" +
+					"piece Placement",
+					"In order to place a piece in an empty tile, that tile must be at the end of a line of your opponent's pieces with one of your own pieces at the other end of it. For simplicity, legal tiles will be highlighted in blue for you.\n" +
+					"To place a piece on the board, simply say the location of the empty tile; for example, say \"4C\" to place a piece in Row 4–Column C.\n" +
+					"The piece placed on any given turn will be highlighted in yellow.\n" +
 					`[Example not yet available](${wiki.ghuc}/othello/placement.png)`)
 				.addField(
-					"Capturing Stones",
-					"Once you place a stone, all lines of your opponent's stones that have the stone you just placed at one end with one of your other stones at the other end are \"captured\" and will immediately turn into your stones.\n" +
-					"Placing a stone can capture your opponent's stones in any diagonal and orthagonal direction. You can also capture in multiple directions at once.\n" +
-					"Stones that have been captured on any given turn will be highlighted in green.\n" +
+					"Capturing pieces",
+					"Once you place a piece, all lines of your opponent's pieces that have the piece you just placed at one end with one of your other pieces at the other end are \"captured\" and will immediately turn into your pieces.\n" +
+					"Placing a piece can capture your opponent's pieces in any diagonal and orthagonal direction. You can also capture in multiple directions at once.\n" +
+					"pieces that have been captured on any given turn will be highlighted in green.\n" +
 					`[Example not yet available](${wiki.ghuc}/othello/scoring.png)`)
 				.addField(
 					"Endgame",
-					"The game officially ends when both players can no longer make a legal move to capture their opponent's stones.\n" +
-					"Once this happens, all stones on the board are counted that the player with the most stones is declared the winner.\n" +
+					"The game officially ends when both players can no longer make a legal move to capture their opponent's pieces.\n" +
+					"Once this happens, all pieces on the board are counted that the player with the most pieces is declared the winner.\n" +
 					`[Example not yet available](${wiki.ghuc}/othello/winning.png)`);
 				break;
 			case "squares":
 				embed.setDescription(
-					`Squares is an ${wiki.asg} created by Xyvyrianeth originally for Xyvybot. The game consists of stones of both black and red and is played on a 10x10 board.`,
-					"Players take turns placing 2 stones on empty spaces, except for the first and final turns where the first player only places 1, until the board is completely full. Black goes first.\n" +
-					"The objective of the game is to arrange as many sets of 4 stones into perfect squares as possible, the winner being the player with the most squares at the end.")
+					`Squares is an ${wiki.asg} created by Xyvyrianeth originally for Xyvybot. The game consists of pieces of both black and red and is played on a 10x10 board.`,
+					"Players take turns placing 2 pieces on empty tiles, except for the first and final turns where the first player only places 1, until the board is completely full. Black goes first.\n" +
+					"The objective of the game is to arrange as many sets of 4 pieces into perfect squares as possible, the winner being the player with the most squares at the end.")
 				.addField(
-					"Stone Placement",
-					"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
-					"The stones placed on any given turn will be highlighted in yellow.\n" +
+					"piece Placement",
+					"To place a piece on the board, simply say the location of the empty tile; for example, say \"4C\" to place a piece in Row 4–Column C.\n" +
+					"The pieces placed on any given turn will be highlighted in yellow.\n" +
 					`[Example not yet available](${wiki.ghuc}/squares/placement.png)`)
 				.addField(
 					"Creating Squares",
-					"For every set of 4 stones of the same color that are arranged into a perfect square, the player of that color gets 1 point.\n" +
-					"When a player places a stone that completes a square, the other 3 stones of that square will be highlighted in green.\n" +
-					"A single stone can contribute to multiple squares.\n" +
+					"For every set of 4 pieces of the same color that are arranged into a perfect square, the player of that color gets 1 point.\n" +
+					"When a player places a piece that completes a square, the other 3 pieces of that square will be highlighted in green.\n" +
+					"A single piece can contribute to multiple squares.\n" +
 					`[Example not yet available](${wiki.ghuc}/squares/scoring.png)`)
 				.addField(
 					"Endgame",
-					"The game officially ends when there are no longer any empty spaces on the board.\n" +
+					"The game officially ends when there are no longer any empty tiles on the board.\n" +
 					"Once this happens, all squares are counted and the player with the most squares is declared the winner.\n" +
 					`[Example not yet available](${wiki.ghuc}/squares/winning.png)`);
 				break;
 			case "rokumoku":
 				embed.setDescription(
-					`Rokumoku, or Connect Six (literally \"six eyes\" in Japanese) is an ${wiki.asg} and a type of ${wiki.attt}. The game consists of stones of both black and white and can be played on a board of any size, but for Xyvybot you'll use a static 12x12 board. Black goes first.\n` +
-					"Players take turns placing 2 stones on empty spaces, except for the first player's first turn, until either player has created a line of 6 of their own stones, or until the board is full. Black goes first.\n" +
+					`Rokumoku, or Connect Six (literally \"six eyes\" in Japanese) is an ${wiki.asg} and a type of ${wiki.attt}. The game consists of pieces of both black and white and can be played on a board of any size, but for Xyvybot players will use a static 12x12 tile board.\n` +
+					"Starting with black, players take turns placing 2 pieces on empty tiles until either player has created a line of 6 of their own pieces, or until the board is full.\n" +
 					"The rules for Rokumoku is very simple, as it's basically just large Tic Tac Toe.")
 				.addField(
-					"Stone Placement",
-					"To place a stone on the board, simply say the location of the empty space; for example, say \"4C\" to place a stone in Row 4–Column C.\n" +
-					"The stones placed on any given turn will be highlighted in yellow.\n" +
+					"piece Placement",
+					"To place a piece on the board, simply say the location of the empty tile; for example, say \"4C\" to place a piece in Row 4–Column C.\n" +
+					"The pieces placed on any given turn will be highlighted in yellow.\n" +
+					"As a means of removing first-player advantage, player one will only place 1 piece during their first turn.\n" +
 					`[Example not yet available](${wiki.ghuc}/rokumoku/placement.png)`)
 				.addField(
 					"Endgame",
-					"The game officially ends when either player has created a line of 6 of their own stones, either diagonally or orthagonally.\n" +
-					"Once this happens, the 6 stones that constitute the winning line will be highlighted in green.\n" +
+					"The game officially ends when either player has created a line of 6 of their own pieces, either diagonally or orthagonally.\n" +
+					"Once this happens, the 6 pieces that constitute the winning line will be highlighted in green.\n" +
 					`[Example not yet available](${wiki.ghuc}/rokumoku/winning.png)`);
 				break;
 			case "ttt3d":
 				embed.setDescription(
-					`3D Tic Tac Toe is an ${wiki.asg} and, as the name suggests, a type of ${wiki.attt}. The game consists of markers, either X's or O's, and a 3-dimensional 4x4x4 playing area.\n` +
-					"Players take turns placing 1 marker in an emtpy space on the 3-dimensional playing area until either the playing area is full or a player has created a line of 4 of their own markers through any number of planes in the playing area. X goes first.\n" +
-					"The way the 3D Tic Tac Toe playing area is displayed might be confusing for some players. Traditionally, the 4 *y*-planes are displayed vertically, but to save space, the 2nd and 4th *y*-planes are to the right of the 1st and 3rd.")
+					`3D Tic Tac Toe is an ${wiki.asg} and, as the name suggests, a type of ${wiki.attt}. The game consists of markers, either X's or O's, and a cubic 4x4x4 playing area.\n` +
+					"Players take turns placing 1 marker in an emtpy tile on the 3-dimensional playing area until either the playing area is full or a player has created a line of 4 of their own markers through any number of planes in the playing area. X goes first.\n" +
+					"The way the 3D Tic Tac Toe playing area is displayed might be confusing for some players. Traditionally, the 4 *y*-planes are displayed vertically, but to save space, they are layed out in a rhombus pattern.")
 				.addField(
 					"Marker Placement",
 					"To place a marker in the playing area, simply say which *y*-plane you wish to place in, followed by the location of that *y*-plane; for example, say \"34C\" to place a marker in Row 4–Column C in the 3rd *y*-plane.\n" +
@@ -211,49 +210,49 @@ exports.command = (cmd, args, input, message) => {
 				break;
 			case "connect4":
 				embed.setDescription(
-					`Connect Four is an ${wiki.asg} and a type of ${wiki.attt}. The game consists of stones of both black and red and is played on a 6x7 board. Blue goes first.\n` +
-					"Players take turns placing 1 stone in the lowest empty space of any column until either the board is full or a player has created a line of 4 of their own stones.\n" +
+					`Connect Four is an ${wiki.asg} and a type of ${wiki.attt}. The game consists of pieces of both black and red and is played on a 6x7 tile board. Blue goes first.\n` +
+					"Players take turns placing 1 piece in the lowest empty tile of any column until either the board is full or a player has created a line of 4 of their own pieces.\n" +
 					"This has been a very popular board game for many years, and if you've never heard of it until now, your childhood was clearly shit.")
 				.addField(
-					"Stone Placement",
-					"To place a stone on the board, simply say the column number of the empty space you wish to play in; for example, say \"4\" to place a stone in Column 4.\n" +
-					"When placing a stone, it will automatically be placed in the lowest empty space of the column you placed it in.\n" +
-					"The stone placed on any given turn will be highlighted in yellow.\n" +
+					"piece Placement",
+					"To place a piece on the board, simply say the column number of the empty tile you wish to play in; for example, say \"4\" to place a piece in Column 4.\n" +
+					"When placing a piece, it will automatically be placed in the lowest empty tile of the column you placed it in.\n" +
+					"The piece placed on any given turn will be highlighted in yellow.\n" +
 					`[Example not yet available](${wiki.ghuc}/connect4/placement.png)`)
 				.addField(
 					"Endgame",
-					"The game officially ends when either player has create a line of 4 of their own stones, either diagonally or orthagonally.\n" +
-					"Once this happens, the 4 stones that constitute the winning line will be highlighted in green.\n" +
+					"The game officially ends when either player has create a line of 4 of their own pieces, either diagonally or orthagonally.\n" +
+					"Once this happens, the 4 pieces that constitute the winning line will be highlighted in green.\n" +
 					`[Example not yet available](${wiki.ghuc}/connect4/winning.png)`);
 				break;
 			case "ordo":
 				embed.setDescription(
-					`Ordo is an ${wiki.asg} that has rules and gameplay reminiscent of Checkers. The game consists of stones of both blue and white and is played on an 8x10 board. The game starts with all stones on the board in a set pattern. Blue goes first.\n` +
-					"Players take turns moving 1 stone around the board in diagonal or orthagonal directions (or multiple stones, but only orthagonally), making sure that all of their stones are connected in the same group.")
+					`Ordo is an ${wiki.asg} that has rules and gameplay similar to that of Checkers. The game consists of pieces of both blue and white and is played on an 8x10 tile board. The game starts with all pieces on the board in a set pattern. Blue goes first.\n` +
+					"Players take turns moving 1 piece around the board in diagonal or orthagonal directions (or multiple pieces, but only orthagonally), making sure that all of their pieces are connected in the same group.")
 				.addField(
 					"Singleton Moves",
-					"Singleton moves consist of one stone being moved in any direction, either diagonally or orthagonally, any number of spaces. These moves can end in either an empty space or on a space occupied by one of your opponent's stones (which effectively \"captures\" and removes that stone from the game).\n" +
-					"You make a singleton move by saying the coordinates of the stone you want to move followed by the coordinates of the space you wish to move it to; for example, say \"4C 7F\" to move a stone from Row 4–Column C to Row 7–Column F.\n" +
-					"Stones that have been moved will be highlighted in yellow with the space they were moved from being highlighted in red.\n" +
+					"Singleton moves consist of one piece being moved in any direction, either diagonally or orthagonally, any number of tiles. These moves can end in either an empty tile or on a tile occupied by one of your opponent's pieces (which effectively \"captures\" and removes that piece from the game).\n" +
+					"You make a singleton move by saying the coordinates of the piece you want to move followed by the coordinates of the tile you wish to move it to; for example, say \"4C 7F\" to move a piece from Row 4–Column C to Row 7–Column F.\n" +
+					"pieces that have been moved will be highlighted in yellow with the tile they were moved from being highlighted in red.\n" +
 					`[Example not yet available](${wiki.ghuc}ordo/singleton_move.png)`)
 				.addField(
 					"Ordo Moves",
-					"Ordo moves consist of multiple stones that are adjacent orthagonally from each other being moved in either perpendicular direction (if the stones being moved are aligned vertically, they can only be moved horizontally, and vice versa).\n" +
-					"You make an ordo move by saying the 2 coordinates of the stones located at both ends of the line of stones you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many spaces you wish to move it in that direction; for example, say \"5A-7A right 4\" to move 3 stones aligned vertically in Column A to the right 4 spaces each.\n" +
-					"These moves cannot capture enemy stones.\n" +
+					"Ordo moves consist of multiple pieces that are adjacent orthagonally from each other being moved in either perpendicular direction (if the pieces being moved are aligned vertically, they can only be moved horizontally, and vice versa).\n" +
+					"You make an ordo move by saying the 2 coordinates of the pieces located at both ends of the line of pieces you wish to move, separated by a hyphen, followed by which direction you wish to move it in (up, down, left, or right), followed by how many tiles you wish to move it in that direction; for example, say \"5A-7A right 4\" to move 3 pieces aligned vertically in Column A to the right 4 tiles each.\n" +
+					"These moves cannot capture enemy pieces.\n" +
 					`[Example](${wiki.ghuc}ordo/ordo_move.png)`)
 				.addField(
 					"Groups",
-					"At the end of either player's turn, all of their stones must be connected into a single group where all stones are adjacent to at least one other, either diagonally or orthagonally. If a move is attempted and the moved stone(s) is not connected to the primary group, it is not a legal move.\n" +
-					"If a player were to make a move that would separate their opponent's stones into two or more groups, their opponent must immediately make a move that would reconnect their stones into a single group again.\n" +
-					"If a player's stones were to be split into two or more groups and that player cannot reconnect them into a single group again on their next turn, the game immediately ends.\n" +
+					"At the end of either player's turn, all of their pieces must be connected into a single group where all pieces are adjacent to at least one other, either diagonally or orthagonally. If a move is attempted and the moved piece(s) is not connected to the primary group, it is not a legal move.\n" +
+					"If a player were to make a move that would separate their opponent's pieces into two or more groups, their opponent must immediately make a move that would reconnect their pieces into a single group again.\n" +
+					"If a player's pieces were to be split into two or more groups and that player cannot reconnect them into a single group again on their next turn, the game immediately ends.\n" +
 					`[Example](${wiki.ghuc}ordo/group_split.png)`)
 				.addField(
 					"Endgame",
 					"There are 3 conditions for ending the game:\n" +
-					` -A player moves a stone into any space in their opponent's \"home row\" (for blue it's Row 8, and for white it's Row 1). This player is the winner. [Example not yet available](${wiki.ghuc}ordo/ending_1.png)\n` +
-					` -All of a player's stones have been captured and removed from the game. This player is the loser. [Example not yet available](${wiki.ghuc}ordo/ending_2.png)\n` +
-					` -A player's stones are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser. [Example not yet available](${wiki.ghuc}ordo/ending_3.png)`);
+					` -A player moves a piece into any tile in their opponent's \"home row\" (for blue it's Row 8, and for white it's Row 1). This player is the winner. [Example not yet available](${wiki.ghuc}ordo/ending_1.png)\n` +
+					` -All of a player's pieces have been captured and removed from the game. This player is the loser. [Example not yet available](${wiki.ghuc}ordo/ending_2.png)\n` +
+					` -A player's pieces are split into two or more groups and cannot be reconnected into a single group on their next turn. This player is the loser. [Example not yet available](${wiki.ghuc}ordo/ending_3.png)`);
 				break;
 			case "soccer":
 				embed.setDescription(
@@ -271,6 +270,25 @@ exports.command = (cmd, args, input, message) => {
 					` -The ball enters one of the two goals located at either ends of the board The winner is whoever owns the goal the ball went into, even if the other player put it there. [Example not yet available](${wiki.ghuc}/soccer/winning.png)\n` +
 					` -The ball becomes immovable, which can be achieved by having all 8 directions blocked by previous movements or the edge(s) of the board. In this situation, the player who didn't get the ball stuck wins. [Example not yet available](${wiki.ghuc}/soccer/losing.png)`);
 				break;
+			case "loa":
+				embed.setDescription(
+					`Lines of Action (or LOA) is an ${wiki.asg} played between two people. The object of the game is for a player to combine all of their pieces into a single connected group.\n` +
+					"The game is played on an 8x8 tile board with players taking turns moving individual pieces around orthagonally or diagonally. Black goes first\n" +
+					"Players start with 12 pieces aligned along all 4 edges of the board, with the 4 corner tiles being empty, with one player's pieces along the top and bottom edges and the other player's along the left and right edges.")
+				.addField(
+					"Movement",
+					"In LOA, pieces must move as many tiles as there are total pieces along the line of tiles the piece is being moved, both orthagonally and diagonally.\n" +
+					"For example, if the active player wants to move a piece along row 4 and there are 3 pieces total in row 4, the piece being moved has to move exactly 3 tiles to the left or right.\n",
+					"Enemy pieces cannot be jumped over. However a player can jump over their own pieces freely. Enemy pieces can be captured if a piece lands on it, removing it from the game.\n" +
+					"To move a piece, say the location of the piece you wish to move and the direction you wish to move it in, separated by a space.\n" +
+					`[Example not yet available](${wiki.ghuc}/loa/movement.png)`)
+				.addField(
+					"Endgame",
+					"The game ends when all of one player's pieces are adjacent into a single group. A group can have pieces adjoined both orthagonally and diagonally.\n" +
+					`[Example not yet available](${wiki.ghuc}/loa/groups.png)\n` +
+					"If a player were to have all but one of their pieces captured and only have one piece remaining, then that counts as a single grouping and therefor they win, unless the final capture combined their opponent's pieces into one group.\n" +
+					`[Example not yet available](${wiki.ghuc}/loa/lastbutlost.png)`
+				);
 		}
 		embed.setColor(new Color().random());
 		message.author.send(embed);

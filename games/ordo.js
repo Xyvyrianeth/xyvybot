@@ -131,34 +131,34 @@ exports.takeTurn = function(channel, Move) {
         if (game.board[move.from[0][0]][move.from[0][1]] === false)
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: there is no stone to move in that space."]);
+			return exports.say(channel, ["Illegal move: there is no piece to move in that space."]);
 		}
         if (game.board[move.from[0][0]][move.from[0][1]] == [1, 0][game.turn])
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: that stone is not yours."]);
+			return exports.say(channel, ["Illegal move: that piece is not yours."]);
 		}
         if (direction == 8 || distance == 0)
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: you actually have to move the stone."]);
+			return exports.say(channel, ["Illegal move: you actually have to move the piece."]);
 		}
         if (move.from[0][0] != move.to[0][0] && move.from[0][1] != move.to[0][1] && Math.abs(move.from[0][0] - move.to[0][0]) != Math.abs(move.from[0][1] - move.to[0][1]))
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: stones can only be moved diagonally or orthagonally."]);
+			return exports.say(channel, ["Illegal move: pieces can only be moved diagonally or orthagonally."]);
 		}
         for (let i = 1; i <= distance; i++)
 		{
             if (i < distance && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][direction] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][direction] * i)] !== false)
 			{
 				game.canHaveTurn = true;
-				return exports.say(channel, ["Illegal move: a stone is blocking this movement."]);
+				return exports.say(channel, ["Illegal move: a piece is blocking this movement."]);
 			}
             if (i == distance && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][direction] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][direction] * i)] === game.turn)
 			{
 				game.canHaveTurn = true;
-				return exports.say(channel, ["Illegal move: you cannot capture your own stone."]);
+				return exports.say(channel, ["Illegal move: you cannot capture your own pieces."]);
 			}
         }
     }
@@ -176,53 +176,53 @@ exports.takeTurn = function(channel, Move) {
             "l": 3
         }[Move.split(' ')[1]]; // 1
         let distance = Number(Move.split(' ')[2]); // 4
-        let stones = [
+		let pieces = [
             [Number(Move.split(' ')[0].split('-')[0].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[0].match(/[a-j]/)[0])],
             [Number(Move.split(' ')[0].split('-')[1].match(/[1-8]/)[0]) - 1, 'abcdefghij'.indexOf(Move.split(' ')[0].split('-')[1].match(/[a-j]/)[0])]
         ];  // [ [4, 0], [6, 0] ]
         let width;
-        let Stones = [];
-        if (stones[0][0] == stones[1][0] && stones[0][1] == stones[1][1])
+        let Pieces = [];
+		if (pieces[0][0] == pieces[1][0] && pieces[0][1] == pieces[1][1])
 		{
 			game.canHaveTurn = true;
 			return exports.say(channel, ["This is a singleton move, please use the singleton move format!"]);
 		}
-        if (stones[0][0] != stones[1][0] && stones[0][1] != stones[1][1])
+		if (pieces[0][0] != pieces[1][0] && pieces[0][1] != pieces[1][1])
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: stones trying to be moved are not alligned orthagonally."]);
+			return exports.say(channel, ["Illegal move: pieces you are trying move are not alligned orthagonally."]);
 		}
         else
-        if ((stones[0][1] == stones[1][1] && (direction == 0 || direction == 2)) || (stones[0][0] == stones[1][0] && (direction == 1 || direction == 3)))
+		if ((pieces[0][1] == pieces[1][1] && (direction == 0 || direction == 2)) || (pieces[0][0] == pieces[1][0] && (direction == 1 || direction == 3)))
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: multiple stones cannot be moved single-file."]);
+			return exports.say(channel, ["Illegal move: multiple pieces cannot be moved single-file."]);
 		}
         else
-        if (stones[0][0] == stones[1][0])
+		if (pieces[0][0] == pieces[1][0])
         {
-            if (stones[0][1] > stones[1][1])
-                stones.reverse();
-            for (let x = stones[0][1]; x <= stones[1][1]; x++)
-                Stones.push([stones[0][0], x]);
-            width = stones[1][1] - stones[0][1];
+			if (pieces[0][1] > pieces[1][1])
+				pieces.reverse();
+			for (let x = pieces[0][1]; x <= pieces[1][1]; x++)
+				Pieces.push([pieces[0][0], x]);
+			width = pieces[1][1] - pieces[0][1];
         }
         else
         {
-            if (stones[0][0] > stones[1][0])
-                stones.reverse();
-            for (let y = stones[0][0]; y <= stones[1][0]; y++)
-                Stones.push([y, stones[0][1]]);
-            width = stones[1][0] - stones[0][0];
+			if (pieces[0][0] > pieces[1][0])
+				pieces.reverse();
+			for (let y = pieces[0][0]; y <= pieces[1][0]; y++)
+				Pieces.push([y, pieces[0][1]]);
+			width = pieces[1][0] - pieces[0][0];
         }
         move = {
-            from: Stones,
-            to:   Stones.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * distance), p[1] + ([0, 1, 0, -1][direction] * distance)])
+            from: Pieces,
+            to:   Pieces.map(p => p = [p[0] + ([-1, 0, 1, 0][direction] * distance), p[1] + ([0, 1, 0, -1][direction] * distance)])
         }   // { from: [ [4, 0], [5, 0], [6, 0] ], to: [ [4, 4], [5, 4], [6, 4] ] }
         if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: one or more of the stones you're trying to move aren't yours."]);
+			return exports.say(channel, ["Illegal move: one or more of the pieces you're trying to move aren't yours."]);
 		}
         if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y <  move.from[0][0] && y >= move.to[0][0] 	 && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
             (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y >  move.from[0][0] && y <= move.to[0][0] 	 && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
@@ -230,7 +230,7 @@ exports.takeTurn = function(channel, Move) {
             (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x <  move.from[0][1] && x >= move.to[0][1]     && game.board[y][x] !== false))))
 			{
 				game.canHaveTurn = true;
-				return exports.say(channel, ["Illegal move: one or more stones are blocking that movement (ordo moves cannot capture enemy stones)."]);
+				return exports.say(channel, ["Illegal move: one or more pieces are blocking that movement (ordo moves cannot capture enemy pieces)."]);
 			}
     }
 
@@ -295,7 +295,7 @@ exports.takeTurn = function(channel, Move) {
     if (queue[game.turn].length != 0)
     {   // Attempting to split yourself up
 		game.canHaveTurn = true;
-        return exports.say(channel, ["Illegal move: would split your stones into more than one group.", "Illegal move: would not reconnect your stones into one group."][game.split]);
+		return exports.say(channel, ["Illegal move: would split your pieces into more than one group.", "Illegal move: would not reconnect your pieces into one group."][game.split]);
     }
     else
     if (boardClone[[7, 0][game.turn]].some(p => p === game.turn))
@@ -547,7 +547,7 @@ exports.nextTurn = function(channel, end, endType) {
         game.channels[ch] = [];
     }
 
-    exports.say(game.channels, [[[`It is <@${game.player}>'s turn.`, `It is <@${game.player}>'s turn.\nYour stones have been split into more than one group, you *must* bring them back together immediately.`][game.split], [`<@${game.player}> has won by reaching their opponent's home row!`, `<@${game.player}> has won by capturing all of their opponent's stones!`, `<@${game.player}> has won by splitting up their opponent's pieces!`][endType]][end], game.buffer]);
+	exports.say(game.channels, [[[`It is <@${game.player}>'s turn.`, `It is <@${game.player}>'s turn.\nYour pieces have been split into more than one group, you *must* bring them back together immediately.`][game.split], [`<@${game.player}> has won by reaching their opponent's home row!`, `<@${game.player}> has won by capturing all of their opponent's pieces!`, `<@${game.player}> has won by splitting up their opponent's pieces!`][endType]][end], game.buffer]);
 }
 
 exports.say = function(channels, message) {

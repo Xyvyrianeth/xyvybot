@@ -132,7 +132,7 @@ exports.takeTurn = function(channel, move) {
     if (game.board[X][Y][Z] !== false)
     {
 		game.canHaveTurn = true;
-        return exports.say(game.channels, ["Illegal move: this space is not empty.", {}]);
+        return exports.say(channel, ["Illegal move: this space is not empty."]);
     }
     else
     {
@@ -297,9 +297,15 @@ exports.nextTurn = function(channel, end, highlight) {
 }
 
 exports.say = function(channels, message) {
-    for (let i in channels)
+    if (typeof channels == "string") {
+        client.channels.cache.get(channels).send(message[0], message[1]);
+    }
+    else
     {
-        client.channels.cache.get(i).send(message[0], message[1]);
+        for (let i in channels)
+        {
+            client.channels.cache.get(i).send(message[0], message[1]);
+        }
     }
 }
 

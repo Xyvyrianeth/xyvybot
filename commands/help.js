@@ -4,20 +4,19 @@ var { Color } = require("/app/assets/misc/color.js"),
 exports.command = (cmd, args, input, message) => {
 	if (!input)
 	{
-		let helps =
-			[	"__**Featured Games**__\n`othello`  `squares`  `3dtictactoe`  `connect4`  `rokumoku`  `ordo`  `papersoccer`\n__**Possible Future Releases**__:\n`go`\n__**Related Commands**__:\n`profile`  `top`  `history`",
-				"`minesweeper`  `iq`  `hangman`",
-				"`help`  `about`  `credits`  `aliases`  `invite`",
-				"`nekos`  `calculate`  `graph`  `ai`  `botsbyxyvy`"];
-		if (message.channel.type == "dm")
-			helps[2] += "  `bugreport`  `request`";
 		let embed = new Discord.MessageEmbed()
-			.setTitle("Help")
-			.setDescription("A list of all commands supported by Xyvybot\n" + (message.channel.type == "dm" ? "Some of these commands are not supported in servers" : "Some of these commands are not supported in DMs") + "\nFor more help about any specific command, do \"x!`command` help\"")
-			.addField("Games", helps[0])
-			.addField("Minigames", helps[1])
-			.addField("Utility", helps[2])
-			.addField("Miscellaneous", helps[3])
+			.setTitle("x!help")
+			.setDescription("A list of all commands supported by Xyvybot\nFor more help about any specific command, do \"x!help `command`\"")
+			.addField(
+				"\u200b",
+				"__**Featured Games**__\n`othello`\n`squares`\n`3dtictactoe`\n`connect4`\n`rokumoku`\n`ordo`\n`papersoccer`\n`linesofaction`\n\n" +
+				"__**Planned Games**__\n[Ludus latrunculorum](https://en.wikipedia.org/wiki/Ludus_latrunculorum)\n[Go](https://en.wikipedia.org/wiki/Go_(game))\n\n" +
+				"__**Game-Related Commands**__\n`profile`\n`leaderboard`\n`history`", true)
+			.addField(
+				"\u200b",
+				"__**Minigames**__\n`minesweeper`\n`iq`\n`hangman`\n\n" +
+				"__**Utility**__\n`help`\n`aliases`\n`invite`\n`request`\n`bug`\n\n" +
+				"__**Miscellaneous**__\n`nekos`\n`calculate`\n`graph`\n`about`\n`credits`\n`ai`", true)
 			.setColor(new Color().random())
 			.setFooter("Xyvybot version " + version);
 		if (message.channel.type == "dm" || message.channel.nsfw)
@@ -26,47 +25,11 @@ exports.command = (cmd, args, input, message) => {
 	}
 	else
 	{
-		Object.values(aliases[message.channel.type == "dm" ? "user" : "guild"]).forEach((alias, index) => {
-			if (alias.includes(input))
-			{
-				let help = [
-					["x!othello `start|rules`", "Othello, or Reversi, is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!othello start"],
-					["x!squares `start|rules`", "Squares is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that I created that can be played with my bot against other people.", "x!squares start"],
-					["x!rokumoku `start|rules`", "Rokumoku is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!rokumoku start"],
-					["x!ttt3d `start|rules`", "3D Tic Tac Toe is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!ttt3d start"],
-					["x!connect4 `start|rules`", "Connect Four, or Vertical Checkers, is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!connect4 start"],
-					["x!ordo `start|rules`", "Ordo is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!ordo start"],
-					["x!papersoccer `start|rules`", "Paper Soccer is an [abstract strategy game](https://wikipedia.org/wiki/abstract_strategy_game) that can be played with my bot against other people.", "x!papersoccer start"],
-					["x!profile `user`", "Show of your own profile card that shows your game stats and rank. It has a customizable background and overlay color.", "x!profile 357700219825160194"],
-					["x!top `game`", "Show the top 10 players of any one game or all games combined, along with your own ranking.", "x!top othello"],
-					["x!history `user`", "Displays yours or someone else's match history, showing the game, the opponent, who won, and a link to the replay of the match.", "x!history 357700219825160194"],
-					["x!minesweeper `width` `height` `difficulty`", "A classic game of Minesweeper right here on Discord. Wouldn't be possible without the ||spoiler|| feature.", "x!minesweeper 10 15 20%"],
-					["x!hangman", "Lets users in the chat play a quick game of hangman.", "x!hangman"],
-					["x!iq", "Gives the chat a simple logic puzzle to solve.", "x!iq"],
-					["x!invite", "Gives an invite link so you can add this bot to your own server!", "x!invite"],
-					["x!about", "Just a bit of information about what this bot does and some history about it.", "x!about"],
-					["x!help `command`", "Generates a list of commands, or gives a short description about a specific command.", "x!help help"],
-					["x!aliases `command`", "Get a list of all available keywords you can use to trigger a command.", "x!aliases help"],
-					["x!bug `command`\n`description`", "If you find a feature that you don't think should be a feature, use this command so that the developer will know about it. Be sure to be descriptive! Can only be used in direct messages. Can be used once per user every 2 hours.", "x!bug minesweeper\nDimensions don't match what's requested."],
-					["x!request `description`", "If there's a feature the bot does not yet support and you want to see supported, use this command so the developer will know about it. Be sure to be descriptive! Can only be used in direct messages. Can be used once per user every 2 hours.", "x!request Add more profile backgrounds"],
-					["x!neko", "Get a picture of a cute anime girl with cat ears.", "x!neko"],
-					["x!calc `equation`", "Solves a simple equation for you like a calculator.", "x!calc 2 + 2"],
-					["x!graph `equation`", "Draws out an equation on a coordinate grid. You can graph up to 10 equations at once.", "x!graph 2x + 7"],
-					["x!ai", "Gives you a link to invite Xyvybot - AI to your server.", "x!ai"],
-					["x!botsbyxyvy", "Gives you a link to the site where you request a commission for a custom-made Discord bot by Xyvyrianeth.", "x!botsbyxyvy"],
-					["x!nsfw `tag`", "Get a naughty hentai image. This command can only be used in channels marked as NSFW or in direct messages.", "x!nsfw gif"]
-				][index];
-				return message.channel.send(
-					new Discord.MessageEmbed()
-						.setTitle("Help!")
-						.setAuthor("Command: " + Object.keys(aliases.guild)[index])
-						.setDescription("__**Usage**__:\n" + help[0] + "\n\n" + help[1] + "\n\n__**Example**__:\n" + help[2])
-						.setColor(new Color().random())
-						.setFooter("Xyvybot version " + version));
-			}
-			else
-			if (index == Object.keys(aliases[message.channel.type == "dm" ? "user" : "guild"]).length)
-				message.channel.send("That command does not exist.");
-		});
+		let embed = new Discord.MessageEmbed()
+			.setTitle("x!help")
+			.setDescription("Sorry, but I can't do that right now. This feature is still being planned out and should be available soon.")
+			.setColor(new Color().random())
+			.setFooter("Xyvybot version " + version);
+		return message.channel.send(embed);
 	}
 };

@@ -159,19 +159,18 @@ exports.takeTurn = function(channel, Move) {
     let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
 	game.canHaveTurn = false;
 
-
     let move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-h]/)[0])];
 
     game.highlight = [];
-    if (typeof game.board[move[0]][move[1]] !== "boolean")
+    if (typeof game.board[move[0]][move[1]] != "boolean")
     {
 		game.canHaveTurn = true;
-        return exports.say(JSON.parse(`{"${channel}":[]}`), ["Illegal move: this space is not empty.", {}]);
+        return exports.say(channel, ["Illegal move: this space is not empty."]);
     }
     if (game.board[move[0]][move[1]] === false)
     {
 		game.canHaveTurn = true;
-        return exports.say(JSON.parse(`{"${channel}":[]}`), ["Illegal move: playing in this space would not capture anything.", {}]);
+        return exports.say(channel, ["Illegal move: playing in this space would not capture anything."]);
     }
     game.possible.forEach(p => {
 
@@ -330,9 +329,15 @@ exports.nextTurn = function(channel, end) {
 }
 
 exports.say = function(channels, message) {
-    for (let i in channels)
+    if (typeof channels == "string") {
+        client.channels.cache.get(channels).send(message[0], message[1]);
+    }
+    else
     {
-        client.channels.cache.get(i).send(message[0], message[1]);
+        for (let i in channels)
+        {
+            client.channels.cache.get(i).send(message[0], message[1]);
+        }
     }
 }
 
