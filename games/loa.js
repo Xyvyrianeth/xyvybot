@@ -79,8 +79,8 @@ exports.drawBoard = function(game, end, highlight) {
 
 	if (highlight)
 	{
-		ctx.drawImage(exports.Images.to, 17 + (highlight[0][0] * 25), 30 + (highlight[0][1] * 25));
-		ctx.drawImage(exports.Images.from, 17 + (highlight[1][0] * 25), 30 + (highlight[1][1] * 25));
+		ctx.drawImage(exports.Images.to, 17 + (highlight[0][1] * 25), 30 + (highlight[0][0] * 25));
+		ctx.drawImage(exports.Images.from, 17 + (highlight[1][1] * 25), 30 + (highlight[1][0] * 25));
 	}
 
 	let newCanvas = new Canvas.createCanvas(221, 246);
@@ -225,10 +225,9 @@ exports.nextTurn = function(channel, end, highlight) {
 	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
 	for (let ch in game.channels)
 	{
-		for (let i = 0; i < game.channels[ch].length; i++)
-		{
-			client.channels.cache.get(ch).messages.cache.get(game.channels[ch][i]).delete();
-		}
+		if (client.channels.cache.get(ch).guild.members.cache.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
+			for (let i = 0; i < game.channels[ch].length; i++)
+				client.channels.cache.get(ch).messages.cache.get(game.channels[ch][i]).delete();
 		game.channels[ch] = [];
 	}
 
