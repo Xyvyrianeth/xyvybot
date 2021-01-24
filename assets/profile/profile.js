@@ -171,7 +171,7 @@ exports.drawRight = function(member, profile, avatar, background) {
 	let texts = [];
 	for (let i = 0; i < 3; i++)
 	{
-		text = drawText([member.username + "#" + member.discriminator, member.id, profile.titlee.replace("&quot", "'")][i]);
+		text = drawText([member.username + "#" + member.discriminator, member.id, profile.title.replace("&quot", "'")][i]);
 		let Text = new Canvas.createCanvas(text[1], 11),
 			tectx = Text.getContext('2d');
 		tectx.drawImage(text[0], 0, 0);
