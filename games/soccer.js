@@ -227,21 +227,11 @@ exports.takeTurn = function(channel, Move) {
 
 	// Checking for legality
 	if (((move < 2 || move == 7) && Y == 1) || (move > 2 && move < 6 && Y == 9) || (move > 4 && X == 1 && ((Y == 4 && move != 5) && (Y == 6 && move != 7) && Y != 5)) || (move < 4 && move > 0 && X == 11 && ((Y == 4 && move != 3) && (Y == 6 && move != 1) && Y != 5)))
-	{
-		game.canHaveTurn = true;
 		return exports.say(channel, ["Illegal play: You cannot move the ball passed the edge of the board."]);
-	}
-	game.canHaveTurn = true;
 	if (((move == 2 || move == 6) && (Y == 1 || Y == 9)) || (((move == 0 && (Y > 6 || Y < 5)) || (move == 4 && (Y > 5 || Y < 4))) && (X == 1 || X == 11)) || (X == 11 && (Y == 4 || Y == 6) && move == 2) || (X == 1 && (Y == 4 || Y == 6) && move == 6))
-	{
-		game.canHaveTurn = true;
 		return exports.say(channel, ["Illegal play: You cannot move the ball along the edge of the board, you have to bounce off."]);
-	}
 	if ((move < 4 && tempboard.paths[Y][X][move] != 0) || (move > 3 && tempboard.paths[Y + yy][X + xx][move % 4] != 0))
-	{
-		game.canHaveTurn = true;
 		return exports.say(channel, ["Illegal play: This move will cross a path that has already been used."]);
-	}
 
 	Y += yy;
 	X += xx;

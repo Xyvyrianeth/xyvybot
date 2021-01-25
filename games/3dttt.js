@@ -130,14 +130,9 @@ exports.takeTurn = function(channel, move) {
     let XO = 'XO'[game.turn];
 
     if (game.board[X][Y][Z] !== false)
-    {
-		game.canHaveTurn = true;
         return exports.say(channel, ["Illegal play: this space is not empty."]);
-    }
     else
-    {
         game.board[X][Y][Z] = XO;
-    }
 
     let end = 2;
     for (let x = 0; x < 4; x++)

@@ -165,14 +165,9 @@ exports.takeTurn = function(channel, Move) {
 	let move = [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
 
 	if (game.board[move[0]][move[1]] !== false)
-	{
-		game.canHaveTurn = true;
 		return exports.say(channel, ["Illegal play: this space is not empty.", {}]);
-	}
 	else
-	{
 		game.board[move[0]][move[1]] = Math.floor(game.turn);
-	}
 
 	let end = 1;
 	for (let y = 10; y--;)

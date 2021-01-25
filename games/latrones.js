@@ -109,10 +109,8 @@ exports.takeTurn = function(channel, Move) {
 	let highlight = [];
 	game.canHaveTurn = false;
 
-	let inBounds = (crd) => {
-		return crd[0] >= 0 && crd[1] >= 0 && crd[0] <= 7 && crd[1] <= 7;
-	}
 	let isPiece = (crd, piece, trapped) => {
+		if (crd[0] < 0 && crd[1] < 0 && crd[0] > 7 && crd[1] > 7) return false;
 		if (typeof game.board[crd[0]][crd[1]] == "boolean" && piece == 3) return true;
 		if (typeof game.board[crd[0]][crd[1]] == "number" && piece == game.board[crd[0]][crd[1]]) return true;
 		if (typeof game.board[crd[0]][crd[1]] == "object" && piece == game.board[crd[0]][crd[1]][0] && trapped) return true;
@@ -176,12 +174,12 @@ exports.takeTurn = function(channel, Move) {
 
 				for (let d = 0; d < 2; d++)
 				{
-					let r = [2, 3, 0, 1][d];
+					let r = d + 2;
 					let dir1 = getDir(pos1, d, 1);
 					let dir2 = getDir(pos1, d, 2);
 					let rir1 = getDir(pos1, r, 1);
 					let rir2 = getDir(pos1, r, 2);
-					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn]) && inBounds(rir1) && isPiece(rir1, [1, 0][game.turn]) && ((!inBounds(dir2) || !isPiece(dir2, game.turn)) && (!inBounds(rir2) || !isPiece(rir2, game.turn))))
+					if (isPiece(dir1, [1, 0][game.turn]) && isPiece(rir1, [1, 0][game.turn]) && !isPiece(dir2, game.turn) && !isPiece(rir2, game.turn))
 						return exports.say(channel, ["Illegal play: This move would put this piece in a trapped position."]);
 				}
 
@@ -196,8 +194,6 @@ exports.takeTurn = function(channel, Move) {
 					let dir1 = getDir(pos1, d, 1);
 					let dir2 = getDir(pos1, d, 2);
 					if (d == [2, 3, 0, 1][dir])
-						continue;
-					if (!inBounds(dir2))
 						continue;
 					if (isPiece(dir1, 3))
 						continue;
@@ -217,7 +213,7 @@ exports.takeTurn = function(channel, Move) {
 
 					let dir1 = getDir(pos1, d, 1);
 					let dir2 = getDir(pos1, d, 2);
-					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn]) && isPiece(dir2, game.turn))
+					if (isPiece(dir1, [1, 0][game.turn]) && isPiece(dir2, game.turn))
 					{
 						game.board[dir1[0]][dir1[1]] = [[1, 0][game.turn], d % 2];
 						highlight.push([dir1[0], dir1[1], 2]);
@@ -225,7 +221,7 @@ exports.takeTurn = function(channel, Move) {
 						for (let D = 0; D < 4; D++)
 						{
 							let DIR = getDir(dir1, D, 1);
-							if (inBounds(DIR) && isPiece(DIR, game.turn, true) && game.board[DIR[0]][DIR[1]][1] == D % 2)
+							if (isPiece(DIR, game.turn, true) && game.board[DIR[0]][DIR[1]][1] == D % 2)
 							{
 								game.board[DIR[0]][DIR[1]] = game.turn;
 								highlight.push([DIR[0], DIR[1], 3]);
@@ -236,7 +232,7 @@ exports.takeTurn = function(channel, Move) {
 				for (let d = 0; d < 4; d++)
 				{
 					let dir1 = getDir(pos0, d, 1);
-					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn], true) && game.board[dir1[0]][dir1[1]][1] == d % 2)
+					if (isPiece(dir1, [1, 0][game.turn], true) && game.board[dir1[0]][dir1[1]][1] == d % 2)
 					{
 						game.board[dir1[0]][dir1[1]] = [1, 0][game.turn];
 						highlight.push([dir1[0], dir1[1], 3]);
@@ -265,7 +261,7 @@ exports.takeTurn = function(channel, Move) {
 						"n":     0, "e":     1, "s":     2, "w":    3 }[Move.match(/(up|right|down|left|north|south|east|west|[urdlnsew])$/i)[0]];
 			let move1 = getDir(move0, dir, 1);
 			let move2 = getDir(move0, dir, 2);
-			if (inBounds(move1) && isPiece(move1, 3))
+			if (isPiece(move1, 3))
 			{
 				for (let d = 0; d < 2; d++)
 				{
@@ -274,7 +270,7 @@ exports.takeTurn = function(channel, Move) {
 					let dir2 = getDir(move1, d, 2);
 					let rir1 = getDir(move1, r, 1);
 					let rir2 = getDir(move1, r, 2);
-					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn]) && inBounds(rir1) && isPiece(rir1, [1, 0][game.turn]) && ((!inBounds(dir2) || !isPiece(dir2, game.turn)) && (!inBounds(rir2) || !isPiece(rir2, game.turn))))
+					if (isPiece(dir1, [1, 0][game.turn]) && isPiece(rir1, [1, 0][game.turn]) && !isPiece(dir2, game.turn) && !isPiece(rir2, game.turn))
 						return exports.say(channel, ["Illegal play: This move would put this piece in a trapped position."]);
 				}
 
@@ -285,7 +281,7 @@ exports.takeTurn = function(channel, Move) {
 				{
 					let dir1 = getDir(move1, d, 1);
 					let dir2 = getDir(move1, d, 2);
-					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn]) && isPiece(dir2, game.turn))
+					if (isPiece(dir1, [1, 0][game.turn]) && isPiece(dir2, game.turn))
 					{
 						game.board[dir1[0]][dir1[1]] = [[1, 0][game.turn], d % 2];
 						highlight.push([dir1[0], dir1[1], 2]);
@@ -293,7 +289,7 @@ exports.takeTurn = function(channel, Move) {
 						for (let D = 0; D < 4; D++)
 						{
 							let DIR = getDir(dir1, D, 1);
-							if (inBounds(DIR) && isPiece(DIR, game.turn, true) && game.board[DIR[0]][DIR[1]][1] == D % 2)
+							if (isPiece(DIR, game.turn, true) && game.board[DIR[0]][DIR[1]][1] == D % 2)
 							{
 								game.board[DIR[0]][DIR[1]] = game.turn;
 								highlight.push([DIR[0], DIR[1], 3]);
@@ -304,7 +300,7 @@ exports.takeTurn = function(channel, Move) {
 				for (let d = 0; d < 4; d++)
 				{
 					let dir1 = getDir(move0, d, 1);
-					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn], true) && game.board[dir1[0]][dir1[1]][1] == d % 2)
+					if (isPiece(dir1, [1, 0][game.turn], true) && game.board[dir1[0]][dir1[1]][1] == d % 2)
 					{
 						game.board[dir1[0]][dir1[1]] = [1, 0][game.turn];
 						highlight.push([dir1[0], dir1[1], 3]);
@@ -312,7 +308,7 @@ exports.takeTurn = function(channel, Move) {
 				}
 			}
 			else
-			if (inBounds(move2) && !isPiece(move1, 3) && isPiece(move2, 3))
+			if (!isPiece(move1, 3) && isPiece(move2, 3))
 			{
 				game.board[move0[0]][move0[1]] = false;
 				game.board[move2[0]][move2[1]] = game.turn;
@@ -321,7 +317,7 @@ exports.takeTurn = function(channel, Move) {
 				{
 					let dir1 = getDir(move2, d, 1);
 					let dir2 = getDir(move2, d, 2);
-					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn]) && isPiece(dir2, game.turn))
+					if (isPiece(dir1, [1, 0][game.turn]) && isPiece(dir2, game.turn))
 					{
 						game.board[dir1[0]][dir1[1]] = [[1, 0][game.turn], d % 2];
 						highlight.push([dir1[0], dir1[1], 2]);
@@ -329,7 +325,7 @@ exports.takeTurn = function(channel, Move) {
 						for (let D = 0; D < 4; D++)
 						{
 							let DIR = [dir1[0] + [-1, 0, 1, 0][D], dir1[1] + [0, 1, 0, -1][D]];
-							if (inBounds(DIR) && isPiece(DIR, game.turn, true) && game.board[DIR[0]][DIR[1]][1] == D % 2)
+							if (isPiece(DIR, game.turn, true) && game.board[DIR[0]][DIR[1]][1] == D % 2)
 							{
 								game.board[DIR[0]][DIR[1]] = game.turn;
 								highlight.push([DIR[0], DIR[1], 3]);
@@ -340,7 +336,7 @@ exports.takeTurn = function(channel, Move) {
 				for (let d = 0; d < 4; d++)
 				{
 					let dir1 = [move0[0] + [-1, 0, 1, 0][d], move0[1] + [0, 1, 0, -1][d]];
-					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn], true) && game.board[dir1[0]][dir1[1]][1] == d % 2)
+					if (isPiece(dir1, [1, 0][game.turn], true) && game.board[dir1[0]][dir1[1]][1] == d % 2)
 					{
 						game.board[dir1[0]][dir1[1]] = [1, 0][game.turn];
 						highlight.push([dir1[0], dir1[1], 3]);
@@ -369,6 +365,15 @@ exports.takeTurn = function(channel, Move) {
 			else
 			if (isPiece(piece, 3))
 				return exports.say(channel, ["Illegal play: There is no piece there to be removed."]);
+		}
+		else
+		{
+			if (/^(up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move))
+				return exports.say(channel, ["Illegal play: Please specify which piece you want to move in that direction."]);
+			if (/^([1-8][a-h]|[a-h][1-8])$/i.test(Move))
+				return exports.say(channel, ["Illegal play: Please specify which direction you wish to move that piece."]);
+			if (/^(end|stop)$/i.test(Move))
+				return exports.say(channel, ["Illegal play: You have to take your turn. Otherwise, just say \"x!latrones forfeit\"."]);
 		}
 
 		let end = 0;

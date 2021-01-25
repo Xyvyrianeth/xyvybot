@@ -104,10 +104,7 @@ exports.takeTurn = function(channel, Move) {
 
     let move = Move - 1;
 	if (game.board[move].length == 6)
-	{
-		game.canHaveTurn = true;
         return exports.say(channel, ["Illegal play: this column is full."]);
-	}
 
     game.board[move].push(game.turn);
     game.highlight = move;

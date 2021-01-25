@@ -152,7 +152,10 @@ exports.command = (message) => {
 	{
 		let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
 		if (/<@[0-9]+> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo|Paper Soccer|Lines of Action|Latrones)!/.test(message.content) || message.content.startsWith("Illegal play:"))
+		{
 			game.channels[message.channel.id].push(message.id);
+			game.canHaveTurn = true;
+		}
 	}
 	else
 	if (message.embeds.length > 0)
