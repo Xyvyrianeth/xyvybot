@@ -257,9 +257,9 @@ exports.command = (cmd, args, input, message) => {
 					"x!profile `subcommand`\n" +
 					"\n" +
 					"**`backgrounds`** - Shows you all of your owned backgrounds or allows you to buy more or equip them.\n" +
-					"**`title`** - Displays your currently equipped title, your currently owned titles, or allows you to change your currently equipped title (if you know the ID for it).\n" +
+					"**`title`** - Displays your current title and allows you to change your title.\n" +
 					"**`color`** - Allows you to change the color your profile uses to display information.\n" +
-					"**`displayside`** - Allows you to change which side all the text n stuff is displayed on in your profile. Changing backgrounds will sometimes do that automatically to pick the optimal side.")
+					"**`displayside`** - Allows you to change which side all the text n stuff is displayed on in your profile. Changing backgrounds will sometimes do that automatically and pick the optimal side.")
 				.setColor(new Color().random()));
 	}
 

@@ -9,7 +9,7 @@ exports.command = (cmd, args, input, message) => {
 			.setDescription("A list of all commands supported by Xyvybot\nFor more help about any specific command, do \"x!help `command`\"")
 			.addField(
 				"\u200b",
-				"__**Featured Games**__\n`othello`\n`squares`\n`3dtictactoe`\n`connect4`\n`rokumoku`\n`ordo`\n`papersoccer`\n`linesofaction`\n\n" +
+				"__**Featured Games**__\n`othello`\n`squares`\n`3dtictactoe`\n`connect4`\n`rokumoku`\n`ordo`\n`papersoccer`\n`linesofaction`\n`latrones`\n\n" +
 				"__**Planned Games**__\n[Ludus latrunculorum](https://en.wikipedia.org/wiki/Ludus_latrunculorum)\n[Go](https://en.wikipedia.org/wiki/Go_(game))\n\n" +
 				"__**Game-Related Commands**__\n`profile`\n`leaderboard`\n`history`", true)
 			.addField(

@@ -9,7 +9,8 @@ var { Color } = require("/app/assets/misc/color.js"),
 		connect4: require("/app/games/connect4.js"),
 		ordo:     require("/app/games/ordo.js"),
 		soccer:   require("/app/games/soccer.js"),
-		loa:      require("/app/games/loa.js")
+		loa:      require("/app/games/loa.js"),
+		latrones: require("/app/games/latrones.js")
 	};
 exports.command = (cmd, args, input, message) => {
 	let gameNicks = {
@@ -20,7 +21,8 @@ exports.command = (cmd, args, input, message) => {
 		"connect4": ["connectfour", "connect4", "cfour", "c4"],
 		"ordo": ["ordo"],
 		"soccer": ["soccer", "papersoccer", "psoccer"],
-		"loa": ["linesofaction", "loa", "lines"] };
+		"loa": ["linesofaction", "loa", "lines"],
+		"latrones": ["latrones", "ludus", "latrunculi"] };
 	let gameName = null;
 	Object.keys(gameNicks).forEach(game => {
 		if (gameNicks[game].includes(cmd)) gameName = game; });
@@ -32,7 +34,8 @@ exports.command = (cmd, args, input, message) => {
 		"connect4": "Connect Four",
 		"ordo": "Ordo",
 		"soccer": "Paper Soccer",
-		"loa": "Lines of Action" }[gameName];
+		"loa": "Lines of Action",
+		"latrones": "Latrones" }[gameName];
 	if (!input)
 		return message.channel.send(`__**${GameName}**__\nTo start a game, type "x!${cmd} start"!\nTo learn the rules, type "x!${cmd} rules"!`);
 	condition = (condition) => {
@@ -129,6 +132,7 @@ exports.command = (cmd, args, input, message) => {
 				[×] ordo
 				[ ] soccer
 				[ ] loa
+				[ ] latrones
 			*/
 			case "othello":
 				embed.setDescription(
@@ -233,7 +237,7 @@ exports.command = (cmd, args, input, message) => {
 					"Singleton Moves",
 					"Singleton moves consist of one piece being moved in any direction, either diagonally or orthogonally, any number of tiles. These moves can end in either an empty tile or on a tile occupied by one of your opponent's pieces (which effectively \"captures\" and removes that piece from the game).\n" +
 					"You make a singleton move by saying the coordinates of the piece you want to move followed by the coordinates of the tile you wish to move it to; for example, say \"4C 7F\" to move a piece from Row 4–Column C to Row 7–Column F.\n" +
-					"pieces that have been moved will be highlighted in yellow with the tile they were moved from being highlighted in red.\n" +
+					"Pieces that have been moved will be highlighted in yellow with the tile they were moved from being highlighted in red.\n" +
 					`[Example not yet available](${wiki.ghuc}ordo/singleton_move.png)`)
 				.addField(
 					"Ordo Moves",
@@ -273,7 +277,7 @@ exports.command = (cmd, args, input, message) => {
 			case "loa":
 				embed.setDescription(
 					`Lines of Action (or LOA) is an ${wiki.asg} played between two people. The object of the game is for a player to combine all of their pieces into a single connected group.\n` +
-					"The game is played on an 8x8 tile board with players taking turns moving individual pieces around orthogonally or diagonally. Black goes first\n" +
+					"The game is played on an 8x8 tile board with black and white pieces. Players take turns moving individual pieces around orthogonally or diagonally. Black goes first\n" +
 					"Players start with 12 pieces aligned along all 4 edges of the board, with the 4 corner tiles being empty, with one player's pieces along the top and bottom edges and the other player's along the left and right edges.")
 				.addField(
 					"Movement",
@@ -289,6 +293,27 @@ exports.command = (cmd, args, input, message) => {
 					"If a player were to have all but one of their pieces captured and only have one piece remaining, then that counts as a single grouping and therefor they win, unless the final capture combined their opponent's pieces into one group.\n" +
 					`[Example not yet available](${wiki.ghuc}/loa/lastbutlost.png)`
 				);
+				break;
+			case "latrones":
+				embed.setDescription(
+					`Ludus latrunculorum, also called Latrunculi or Latrones or "The Game of Brigands", was a two-player ${wiki.asg} played during the age of the Roman Empire. The game is said to resemble checkers or draughts, but is generally accepted to be a game of military tactics.\n` +
+					"Due to a lack of recorded history, how exactly the game was played by the ancient Romans is unknown, but there have been multiple reconstructions and interpretations of the rules based on available evidence. For this bot, the [Ulrich Schädler reconstruction(https://en.wikipedia.org/wiki/Ludus_latrunculorum#Ulrich_Sch%C3%A4dler's_reconstruction_(2001)) will be used.\n" +
+					"The game is played on an 8x8 tile grid with black and white pieces and the game is split into two phases: placement and movement.")
+				.addField("Phase 1: Placement",
+					"Starting with black, players take turns placing pieces on vacant tiles until each player has 16 pieces each on the board. During this phase, no pieces can be trapped.\n" +
+					"To place a piece on the board, simply type the coordinates of a vacant tile you wish to place a piece; such as \"b7\".")
+				.addField("Phase 2: Movement",
+					"On their turn, a player can move any piece in any orthogonal direction, either to an adjacent vacant tile or over an adjacent piece of either color onto a vacant tile on the other side. If the player makes a jump and another jump, the player may choose to jump with that piece again.\n" +
+					"If the active player moves a piece so that an opponent's piece now has 2 free active player's pieces on opposite sides of it, then that opponent's piece becomes trapped and cannot be moved until either of the pieces that are trapping it are moved or become trapped themselves.\n" +
+					"To move a piece, type out the coordinates of the piece you wish to move with the direction you wish to move it, separated by a space; such as \"b7 left\".\n" +
+					`[Example not yet available](${wiki.ghuc}/latrones/movement.png)`)
+				.addField("Phase 2: Captures",
+					"On their turn, instead of moving a piece, the active player can choose to capture one of their opponent's trapped pieces and remove it from the game.\n" +
+					"To remove one of your opponent's captured pieces, simply type out the coordinates of the piece followed by the word \"remove\" or \"capture\"; such as \"b7 capture\".\n" +
+					`[Example not yet available](${wiki.ghuc}/latrones/capture.png)`)
+				.addField("Endgame",
+					"The game ends when a player has only one piece remaining or has no free pieces to move, with that player being declared the loser.\n");
+				break;
 		}
 		embed.setColor(new Color().random());
 		message.author.send(embed);

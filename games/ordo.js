@@ -131,34 +131,34 @@ exports.takeTurn = function(channel, Move) {
         if (game.board[move.from[0][0]][move.from[0][1]] === false)
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: there is no piece to move in that space."]);
+			return exports.say(channel, ["Illegal play: there is no piece to move in that space."]);
 		}
         if (game.board[move.from[0][0]][move.from[0][1]] == [1, 0][game.turn])
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: that piece is not yours."]);
+			return exports.say(channel, ["Illegal play: that piece is not yours."]);
 		}
         if (direction == 8 || distance == 0)
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: you actually have to move the piece."]);
+			return exports.say(channel, ["Illegal play: you actually have to move the piece."]);
 		}
         if (move.from[0][0] != move.to[0][0] && move.from[0][1] != move.to[0][1] && Math.abs(move.from[0][0] - move.to[0][0]) != Math.abs(move.from[0][1] - move.to[0][1]))
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: pieces can only be moved diagonally or orthagonally."]);
+			return exports.say(channel, ["Illegal play: pieces can only be moved diagonally or orthagonally."]);
 		}
         for (let i = 1; i <= distance; i++)
 		{
             if (i < distance && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][direction] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][direction] * i)] !== false)
 			{
 				game.canHaveTurn = true;
-				return exports.say(channel, ["Illegal move: a piece is blocking this movement."]);
+				return exports.say(channel, ["Illegal play: a piece is blocking this movement."]);
 			}
             if (i == distance && game.board[move.from[0][0] + ([-1, -1, 0, 1, 1, 1, 0, -1][direction] * i)][move.from[0][1] + ([0, 1, 1, 1, 0, -1, -1, -1][direction] * i)] === game.turn)
 			{
 				game.canHaveTurn = true;
-				return exports.say(channel, ["Illegal move: you cannot capture your own pieces."]);
+				return exports.say(channel, ["Illegal play: you cannot capture your own pieces."]);
 			}
         }
     }
@@ -197,18 +197,18 @@ exports.takeTurn = function(channel, Move) {
 		if (pieces[0][0] == pieces[1][0] && pieces[0][1] == pieces[1][1])
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: this is a singleton move, please use the singleton move format!"]);
+			return exports.say(channel, ["Illegal play: this is a singleton move, please use the singleton move format!"]);
 		}
 		if (pieces[0][0] != pieces[1][0] && pieces[0][1] != pieces[1][1])
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: pieces you are trying move are not alligned orthagonally."]);
+			return exports.say(channel, ["Illegal play: pieces you are trying move are not alligned orthagonally."]);
 		}
         else
 		if ((pieces[0][1] == pieces[1][1] && (direction == 0 || direction == 2)) || (pieces[0][0] == pieces[1][0] && (direction == 1 || direction == 3)))
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: multiple pieces cannot be moved single-file."]);
+			return exports.say(channel, ["Illegal play: multiple pieces cannot be moved single-file."]);
 		}
         else
 		if (pieces[0][0] == pieces[1][0])
@@ -234,7 +234,7 @@ exports.takeTurn = function(channel, Move) {
         if (move.from.some(s => game.board[s[0]][s[1]] !== game.turn))
 		{
 			game.canHaveTurn = true;
-			return exports.say(channel, ["Illegal move: one or more of the pieces you're trying to move aren't yours."]);
+			return exports.say(channel, ["Illegal play: one or more of the pieces you're trying to move aren't yours."]);
 		}
         if ((direction == 0 && game.board.some((Y, y) => Y.some((X, x) => y <  move.from[0][0] && y >= move.to[0][0] 	 && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
             (direction == 2 && game.board.some((Y, y) => Y.some((X, x) => y >  move.from[0][0] && y <= move.to[0][0] 	 && x >= move.from[0][1] && x <= move.to[width][1] && game.board[y][x] !== false))) ||
@@ -242,7 +242,7 @@ exports.takeTurn = function(channel, Move) {
             (direction == 3 && game.board.some((Y, y) => Y.some((X, x) => y >= move.from[0][0] && y <= move.to[width][0] && x <  move.from[0][1] && x >= move.to[0][1]     && game.board[y][x] !== false))))
 			{
 				game.canHaveTurn = true;
-				return exports.say(channel, ["Illegal move: one or more pieces are blocking that movement (ordo moves cannot capture enemy pieces)."]);
+				return exports.say(channel, ["Illegal play: one or more pieces are blocking that movement (ordo moves cannot capture enemy pieces)."]);
 			}
     }
 
@@ -307,7 +307,7 @@ exports.takeTurn = function(channel, Move) {
     if (queue[game.turn].length != 0)
     {   // Attempting to split yourself up
 		game.canHaveTurn = true;
-		return exports.say(channel, ["Illegal move: would split your pieces into more than one group.", "Illegal move: would not reconnect your pieces into one group."][game.split]);
+		return exports.say(channel, ["Illegal play: would split your pieces into more than one group.", "Illegal play: would not reconnect your pieces into one group."][game.split]);
     }
     else
     if (boardClone[[7, 0][game.turn]].some(p => p === game.turn))

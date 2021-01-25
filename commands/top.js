@@ -10,8 +10,9 @@ exports.command = (cmd, args, input, message) => {
 			"connect4": ["connectfour", "connect4", "cfour", "c4"],
 			"ordo": ["ordo"],
 			"soccer": ["soccer", "papersoccer", "psoccer"],
-			"loa": ["linesofaction", "loa", "lines"] };
-		elos = !input                ? "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7 + elo8" :
+			"loa": ["linesofaction", "loa", "lines"],
+			"latrones": ["latrones", "ludus", "latrunculi"] };
+		elos = !input                ? "elo1 + elo2 + elo3 + elo4 + elo5 + elo6 + elo7 + elo8 + elo9" :
 		gms.othello.includes(input)  ? "elo1" :
 		gms.squares.includes(input)  ? "elo2" :
 		gms.rokumoku.includes(input) ? "elo3" :
@@ -19,7 +20,8 @@ exports.command = (cmd, args, input, message) => {
 		gms.connect4.includes(input) ? "elo5" :
 		gms.ordo.includes(input)     ? "elo6" :
 		gms.soccer.includes(input)   ? "elo7" :
-		gms.loa.includes(input)      ? "elo8" : false;
+		gms.loa.includes(input)      ? "elo8" :
+		gms.latrones.includes(input) ? "elo9" : false;
 	if (!elos)
 		return message.channel.send("Unknown game.");
 
@@ -64,7 +66,7 @@ exports.command = (cmd, args, input, message) => {
 			if (!input)
 				game = "All Games"
 			else
-				game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer", "Lines of Action"][elos[3] - 1];
+				game = ["Othello", "Squares", "Rokumoku", "3D Tic Tac Toe", "Connect Four", "Ordo", "Paper Soccer", "Lines of Action", "Latrones"][elos[3] - 1];
 
 			let users = ["__`\u200b RANK \u200b|\u200b Elo \u200b|\u200b \u200b W/L \u200b \u200b|WINRATE| USER`__"];
 			for (let i = 0; i < top.length; i++) {

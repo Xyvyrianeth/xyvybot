@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-	var version = package.version + ".4";
+	var version = package.version + ".0";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -24,7 +24,8 @@ var images = require("/app/assets/backgrounds/images.json"),
 		connect4:  require("/app/games/connect4.js"),
 		ordo:      require("/app/games/ordo.js"),
 		soccer:    require("/app/games/soccer.js"),
-		loa:       require("/app/games/loa.js")
+		loa:       require("/app/games/loa.js"),
+		latrones: require("/app/games/latrones.js")
 	};
 exports.games = games;
 
@@ -107,9 +108,9 @@ newUser = (id, message) => {
 	let image = images.ids.random(),
 		query =
 			`INSERT INTO profiles (\n` +
-			`   id, color, title, background, backgrounds, lefty, money, elo1, elo2, elo3, elo4, elo5, elo6, elo7, elo8, win1, win2, win3, win4, win5, win6, win7, win8, los1, los2, los3, los4, los5, los6, los7, los8\n` +
+			`   id, color, title, background, backgrounds, lefty, money, elo1, elo2, elo3, elo4, elo5, elo6, elo7, elo8, elo9, win1, win2, win3, win4, win5, win6, win7, win8, win9, los1, los2, los3, los4, los5, los6, los7, los8, los9\n` +
 			`) VALUES (\n` +
-			`   '${id}', '#2f3136', 'Casual Gamer', '${image}', ARRAY ['${image}'], ${images.display.right.includes(image) ? false : true}, 500, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n` +
+			`   '${id}', '#2f3136', 'Casual Gamer', '${image}', ARRAY ['${image}'], ${images.display.right.includes(image) ? false : true}, 500, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0\n` +
 			`)`;
 	db.query(query, (err) => {
 		if (err)
@@ -117,9 +118,9 @@ newUser = (id, message) => {
 	});
 	return {
 		id: id, color: "#aaa", title: "Casual Gamer", background: image, backgrounds: [image], lefty: images.display.right.includes(image) ? false : true, money: 500,
-		elo1: 1000, elo2: 1000, elo3: 1000, elo4: 1000, elo5: 1000, elo6: 1000, elo7: 1000, elo8: 1000,
-		win1: 0,    win2: 0,    win3: 0,    win4: 0,    win5: 0,    win6: 0,    win7: 0,    win8: 0,
-		los1: 0,    los2: 0,    los3: 0,    los4: 0,    los5: 0,    los6: 0,    los7: 0,    los8: 0
+		elo1: 1000, elo2: 1000, elo3: 1000, elo4: 1000, elo5: 1000, elo6: 1000, elo7: 1000, elo8: 1000, elo9: 1000,
+		win1: 0,    win2: 0,    win3: 0,    win4: 0,    win5: 0,    win6: 0,    win7: 0,    win8: 0,    win9: 0,
+		los1: 0,    los2: 0,    los3: 0,    los4: 0,    los5: 0,    los6: 0,    los7: 0,    los8: 0,    los9: 0
 	};
 }
 exports.sqlError = sqlError;
@@ -179,7 +180,8 @@ var aliases = {
 		"connectfour", "connect4", "cfour", "c4",
 		"ordo",
 		"soccer", "papersoccer", "psoccer",
-		"linesofaction", "loa", "lines" ],
+		"linesofaction", "loa", "lines",
+		"latrones", "ludus", "latrunculi" ],
 	// Minigames
 	"minesweeper": ["minesweeper", "ms", "mines"],
 	"iq": ["iq", "quiz", "puzzle", "iqtest", "braingame"],

@@ -7,7 +7,7 @@ exports.command = (message) => {
 	if (message.attachments.array().length != 0)
 	{
 		let img = message.attachments.array()[0].name;
-		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer|loa)_(0_[0-9]+vs[0-9]+|1_[0-9]+|2_tie)\.png$/.test(img))
+		if (/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer|loa|latrones)_(0_[0-9]+vs[0-9]+|1_[0-9]+|2_tie)\.png$/.test(img))
 		{
 			game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
 			end = img.match(/_[0-2]_/)[0].substring(1, 2);
@@ -15,7 +15,7 @@ exports.command = (message) => {
 			if (end === '0')
 				return game.channels[message.channel.id].push(message.id);
 			let result = false,
-				Game = img.match(/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer|loa)/g)[0],
+				Game = img.match(/^(connect4|squares|othello|rokumoku|ttt3d|ordo|soccer|loa|latrones)/g)[0],
 				query = `INSERT INTO matches (id, game, location, players, winner, timestart, squarereplay)\n` +
 						`VALUES ('${message.id}', '${Game}', '${message.channel.id}/blank', ARRAY['${game.players[0]}', '${game.players[1]}'], '${game.players[game.winner]}', '${game.timeStart}', 'false')`;
 			db.query(query, err => {
@@ -31,7 +31,8 @@ exports.command = (message) => {
 						"rokumoku": [321, 346],
 						"ordo":     [271, 246],
 						"soccer":   [311, 235],
-						"loa":      [221, 246] }[Game],
+						"loa":      [221, 246],
+						"latrones": [221, 246] }[Game],
 					stream1 = fs.createWriteStream("replay_" + message.id + ".gif"),
 					encoder1 = new gifEncoder(dimensions[0], dimensions[1]);
 
@@ -80,7 +81,7 @@ exports.command = (message) => {
 				result = {
 					winner: game.players[game.winner],
 					loser: game.players[[1, 0][game.winner]],
-					game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa"].indexOf(game.game) + 1)
+					game: JSON.stringify(["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones"].indexOf(game.game) + 1)
 				};
 				if (result.game == 1 || result.game == 2)
 					result.score = game.winner == 0 ? game.score : game.score.reverse();
@@ -150,7 +151,7 @@ exports.command = (message) => {
 	if (games.games.some(game => game.channels.hasOwnProperty(message.channel.id)))
 	{
 		let game = games.games.filter(game => game.channels.hasOwnProperty(message.channel.id))[0];
-		if (/<@[0-9]+> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo|Paper Soccer|Lines of Action)!/.test(message.content) || message.content.startsWith("Illegal move:"))
+		if (/<@[0-9]+> is now requesting a new game of (Connect 4|Squares|Othello|Rokumoku|3D Tic Tac Toe|Ordo|Paper Soccer|Lines of Action|Latrones)!/.test(message.content) || message.content.startsWith("Illegal play:"))
 			game.channels[message.channel.id].push(message.id);
 	}
 	else

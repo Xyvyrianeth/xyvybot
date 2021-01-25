@@ -16,7 +16,8 @@ exports.command = (cmd, args, input, message) => {
 			"connect4": ["connectfour", "connect4", "cfour", "c4"],
 			"ordo": ["ordo"],
 			"soccer": ["soccer", "papersoccer", "psoccer"],
-			"loa": ["linesofaction", "loa", "lines"] };
+			"loa": ["linesofaction", "loa", "lines"],
+			"latrones": ["latrones", "ludus", "latrunculi"] };
 	if (!input)
 		player = message.author.id;
 	else
@@ -63,7 +64,7 @@ exports.command = (cmd, args, input, message) => {
 			let matches = [];
 			gameNameLength = 0;
 			res.rows.forEach(match => {
-				gameName = {"othello": "Othello ", "squares": "Squares ", "rokumoku": "Rokumoku", "ttt3d": "3D TTT  ", "connect4": "Connect4", "ordo": "Ordo    ", "soccer": "P Soccer", "loa": "Lines   "}[match.game];
+				gameName = {"othello": "Othello ", "squares": "Squares ", "rokumoku": "Rokumoku", "ttt3d": "3D TTT  ", "connect4": "Connect4", "ordo": "Ordo    ", "soccer": "P Soccer", "loa": "Lines   ", "latrones": "Latrones"}[match.game];
 				status = player == match.winner ? "Winner": "Loser ";
 				let time = new Date(match.timestart);
 				time = `${(time.getMonth() < 9 ? '0' : '') + (time.getMonth() + 1)}/${(time.getDate() < 9 ? '0' : '') + (time.getDate() + 1)}/${time.getFullYear().toString().substring(2)} ${(time.getHours() < 10 ? '0': 0) + time.getHours()}:${(time.getMinutes() < 10 ? '0': 0) + time.getMinutes()}`;

@@ -9,6 +9,7 @@ exports.newGame = function(channel, player) {
     let time = new Date();
 	let game = {
 		buffer: {},
+		canHaveTurn: true,
 		channels: {},
 		forfeit: false,
 		game: shortname,
@@ -18,7 +19,6 @@ exports.newGame = function(channel, player) {
 		player: false,
 		players: [player],
         replayData: [],
-		score: [0, 0],
 		started: false,
 		timeStart: `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`,
 		turn: 0
@@ -26,6 +26,7 @@ exports.newGame = function(channel, player) {
 	game.channels[channel] = [];
 	games.push(game);
 
+	let _ = false;
 	game.board = [];
 
 	game.timer = {
@@ -55,25 +56,21 @@ exports.startGame = function(channel1, channel2, player2) {
 }
 
 exports.drawBoard = function(game, end, highlight) {
-	let canvas = new Canvas.createCanvas(280, 300);
+	let canvas = new Canvas.createCanvas(221, 246);
 	let ctx = canvas.getContext('2d');
 
 	ctx.drawImage(exports.Images.board, 0, 0);
 
-	// ....
+	// Custom
 
-    game.replayData.push(ctx);
 	return canvas.toBuffer();
 }
 
 exports.takeTurn = function(channel, Move) {
 	let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
-	let move = []; // [Move.match(/[0-9]{1,2}/)[0] - 1, 'abcdefghij'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
-	let highlight = move;
+	game.canHaveTurn = false;
 
-	// Function will vary with game
-
-	// .....
+	// Custom
 
 	exports.nextTurn(channel, end, highlight);
 }
@@ -91,41 +88,38 @@ exports.nextTurn = function(channel, end, highlight) {
 	}
 	else
 	{
-		game.over = true;
+		game.winner = game.turn;
 	}
 
 	game.buffer = new Discord.MessageAttachment(exports.drawBoard(game, end, highlight), end == 1 ? `${shortname}_${end}_${game.players[game.winner]}.png` : `${shortname}_${end}_${game.players[0]}vs${game.players[1]}.png`);
 	for (let ch in game.channels)
 	{
-		for (let i = 0; i < game.channels[ch].length; i++)
-		{
-			client.channels.cache.get(ch).messages.cache.get(game.channels[ch][i]).delete();
-		}
+		if (client.channels.cache.get(ch).guild.members.cache.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
+			for (let i = 0; i < game.channels[ch].length; i++)
+				client.channels.cache.get(ch).messages.cache.get(game.channels[ch][i]).delete();
 		game.channels[ch] = [];
 	}
 
-	exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : end == 2 ? "Tie game, everyone loses!" : `<@${game.players[game.score[0] > game.score[1] ? 0 : 1]}> has won!`, game.buffer]);
+	exports.say(game.channels, [end == 0 ? `It is <@${game.player}>'s turn.` : `<@${game.players[game.winner]}> has won ${["by combining all of their pieces into a single group", "by only having one piece left, which counts as a single group"][end - 1]}!`, game.buffer]);
 }
 
 exports.say = function(channels, message) {
-	for (let i in channels)
-	{
-		client.channels.cache.get(i).send(message[0], message[1]);
-	}
+    if (typeof channels == "string") {
+        client.channels.cache.get(channels).send(message[0], message[1]);
+    }
+    else
+    {
+        for (let i in channels)
+        {
+            client.channels.cache.get(i).send(message[0], message[1]);
+        }
+    }
 }
 
 // Images
 
 exports.Images = {};
 
-Canvas.loadImage("/app/assets/games/gamename/board.png").then(image => {
+Canvas.loadImage(`/app/assets/games/${gamename}/board.png`).then(image => {
 	exports.Images.board = image;
 });
-
-exports.Images.numbers = new Array(10);
-for (let i = 0; i < 10; i++)
-{
-	Canvas.loadImage(`/app/assets/games/gamename/numbers/${i}.png`).then(image => {
-		exports.Images.numbers[i] = image;
-	});
-}

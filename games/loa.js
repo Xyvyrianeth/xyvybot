@@ -73,9 +73,7 @@ exports.drawBoard = function(game, end, highlight) {
 	for (let x = 0; x < 8; x++)
 		for (let y = 0; y < 8; y++)
 			if (typeof game.board[x][y] != "boolean")
-			{
 				ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
-			}
 
 	if (highlight)
 	{
@@ -124,7 +122,7 @@ exports.takeTurn = function(channel, Move) {
 	if (typeof game.board[from[0]][from[1]] == "boolean" || game.board[from[0]][from[1]] != game.turn)
 	{
 		game.canHaveTurn = true;
-		return exports.say(channel, ["Illegal move: you do not have a piece in that space."]);
+		return exports.say(channel, ["Illegal play: you do not have a piece in that space."]);
 	}
 
 	// Count how many pieces are in the line of movement
@@ -143,13 +141,13 @@ exports.takeTurn = function(channel, Move) {
 	if ((from[0] + (count * from[2])) < 0 || (from[0] + (count * from[2])) > 7 || (from[1] + (count * from[3])) < 0 || (from[1] + (count * from[3])) > 7)
 	{
 		game.canHaveTurn = true;
-		return exports.say(channel, ["Illegal move: this move will take the piece off the edge of the board."]);
+		return exports.say(channel, ["Illegal play: this move will take the piece off the edge of the board."]);
 	}
 	let to = [from[0] + (count * from[2]), from[1] + (count * from[3])];
 	if (typeof game.board[to[0]][to[1]] != "boolean" && game.board[to[0]][to[1]] == game.turn)
 	{
 		game.canHaveTurn = true;
-		return exports.say(channel, ["Illegal move: one of your own pieces already occupies that space."]);
+		return exports.say(channel, ["Illegal play: one of your own pieces already occupies that space."]);
 	}
 
 	// Is anything blocking the path
@@ -163,7 +161,7 @@ exports.takeTurn = function(channel, Move) {
 	if (jumpingoverenemypieces)
 	{
 		game.canHaveTurn = true;
-		return exports.say(channel, ["Illegal move: you cannot jump over enemy pieces."]);
+		return exports.say(channel, ["Illegal play: you cannot jump over enemy pieces."]);
 	}
 
 	// Move is now legal, check for win
