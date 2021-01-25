@@ -282,6 +282,8 @@ exports.takeTurn = function(channel, Move) {
 
 				game.board[move0[0]][move0[1]] = false;
 				game.board[move1[0]][move1[1]] = game.turn;
+				highlight.push([move0[0], move0[1], 1]);
+				highlight.push([move1[0], move1[1], 0]);
 
 				for (let d = 0; d < 4; d++)
 				{
@@ -318,6 +320,8 @@ exports.takeTurn = function(channel, Move) {
 			{
 				game.board[move0[0]][move0[1]] = false;
 				game.board[move2[0]][move2[1]] = game.turn;
+				highlight.push([move0[0], move0[1], 1]);
+				highlight.push([move2[0], move2[1], 0]);
 
 				for (let d = 0; d < 4; d++)
 				{
