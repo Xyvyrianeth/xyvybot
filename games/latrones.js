@@ -345,7 +345,7 @@ exports.takeTurn = function(channel, Move) {
 				highlight.push([move0[0], move0[1], 1]);
 				highlight.push([move2[0], move2[1], 0]);
 
-				let dirs = [];
+				let dirs = [0, 0, 0, 0];
 				for (let d = 0; d < 4; d++)
 				{
 					let dir1 = getDir(move2, d, 1);
