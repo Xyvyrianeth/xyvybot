@@ -18,6 +18,7 @@ exports.newGame = function(channel, player) {
 		lastmove: '',
 		over: false,
 		phase: 0,
+		pieces: 0,
 		player: false,
 		players: [player],
         replayData: [],
@@ -127,8 +128,13 @@ exports.takeTurn = function(channel, Move) {
 
 		if (isPiece(move, 3))
 			return exports.say(channel, ["Illegal play: That space is not vacant."]);
-		else
-			game.board[move[0]][move[1]] = game.turn;
+
+		game.board[move[0]][move[1]] = game.turn;
+		game.turn = [1, 0][game.turn];
+		game.pieces++;
+		if (game.pieces == 32)
+			game.phase = 2;
+
 	}
 	else
 	{
@@ -325,34 +331,33 @@ exports.takeTurn = function(channel, Move) {
 			if (isPiece(piece, 3))
 				return exports.say(channel, ["Illegal play: There is no piece there to be removed."]);
 		}
-	}
 
-	// Check for win
-	let end = 0;
-	let pieceCount = [0, 0];
-	let trapCount = [0, 0];
-	for (let x = 0; x < 8; x++)
-		for (let y = 0; y < 8; y++)
-		{
-			if (typeof game.board[x][y] == "number")
-				pieceCount[game.board[x][y]]++;
-			if (typeof game.board[x][y] == "array")
+		// Check for win
+		let end = 0;
+		let pieceCount = [0, 0];
+		let trapCount = [0, 0];
+		for (let x = 0; x < 8; x++)
+			for (let y = 0; y < 8; y++)
 			{
-				pieceCount[game.board[x][y][0]]++;
-				trapCount[game.board[x][y][0]]++;
+				if (typeof game.board[x][y] == "number")
+					pieceCount[game.board[x][y]]++;
+				if (typeof game.board[x][y] == "array")
+				{
+					pieceCount[game.board[x][y][0]]++;
+					trapCount[game.board[x][y][0]]++;
+				}
 			}
-		}
 
-	if (pieceCount.includes(1))
-		end = 1, game.winner = [1, 0][pieceCount.indexOf(1)];
-	if (pieceCount[[1, 0][game.turn]] == trapCount[[1, 0][game.turn]])
-		end = 2, game.winner = game.turn;
+		if (pieceCount.includes(1))
+			end = 1, game.winner = [1, 0][pieceCount.indexOf(1)];
+		if (pieceCount[[1, 0][game.turn]] == trapCount[[1, 0][game.turn]])
+			end = 2, game.winner = game.turn;
 
-	let hasMove = false;
-	for (let x = 0; x < 8; x++)
-		for (let y = 0; y < 8; y++)
-		{
-			if (isPiece([x, y], [1, 0][game.turn]))
+		let hasMove = false;
+		for (let x = 0; x < 8; x++)
+			for (let y = 0; y < 8; y++)
+			{
+				if (isPiece([x, y], [1, 0][game.turn]))
 				for (let d = 0; d < 4; d++)
 				{
 					let xy1 = getDir([x, y], d, 1);
@@ -363,19 +368,20 @@ exports.takeTurn = function(channel, Move) {
 						break;
 					}
 				}
-			if (isPiece([x, y], game.turn, true))
-			{
-				hasMove = true;
-				break;
+				if (isPiece([x, y], game.turn, true))
+				{
+					hasMove = true;
+					break;
+				}
 			}
-		}
-	if (!hasMove)
+		if (!hasMove)
 		end = 3;
 
-	if (end == 0)
-	{
-		game.turn = [1, 0][game.turn];
-		game.player = game.players[game.turn];
+		if (end == 0)
+		{
+			game.turn = [1, 0][game.turn];
+			game.player = game.players[game.turn];
+		}
 	}
 
 	exports.nextTurn(channel, end, highlight);
