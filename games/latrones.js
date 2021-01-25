@@ -80,8 +80,10 @@ exports.drawBoard = function(game, end, highlight) {
 				else
 					ctx.drawImage(exports.Images[["black", "white"][game.board[x][y][0]] + "Blocked"], 17 + (y * 25), 30 + (x * 25));
 			}
+	for (let h of highlight)
+		ctx.drawImage(exports.Images[["to", "from", "capture", "free"][h[2]]], 17 + (h[0]), 30 + (h[1]));
 
-	ctx.drawImage(exports.Images["phase" + game.phase], 20, 250);
+	ctx.drawImage(exports.Images["phase" + game.phase], [23, 25][game.phase - 1], 250);
 
 	let newCanvas = new Canvas.createCanvas(221, 246);
 	let newCtx = newCanvas.getContext('2d');
@@ -91,13 +93,13 @@ exports.drawBoard = function(game, end, highlight) {
 
 	if (end === 0)
     {
-        ctx.drawImage(exports.Images[["black", "white"][game.turn] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.turn, 76, 4);
+        ctx.drawImage(exports.Images[["black", "white"][game.turn] + "Text"], 55, 6);
+        ctx.drawImage(exports.Images.turn, 111, 4);
     }
     else
     {
-        ctx.drawImage(exports.Images[["black", "white"][game.winner] + "Text"], 20, 6);
-        ctx.drawImage(exports.Images.win, 81, 6);
+        ctx.drawImage(exports.Images[["black", "white"][game.winner] + "Text"], 61, 6);
+        ctx.drawImage(exports.Images.win, 122, 6);
     }
 
 	return canvas.toBuffer();
@@ -105,6 +107,7 @@ exports.drawBoard = function(game, end, highlight) {
 
 exports.takeTurn = function(channel, Move) {
 	let game = games.filter(game => game.channels.hasOwnProperty(channel))[0];
+	let highlight = [];
 	game.canHaveTurn = false;
 
 	let inBounds = (crd) => {
@@ -124,9 +127,9 @@ exports.takeTurn = function(channel, Move) {
 	{
 		if (/^([1-8][a-h]|[a-h][1-8])$/i.test(Move))
 		{
-			let move = [Move.match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
+			let move = [Move.match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-j]/)[0]), 0];
 
-			if (isPiece(move, 3))
+			if (!isPiece(move, 3))
 				return exports.say(channel, ["Illegal play: That space is not vacant."]);
 
 			game.board[move[0]][move[1]] = game.turn;
@@ -134,6 +137,8 @@ exports.takeTurn = function(channel, Move) {
 			game.pieces++;
 			if (game.pieces == 32)
 				game.phase = 2;
+
+			highlight.push(move);
 		}
 		else
 		if (/^([1-8][a-h]|[a-h][1-8]) (up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move) || /^(up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move))
@@ -182,6 +187,8 @@ exports.takeTurn = function(channel, Move) {
 
 				game.board[game.jump[0][0]][game.jump[0][1]] = false;
 				game.board[pos1[0]][pos1[1]] = game.turn;
+				highlight.push([game.jump[0][0], game.jump[0][1], 0]);
+				highlight.push([pos1[0], pos1[1], 1]);
 
 				let dirs = [];
 				for (let d = 0; d < 4; d++)
@@ -203,7 +210,7 @@ exports.takeTurn = function(channel, Move) {
 				else
 					game.jump = false;
 
-				for (let d = 0; d < 4; d++) // Trap new opponents
+				for (let d = 0; d < 4; d++)
 				{
 					if (dirs.includes(d))
 						continue;
@@ -212,20 +219,28 @@ exports.takeTurn = function(channel, Move) {
 					let dir2 = getDir(pos1, d, 2);
 					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn]) && isPiece(dir2, game.turn))
 					{
-						game.board[dir1[0]][dir1[1]] = [game.board[dir1[0]][dir1[1]], d % 2];
-						for (let D = 0; D < 4; D++) // Free trapped non-opponents
+						game.board[dir1[0]][dir1[1]] = [[1, 0][game.turn], d % 2];
+						highlight.push([dir1[0], dir1[1], 2]);
+
+						for (let D = 0; D < 4; D++)
 						{
 							let DIR = getDir(dir1, D, 1);
 							if (inBounds(DIR) && isPiece(DIR, game.turn, true) && game.board[DIR[0]][DIR[1]][1] == D % 2)
+							{
 								game.board[DIR[0]][DIR[1]] = game.turn;
+								highlight.push([DIR[0], DIR[1], 3]);
+							}
 						}
 					}
 				}
-				for (let d = 0; d < 4; d++) // Free trapped opponents
+				for (let d = 0; d < 4; d++)
 				{
 					let dir1 = getDir(pos0, d, 1);
 					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn], true) && game.board[dir1[0]][dir1[1]][1] == d % 2)
+					{
 						game.board[dir1[0]][dir1[1]] = [1, 0][game.turn];
+						highlight.push([dir1[0], dir1[1], 3]);
+					}
 				}
 			}
 		}
@@ -249,7 +264,7 @@ exports.takeTurn = function(channel, Move) {
 						"n":     0, "e":     1, "s":     2, "w":    3 }[Move.match(/(up|right|down|left|north|south|east|west|[urdlnsew])$/i)[0]];
 			let move1 = getDir(move0, dir, 1);
 			let move2 = getDir(move0, dir, 2);
-			if (inBounds(move1) && isPiece(move1, 3)) // Non-jump
+			if (inBounds(move1) && isPiece(move1, 3))
 			{
 				for (let d = 0; d < 2; d++)
 				{
@@ -265,54 +280,70 @@ exports.takeTurn = function(channel, Move) {
 				game.board[move0[0]][move0[1]] = false;
 				game.board[move1[0]][move1[1]] = game.turn;
 
-				for (let d = 0; d < 4; d++) // Trap new opponents
+				for (let d = 0; d < 4; d++)
 				{
 					let dir1 = getDir(move1, d, 1);
 					let dir2 = getDir(move1, d, 2);
 					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn]) && isPiece(dir2, game.turn))
 					{
-						game.board[dir1[0]][dir1[1]] = [game.board[dir1[0]][dir1[1]], d % 2];
-						for (let D = 0; D < 4; D++) // Free trapped non-opponents
+						game.board[dir1[0]][dir1[1]] = [[1, 0][game.turn], d % 2];
+						highlight.push([dir1[0], dir1[1], 2]);
+
+						for (let D = 0; D < 4; D++)
 						{
 							let DIR = getDir(dir1, D, 1);
 							if (inBounds(DIR) && isPiece(DIR, game.turn, true) && game.board[DIR[0]][DIR[1]][1] == D % 2)
+							{
 								game.board[DIR[0]][DIR[1]] = game.turn;
+								highlight.push([DIR[0], DIR[1], 3]);
+							}
 						}
 					}
 				}
-				for (let d = 0; d < 4; d++) // Free trapped opponents
+				for (let d = 0; d < 4; d++)
 				{
 					let dir1 = getDir(move0, d, 1);
 					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn], true) && game.board[dir1[0]][dir1[1]][1] == d % 2)
+					{
 						game.board[dir1[0]][dir1[1]] = [1, 0][game.turn];
+						highlight.push([dir1[0], dir1[1], 3]);
+					}
 				}
 			}
 			else
-			if (inBounds(move2) && !isPiece(move1, 3) && isPiece(move2, 3)) // Jump
+			if (inBounds(move2) && !isPiece(move1, 3) && isPiece(move2, 3))
 			{
 				game.board[move0[0]][move0[1]] = false;
 				game.board[move2[0]][move2[1]] = game.turn;
 
-				for (let d = 0; d < 4; d++) // Trap new opponents
+				for (let d = 0; d < 4; d++)
 				{
 					let dir1 = getDir(move2, d, 1);
 					let dir2 = getDir(move2, d, 2);
 					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn]) && isPiece(dir2, game.turn))
 					{
-						game.board[dir1[0]][dir1[1]] = [game.board[dir1[0]][dir1[1]], d % 2];
-						for (let D = 0; D < 4; D++) // Free trapped non-opponents
+						game.board[dir1[0]][dir1[1]] = [[1, 0][game.turn], d % 2];
+						highlight.push([dir1[0], dir1[1], 2]);
+
+						for (let D = 0; D < 4; D++)
 						{
 							let DIR = [dir1[0] + [-1, 0, 1, 0][D], dir1[1] + [0, 1, 0, -1][D]];
 							if (inBounds(DIR) && isPiece(DIR, game.turn, true) && game.board[DIR[0]][DIR[1]][1] == D % 2)
+							{
 								game.board[DIR[0]][DIR[1]] = game.turn;
+								highlight.push([DIR[0], DIR[1], 3]);
+							}
 						}
 					}
 				}
-				for (let d = 0; d < 4; d++) // Free trapped opponents
+				for (let d = 0; d < 4; d++)
 				{
 					let dir1 = [move0[0] + [-1, 0, 1, 0][d], move0[1] + [0, 1, 0, -1][d]];
 					if (inBounds(dir1) && isPiece(dir1, [1, 0][game.turn], true) && game.board[dir1[0]][dir1[1]][1] == d % 2)
+					{
 						game.board[dir1[0]][dir1[1]] = [1, 0][game.turn];
+						highlight.push([dir1[0], dir1[1], 3]);
+					}
 				}
 			}
 		}
@@ -323,6 +354,7 @@ exports.takeTurn = function(channel, Move) {
 			if (isPiece(piece, [1, 0][game.turn], true))
 			{
 				game.board[piece[0]][piece[1]] = false;
+				highlight.push([piece[0], piece[1], 2]);
 			}
 			else
 			if (isPiece(piece, game.turn, true))
@@ -338,7 +370,6 @@ exports.takeTurn = function(channel, Move) {
 				return exports.say(channel, ["Illegal play: There is no piece there to be removed."]);
 		}
 
-		// Check for win
 		let end = 0;
 		let pieceCount = [0, 0];
 		let trapCount = [0, 0];
