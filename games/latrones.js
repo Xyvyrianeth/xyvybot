@@ -13,7 +13,6 @@ exports.newGame = function(channel, player) {
 		channels: {},
 		forfeit: false,
 		game: shortname,
-		highlight: false,
 		jump: false,
 		lastmove: '',
 		over: false,
@@ -116,7 +115,7 @@ exports.takeTurn = function(channel, Move) {
 	let isPiece = (crd, piece, trapped) => {
 		if (typeof game.board[crd[0]][crd[1]] == "boolean" && piece == 3) return true;
 		if (typeof game.board[crd[0]][crd[1]] == "number" && piece == game.board[crd[0]][crd[1]]) return true;
-		if (typeof game.board[crd[0]][crd[1]] == "array" && piece == game.board[crd[0]][crd[1]][0] && trapped) return true;
+		if (typeof game.board[crd[0]][crd[1]] == "object" && piece == game.board[crd[0]][crd[1]][0] && trapped) return true;
 		return false;
 	}
 	let getDir = (crd, dir, dis) => {
