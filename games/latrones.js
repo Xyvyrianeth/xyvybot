@@ -436,38 +436,38 @@ Canvas.loadImage(`/app/assets/games/${shortname}/board.png`).then(image => {
 	exports.Images.board = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/blackText.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.blackText = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/whiteText.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.whiteText = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/turn.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.turn = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/win.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.win = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/whiteFree.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.whiteFree = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/blackFree.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.blackFree = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/whiteBlocked.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.whiteBlocked = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/blackBlocked.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.blackBlocked = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/to.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.to = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/from.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.from = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/phase1.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.phase1 = image;
 });
 Canvas.loadImage(`/app/assets/games/${shortname}/phase2.png`).then(image => {
-	exports.Images.board = image;
+	exports.Images.phase2 = image;
 });
