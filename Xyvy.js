@@ -7,7 +7,7 @@ const Discord = require("discord.js"),
 exports.client = client;
 exports.db = db;
 
-	var version = package.version + ".2";
+	var version = package.version + ".3";
 exports.version = version;
 
 require("/app/assets/prototypes/math.js");
@@ -25,7 +25,7 @@ var images = require("/app/assets/backgrounds/images.json"),
 		ordo:      require("/app/games/ordo.js"),
 		soccer:    require("/app/games/soccer.js"),
 		loa:       require("/app/games/loa.js"),
-		latrones: require("/app/games/latrones.js")
+		latrones:  require("/app/games/latrones.js")
 	};
 exports.games = games;
 

@@ -119,22 +119,21 @@ exports.takeTurn = function(channel, Move) {
 	{
 		if (/^([1-8][a-h]|[a-h][1-8])$/i.test(Move))
 			let move = [Move.match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-j]/)[0])];
+
+			if (isPiece(move, 3))
+				return exports.say(channel, ["Illegal play: That space is not vacant."]);
+
+			game.board[move[0]][move[1]] = game.turn;
+			game.turn = [1, 0][game.turn];
+			game.pieces++;
+			if (game.pieces == 32)
+				game.phase = 2;
 		else
 		if (/^([1-8][a-h]|[a-h][1-8]) (up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move) || /^(up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move))
 			return exports.say(channel, ["Illegal play: You cannot move pieces yet."]);
 		else
 		if (/^(end|stop)$/i.test(Move))
 			return exports.say(channel, ["Illegal play: You can't end your turn before starting it. You have to place a piece somewhere."]);
-
-		if (isPiece(move, 3))
-			return exports.say(channel, ["Illegal play: That space is not vacant."]);
-
-		game.board[move[0]][move[1]] = game.turn;
-		game.turn = [1, 0][game.turn];
-		game.pieces++;
-		if (game.pieces == 32)
-			game.phase = 2;
-
 	}
 	else
 	{
