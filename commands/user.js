@@ -22,8 +22,8 @@ exports.command = (message) => {
 			"latrones": /^(([1-8][a-h]|[a-h][1-8])|([1-8][a-h]|[a-h][1-8]) (up|right|down|left|north|south|east|west|[urdlnsew])|(up|right|down|left|north|south|east|west|[urdlnsew])|([1-8][a-h]|[a-h][1-8]) (remove|capture)|(end|stop))$/i
 		}[game.game].test(message.content))
 		{
-			if (message.channel.type !== "dm" && message.channel.guild.members.cache.get(client.user.id).hasPermission("MANAGE_MESSAGES"))
-				message.delete();
+			game.channels[message.channel.id].push(message.id);
+
 			try
 			{
 				return games[game.game].takeTurn(message.channel.id, message.content);
