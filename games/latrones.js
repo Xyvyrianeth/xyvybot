@@ -249,16 +249,17 @@ exports.takeTurn = function(channel, Move) {
 		if (/^([1-8][a-h]|[a-h][1-8]) (up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move))
 		{
 			let move0 = [Move.split(' ')[0].match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.split(' ')[0].toLowerCase().match(/[a-j]/)[0])];
-			if (!isPiece(move0, 3))
+			if (!isPiece(move0, game.turn))
 			{
 				if (isPiece(move0, game.turn, true))
 					return exports.say(channel, ["Illegal play: That piece is trapped and cannot be moved until it is freed."]);
 				else
-				if (!isPiece(move0, game.turn))
+				if (isPiece(move0, [1, 0][game.turn]))
 					return exports.say(channel, ["Illegal play: You do not own the piece in that space."]);
+				else
+				if (isPiece(move0, 3))
+					return exports.say(channel, ["Illegal play: You do not have a piece in that space."]);
 			}
-			else
-				return exports.say(channel, ["Illegal play: That space is empty."]);
 			let dir = { "up":    0, "right": 1, "down":  2, "left": 3,
 						"north": 0, "east":  1, "south": 2, "west": 3,
 						"u":     0, "r":     1, "d":     2, "l":    3,
