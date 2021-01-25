@@ -91,7 +91,7 @@ exports.drawBoard = function(game, end, highlight) {
 	newCtx.putImageData(data, 0, 0);
 	game.replayData.push(newCtx);
 
-	if (end === 0)
+	if (end == 0)
     {
         ctx.drawImage(exports.Images[["black", "white"][game.turn] + "Text"], 55, 6);
         ctx.drawImage(exports.Images.turn, 111, 4);
@@ -412,7 +412,7 @@ exports.takeTurn = function(channel, Move) {
 				}
 			}
 		if (!hasMove)
-		end = 3;
+			end = 3, game.winner = game.turn;
 
 		if (end == 0)
 		{
