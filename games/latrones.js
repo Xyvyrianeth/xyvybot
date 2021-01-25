@@ -213,7 +213,7 @@ exports.takeTurn = function(channel, Move) {
 					if (!isPiece(dir2, 3))
 						dirs[d] = 4;
 				}
-				if (dirs.length > 0)
+				if (dirs.includes(0))
 					game.jump = [pos1, dirs];
 				else
 					game.jump = false;
@@ -362,7 +362,7 @@ exports.takeTurn = function(channel, Move) {
 					if (!isPiece(dir2, 3))
 						dirs[d] = 4;
 				}
-				if (dirs.length > 0)
+				if (dirs.includes(0))
 					game.jump = [move2, dirs];
 
 				for (let d = 0; d < 4; d++)
