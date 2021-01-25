@@ -110,8 +110,8 @@ exports.takeTurn = function(channel, Move) {
 	game.canHaveTurn = false;
 
 	let isPiece = (crd, piece, trapped) => {
-		if (crd[0] < 0 && crd[1] < 0 && crd[0] > 7 && crd[1] > 7) return false;
-		if (typeof game.board[crd[0]][crd[1]] == "boolean" && piece == 3) return true;
+		if (crd[0] < 0 || crd[1] < 0 || crd[0] > 7 || crd[1] > 7) return false;
+  		if (typeof game.board[crd[0]][crd[1]] == "boolean" && piece == 3) return true;
 		if (typeof game.board[crd[0]][crd[1]] == "number" && piece == game.board[crd[0]][crd[1]]) return true;
 		if (typeof game.board[crd[0]][crd[1]] == "object" && piece == game.board[crd[0]][crd[1]][0] && trapped) return true;
 		return false;
