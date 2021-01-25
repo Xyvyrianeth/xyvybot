@@ -81,7 +81,7 @@ exports.drawBoard = function(game, end, highlight) {
 					ctx.drawImage(exports.Images[["black", "white"][game.board[x][y][0]] + "Blocked"], 17 + (y * 25), 30 + (x * 25));
 			}
 	for (let h of highlight)
-		ctx.drawImage(exports.Images[["to", "from", "capture", "free"][h[2]]], 17 + (h[0]), 30 + (h[1]));
+		ctx.drawImage(exports.Images[["to", "from", "capture", "free"][h[2]]], 17 + (h[0] * 25), 30 + (h[1] * 25));
 
 	ctx.drawImage(exports.Images["phase" + game.phase], [23, 25][game.phase - 1], 250);
 
@@ -134,6 +134,7 @@ exports.takeTurn = function(channel, Move) {
 
 			game.board[move[0]][move[1]] = game.turn;
 			game.turn = [1, 0][game.turn];
+			game.player = game.players[game.turn];
 			game.pieces++;
 			if (game.pieces == 32)
 				game.phase = 2;
