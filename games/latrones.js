@@ -214,7 +214,7 @@ exports.takeTurn = function(channel, Move) {
 						dirs[d] = 4;
 				}
 				if (dirs.length > 0)
-					game.jump = [pos, dirs];
+					game.jump = [pos1, dirs];
 				else
 					game.jump = false;
 
@@ -351,12 +351,16 @@ exports.takeTurn = function(channel, Move) {
 					let dir1 = getDir(move2, d, 1);
 					let dir2 = getDir(move2, d, 2);
 					if (d == [2, 3, 0, 1][dir])
-						continue;
+						dirs[d] = 1;
+					else
+					if (isPiece(dir2, 4))
+						dirs[d] = 2
+					else
 					if (isPiece(dir1, 3))
-						continue;
+						dirs[d] = 3;
+					else
 					if (!isPiece(dir2, 3))
-						continue;
-					dirs.push(d);
+						dirs[d] = 4;
 				}
 				if (dirs.length > 0)
 					game.jump = [move2, dirs];
