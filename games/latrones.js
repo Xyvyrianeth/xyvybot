@@ -150,7 +150,7 @@ exports.takeTurn = function(channel, Move) {
 	{
 		if (game.jump)
 		{
-			if (["end", "stop"].includes(Move))
+			if (/^(end|stop)$/i.test(Move))
 				game.jump = false;
 			else
 			if (!/^(|([1-8][a-h]|[a-h][1-8]) )(up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move))
@@ -284,6 +284,22 @@ exports.takeTurn = function(channel, Move) {
 				game.board[move1[0]][move1[1]] = game.turn;
 				highlight.push([move0[0], move0[1], 1]);
 				highlight.push([move1[0], move1[1], 0]);
+
+				let dirs = [];
+				for (let d = 0; d < 4; d++)
+				{
+					let dir1 = getDir(pos1, d, 1);
+					let dir2 = getDir(pos1, d, 2);
+					if (d == [2, 3, 0, 1][dir])
+						continue;
+					if (isPiece(dir1, 3))
+						continue;
+					if (!isPiece(dir2, 3))
+						continue;
+					dirs.push(d);
+				}
+				if (dirs.length > 0)
+					game.jump = [pos, dirs];
 
 				for (let d = 0; d < 4; d++)
 				{
