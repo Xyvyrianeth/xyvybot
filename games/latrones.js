@@ -17,7 +17,7 @@ exports.newGame = function(channel, player) {
 		jump: false,
 		lastmove: '',
 		over: false,
-		phase: 0,
+		phase: 1,
 		pieces: 0,
 		player: false,
 		players: [player],
@@ -74,7 +74,12 @@ exports.drawBoard = function(game, end, highlight) {
 	for (let x = 0; x < 8; x++)
 		for (let y = 0; y < 8; y++)
 			if (typeof game.board[x][y] != "boolean")
-				ctx.drawImage(exports.Images[["black", "white"][game.board[x][y] % 2] + ["Free", "Blocked"][game.board[x][y] < 2 ? 0 : 1]], 17 + (y * 25), 30 + (x * 25));
+			{
+				if (typeof game.board[x][y] == "number")
+					ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
+				else
+					ctx.drawImage(exports.Images[["black", "white"][game.board[x][y][0]] + "Blocked"], 17 + (y * 25), 30 + (x * 25));
+			}
 
 	ctx.drawImage(exports.Images["phase" + game.phase], 20, 250);
 
