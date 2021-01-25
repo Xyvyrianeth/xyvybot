@@ -76,7 +76,7 @@ exports.drawBoard = function(game, end, highlight) {
 			if (typeof game.board[x][y] != "boolean")
 			{
 				if (typeof game.board[x][y] == "number")
-					ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]]], 17 + (y * 25), 30 + (x * 25));
+					ctx.drawImage(exports.Images[["black", "white"][game.board[x][y]] + "Free"], 17 + (y * 25), 30 + (x * 25));
 				else
 					ctx.drawImage(exports.Images[["black", "white"][game.board[x][y][0]] + "Blocked"], 17 + (y * 25), 30 + (x * 25));
 			}
