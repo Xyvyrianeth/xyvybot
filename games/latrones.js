@@ -65,8 +65,6 @@ exports.startGame = function(channel1, channel2, player2) {
 }
 
 exports.drawBoard = function(game, end, highlight) {
-	console.log(highlight);
-
 	let canvas = new Canvas.createCanvas(221, 271);
 	let ctx = canvas.getContext('2d');
 
@@ -486,6 +484,12 @@ Canvas.loadImage(`/app/assets/games/${shortname}/turn.png`).then(image => {
 Canvas.loadImage(`/app/assets/games/${shortname}/win.png`).then(image => {
 	exports.Images.win = image;
 });
+Canvas.loadImage(`/app/assets/games/${shortname}/phase1.png`).then(image => {
+	exports.Images.phase1 = image;
+});
+Canvas.loadImage(`/app/assets/games/${shortname}/phase2.png`).then(image => {
+	exports.Images.phase2 = image;
+});
 Canvas.loadImage(`/app/assets/games/${shortname}/whiteFree.png`).then(image => {
 	exports.Images.whiteFree = image;
 });
@@ -504,9 +508,9 @@ Canvas.loadImage(`/app/assets/games/${shortname}/to.png`).then(image => {
 Canvas.loadImage(`/app/assets/games/${shortname}/from.png`).then(image => {
 	exports.Images.from = image;
 });
-Canvas.loadImage(`/app/assets/games/${shortname}/phase1.png`).then(image => {
-	exports.Images.phase1 = image;
+Canvas.loadImage(`/app/assets/games/${shortname}/capture.png`).then(image => {
+	exports.Images.capture = image;
 });
-Canvas.loadImage(`/app/assets/games/${shortname}/phase2.png`).then(image => {
-	exports.Images.phase2 = image;
+Canvas.loadImage(`/app/assets/games/${shortname}/free.png`).then(image => {
+	exports.Images.free = image;
 });
