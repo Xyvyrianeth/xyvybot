@@ -81,7 +81,7 @@ exports.drawBoard = function(game, end, highlight) {
 					ctx.drawImage(exports.Images[["black", "white"][game.board[x][y][0]] + "Blocked"], 17 + (y * 25), 30 + (x * 25));
 			}
 	for (let h of highlight)
-		ctx.drawImage(exports.Images[["to", "from", "capture", "free"][h[2]]], 17 + (h[0] * 25), 30 + (h[1] * 25));
+		ctx.drawImage(exports.Images[["to", "from", "capture", "free"][h[2]]], 17 + (h[1] * 25), 30 + (h[0] * 25));
 
 	ctx.drawImage(exports.Images["phase" + game.phase], [23, 25][game.phase - 1], 250);
 
