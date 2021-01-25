@@ -65,6 +65,8 @@ exports.startGame = function(channel1, channel2, player2) {
 }
 
 exports.drawBoard = function(game, end, highlight) {
+	console.log(highlight);
+
 	let canvas = new Canvas.createCanvas(221, 271);
 	let ctx = canvas.getContext('2d');
 
