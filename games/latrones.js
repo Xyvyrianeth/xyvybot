@@ -110,6 +110,7 @@ exports.takeTurn = function(channel, Move) {
 	game.canHaveTurn = false;
 
 	let isPiece = (crd, piece, trapped) => {
+		if (piece == 4 && (crd[0] < 0 || crd[1] < 0 || crd[0] > 7 || crd[1] > 7)) return true;
 		if (crd[0] < 0 || crd[1] < 0 || crd[0] > 7 || crd[1] > 7) return false;
   		if (typeof game.board[crd[0]][crd[1]] == "boolean" && piece == 3) return true;
 		if (typeof game.board[crd[0]][crd[1]] == "number" && piece == game.board[crd[0]][crd[1]]) return true;
@@ -261,6 +262,11 @@ exports.takeTurn = function(channel, Move) {
 						"n":     0, "e":     1, "s":     2, "w":    3 }[Move.match(/(up|right|down|left|north|south|east|west|[urdlnsew])$/i)[0]];
 			let move1 = getDir(move0, dir, 1);
 			let move2 = getDir(move0, dir, 2);
+			if (isPiece(move1, 4) || (!isPiece(move1, 3) && isPiece(move2, 4)))
+				return exports.say(channel, ["Illegal play: That would move the piece off the board."]);
+			if (!isPiece(move1, 3) && !isPiece(move2, 3))
+				return exports.say(channel, ["Illegal play: There are pieces blocking that move."]);
+
 			if (isPiece(move1, 3))
 			{
 				for (let d = 0; d < 2; d++)
