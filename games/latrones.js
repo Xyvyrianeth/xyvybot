@@ -144,7 +144,7 @@ exports.takeTurn = function(channel, Move) {
 			return exports.say(channel, ["Illegal play: You cannot move pieces yet."]);
 		else
 		if (/^(end|stop)$/i.test(Move))
-			return exports.say(channel, ["Illegal play: You can't end your turn before starting it. You have to place a piece somewhere."]);
+			return exports.say(channel, ["Illegal play: You have to take your turn. Otherwise, just say \"x!latrones forfeit\"."]);
 	}
 	else
 	{
@@ -167,8 +167,15 @@ exports.takeTurn = function(channel, Move) {
 					        "north": 0, "east":  1, "south": 2, "west": 3,
 					        "u":     0, "r":     1, "d":     2, "l":    3,
 							"n":     0, "e":     1, "s":     2, "w":    3 }[Move.match(/(up|right|down|left|north|south|east|west|[urdlnsew])$/i)[0]];
-				if (!game.jump[1].includes(dir))
-					return exports.say(channel, ["Illegal play: You cannot move the active piece in that direction."]);
+
+				if (game.jump[1][dir] == 1)
+					return exports.say(channel, ["Illegal play: You cannot backtrack on a multi-jump."]);
+				if (game.jump[1][dir] == 2)
+					return exports.say(channel, ["Illegal play: That would move this piece off the board."]);
+				if (game.jump[1][dir] == 3)
+					return exports.say(channel, ["Illegal play: There is not a piece you can jump in that direction."]);
+				if (game.jump[1][dir] == 4)
+					return exports.say(channel, ["Illegal play: There are pieces blocking a jump in that direction."]);
 
 				let pos0 = [game.jump[0][0], game.jump[0][1]];
 				let pos1 = getDir(game.jump[0], dir, 2);
@@ -189,18 +196,22 @@ exports.takeTurn = function(channel, Move) {
 				highlight.push([game.jump[0][0], game.jump[0][1], 0]);
 				highlight.push([pos1[0], pos1[1], 1]);
 
-				let dirs = [];
+				let dirs = [0, 0, 0, 0];
 				for (let d = 0; d < 4; d++)
 				{
 					let dir1 = getDir(pos1, d, 1);
 					let dir2 = getDir(pos1, d, 2);
 					if (d == [2, 3, 0, 1][dir])
-						continue;
+						dirs[d] = 1;
+					else
+					if (isPiece(dir2, 4))
+						dirs[d] = 2
+					else
 					if (isPiece(dir1, 3))
-						continue;
+						dirs[d] = 3;
+					else
 					if (!isPiece(dir2, 3))
-						continue;
-					dirs.push(d);
+						dirs[d] = 4;
 				}
 				if (dirs.length > 0)
 					game.jump = [pos, dirs];
@@ -263,7 +274,7 @@ exports.takeTurn = function(channel, Move) {
 			let move1 = getDir(move0, dir, 1);
 			let move2 = getDir(move0, dir, 2);
 			if (isPiece(move1, 4) || (!isPiece(move1, 3) && isPiece(move2, 4)))
-				return exports.say(channel, ["Illegal play: That would move the piece off the board."]);
+				return exports.say(channel, ["Illegal play: That would move this piece off the board."]);
 			if (!isPiece(move1, 3) && !isPiece(move2, 3))
 				return exports.say(channel, ["Illegal play: There are pieces blocking that move."]);
 
@@ -277,7 +288,7 @@ exports.takeTurn = function(channel, Move) {
 					let rir1 = getDir(move1, r, 1);
 					let rir2 = getDir(move1, r, 2);
 					if (isPiece(dir1, [1, 0][game.turn]) && isPiece(rir1, [1, 0][game.turn]) && !isPiece(dir2, game.turn) && !isPiece(rir2, game.turn))
-						return exports.say(channel, ["Illegal play: This move would put this piece in a trapped position."]);
+						return exports.say(channel, ["Illegal play: That move would put this piece in a trapped position."]);
 				}
 
 				game.board[move0[0]][move0[1]] = false;
@@ -457,7 +468,7 @@ exports.takeTurn = function(channel, Move) {
 		if (!hasMove)
 			end = 3, game.winner = game.turn;
 
-		if (end == 0)
+		if (end == 0 && !game.jump)
 		{
 			game.turn = [1, 0][game.turn];
 			game.player = game.players[game.turn];
