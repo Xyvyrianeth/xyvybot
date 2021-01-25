@@ -297,7 +297,7 @@ exports.command = (cmd, args, input, message) => {
 			case "latrones":
 				embed.setDescription(
 					`Ludus latrunculorum, also called Latrunculi or Latrones or "The Game of Brigands", was a two-player ${wiki.asg} played during the age of the Roman Empire. The game is said to resemble checkers or draughts, but is generally accepted to be a game of military tactics.\n` +
-					"Due to a lack of recorded history, how exactly the game was played by the ancient Romans is unknown, but there have been multiple reconstructions and interpretations of the rules based on available evidence. For this bot, the [Ulrich Schädler reconstruction(https://en.wikipedia.org/wiki/Ludus_latrunculorum#Ulrich_Sch%C3%A4dler's_reconstruction_(2001)) will be used.\n" +
+					"Due to a lack of recorded history, how exactly the game was played by the ancient Romans is unknown, but there have been multiple reconstructions and interpretations of the rules based on available evidence. For this bot, the [Ulrich Schädler reconstruction](https://en.wikipedia.org/wiki/Ludus_latrunculorum#Ulrich_Sch%C3%A4dler's_reconstruction_(2001)) will be used.\n" +
 					"The game is played on an 8x8 tile grid with black and white pieces and the game is split into two phases: placement and movement.")
 				.addField("Phase 1: Placement",
 					"Starting with black, players take turns placing pieces on vacant tiles until each player has 16 pieces each on the board. During this phase, no pieces can be trapped.\n" +
