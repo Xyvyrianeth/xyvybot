@@ -210,10 +210,10 @@ exports.takeTurn = function(channel, Move) {
 						dirs[d] = 4;
 					else
 					if (isPiece(dir1, [1, 0][game.turn]) && isPiece(dir3, [1, 0][game.turn]) && !isPiece(dir4, game.turn))
-						dirs[d] == 5;
+						dirs[d] = 5;
 					else
 					if (isPiece(DIR1, [1, 0][game.turn]) && isPiece(RIR1, [1, 0][game.turn]) && !isPiece(DIR2, game.turn) && !isPiece(RIR2, game.turn))
-						dirs[d] == 5;
+						dirs[d] = 5;
 				}
 				if (dirs.includes(0))
 				{
@@ -221,9 +221,9 @@ exports.takeTurn = function(channel, Move) {
 					game.jump[1] = dirs;
 					game.jump[2].push(pos0);
 
+					highlight.push([pos1[0], pos1[1], 0]);
 					for (i = 0; i < game.jump[2].length; i++)
 						highlight.push([game.jump[2][i][0], game.jump[2][i][1], 1]);
-					highlight.push([dir2[0], dir2[1], 0]);
 				}
 				else
 					game.jump = false;
@@ -381,10 +381,10 @@ exports.takeTurn = function(channel, Move) {
 						dirs[d] = 4;
 					else
 					if (isPiece(dir1, [1, 0][game.turn]) && isPiece(dir3, [1, 0][game.turn]) && !isPiece(dir4, game.turn))
-						dirs[d] == 5;
+						dirs[d] = 5;
 					else
 					if (isPiece(DIR1, [1, 0][game.turn]) && isPiece(RIR1, [1, 0][game.turn]) && !isPiece(DIR2, game.turn) && !isPiece(RIR2, game.turn))
-						dirs[d] == 5;
+						dirs[d] = 5;
 				}
 				if (dirs.includes(0))
 					game.jump = [move2, dirs, [move0[0], move0[1], 1]];
