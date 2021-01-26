@@ -217,7 +217,7 @@ exports.takeTurn = function(channel, Move) {
 				}
 				if (dirs.includes(0))
 				{
-					game.jump[0] = dir2;
+					game.jump[0] = pos1;
 					game.jump[1] = dirs;
 					game.jump[2].push(pos0);
 
