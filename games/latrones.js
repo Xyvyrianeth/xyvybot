@@ -178,10 +178,11 @@ exports.takeTurn = function(channel, Move) {
 				if (game.jump[1][dir] == 5)
 					return exports.say(channel, ["Illegal play: That jump would put this piece in a trapped position."]);
 
-				game.board[game.jump[0][0]][game.jump[0][1]] = false;
+				let pos0 = game.jump[0];
+				let pos1 = getDir(pos0, dir, 2);
+
+				game.board[pos0[0]][pos0[1]] = false;
 				game.board[pos1[0]][pos1[1]] = game.turn;
-				highlight.push([game.jump[0][0], game.jump[0][1], 0]);
-				highlight.push([pos1[0], pos1[1], 1]);
 
 				let dirs = [0, 0, 0, 0];
 				for (let d = 0; d < 4; d++)
@@ -215,7 +216,15 @@ exports.takeTurn = function(channel, Move) {
 						dirs[d] == 5;
 				}
 				if (dirs.includes(0))
-					game.jump = [pos1, dirs];
+				{
+					game.jump[0] = dir2;
+					game.jump[1] = dirs;
+					game.jump[2].push(pos0);
+
+					for (i = 0; i < game.jump[2].length; i++)
+						highlight.push([game.jump[2][i][0], game.jump[2][i][1], 1]);
+					highlight.push([dir2[0], dir2[1], 0]);
+				}
 				else
 					game.jump = false;
 
@@ -275,6 +284,8 @@ exports.takeTurn = function(channel, Move) {
 						"n":     0, "e":     1, "s":     2, "w":    3 }[Move.match(/(up|right|down|left|north|south|east|west|[urdlnsew])$/i)[0]];
 			let move1 = getDir(move0, dir, 1);
 			let move2 = getDir(move0, dir, 2);
+			let move3 = getDir(move0, dir, 3);
+			let move4 = getDir(move0, dir, 4);
 			if (isPiece(move1, 4) || (!isPiece(move1, 3) && isPiece(move2, 4)))
 				return exports.say(channel, ["Illegal play: That would move this piece off the board."]);
 			if (!isPiece(move1, 3) && !isPiece(move2, 3))
@@ -329,20 +340,15 @@ exports.takeTurn = function(channel, Move) {
 			else
 			if (!isPiece(move1, 3) && isPiece(move2, 3))
 			{
-				for (let d = 0; d < 2; d++)
-				{
-					let board = JSON.parse(JSON.stringify(game.board));
-					board[move0[0]][move0[1]] = false;
-					board[move2[0]][move2[1]] = game.turn;
 
-					let r = d + 2;
-					let dir1 = getDir(move2, d, 1);
-					let dir2 = getDir(move2, d, 2);
-					let rir1 = getDir(move2, r, 1);
-					let rir2 = getDir(move2, r, 2);
-					if (isPieceCopy(board, dir1, [1, 0][game.turn]) && isPieceCopy(board, rir1, [1, 0][game.turn]) && !isPieceCopy(board, dir2, game.turn) && !isPieceCopy(board, rir2, game.turn))
-						return exports.say(channel, ["Illegal play: This move would put this piece in a trapped position."]);
-				}
+				let D1 = dir + 1 % 2;
+				let R1 = D1 + 2;
+				let Dir1 = getDir(move2, D1, 1);
+				let Dir2 = getDir(move2, D1, 2);
+				let Rir1 = getDir(move2, R1, 1);
+				let Rir2 = getDir(move2, R1, 2);
+				if ((isPiece(move1, [1, 0][game.turn]) && isPiece(move3, [1, 0][game.turn]) && !isPiece(move4, game.turn)) || isPiece(Dir1, [1, 0][game.turn]) && isPiece(Rir1, [1, 0][game.turn]) && !isPiece(Dir2, game.turn) && !isPiece(Rir2, game.turn))
+					return exports.say(channel, ["Illegal play: That move would put this piece in a trapped position."]);
 
 				game.board[move0[0]][move0[1]] = false;
 				game.board[move2[0]][move2[1]] = game.turn;
@@ -356,12 +362,12 @@ exports.takeTurn = function(channel, Move) {
 					let dir2 = getDir(move2, d, 2);
 					let dir3 = getDir(move2, d, 3);
 					let dir4 = getDir(move2, d, 4);
-					let D = d + 1 % 2;
-					let R = D + 1;
-					let DIR1 = getDir(dir2, D, 1);
-					let DIR2 = getDir(dir2, D, 2);
-					let RIR1 = getDir(dir2, R, 1);
-					let RIR2 = getDir(dir2, R, 2);
+					let D2 = d + 1 % 2;
+					let R2 = D2 + 1;
+					let DIR1 = getDir(dir2, D2, 1);
+					let DIR2 = getDir(dir2, D2, 2);
+					let RIR1 = getDir(dir2, R2, 1);
+					let RIR2 = getDir(dir2, R2, 2);
 					if (d == [2, 3, 0, 1][dir])
 						dirs[d] = 1;
 					else
@@ -381,7 +387,7 @@ exports.takeTurn = function(channel, Move) {
 						dirs[d] == 5;
 				}
 				if (dirs.includes(0))
-					game.jump = [move2, dirs];
+					game.jump = [move2, dirs, [move0[0], move0[1], 1]];
 
 				for (let d = 0; d < 4; d++)
 				{

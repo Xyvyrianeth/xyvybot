@@ -116,7 +116,7 @@ exports.command = (cmd, args, input, message) => {
 	if (["help", "rules", "howtoplay"].includes(args[0]))
 	{
 		let embed = new Discord.MessageEmbed().setTitle("How to play: " + GameName)
-			.setDescription(`[Click here to learn how to play ${GameName}! (github.com)](https://https://github.com/Xyvyrianeth/xyvybot/wiki/${gameName})`)
+			.setDescription(`[Click here to learn how to play ${GameName}! (github.com)](https://github.com/Xyvyrianeth/xyvybot/wiki/${gameName})`)
 			.setColor(new Color().random());
 		message.channel.send(embed);
 	}
