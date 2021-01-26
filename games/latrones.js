@@ -111,7 +111,7 @@ exports.takeTurn = function(channel, Move) {
 
 	let isPiece = (crd, piece, trapped) => {
 		if (crd[0] < 0 || crd[1] < 0 || crd[0] > 7 || crd[1] > 7) return piece == 4;
-  		if (typeof game.board[crd[0]][crd[1]] == "boolean" && piece == 3 && !trapped) return true;
+		if (typeof game.board[crd[0]][crd[1]] == "boolean" && piece == 3 && !trapped) return true;
 		if (typeof game.board[crd[0]][crd[1]] == "number" && piece == game.board[crd[0]][crd[1]] && !trapped) return true;
 		if (typeof game.board[crd[0]][crd[1]] == "object" && piece == game.board[crd[0]][crd[1]][0] && trapped) return true;
 		return false;
@@ -191,7 +191,7 @@ exports.takeTurn = function(channel, Move) {
 					let dir2 = getDir(pos1, d, 2);
 					let dir3 = getDir(pos1, d, 3);
 					let dir4 = getDir(pos1, d, 4);
-					let D = d + 1 % 2;
+					let D = (d + 1) % 2;
 					let R = D + 1;
 					let DIR1 = getDir(dir2, D, 1);
 					let DIR2 = getDir(dir2, D, 2);
@@ -293,7 +293,7 @@ exports.takeTurn = function(channel, Move) {
 
 			if (isPiece(move1, 3))
 			{
-				let D = dir + 1 % 2;
+				let D = (dir + 1) % 2;
 				let R = D + 2;
 				let dir1 = getDir(move1, D, 1);
 				let dir2 = getDir(move1, D, 2);
@@ -341,7 +341,7 @@ exports.takeTurn = function(channel, Move) {
 			if (!isPiece(move1, 3) && isPiece(move2, 3))
 			{
 
-				let D1 = dir + 1 % 2;
+				let D1 = (dir + 1) % 2;
 				let R1 = D1 + 2;
 				let Dir1 = getDir(move2, D1, 1);
 				let Dir2 = getDir(move2, D1, 2);
@@ -362,7 +362,7 @@ exports.takeTurn = function(channel, Move) {
 					let dir2 = getDir(move2, d, 2);
 					let dir3 = getDir(move2, d, 3);
 					let dir4 = getDir(move2, d, 4);
-					let D2 = d + 1 % 2;
+					let D2 = (d + 1) % 2;
 					let R2 = D2 + 1;
 					let DIR1 = getDir(dir2, D2, 1);
 					let DIR2 = getDir(dir2, D2, 2);
