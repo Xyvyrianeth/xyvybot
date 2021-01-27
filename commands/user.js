@@ -19,7 +19,7 @@ exports.command = (message) => {
 			"ordo": /^(([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])|([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]|north|south|east|west|[nsew]) [1-9])$/i,
 			"soccer": /^([1-8]|([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?))$/i,
 			"loa": /^([1-8][a-h]|[a-h][1-8]) ([1-8]|([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?))$/i,
-			"latrones": /^(([1-8][a-h]|[a-h][1-8])|([1-8][a-h]|[a-h][1-8]) (up|right|down|left|north|south|east|west|[urdlnsew])|(up|right|down|left|north|south|east|west|[urdlnsew])|([1-8][a-h]|[a-h][1-8]) (remove|capture)|(end|stop))$/i
+			"latrones": /^(([1-8][a-h]|[a-h][1-8])|([1-8][a-h]|[a-h][1-8]) (up|right|down|left|north|south|east|west|[urdlnsew])|(up|right|down|left|north|south|east|west|[urdlnsew])|([1-8][a-h]|[a-h][1-8]) (remove|capture|cap|delete)|(end|stop))$/i
 		}[game.game].test(message.content))
 		{
 			game.channels[message.channel.id].push(message.id);
