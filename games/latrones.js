@@ -152,7 +152,12 @@ exports.takeTurn = function(channel, Move) {
 	{
 		if (/^(([1-8][a-h]|[a-h][1-8]) |)(up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move))
 		{
-			let move0, dir;
+			let move0 = game.jump ? game.jump[0] : [Move.split(' ')[0].match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.split(' ')[0].toLowerCase().match(/[a-j]/)[0])],
+				dir = { "up":    0, "right": 1, "down":  2, "left": 3,
+						"north": 0, "east":  1, "south": 2, "west": 3,
+						"u":     0, "r":     1, "d":     2, "l":    3,
+						"n":     0, "e":     1, "s":     2, "w":    3 }[Move.match(/(up|right|down|left|north|south|east|west|[urdlnsew])$/i)[0]];
+
 			if (!/^([1-8][a-h]|[a-h][1-8])/i.test(Move))
 			{
 				if (!game.jump)
@@ -164,7 +169,7 @@ exports.takeTurn = function(channel, Move) {
 				if (game.jump)
 				{
 					let move = [Move.split(' ')[0].match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.split(' ')[0].toLowerCase().match(/[a-j]/)[0])];
-					if (move[0] != game.jump[0][0] && move[1] != game.jump[0][1])
+					if (move[0] != move0[0] || move[1] != move0[1])
 						return exports.say(channel, ["Illegal play: You cannot move that piece right now. During a multi-jump, you can only move the piece highlighted green or end your turn by saying \"end\"."]);
 				}
 				else
@@ -182,12 +187,6 @@ exports.takeTurn = function(channel, Move) {
 					}
 				}
 			}
-
-			move0 = game.jump ? game.jump[0] : [Move.split(' ')[0].match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.split(' ')[0].toLowerCase().match(/[a-j]/)[0])],
-			dir = { "up":    0, "right": 1, "down":  2, "left": 3,
-					"north": 0, "east":  1, "south": 2, "west": 3,
-					"u":     0, "r":     1, "d":     2, "l":    3,
-					"n":     0, "e":     1, "s":     2, "w":    3 }[Move.match(/(up|right|down|left|north|south|east|west|[urdlnsew])$/i)[0]];
 
 			let move1 = getDir(move0, dir, 1),
 				move2 = getDir(move0, dir, 2),
