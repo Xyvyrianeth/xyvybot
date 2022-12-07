@@ -1,6 +1,6 @@
 import { Color } from "../assets/misc/color.js";
 import { table } from "../assets/misc/table.js";
-import { db } from "../Xyvy.js";
+import { db } from "../index.js";
 import fs from "fs";
 
 export const command = async (input, message) => {

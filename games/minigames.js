@@ -1,5 +1,5 @@
 import { Collection } from "discord.js";
-import { client } from "../Xyvy.js";
+import { client } from "../index.js";
 import { Color } from "../assets/misc/color.js";
 import allWords from "../assets/misc/dictionary.json" assert { type: "json" };
 export const miniGames = new Collection();

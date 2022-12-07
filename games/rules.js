@@ -1,4 +1,4 @@
-import { client, db, newUser } from "../Xyvy.js";
+import { client, db, newUser } from "../index.js";
 import { Color } from "../assets/misc/color.js";
 import { Games } from "./games.js";
 // import gifEncoder from "../assets/misc/canvasGifEncoder.js";

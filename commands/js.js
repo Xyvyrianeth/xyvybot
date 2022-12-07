@@ -1,4 +1,4 @@
-import * as Xyvy from "../Xyvy.js";
+import * as Xyvy from "../index.js";
 import DiscordJS from "discord.js";
 import { Color } from "../assets/misc/color.js";
 import { table } from "../assets/misc/table.js";

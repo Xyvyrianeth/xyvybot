@@ -1,5 +1,5 @@
 import { Collection } from "discord.js";
-import { client } from "../Xyvy.js";
+import { client } from "../index.js";
 export const Games = new Collection();
 
 setInterval(function() {
