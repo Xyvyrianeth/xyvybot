@@ -1,0 +1,6 @@
+SELECT * FROM matches
+WHERE
+	'$USER_ID' = ANY (players) AND
+	game = ANY (ARRAY['$GAMES']) AND
+	($RESULTS)
+ORDER BY CAST(id AS BIGINT) DESC
