@@ -9,7 +9,6 @@
 		"canvas": "2.10.2",
 		"discord.js": "14.7.0",
 		"dotenv": "16.0.3",
-		"nekos.life": "3.0.0",
 		"nodemon": "2.0.20",
 		"open-trivia-db": "1.0.1",
 		"pg": "8.8.0" } }

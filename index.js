@@ -77,7 +77,7 @@ export const emoji = {
 	onehundred:		{ name: "onehundred",	id: "1035056635774783551" } };
 
 // const commands = new Collection();
-const commandNames = [ "message", "bug", "credits", "game", "games", "graph", "history", "help", "hangman", "iq", "minesweeper", "trivia", "nekos", /*"nsfw",*/ "profile", "request", "leaderboard", "js", "pg", "ban", "setup", "quit", "replay" ];
+const commandNames = [ "message", "bug", "credits", "game", "games", "graph", "history", "help", "hangman", "iq", "minesweeper", "trivia", /*"nekos", "nsfw",*/ "profile", "request", "leaderboard", "js", "pg", "ban", "setup", "quit", "replay" ];
 for (let command of commandNames)
 {
 	import(`./commands/${command}.js`).then;
