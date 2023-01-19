@@ -4,7 +4,7 @@ import { Games } from "../games/games.js";
 import { Color } from "../assets/misc/color.js";
 import { miniGames } from "../games/minigames.js";
 import { command as quit } from "../commands/quit.js";
-import slashCommandData from "./assets/misc/slashCommandData.json" assert { type: "json" };
+import slashCommandData from "../assets/misc/slashCommandData.json" assert { type: "json" };
 
 export const command = async (message) => {
 	if (message.author.id == client.user.id)
