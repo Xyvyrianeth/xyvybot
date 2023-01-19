@@ -85,8 +85,6 @@ for (let command of commandNames)
 
 // console.log(commands);
 
-import slashCommandData from "./assets/misc/slashCommandData.json" assert { type: "json" };
-
 const botError = async (err, command, type) => {
 	const errs = [];
 	for (let i = 0; i < err.stack.split('\n').length; i++)
@@ -100,38 +98,31 @@ const botError = async (err, command, type) => {
 			errs.push(err.stack.split('\n')[i]);
 		}
 	}
-
-	switch (type)
+	
+	if (type && !(command.author.bot || !command.content.startsWith("x!")))
 	{
-		case 0: {
-			if (command.author.bot || !command.content.startsWith("x!"))
-			{
-				break;
-			}
+		const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/misc/avatar.png", name: "author.png" };
+		const embed = {
+			author: { name: "Xyvybot", icon_url: "attachment://author.png" },
+			title: "Error on command: " + command.content.split(' ')[0].substring(2),
+			description: "```\n" + errs.join('\n') + "\n```",
+			color: new Color().random().toInt() };
 
-			const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/misc/avatar.png", name: "author.png" };
-			const embed = {
-				author: { name: "Xyvybot", icon_url: "attachment://author.png" },
-				title: "Error on command: " + command.content.split(' ')[0].substring(2),
-				description: "```\n" + errs.join('\n') + "\n```",
-				color: new Color().random().toInt() };
+		command[command.replied ? "editReply" : "reply"]({ embeds: [embed], files: [author] });
+		(await client.channels.fetch("847316212203126814")).send({ embeds: [embed], files: [author] });
+		return;
+	}
+	if (!type)
+	{
+		const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/misc/avatar.png", name: "author.png" };
+		const embed = {
+			author: { name: "Xyvybot", icon_url: "attachment://author.png" },
+			title: "Error on command: " + (command.commandName || command.customId.split('.')[0]),
+			description: "```\n" + errs.join('\n') + "\n```",
+			color: new Color().random().toInt() };
 
-			command[command.replied ? "editReply" : "reply"]({ embeds: [embed], files: [author] });
-			(await client.channels.fetch("847316212203126814")).send({ embeds: [embed], files: [author] });
-			break;
-		}
-		case 1: {
-			const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/misc/avatar.png", name: "author.png" };
-			const embed = {
-				author: { name: "Xyvybot", icon_url: "attachment://author.png" },
-				title: "Error on command: " + (command.commandName || command.customId.split('.')[0]),
-				description: "```\n" + errs.join('\n') + "\n```",
-				color: new Color().random().toInt() };
-
-			command[command.replied ? "editReply" : "reply"]({ embeds: [embed], files: [author] });
-			(await client.channels.fetch("847316212203126814")).send({ embeds: [embed], files: [author] });
-			break;
-		}
+		command[command.replied ? "editReply" : "reply"]({ embeds: [embed], files: [author] });
+		(await client.channels.fetch("847316212203126814")).send({ embeds: [embed], files: [author] });
 	}
 }
 
@@ -190,32 +181,6 @@ client.on('messageCreate', async message => {
 
 	try
 	{
-		if (message.author.id == "357700219825160194")
-		{
-			if (message.content == "x!setCommands" || message.content == "x!removeCommands")
-			{
-				if (client.user.id == "398606274721480725")
-				{
-					await client.application.commands.set(message.content == "x!setCommands" ? slashCommandData : []);
-				}
-				if (client.user.id == "442388557693321237")
-				{
-					client.guilds.cache.forEach(async guild => await guild.commands.set(message.content == "x!setCommands" ? slashCommandData : []));
-				}
-				return message.reply("Commands have been updated");
-			}
-			if (message.content.startsWith("x!js"))
-			{
-				// return commands.get(command)(input, message);
-				return await import(`./commands/js.js`).then(module => module.command(message.content.substring(5), message));
-			}
-			if (message.content.startsWith("x!pg"))
-			{
-				// return commands.get(command)(input, message);
-				return await import(`./commands/pg.js`).then(module => module.command(message.content.substring(5), message));
-			}
-		}
-
 		if (message.author.id == client.user.id || !message.author.bot)
 		{
 			// return commands.get("message")(message);
@@ -234,19 +199,16 @@ client.on('interactionCreate', async interaction => {
 	}
 
 	try {
-		if (interaction.isButton() || interaction.isSelectMenu())
+		if ((interaction.isButton() || interaction.isSelectMenu()) && (!interaction.customId.startsWith("trivia") && Math.abs(new Date().getTime() - (interaction.message.editedTimestamp || interaction.message.createdTimestamp)) >= (1800000)))
 		{
-			if (!interaction.customId.startsWith("trivia") && Math.abs(new Date().getTime() - (interaction.message.editedTimestamp || interaction.message.createdTimestamp)) >= (1800000))
-			{
-				const actionRow = {
-					type: 1,
-					components: [
-					{	type: 2, style: 4, // Red Button
-						customId: "do.nothing",
-						label: "This interaction has expired",
-						disabled: true } ] };
-				return interaction.update({ components: [actionRow] });
-			}
+			const actionRow = {
+				type: 1,
+				components: [
+				{	type: 2, style: 4, // Red Button
+					customId: "do.nothing",
+					label: "This interaction has expired",
+					disabled: true } ] };
+			return interaction.update({ components: [actionRow] });
 		}
 
 		const channel = client.channels.cache.get(interaction.channelId);
@@ -312,41 +274,40 @@ import { Games } from "./games/games.js";
 import { Rules } from "./games/rules.js";
 const channelDelete = async (Thing, thing) => {
 	const Game = Games.find(game => game[thing + "s"].includes(Thing.id));
-	if (Game)
+	if (!Game)
 	{
-		const display = await Rules.drawBoard(Game);
-		const imageName = `${Game.game}_${Game.end}_${Game.id}.png`;
-		const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png", name: "author.png" };
-		const attachment = { attachment: display, name: imageName };
-		const embed = {
-			author: {
-				name: `${Game.name} | x!${Game.game} | [Rules]`,
-				icon_url: "attachment://author.png",
-				url: "https://github.com/Xyvyrianeth/xyvybot_assets/wiki/" + Game.game },
-			description: `<@${Game.players[0]}> VS <@${Game.players[1]}>\n\n${Game.endMessage()}`,
-			image: { url: "attachment://" + imageName },
-			color: new Color(Game.turnColors[Game.turn | 0]).toInt() };
-		const payload = {
-			content: "The server you were playing a game in has either been deleted or has removed me. For your convenience, you may now play the game here.",
-			embeds: [embed],
-			files: [author, attachment] };
+		return;
+	}
 
-		if (Game[thing + "s"][0] == Game[thing + "s"][1])
-		{
-			for (const index in Game.players)
-			{
-				const playerId = Game.players[index];
-				client.users.send(playerId, payload).then(message => Game.channels[index] = message.channelId);
-				Game.guilds[index] = null;
-			}
-		}
-		else
-		{
-			const index = Game[thing + "s"].indexOf(Thing.id);
-			const playerId = Game.players[index];
-			client.users.send(playerId, payload).then(message => Game.channels[index] = message.channelId);
-			Game.guilds[index] = null;
-		}
+	const display = await Rules.drawBoard(Game);
+	const imageName = `${Game.game}_${Game.end}_${Game.id}.png`;
+	const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot/master/assets/misc/avatar.png", name: "author.png" };
+	const attachment = { attachment: display, name: imageName };
+	const embed = {
+		author: {
+			name: `${Game.name} | x!${Game.game} | [Rules]`,
+			icon_url: "attachment://author.png",
+			url: "https://github.com/Xyvyrianeth/xyvybot_assets/wiki/" + Game.game },
+		description: `<@${Game.players[0]}> VS <@${Game.players[1]}>\n\n${Game.endMessage()}`,
+		image: { url: "attachment://" + imageName },
+		color: new Color(Game.turnColors[Game.turn | 0]).toInt() };
+	const payload = {
+		content: "The server you were playing a game in has either been deleted or has removed me. For your convenience, you may now play the game here.",
+		embeds: [embed],
+		files: [author, attachment] };
+
+	if (Game[thing + "s"][0] !== Game[thing + "s"][1])
+	{
+		const index = Game[thing + "s"].indexOf(Thing.id);
+		const playerId = Game.players[index];
+		client.users.send(playerId, payload).then(message => Game.channels[index] = message.channelId);
+		Game.guilds[index] = null;
+	}
+	for (const index in Game.players)
+	{
+		const playerId = Game.players[index];
+		client.users.send(playerId, payload).then(message => Game.channels[index] = message.channelId);
+		Game.guilds[index] = null;
 	}
 }
 client.on('channelDelete', channel => channelDelete(channel, "channel"));

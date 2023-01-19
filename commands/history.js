@@ -116,36 +116,29 @@ export const command = async (interaction) => {
 	else
 	{
 		const information = {};
-		switch (command[1])
-		{
-			case "init": {
-				information.user = await client.users.fetch(interaction.options?._hoistedOptions[0]?.value || interaction.user.id);
-				information.games = allGames;
-				information.result = allResults;
-				information.page = 1;
-				break;
-			}
-			case "page": {
-				information.user = await client.users.fetch(command[2]);
-				information.games = allGames.filter((g, i) => command.length == 6 ? command[4][i] == '1' : interaction.message?.components[1]?.components[0].options[i].default);
-				information.result = allResults.filter((g, i) => command.length == 6 ? command[5][i] == '1' : interaction.message?.components[2]?.components[0].options[i].default);
-				information.page = Number(command[3]);
-				break;
-			}
-			case "game": {
-				information.user = await client.users.fetch(command[2]);
-				information.games = (!interaction.values || interaction.values.length == 0) ? allGames : interaction.values;
-				information.result = allResults.filter((r, i) => interaction.message?.components[2]?.components[0].options[i].default);
-				information.page = 1;
-				break;
-			}
-			case "result": {
-				information.user = await client.users.fetch(command[2]);
-				information.games = allGames.filter((g, i) => interaction.message?.components[1]?.components[0].options[i].default);
-				information.result = interaction.values;
-				information.page = 1;
-				break;
-			}
+		if (command[1] == "init") {
+			information.user = await client.users.fetch(interaction.options?._hoistedOptions[0]?.value || interaction.user.id);
+			information.games = allGames;
+			information.result = allResults;
+			information.page = 1;
+		}
+		if (command[1] == "page") {
+			information.user = await client.users.fetch(command[2]);
+			information.games = allGames.filter((g, i) => command.length == 6 ? command[4][i] == '1' : interaction.message?.components[1]?.components[0].options[i].default);
+			information.result = allResults.filter((g, i) => command.length == 6 ? command[5][i] == '1' : interaction.message?.components[2]?.components[0].options[i].default);
+			information.page = Number(command[3]);
+		}
+		if (command[1] == "game") {
+			information.user = await client.users.fetch(command[2]);
+			information.games = (!interaction.values || interaction.values.length == 0) ? allGames : interaction.values;
+			information.result = allResults.filter((r, i) => interaction.message?.components[2]?.components[0].options[i].default);
+			information.page = 1;
+		}
+		if (command[1] == "result") {
+			information.user = await client.users.fetch(command[2]);
+			information.games = allGames.filter((g, i) => interaction.message?.components[1]?.components[0].options[i].default);
+			information.result = interaction.values;
+			information.page = 1;
 		}
 
 		const results = information.result.map(result => { return { wins: `winner = '${information.user.id}'`, loss: `(winner != '${information.user.id}' AND winner != 'undefined')`, ties: `winner = 'undefined'`}[result]; }).join(" OR ");
@@ -263,16 +256,13 @@ export const command = async (interaction) => {
 					value: "ties",
 					default: information.result.includes("ties") } ] } ] };
 
-		if (matchCount == 0)
+		if (matchCount == 0 && interaction.isCommand())
 		{
-			if (interaction.isCommand())
-			{
-				return interaction.editReply({ embeds: [embed], files: [author] });
-			}
-			else
-			{
-				interaction.message.edit({ embeds: [embed], components: [pageActionRow, gameActionRow, resultActionRow], files: [author], attachments: [] });
-			}
+			return interaction.editReply({ embeds: [embed], files: [author] });
+		}
+		if (matchCount == 0 && !interaction.isCommand())
+		{
+			interaction.message.edit({ embeds: [embed], components: [pageActionRow, gameActionRow, resultActionRow], files: [author], attachments: [] });
 		}
 
 		const selectMatchActionRow = {
@@ -287,18 +277,12 @@ export const command = async (interaction) => {
 
 		if (interaction.isCommand())
 		{
-			interaction.editReply(finalMessage);
+			return interaction.editReply(finalMessage);
 		}
-		else
+		if (interaction.guildId == null)
 		{
-			if (interaction.guildId == null)
-			{
-				await interaction.editReply(finalMessage);
-			}
-			else
-			{
-				await interaction.message.edit(finalMessage);
-			}
+			return await interaction.editReply(finalMessage);
 		}
+		return await interaction.message.edit(finalMessage);
 	}
 }
