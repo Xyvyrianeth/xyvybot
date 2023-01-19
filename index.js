@@ -85,7 +85,7 @@ for (let command of commandNames)
 
 // console.log(commands);
 
-const botError = async (err, command, type) => {
+const botError = async (err, object, isMessage) => {
 	const errs = [];
 	for (let i = 0; i < err.stack.split('\n').length; i++)
 	{
@@ -99,29 +99,29 @@ const botError = async (err, command, type) => {
 		}
 	}
 	
-	if (type && !(command.author.bot || !command.content.startsWith("x!")))
+	if (isMessage && !(object.author.bot || !object.content.startsWith("x!")))
 	{
 		const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/misc/avatar.png", name: "author.png" };
 		const embed = {
 			author: { name: "Xyvybot", icon_url: "attachment://author.png" },
-			title: "Error on command: " + command.content.split(' ')[0].substring(2),
+			title: "Error on command: " + object.content.split(' ')[0].substring(2),
 			description: "```\n" + errs.join('\n') + "\n```",
 			color: new Color().random().toInt() };
 
-		command[command.replied ? "editReply" : "reply"]({ embeds: [embed], files: [author] });
+		object[object.replied ? "editReply" : "reply"]({ embeds: [embed], files: [author] });
 		(await client.channels.fetch("847316212203126814")).send({ embeds: [embed], files: [author] });
 		return;
 	}
-	if (!type)
+	if (!isMessage)
 	{
 		const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/misc/avatar.png", name: "author.png" };
 		const embed = {
 			author: { name: "Xyvybot", icon_url: "attachment://author.png" },
-			title: "Error on command: " + (command.commandName || command.customId.split('.')[0]),
+			title: "Error on command: " + (object.commandName || object.customId.split('.')[0]),
 			description: "```\n" + errs.join('\n') + "\n```",
 			color: new Color().random().toInt() };
 
-		command[command.replied ? "editReply" : "reply"]({ embeds: [embed], files: [author] });
+		object[object.replied ? "editReply" : "reply"]({ embeds: [embed], files: [author] });
 		(await client.channels.fetch("847316212203126814")).send({ embeds: [embed], files: [author] });
 	}
 }
@@ -189,7 +189,7 @@ client.on('messageCreate', async message => {
 	}
 	catch (err)
 	{
-		return botError(err, message, false);
+		return botError(err, message, true);
 	}
 });
 client.on('interactionCreate', async interaction => {
@@ -252,7 +252,7 @@ client.on('interactionCreate', async interaction => {
 	}
 	catch (err)
 	{
-		return botError(err, interaction, true);
+		return botError(err, interaction, false);
 	}
 });
 client.on('guildCreate', async guild => {
