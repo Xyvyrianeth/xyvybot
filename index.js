@@ -189,7 +189,7 @@ client.on('messageCreate', async message => {
 	}
 	catch (err)
 	{
-		return botError(err, message, 0);
+		return botError(err, message, false);
 	}
 });
 client.on('interactionCreate', async interaction => {
@@ -252,7 +252,7 @@ client.on('interactionCreate', async interaction => {
 	}
 	catch (err)
 	{
-		return botError(err, interaction, 1);
+		return botError(err, interaction, true);
 	}
 });
 client.on('guildCreate', async guild => {
