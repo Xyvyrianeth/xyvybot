@@ -1,6 +1,6 @@
 import pkg from "canvas";
 const { loadImage } = pkg;
-import { client, db, newUser, emoji } from "../Xyvy.js";
+import { client, db, newUser, emoji } from "../index.js";
 import { drawProfile } from "../assets/profile/profile.js";
 import images from "../assets/profile/backgrounds.json" assert { type: "json" };
 import { Color } from "../assets/misc/color.js";

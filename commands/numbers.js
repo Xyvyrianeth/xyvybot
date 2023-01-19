@@ -1,6 +1,6 @@
 import { Color } from "../assets/misc/color.js";
 import { miniGames } from "../games/minigames.js";
-import { emoji } from "../Xyvy.js";
+import { emoji } from "../index.js";
 import { solverRunAllSolutions } from "../assets/misc/solver_engine.js";
 
 export const command = async (interaction) => {

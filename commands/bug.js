@@ -1,5 +1,5 @@
 import { Color } from "../assets/misc/color.js";
-import { client, bannedUsers } from "../Xyvy.js";
+import { client, bannedUsers } from "../index.js";
 export const command = (interaction) => {
 	if (bannedUsers.includes(interaction.user.id))
 	{

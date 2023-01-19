@@ -2,7 +2,7 @@ import pkg from "canvas";
 const { createCanvas, loadImage } = pkg;
 import { Color } from "../misc/color.js";
 import { newUIColor } from "../misc/newUIColor.js";
-import { gameCount } from "../../Xyvy.js";
+import { gameCount } from "../../index.js";
 
 export async function drawProfile(Side, user, profile, avatar, background, preview) {
 	const dimensions = {};

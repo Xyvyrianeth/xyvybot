@@ -1,7 +1,7 @@
 import pkg from "canvas";
 const { createCanvas, loadImage } = pkg;
 import { Color } from "../assets/misc/color.js";
-import { client } from "../Xyvy.js";
+import { client } from "../index.js";
 
 export const command = async (interaction) => {
 	if (interaction.options._subcommand == "help")

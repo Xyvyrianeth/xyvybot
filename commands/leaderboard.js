@@ -1,4 +1,4 @@
-import { client, db, emoji } from "../Xyvy.js";
+import { client, db, emoji } from "../index.js";
 import { Color } from "../assets/misc/color.js";
 import { drawTop } from "../assets/leaderboard/leaderboard.js";
 import fs from "fs";

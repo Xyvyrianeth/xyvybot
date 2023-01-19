@@ -4,7 +4,7 @@
 	"type": "module",
 	"engines": { "node": "v16.14.2", "npm": "9.1.3" },
 	"scripts": {
-		"start": "node --experimental-json-modules --no-warnings Xyvy.js" },
+		"start": "node --experimental-json-modules --no-warnings index.js" },
 	"dependencies": {
 		"canvas": "2.10.2",
 		"discord.js": "14.7.0",

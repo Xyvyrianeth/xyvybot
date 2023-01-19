@@ -1,4 +1,4 @@
-import { client } from "../../Xyvy.js";
+import { client } from "../../index.js";
 export function myTurn() {
 	let board = {
 		'1': { 'A': [0, 0, 0, 0], 'B': [0, 0, 0, 0], 'C': [0, 0, 0, 0], 'D': [0, 0, 0, 0], },

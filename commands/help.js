@@ -1,5 +1,5 @@
 import { Color } from "../assets/misc/color.js";
-import { client, version } from "../Xyvy.js";
+import { client, version } from "../index.js";
 import { commands } from "../assets/misc/helpCommands.js";
 
 export const command = async (interaction) => {

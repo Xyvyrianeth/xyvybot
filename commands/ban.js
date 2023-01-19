@@ -1,4 +1,4 @@
-import { db, bannedUsers, client } from "../Xyvy.js";
+import { db, bannedUsers, client } from "../index.js";
 
 export const command = async (interaction) => {
     if (interaction.user.id != "357700219825160194")

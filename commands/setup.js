@@ -1,4 +1,4 @@
-import { client, emoji } from "../Xyvy.js";
+import { client, emoji } from "../index.js";
 import { Color } from "../assets/misc/color.js";
 
 export const command = async (interaction) => {
