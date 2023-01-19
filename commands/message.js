@@ -115,12 +115,12 @@ export const command = async (message) => {
 	if (message.content.startsWith("x!js") && ["357700219825160194"].includes(message.author.id))
 	{
 		// return commands.get(command)(input, message);
-		return await import(`./commands/js.js`).then(module => module.command(message.content.substring(5), message));
+		return await import(`./js.js`).then(module => module.command(message.content.substring(5), message));
 	}
 	if (message.content.startsWith("x!pg") && ["357700219825160194"].includes(message.author.id))
 	{
 		// return commands.get(command)(input, message);
-		return await import(`./commands/pg.js`).then(module => module.command(message.content.substring(5), message));
+		return await import(`./pg.js`).then(module => module.command(message.content.substring(5), message));
 	}
 
 	// Real Games
