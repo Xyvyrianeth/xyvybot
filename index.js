@@ -229,9 +229,9 @@ client.on('interactionCreate', async interaction => {
 		const customEmoji = !permissions.has(1n << 18n);
 		const requirementChannels = [
 			// [], [], [],
-			games.concat(["hangman", "history", "iq", "leaderboard", "nekos", "profile", "replay", "trivia"]),
+			games.concat(["hangman", "history", "iq", "leaderboard", "profile", "replay", "trivia"]),
 			games.concat(["hangman", "iq", "trivia"]),
-			games.concat(["hangman", "history", "iq", "leaderboard", "nekos", "profile", "replay", "trivia"]),
+			games.concat(["hangman", "history", "iq", "leaderboard", "profile", "replay", "trivia"]),
 		];
 		const perms = [
 			requirementChannels[0].includes(command) && !permissions.has(1n << 10n),

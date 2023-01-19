@@ -179,22 +179,22 @@ commands.set("bug", {
 			  { title: "Options",
 				body: "**command**\n\u200b \u200b \u200b \u200b The command you think you've found an issue with",
 				inline: false } ] });
-commands.set("nekos", {
-	name: "nekos",
-	attachment: true,
-	description: "Get a picture of a cute anime catgirl!",
-	fields: [] });
-commands.set("graph", {
-	name: "graph",
-	attachment: true,
-	description: "Use this command to manipulate a very simple and inefficient graphing calculator! Can graph up to 10 different functions at once and displayed as any color of your choosing!\n\nEquations must be in the format *y* = *mx* + *b* or *f*(*x*) = *mx* + *b*",
-	fields: [ { title: "Usage",
-				body: "**/graph help**\n\u200b \u200b \u200b \u200b Gives you a link to the /graph [wiki](https://github.com/Xyvyrianeth/xyvybot_assets/wiki/x!graph)!\n" +
-					  "**/graph equate `equation1` `equation2` `equation3`...**\n\u200b \u200b \u200b \u200b Graphs up to 10 equations at once",
-				inline: false },
-			  { title: "Options",
-				body: "**equation#**\n\u200b \u200b \u200b \u200b Equations must be in the format *y* = *mx* + *b* or *f*(*x*) = *mx* + *b*.\n\u200b \u200b \u200b \u200b Specify the color in the same option after the equation, separated with a semicolon (;). Color must be a hexadecimal value.",
-				inline: false } ] });
+// commands.set("nekos", {
+// 	name: "nekos",
+// 	attachment: true,
+// 	description: "Get a picture of a cute anime catgirl!",
+// 	fields: [] });
+// commands.set("graph", {
+// 	name: "graph",
+// 	attachment: true,
+// 	description: "Use this command to manipulate a very simple and inefficient graphing calculator! Can graph up to 10 different functions at once and displayed as any color of your choosing!\n\nEquations must be in the format *y* = *mx* + *b* or *f*(*x*) = *mx* + *b*",
+// 	fields: [ { title: "Usage",
+// 				body: "**/graph help**\n\u200b \u200b \u200b \u200b Gives you a link to the /graph [wiki](https://github.com/Xyvyrianeth/xyvybot_assets/wiki/x!graph)!\n" +
+// 					  "**/graph equate `equation1` `equation2` `equation3`...**\n\u200b \u200b \u200b \u200b Graphs up to 10 equations at once",
+// 				inline: false },
+// 			  { title: "Options",
+// 				body: "**equation#**\n\u200b \u200b \u200b \u200b Equations must be in the format *y* = *mx* + *b* or *f*(*x*) = *mx* + *b*.\n\u200b \u200b \u200b \u200b Specify the color in the same option after the equation, separated with a semicolon (;). Color must be a hexadecimal value.",
+// 				inline: false } ] });
 commands.set("credits", {
 	name: "credits",
 	attachment: false,

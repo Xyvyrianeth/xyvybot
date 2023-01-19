@@ -13,8 +13,8 @@ export const command = (interaction) => {
 				" - [dotenv](https://npmjs.com/package/dotenv) (v10.0)\n" +
 				" - Database by [PostgreSQL](https://postgresql.org) and [pg (npm)](https://npmjs.com/package/pg) (v8.6)\n" +
 				" - Many images constructed with [canvas](https://github.com/Automattic/node-canvas) (v2.7)\n" +
-				" - Replays powered by [Canvas GIF Encoder](https://github.com/bcafuk/canvas-gif-encoder) (discontinued)\n" +
-				" - [Nekos.life](https://nekos.life) (v2.0.7) for all the catgirls" },
+				" - Replays powered by [Canvas GIF Encoder](https://github.com/bcafuk/canvas-gif-encoder) (discontinued)" },
+				// " - [Nekos.life](https://nekos.life) (v2.0.7) for all the catgirls" },
 			{ name: "Images", value: "All background images from [Imgur](https://imgur.com/) posted by [user/Kizenkis](https://imgur.com/user/Kizenkis).\n" +
 				"All other assets made by Xyvyrianeth." },
 			{ name: "Special Thanks", value: "To various users from [The Officially Unofficial Server for the Unofficially Official Dan-Ball Community](https://discord.gg/gYVMUrM) for all of their support, feedback, and debugging.\n" +

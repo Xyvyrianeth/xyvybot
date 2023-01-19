@@ -12,7 +12,7 @@ export const command = async (interaction) => {
 				{ name: "\u200b", value: "__**Featured Games**__\n`othello`\n`squares`\n`3dtictactoe`\n`connect4`\n`rokumoku`\n`ordo`\n`papersoccer`\n`linesofaction`\n`latrones`\n`spiderlinetris`", inline: true },
 				{ name: "\u200b", value: "__**Possible Future Games**__\n[Go](https://en.wikipedia.org/wiki/Go_(game))\n\n__**Related Commands**__\n`games`\n`profile`\n`leaderboard`\n`history`", inline: true },
 				{ name: "\u200b", value: "================================", inline: false },
-				{ name: "\u200b", value: "__**Minigames**__\n`hangman`\n`trivia`\n`letters`\n`numbers`\n`minesweeper`\n`iq`\n\n__**Miscellaneous**__\n`nekos`\n`graph`\n`credits`", inline: true },
+				{ name: "\u200b", value: "__**Minigames**__\n`hangman`\n`trivia`\n`letters`\n`numbers`\n`minesweeper`\n`iq`\n\n__**Miscellaneous**__\n`graph`\n`credits`", inline: true },
 				{ name: "\u200b", value: "__**Utility**__\n`help`\n`setup`\n`request`\n`bug`", inline: true } ],
 			color: new Color().random().toInt() };
 

@@ -88,10 +88,6 @@
 						"value": "hangman"
 					},
 					{
-						"name": "Nekos",
-						"value": "nekos"
-					},
-					{
 						"name": "Graph",
 						"value": "graph"
 					},
@@ -441,10 +437,6 @@
 						"value": "hangman"
 					},
 					{
-						"name": "Nekos",
-						"value": "nekos"
-					},
-					{
 						"name": "Graph",
 						"value": "graph"
 					},
@@ -476,10 +468,6 @@
 	},
 	{
 		"name": "credits",
-		"description": "placeholder"
-	},
-	{
-		"name": "nekos",
 		"description": "placeholder"
 	},
 	{
