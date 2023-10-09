@@ -2,3 +2,4 @@
 ignored/
 node_modules/
 package-lock.json
+launch.bat

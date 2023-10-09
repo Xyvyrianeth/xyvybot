@@ -1,4 +1,4 @@
-import { client } from "../../index.js";
+import { Xyvybot } from "../../index.js";
 export function myTurn() {
 	let board = [
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -14,7 +14,7 @@ export function myTurn() {
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	];
-	let piece = this.players.indexOf(client.user.id);
+	let piece = this.players.indexOf(Xyvybot.user.id);
 	let turn = (this.turn % 1) * 2;
 	for (let dir = 0; dir < 4; dir++)
 	{

@@ -1,4 +1,4 @@
-import { client } from "../../index.js";
+import { Xyvybot } from "../../index.js";
 export function myTurn() {
 	let board = {
 		'1': { 'A': [0, 0, 0, 0], 'B': [0, 0, 0, 0], 'C': [0, 0, 0, 0], 'D': [0, 0, 0, 0], },
@@ -6,7 +6,7 @@ export function myTurn() {
 		'3': { 'A': [0, 0, 0, 0], 'B': [0, 0, 0, 0], 'C': [0, 0, 0, 0], 'D': [0, 0, 0, 0], },
 		'4': { 'A': [0, 0, 0, 0], 'B': [0, 0, 0, 0], 'C': [0, 0, 0, 0], 'D': [0, 0, 0, 0], }
 	};
-	let piece = this.players.indexOf(client.user.id);
+	let piece = this.players.indexOf(Xyvybot.user.id);
 	let wins = [
 		['1A0', '1A1', '1A2', '1A3'], ['1B0', '1B1', '1B2', '1B3'],
 		['1C0', '1C1', '1C2', '1C3'], ['1D0', '1D1', '1D2', '1D3'],

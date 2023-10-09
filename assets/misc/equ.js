@@ -1,4 +1,4 @@
-export function equ(equation, x, equations) {
+export const equ = (equation, x, equations) => {
 	let log = '';
 	if (x !== undefined)
 		equation = equation.replace(/x/g, '(' + x + ')');

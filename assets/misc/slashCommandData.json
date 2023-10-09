@@ -1,23 +1,27 @@
 [
 	{
+		"name": "testquery",
+		"description": "test - placeholder"
+	},
+	{
 		"name": "ban",
-		"description": "placeholder",
+		"description": "test - placeholder",
 		"options": [
 			{
 				"name": "user",
 				"type": 6,
-				"description": "User to ban"
+				"description": "test - User to ban"
 			}
 		]
 	},
 	{
 		"name": "help",
-		"description": "Get a list of all available commands!",
+		"description": "test - Get a list of all available commands!",
 		"options": [
 			{
 				"name": "command",
 				"type": 3,
-				"description": "A specific command you'd like more help with",
+				"description": "test - A specific command you'd like more help with",
 				"choices": [
 					{
 						"name": "Othello",
@@ -113,43 +117,43 @@
 	},
 	{
 		"name": "games",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "profile",
-		"description": "View or manage your profile",
+		"description": "test - View or manage your profile",
 		"options": [
 			{
 				"name": "view",
 				"type": 1,
-				"description": "View your own or another user's profile",
+				"description": "test - View your own or another user's profile",
 				"options": [
 					{
 						"name": "user",
 						"type": 6,
-						"description": "Whose profile you wish to view"
+						"description": "test - Whose profile you wish to view"
 					}
 				]
 			},
 			{
 				"name": "edit",
 				"type": 1,
-				"description": "Which property of your profile you wish to edit",
+				"description": "test - Which property of your profile you wish to edit",
 				"options": [
 					{
 						"name": "title",
 						"type": 3,
-						"description": "Change the text that displays under your name"
+						"description": "test - Change the text that displays under your name"
 					},
 					{
 						"name": "color",
 						"type": 3,
-						"description": "Change the color of the information panel"
+						"description": "test - Change the color of the information panel"
 					},
 					{
 						"name": "displayside",
 						"type": 3,
-						"description": "Change which side the information panel sits on",
+						"description": "test - Change which side the information panel sits on",
 						"choices": [
 							{
 								"name": "Left",
@@ -166,38 +170,38 @@
 			{
 				"name": "backgrounds",
 				"type": 1,
-				"description": "Manage your backgrounds"
+				"description": "test - Manage your backgrounds"
 			},
 			{
 				"name": "create",
 				"type": 1,
-				"description": "Create a profile if you haven't already"
+				"description": "test - Create a profile if you haven't already"
 			}
 		]
 	},
 	{
 		"name": "leaderboard",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "history",
-		"description": "Shows you your or another user's match history",
+		"description": "test - Shows you your or another user's match history",
 		"options": [
 			{
 				"name": "user",
 				"type": 6,
-				"description": "Whose history you'd like to see"
+				"description": "test - Whose history you'd like to see"
 			}
 		]
 	},
 	{
 		"name": "hangman",
-		"description": "placeholder",
+		"description": "test - placeholder",
 		"options": [
 			{
 				"name": "category",
 				"type": 10,
-				"description": "Choose a category for the word or phrase",
+				"description": "test - Choose a category for the word or phrase",
 				"choices": [
 					{
 						"name": "Tabletop/Board/Card Games",
@@ -233,113 +237,113 @@
 	},
 	{
 		"name": "minesweeper",
-		"description": "placeholder",
+		"description": "test - placeholder",
 		"options": [
 			{
 				"name": "width",
 				"type": 4,
-				"description": "The width of the board"
+				"description": "test - The width of the board"
 			},
 			{
 				"name": "height",
 				"type": 4,
-				"description": "The height of the board"
+				"description": "test - The height of the board"
 			},
 			{
 				"name": "bombs",
 				"type": 4,
-				"description": "The number of bombs hidden"
+				"description": "test - The number of bombs hidden"
 			}
 		]
 	},
 	{
 		"name": "iq",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "trivia",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "letters",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "numbers",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "graph",
-		"description": "placeholder",
+		"description": "test - placeholder",
 		"options": [
 			{
 				"name": "help",
 				"type": 1,
-				"description": "placeholder"
+				"description": "test - placeholder"
 			},
 			{
 				"name": "equate",
 				"type": 1,
-				"description": "placeholder",
+				"description": "test - placeholder",
 				"options": [
 					{
 						"name": "equation0",
 						"type": 3,
-						"description": "placeholder",
+						"description": "test - placeholder",
 						"required": true
 					},
 					{
 						"name": "equation1",
 						"type": 3,
-						"description": "placeholder",
+						"description": "test - placeholder",
 						"required": false
 					},
 					{
 						"name": "equation2",
 						"type": 3,
-						"description": "placeholder",
+						"description": "test - placeholder",
 						"required": false
 					},
 					{
 						"name": "equation3",
 						"type": 3,
-						"description": "placeholder",
+						"description": "test - placeholder",
 						"required": false
 					},
 					{
 						"name": "equation4",
 						"type": 3,
-						"description": "placeholder",
+						"description": "test - placeholder",
 						"required": false
 					},
 					{
 						"name": "equation5",
 						"type": 3,
-						"description": "placeholder",
+						"description": "test - placeholder",
 						"required": false
 					},
 					{
 						"name": "equation6",
 						"type": 3,
-						"description": "placeholder",
+						"description": "test - placeholder",
 						"required": false
 					},
 					{
 						"name": "equation7",
 						"type": 3,
-						"description": "placeholder",
+						"description": "test - placeholder",
 						"required": false
 					},
 					{
 						"name": "equation8",
 						"type": 3,
-						"description": "placeholder",
+						"description": "test - placeholder",
 						"required": false
 					},
 					{
 						"name": "equation9",
 						"type": 3,
-						"description": "placeholder",
+						"description": "test - placeholder",
 						"required": false
 					}
 				]
@@ -348,24 +352,24 @@
 	},
 	{
 		"name": "request",
-		"description": "placeholder",
+		"description": "test - placeholder",
 		"options": [
 			{
 				"name": "suggestion",
 				"type": 3,
-				"description": "Your suggestion",
+				"description": "test - Your suggestion",
 				"required": true
 			}
 		]
 	},
 	{
 		"name": "bug",
-		"description": "placeholder",
+		"description": "test - placeholder",
 		"options": [
 			{
 				"name": "command",
 				"type": 3,
-				"description": "The command that you think has a bug",
+				"description": "test - The command that you think has a bug",
 				"required": true,
 				"choices": [
 					{
@@ -461,57 +465,57 @@
 			{
 				"name": "description",
 				"type": 3,
-				"description": "Description of the bug",
+				"description": "test - Description of the bug",
 				"required": true
 			}
 		]
 	},
 	{
 		"name": "credits",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "othello",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "squares",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "rokumoku",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "3dtictactoe",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "connect4",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "ordo",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "papersoccer",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "linesofaction",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "latrones",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "spiderlinetris",
-		"description": "placeholder"
+		"description": "test - placeholder"
 	},
 	{
 		"name": "setup",
-		"description": "Help you set up the bot to perform at maximum efficiency"
+		"description": "test - Help you set up the bot to perform at maximum efficiency"
 	}
 ]

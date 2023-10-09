@@ -1,52 +1,75 @@
-import { client, db, newUser } from "../index.js";
+import { Xyvybot, dataBase, gameCount } from "../index.js";
 import { Color } from "../assets/misc/color.js";
-import { Games } from "./games.js";
-// import gifEncoder from "../assets/misc/canvasGifEncoder.js";
-// import fs from "fs";
+import { Games } from "./Games.js";
+import { deleteMessage, newUser } from "../index/discordFunctions.js";
+const BUTTON_STYLE = { BLUE: 1, GREY: 2, GREEN: 3, RED: 4, LINK: 5 };
+const COMPONENT_TYPE = { ACTION_ROW: 1, BUTTON: 2, DROP_MENU: 3 };
+
 export const Rules = {
-	connect4: (await import("./rules/connect4.js")).newGame,
-	latrones: (await import("./rules/latrones.js")).newGame,
-	loa: (await import("./rules/loa.js")).newGame,
-	ordo: (await import("./rules/ordo.js")).newGame,
-	othello: (await import("./rules/othello.js")).newGame,
-	rokumoku: (await import("./rules/rokumoku.js")).newGame,
-	soccer: (await import("./rules/soccer.js")).newGame,
-	spiderlinetris: (await import("./rules/spiderlinetris.js")).newGame,
-	squares: (await import("./rules/squares.js")).newGame,
-	ttt3d: (await import("./rules/ttt3d.js")).newGame,
+	games: {
+		connect4: (await import("./games/connect4.js")).newGame,
+		latrones: (await import("./games/latrones.js")).newGame,
+		loa: (await import("./games/loa.js")).newGame,
+		ordo: (await import("./games/ordo.js")).newGame,
+		othello: (await import("./games/othello.js")).newGame,
+		rokumoku: (await import("./games/rokumoku.js")).newGame,
+		soccer: (await import("./games/soccer.js")).newGame,
+		spiderlinetris: (await import("./games/spiderlinetris.js")).newGame,
+		squares: (await import("./games/squares.js")).newGame,
+		ttt3d: (await import("./games/ttt3d.js")).newGame,
+	},
+	AI: {
+		connect4: (await import("./AI/connect4.js")).myTurn,
+		latrones: (await import("./AI/latrones.js")).myTurn,
+		loa: (await import("./AI/loa.js")).myTurn,
+		ordo: (await import("./AI/ordo.js")).myTurn,
+		othello: (await import("./AI/othello.js")).myTurn,
+		rokumoku: (await import("./AI/rokumoku.js")).myTurn,
+		soccer: (await import("./AI/soccer.js")).myTurn,
+		spiderlinetris: (await import("./AI/spiderlinetris.js")).myTurn,
+		squares: (await import("./AI/squares.js")).myTurn,
+		ttt3d: (await import("./AI/ttt3d.js")).myTurn,
+	},
+	AIPriorities: (await import("./AIPriorities.js")).priorities,
 	drawBoard: (await import("./drawBoard.js")).drawBoard,
-	newGame: async (game, channel, guild, player, local, AI, interactionId) => {
-		const Game = Rules[game]();
-		Games.set(interactionId, Game);
+	newGame: async (game, channelId, guild, userId, local, AI, interactionId) => {
+		const Game = Rules.games[game]();
 
 		Game.id = interactionId
 		Game.game = game;
-		Game.players = [player]
-		Game.channels = [channel];
+		Game.players = [userId]
+		Game.channels = [channelId];
 		Game.guilds = [guild];
 		Game.messages = [[]];
+		Game.highlight = [];
 		Game.local = local;
-		Game.name = {	"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic-Tac-Toe",
-						"connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer", "loa": "Lines of Action",
-						"latrones": "Latrones", "spiderlinetris": "Spider Linetris" }[game];
+		Game.name = {
+			"othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic-Tac-Toe",
+			"connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer", "loa": "Lines of Action",
+			"latrones": "Latrones", "spiderlinetris": "Spider Linetris" }[game];
 		Game.timer = 900;
 
 		if (AI)
 		{
 			Game.AI = true;
-			Game.myTurn = (await import("./ai/" + game + ".js")).myTurn;
-			Game.priorities = (await import("./ai/priorities.js")).priorities(Game.game);
+			Game.myTurn = Rules.AI[game];
+			Game.priorities = Rules.AIPriorities(Game.game);
 
-			await Rules.startGame(Game.id, channel, guild, client.user.id);
+			await Rules.startGame(Game.id, channelId, guild, Xyvybot.user.id);
 		}
+
+		Games.set(interactionId, Game);
 	},
 	startGame: async (id, channel2, guild, player2) => {
 		const Game = Games.get(id);
 		const swap = ["push", "unshift"].random();
 
-		Game.channels[swap](channel2);
-		Game.guilds[swap](guild);
-		Game.messages[swap]([]);
+		if (Game.channels[0] !== channel2)
+		{
+			Game.channels[swap](channel2);
+			Game.guilds[swap](guild);
+			Game.messages[swap]([]);
+		}
 		Game.players[swap](player2)
 		Game.player = Game.players[0];
 		Game.started = true;
@@ -63,36 +86,27 @@ export const Rules = {
 		const attachment = { attachment: display, name: imageName };
 		const embed = {
 			author: {
-				name: `${Game.name} | x!${Game.game} | [Rules]`,
+				name: `${Game.name} | [Click for Rules]`,
 				icon_url: "attachment://author.png",
 				url: "https://github.com/Xyvyrianeth/xyvybot_assets/wiki/" + Game.game },
 			description: `The game has started!\n<@${Game.players[0]}> VS <@${Game.players[1]}>\n<@${Game.player}> goes first!`,
 			image: { url: "attachment://" + imageName },
 			color: new Color(Game.turnColors[Game.turn | 0]).toInt() };
 		const actionRow = {
-			type: 1,
+			type: COMPONENT_TYPE.ACTION_ROW,
 			components: [
-			{	type: 2, style: 5, // Link Button
+			{	type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.LINK,
 				label: "Rules/How to Play",
 				url: `https://github.com/Xyvyrianeth/xyvybot_assets/wiki/${Game.game}` } ] };
 
-		if (Game.channels[0] == Game.channels[1])
-		{
-			const Channel = client.channels.cache.get(Game.channels[0]);
+		await Game.channels.forEach(async channelId => {
+			const Channel = await Xyvybot.channels.fetch(channelId);
 			await Channel.send({ embeds: [embed], files: [author, attachment], components: [actionRow] });
-		}
-		else
-		{
-			for (const channel of Game.channels)
-			{
-				const Channel = client.channels.cache.get(channel);
-				await Channel.send({ embeds: [embed], files: [author, attachment], components: [actionRow] });
-			}
-		}
+		});
 
 		Game.canHaveTurn = true;
 
-		if (Game.AI && Game.player == client.user.id)
+		if (Game.AI && Game.player == Xyvybot.user.id)
 		{
 			setTimeout(() => Rules.takeTurn(id, Game.myTurn()), 2500);
 		}
@@ -110,23 +124,14 @@ export const Rules = {
 			return Game.canHaveTurn = true;
 		}
 
-		for (let i in Game.messages)
-		{
-			if (Game.messages[i].length > 0)
-			{
-				const Channel = client.channels.cache.get(Game.channels[i]);
-				if (!Channel.permissionsFor(client.user.id).has(1n << 13n))
-				{
-					continue;
-				}
-
-				for (const messageId of Game.messages[index])
-				{
-					await Channel.messages.cache.get(messageId).delete();
-				}
-				Game.channels[index] = [];
-			}
-		}
+		Game.messages.forEach(async (messages, index) => {
+			const channelId = Game.channels[index];
+			const Channel = await Xyvybot.channels.fetch(channelId);
+			messages.forEach(async messageId => {
+				const Message = Channel.messages.fetch(messageId);
+				await deleteMessage(Message);
+			});
+		});
 
 		const display = await Rules.drawBoard(Game);
 		const imageName = `${Game.game}_${Game.end}_${Game.id}.png`;
@@ -134,28 +139,21 @@ export const Rules = {
 		const attachment = { attachment: display, name: imageName };
 		const embed = {
 			author: {
-				name: `${Game.name} | x!${Game.game} | [Rules]`,
+				name: `${Game.name} | [Click for Rules]`,
 				icon_url: "attachment://author.png",
 				url: "https://github.com/Xyvyrianeth/xyvybot_assets/wiki/" + Game.game },
 			description: `<@${Game.players[0]}> VS <@${Game.players[1]}>\n\n${Game.endMessage()}`,
 			image: { url: "attachment://" + imageName },
 			color: new Color(Game.turnColors[Game.turn | 0]).toInt() };
 
-		if (Game.channels[0] == Game.channels[1])
-		{
-			await client.channels.cache.get(Game.channels[0]).send({ embeds: [embed], files: [author, attachment] });
-		}
-		else
-		{
-			for (const channel of Game.channels)
-			{
-				await client.channels.cache.get(channel).send({ embeds: [embed], files: [author, attachment] });
-			}
-		}
+		Game.channels.forEach(async channelId => {
+			const Channel = await Xyvybot.channels.fetch(channelId);
+			Channel.send({ embeds: [embed], files: [author, attachment] });
+		});
 
 		if (Game.end == 0)
 		{
-			if (Game.AI && Game.player == client.user.id)
+			if (Game.AI && Game.player == Xyvybot.user.id)
 			{
 				setTimeout(() => Rules.takeTurn(id, Game.myTurn()), 2500);
 			}
@@ -173,10 +171,10 @@ export const Rules = {
 	endGame: async (id) => {
 		const Game = Games.get(id);
 
-		if (Game.players.includes(client.user.id))
+		if (Game.players.includes(Xyvybot.user.id))
 		{
 			const result = {
-				player: Game.players[[1, 0][Game.players.indexOf(client.user.id)]],
+				player: Game.players[[1, 0][Game.players.indexOf(Xyvybot.user.id)]],
 				winner: Game.winner,
 				game: ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "spiderlinetris"].indexOf(Game.game) };
 			const selectQuery =
@@ -184,24 +182,30 @@ export const Rules = {
 				`FROM profiles\n` +
 				`WHERE id = '${result.player}';`;
 
-			const { rows } = await db.query(selectQuery);
+			const { rows } = await dataBase.query(selectQuery);
 			const user = rows[0] || await newUser(result.player);
 
 			if (result.player == result.winner)
 			{
-				user.wins[result.game]++;
-				Game.booty = user.elos[result.game] < 1000 ? 100 : user.elos[result.game] > 10000 ? 10 : Math.floor((1000 / user.elos[result.game]) * 100);
-				user.elos[result.game] += Game.booty;
+				user.wins[result.game] = Number(user.wins[result.game]) + 1;
+				user.win = Math.sum(0, gameCount, user.wins);
+				Game.booty = user.elos[result.game] < 1000 ? 100 : user.elos[result.game] >= 2000 ? 10 : 190 - Math.round(user.elos[result.game] / (100 / 9));
+				user.elos[result.game] = Number(user.elos[result.game]) + Game.booty;
+				user.elo = Math.sum(0, gameCount, user.elos);
 			}
 			else
-			if (result.winner == client.user.id)
+			if (result.winner == Xyvybot.user.id)
 			{
-				user.loss[result.game]++;
-				Game.booty = 0;
+				user.loss[result.game] = Number(user.loss[result.game]) + 1;
+				user.los = Math.sum(0, gameCount, user.loss);
+				Game.booty = 10;
+				user.elos[result.game] = Number(user.elos[result.game]) - Game.booty;
+				user.elo = Math.sum(0, gameCount, user.elos);
 			}
 			else
 			{
-				user.ties[result.game]++;
+				user.ties[result.game] = Number(user.ties[result.game]) + 1;
+				user.tie = Math.sum(0, gameCount, user.ties);
 				Game.booty = 0;
 			}
 			user.money += 1000;
@@ -209,63 +213,78 @@ export const Rules = {
 			const updateQuery =
 				`UPDATE profiles\n` +
 				`SET\n` +
-				`	wins[${result.game + 1}] = ${user.wins[result.game]},\n` +
-				`	loss[${result.game + 1}] = ${user.loss[result.game]},\n` +
-				`	ties[${result.game + 1}] = ${user.ties[result.game]},\n` +
-				`	elos[${result.game + 1}] = ${user.elos[result.game]},\n` +
+				`	wins = ARRAY[${user.wins.join(',')}],\n` +
+				`	win = ${user.win},\n` +
+				`	loss = ARRAY[${user.loss.join(',')}],\n` +
+				`	los = ${user.los},\n` +
+				`	ties = ARRAY[${user.ties.join(',')}],\n` +
+				`	tie = ${user.tie},\n` +
+				`	elos = ARRAY[${user.elos.join(',')}],\n` +
+				`	elo = ${user.elo},\n` +
 				`	money = ${user.money}\n` +
 				`WHERE id = '${user.id}';`;
-
-			await db.query(updateQuery);
+			await dataBase.query(updateQuery);
 		}
 		else
 		if (Game.end == 1)
 		{
 			const result = {
 				winner: Game.players[Game.winner],
-				loser: Game.players[[1, 0][Game.winner]],
+				losser: Game.players[[1, 0][Game.winner]],
 				game: ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "spiderlinetris"].indexOf(Game.game) };
 			const selectQuery =
 				`SELECT *\n` +
 				`FROM profiles\n` +
-				`WHERE id = '${result.winner}' OR id = '${result.loser}';`;
+				`WHERE id = '${result.winner}' OR id = '${result.losser}';`;
 
-			const { rows } = await db.query(selectQuery);
+			const { rows } = await dataBase.query(selectQuery);
 			const winner = rows.find(row => row.id == result.winner) || await newUser(result.winner);
-			const loser = rows.find(row => row.id == result.loser) || await newUser(result.loser);
+			const loser = rows.find(row => row.id == result.losser) || await newUser(result.losser);
 
 			if (loser.elos[result.game] > winner.elos[result.game])
 			{
-				loser.money += 25;
-				winner.money += 100;
+				winner.money = Number(winner.money) + 100;
+				loser.money = Number(loser.money) + 25;
 			}
 			if (loser.elos[result.game] == winner.elos[result.game])
 			{
-				loser.money += 50;
-				winner.money += 75;
+				winner.money = Number(winner.money) + 75;
+				loser.money = Number(loser.money) + 50;
 			}
 			if (loser.elos[result.game] < winner.elos[result.game])
 			{
-				loser.money += 75;
-				winner.money += 50;
+				winner.money = Number(winner.money) + 50;
+				loser.money = Number(loser.money) + 75;
 			}
+
 			Game.booty = Math.ceil(loser.elos[result.game] / 10);
+			winner.elos[result.game] = Number(winner.elos[result.game]) + Game.booty;
+			winner.elo = Math.sum(0, gameCount, winner.elos);
+			winner.wins[result.game] = Number(winner.wins[result.game]) + 1;
+			winner.win = Math.sum(0, gameCount, winner.wins);
+			loser.elos[result.game] = Number(loser.elos[result.game]) - Game.booty;
+			loser.elo = Math.sum(0, gameCount, loser.elos);
+			loser.loss[result.game] = Number(loser.loss[result.game]) + 1;
+			loser.los = Math.sum(0, gameCount, loser.loss);
 
 			const updateQuery =
 				`UPDATE profiles\n` +
 				`SET\n` +
-				`	elos[${result.game + 1}] = ${winner.elos[result.game] + Game.booty},\n` +
-				`	wins[${result.game + 1}] = ${winner.wins[result.game] + 1},\n` +
+				`	elos = ARRAY[${winner.elos.join(',')}],\n` +
+				`	elo = ${winner.elo},\n` +
+				`	wins = ARRAY[${winner.wins.join(',')}],\n` +
+				`	win = ${winner.win},\n` +
 				`	money = ${winner.money}\n` +
 				`WHERE id = '${winner.id}';\n\n` +
 				`UPDATE profiles\n` +
 				`SET\n` +
-				`	elos[${result.game + 1}] = ${loser.elos[result.game] - Game.booty},\n` +
-				`	loss[${result.game + 1}] = ${loser.loss[result.game] + 1},\n` +
+				`	elos = ARRAY[${loser.elos.join(',')}],\n` +
+				`	elo = ${loser.elo},\n` +
+				`	loss = ARRAY[${loser.loss.join(',')}],\n` +
+				`	los = ${loser.los},\n` +
 				`	money = ${loser.money}\n` +
 				`WHERE id = '${loser.id}';`;
-
-			await db.query(updateQuery);
+			await dataBase.query(updateQuery);
 		}
 		else
 		{
@@ -277,35 +296,36 @@ export const Rules = {
 				`FROM profiles\n` +
 				`WHERE id = '${result.players[0]}' OR id = '${result.players[1]}';`;
 
-			const { rows } = await db.query(selectQuery);
+			const { rows } = await dataBase.query(selectQuery);
 			const player1 = rows.find(row => row.id == result.players[0]) || await newUser(result.players[0]);
 			const player2 = rows.find(row => row.id == result.players[1]) || await newUser(result.players[1]);
-
-			player1.money += 50;
-			player2.money += 50;
-			Game.booty = 0;
+			player1.ties[result.game] = Number(player1.ties[result.game]) + 1;
+			player1.tie = Math.sum(0, gameCount, player1.ties);
+			player2.ties[result.game] = Number(player2.ties[result.game]) + 1;
+			player2.tie = Math.sum(0, gameCount, player2.ties);
 
 			const updateQuery =
 				`UPDATE profiles\n` +
 				`SET\n` +
-				`	ties[${result.game + 1}] = ${player1.ties[result.game] + 1}`
-				`	money = ${player1.money}\n` +
+				`	ties = ARRAY[${player1.ties.join(',')}],\n` +
+				`	tie = ${player1.tie},\n` +
+				`	money = ${Number(player1.money) + 50}\n` +
 				`WHERE id = '${player1.id}';\n` +
 				`\n` +
 				`UPDATE profiles\n` +
 				`SET\n` +
-				`	ties[${result.game + 1}] = ${player2.ties[result.game] + 1}`
-				`	money = ${player2.money}\n` +
+				`	ties = ARRAY[${player2.ties.join(',')}],\n` +
+				`	tie = ${player2.tie},\n` +
+				`	money = ${Number(player2.money) + 50}\n` +
 				`WHERE id = '${player2.id}';`;
-
-			await db.query(updateQuery);
+			await dataBase.query(updateQuery);
 		}
 
 		const recordQuery =
-			`INSERT INTO matches (id, game, players, winner, booty, replay)\n` +
-			`VALUES ('${Game.id}', '${Game.game}', ARRAY['${Game.players[0]}', '${Game.players[1]}'], '${Game.players[Game.winner]}', ${Game.booty}, ARRAY${JSON.stringify(Game.replay).replace(/"/g, "'")});`;
-		await db.query(recordQuery);
+			`INSERT INTO history (id, game, players, winner, booty, replay)\n` +
+			`VALUES ('${Game.id}', '${Game.game}', '{"${Game.players[0]}", "${Game.players[1]}"}', '${Game.players[Game.winner]}', ${Game.booty}, '${Game.replay.join('.')}');`;
 
+		await dataBase.query(recordQuery);
 		Games.delete(Game.id);
 	}
 };

@@ -1,232 +1,243 @@
 import { Collection } from "discord.js";
-import { client } from "../index.js";
+import { Xyvybot } from "../index.js";
 import { Color } from "../assets/misc/color.js";
+import { deleteMessage } from "../index/discordFunctions.js";
 import allWords from "../assets/misc/dictionary.json" assert { type: "json" };
+import emoji from "../assets/misc/emoji.json" assert { type: "json" };
+import { drawBoard } from "../assets/numbers/drawBoard.js";
 export const miniGames = new Collection();
+const margin = 5;
 
-setInterval(function() {
-	miniGames.forEach((miniGame, id) => {
-		miniGame.timer--;
-		if (miniGame.timer <= 0)
+const interval = () => {
+	miniGames.forEach(async (miniGame, id) => {
+		if (--miniGame.timer > 0)
 		{
-			const margin = 5;
+			return;
+		}
 
-			switch (miniGame.type)
+		if (miniGame.type == "trivia")
+		{
+			if (miniGame.completed)
 			{
-				case "iq":
-				{
-					const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/iq.png", name: "author.png" };
-					const embed = {
-						author: { name: "IQ", icon_url: "attachment://author.png" },
-						title: "IQ",
-						fields: [{ name: "Nobody got it in time!", value: miniGame.end }],
-						color: new Color("#FF6666").toInt() };
-						const actionRow = {
-							type: 1,
-							components: [
-								{	type: 2,
-								style: 3,
-								label: "TRY ANOTHER",
-								customId: "iq" } ] };
+				miniGames.delete(id);
+				return;
+			}
 
-					client.channels.cache.get(miniGame.channel).send({ embeds: [embed], files: [author], components: [actionRow], attachments: [] });
-					miniGames.delete(id);
-					break;
+			const channel = await Xyvybot.channels.fetch(miniGame.channelId);
+			const message = await channel.messages.fetch(miniGame.messageId);
+
+			const newEmbed = message.embeds[0].toJSON();
+			newEmbed.description = "Nobody got it in time";
+			newEmbed.fields[1] = { name: "Wrong People", value: miniGame.wrongPeople.length > 0 ? `<@${miniGame.wrongPeople.join("> <@")}>` : "Nobody got it wrong either" };
+			const newComponents = message.components.map(component => {
+				const button = component.toJSON();
+				button.components[0].disabled = button.components[0].custom_id !== "trivia.correct";
+				button.components[0].style = button.components[0].custom_id == "trivia.correct" ? 3 : 4;
+				return button;
+			});
+
+			message.edit({ embeds: [newEmbed], components: newComponents, attachments: [] });
+			miniGames.delete(id);
+		}
+
+		if (miniGame.type == "letters")
+		{
+			const channel = await Xyvybot.channels.fetch(miniGame.channelId);
+			const message = await channel.messages.fetch(miniGame.messageId);
+
+			if (miniGame.letters.length !== 9)
+			{
+				miniGames.delete(id);
+				deleteMessage(message);
+				return;
+			}
+
+			const possibleWords = allWords.filter(word => {
+				if (word.split('').some(letter => !miniGame.letters.includes(letter)))
+				{
+					return false;
 				}
 
-				case "hangman":
+				const usedLetters = word.split('');
+				const availableLetters = miniGame.letters.concat();
+				for (const letter of usedLetters)
 				{
-					const display = [];
-					for (let i = 0; i < miniGame.answer.length; i++)
+					const i = availableLetters.indexOf(letter);
+					if (i !== -1)
 					{
-						if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(miniGame.answer[i]))
-						{
-							display.push("__" + miniGame.answer[i] + "__");
-						}
-						else
-						{
-							display.push(miniGame.answer[i]);
-						}
-					}
-					const embed = {
-						title: "Hangman",
-						fields: [{ name: "Looks like nobody's playing anymore!", value: `**${display.join("\u200b \u200b")}**\n\nGuesses: \`${miniGame.guesses.join("` `")}\`` }],
-						color: new Color("#FF6666").toInt() };
-
-					client.channels.cache.get(miniGame.channel).send({ embeds: [embed] });
-					miniGames.delete(id);
-					break;
-				}
-
-				case "trivia":
-				{
-					const message = client.channels.cache.get(miniGame.channel).messages.cache.get(id);
-					const newEmbed = message.embeds[0].toJSON();
-					const newComponents = message.components.map(component => {
-						const Component = component.toJSON();
-						if (Component.components[0].custom_id != "trivia.correct")
-						{
-							Component.components[0].disabled = true;
-							Component.components[0].style = 4;
-						}
-						else
-						{
-							Component.components[0].style = 3;
-						}
-						return Component;
-					});
-
-					miniGames.delete(id);
-
-					if (!miniGame.completed)
-					{
-						newEmbed.description += "\n\nNobody got it in time.";
-						message.edit({ embeds: [newEmbed], components: newComponents });
-					}
-
-					break;
-				}
-
-				case "letters":
-				{
-					const message = client.channels.cache.get(miniGame.channel).messages.cache.get(id);
-					const embed = message.embeds[0].toJSON();
-
-					if (miniGame.letters.length !== 9)
-					{
-						embed.description = embed.description.split('\n\n')[0] + "\n\nTime has run out";
-						miniGames.delete(id);
-						return message.edit({ embeds: [ embed ], components: [] });
-					}
-
-					if (Object.keys(miniGame.attempts).length > 0)
-					{
-						const results = [];
-						for (const i in miniGame.attempts)
-						{
-							const word = miniGame.attempts[i];
-							let satisfactory = ":white_check_mark:";
-
-							const letters = miniGame.letters.join('').split('');
-							for (const letter of word.split(''))
-							{
-								if (letters.indexOf(letter) !== -1)
-								{
-									letters[letters.indexOf(letter)] = "_";
-								}
-								else
-								{
-									satisfactory = ":x:";
-									break;
-								}
-							}
-							if (!allWords.includes(word))
-							{
-								satisfactory = ":x:";
-							}
-
-							const result = `${satisfactory} <@${i}> – ${word.length}\n${"\u200b ".repeat(margin)}\`${word.toUpperCase()}\``
-							results.push(result);
-						}
-						const resultFields = [ {
-							name: "Results",
-							value: results.sort((a, b) => {
-								const aLength = a.split('\n')[1].length;
-								const bLength = b.split('\n')[1].length;
-								if (aLength > bLength) return -1;
-								if (aLength < bLength) return 1;
-								if (a.includes(":white_check_mark:") && b.includes(":x:")) return -1;
-								if (a.includes(":x:") && b.includes(":white_check_mark:")) return 1; }).join('\n') } ];
-						embed.fields = resultFields;
+						availableLetters[i] = false;
 					}
 					else
 					{
-						embed.fields = [ { name: "Results", value: "No one answered in time" } ];
+						return false;
 					}
+				};
+				return true;
+			});
+			const longestPossible = possibleWords.sort((a, b) => b.length - a.length)[0].length;
+			const longestWords = possibleWords.filter(word => word.length == longestPossible);
 
-					const words1 = allWords.filter(word => !word.split('').some(letter => !miniGame.letters.includes(letter)));
-					const words2 = words1.filter(word => {
-						const usedLetters = word.split('');
-						const availableLetters = miniGame.letters.concat();
-						for (const l of usedLetters)
-						{
-							const i = availableLetters.indexOf(l);
-							if (i !== -1)
-							{
-								availableLetters[i] = false;
-							}
-							else
-							{
-								return false;
-							}
-						}
-						return true;
-					});
-					const length = words2.sort((a, b) => b.length - a.length)[0].length;
-					const longestWords = words2.filter(word => word.length == length);
-					embed.fields.unshift({ name: `Longest Possible — ${length} Letters`, value: `\`${longestWords.join('` \u200b `')}\`` });
-					embed.title = "Time's Up!";
-					message.edit({ embeds: [ embed ], components: [] });
-					miniGames.delete(id);
+			const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/letters.png", name: "author.png" };
+			const embed = {
+				author: { name: "letters", icon_url: "attachment://author.png" },
+				description: `Time's up!\n\n:regional_indicator_${miniGame.letters.join(": \u200b :regional_indicator_")}:`,
+				fields: [
+				{	name: `Longest Possible — ${longestPossible} Letters`,
+					value: `\`${longestWords.join('` \u200b `')}\`` },
+				{	name: "Results",
+					value: Object.keys(miniGame.attempts).map(userId => {
+						const attempt = miniGame.attempts[userId];
+						const satisfactory =
+							allWords.includes(attempt) ?
+								":white_check_mark:" :
+								":x:";
+						return `${satisfactory} <@${userId}> – ${attempt.length}\n${"\u200b ".repeat(margin)}\`${attempt.toUpperCase()}\``;
+					}).sort((a, b) => {
+						const aLength = a.split('\n')[1].length;
+						const bLength = b.split('\n')[1].length;
+						if (aLength > bLength) return -1;
+						if (aLength < bLength) return 1;
+						if (a.includes(":white_check_mark:") && b.includes(":x:")) return -1;
+						if (a.includes(":x:") && b.includes(":white_check_mark:")) return 1;
+					}).join('\n') || "No one answered in time" } ] };
+			const actionRow = {
+				type: 1,
+				components: [
+				{	type: 2,
+					style: 3,
+					label: "TRY ANOTHER",
+					customId: "letters.restart" } ] };
 
-					break;
-				}
+			message.edit({ embeds: [embed], files: [author], components: [], attachments: [] });
+			miniGames.delete(id);
+			return;
+		}
 
-				case "numbers":
+		if (miniGame.type == "numbers")
+		{
+			const channel = await Xyvybot.channels.fetch(miniGame.channelId);
+			const message = await channel.messages.fetch(miniGame.messageId);
+
+			if (miniGame.numbers.length !== 6)
+			{
+				miniGames.delete(id);
+				deleteMessage(message);
+				return;
+			}
+
+			const value = Object.values(miniGame.attempts).some(value => value == miniGame.target) ?
+				miniGame.attempts[Object.keys(miniGame.attempts).filter(a => miniGame.attempts[a][0] == miniGame.target)[0]][1] :
+				miniGame.solution[1];
+			const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/numbers.png", name: "author.png" };
+			const attachment = { attachment: await drawBoard(miniGame.numbers, miniGame.target), name: "board.png" };
+			const embed = {
+				author: { name: "numbers", icon_url: "attachment://author.png" },
+				description: "Times up!",
+				image: { url: "attachment://board.png" },
+				fields: [
+				{	name: "Results",
+					value: Object.keys(miniGame.attempts).map(userId => {
+						const attempt = miniGame.attempts[userId];
+						const closeness =
+							attempt[0] == miniGame.target ?
+								":white_check_mark:" :
+							Math.abs(miniGame.target - attempt[0]) <= 10 ?
+								":negative_squared_cross_mark:" :
+								":x:";
+						return `${closeness} <@${userId}> – ${attempt[0]}\n${"\u200b ".repeat(margin)}\`${attempt[1]}\``;
+					}).sort((a, b) => {
+						const aResult = Number(a.split('\n')[0].match(/[0-9]+/g)[1]);
+						const bResult = Number(b.split('\n')[0].match(/[0-9]+/g)[1]);
+						const aDist = Math.abs(miniGame.target - aResult);
+						const bDist = Math.abs(miniGame.target - bResult);
+						return aDist - bDist;
+					}).join('\n') || "No one answered in time" } ] };
+			const actionRow = {
+				type: 1,
+				components: [
+				{	type: 2,
+					style: 3,
+					label: "TRY ANOTHER",
+					customId: "numbers.restart" } ] };
+
+			
+			const bestSolution = {
+				name: `Solution — ${miniGame.solution[0] == miniGame.target ? miniGame.target + " (Exact)": " (Closest Possible)"}`,
+				value: `${"\u200b ".repeat(margin)}\`${value}\`` };
+			if (!Object.keys(miniGame.attempts).some(userId => miniGame.attempts[userId][0] == miniGame.solution[0]))
+			{
+				embed.fields.push(bestSolution);
+			}
+
+			message.edit({ embeds: [embed], files: [author, attachment], components: [], attachments: [] });
+			miniGames.delete(id);
+			return;
+		}
+
+		if (miniGame.type == "hangman")
+		{
+			const display = [];
+			for (let i = 0; i < miniGame.answer.length; i++)
+			{
+				if (/^([A-Z0-9][\u0300-\u036f]?|\u200b \u200b \u200b \u200b)$/.test(miniGame.answer[i]))
 				{
-					const message = client.channels.cache.get(miniGame.channel).messages.cache.get(id);
-					const embed = message.embeds[0].toJSON();
-
-					if (miniGame.numbers.length !== 6)
-					{
-						embed.description += "\n\nTime has run out";
-						miniGames.delete(id);
-						return message.edit({ embeds: [ embed ], components: [] });
-					}
-
-					if (Object.keys(miniGame.attempts).length > 0)
-					{
-						const results = [];
-						for (const i in miniGame.attempts)
-						{
-							const closeness =
-								miniGame.attempts[i][0] == miniGame.target ?
-									":white_check_mark:" :
-								Math.abs(miniGame.target - miniGame.attempts[i][0]) <= 10 ? ":negative_squared_cross_mark:" :
-									":x:";
-							const result = `${closeness} <@${i}> – ${miniGame.attempts[i][0]}\n${"\u200b ".repeat(margin)}\`${miniGame.attempts[i][1]}\``
-							results.push(result);
-						}
-						const resultFields = [ {
-							name: "Results",
-							value: results.sort((a, b) => {
-								const aResult = Number(a.split('\n')[0].match(/[0-9]+/g)[1]);
-								const bResult = Number(b.split('\n')[0].match(/[0-9]+/g)[1]);
-								const aDist = Math.abs(miniGame.target - aResult);
-								const bDist = Math.abs(miniGame.target - bResult);
-								return aDist - bDist; }).join('\n') } ];
-						embed.fields = resultFields;
-					}
-					else
-					{
-						embed.fields = [ { name: "Results", value: "No one answered in time" } ];
-					}
-
-					const value =
-						Object.values(miniGame.attempts).some(value => value == miniGame.target) ?
-							miniGame.attempts[Object.keys(miniGame.attempts).filter(a => miniGame.attempts[a][0] == miniGame.target)[0]][1] :
-							miniGame.solution[1];
-					const field = {
-						name: `Possible Solution — ${miniGame.solution[0] == miniGame.target ? miniGame.target + " (Exact)": `Best is ${miniGame.solution[0]} (${Math.abs(miniGame.solution[0] - miniGame.target)} away)`}`,
-						value: `${"\u200b ".repeat(margin)}\`${value}\`` };
-					embed.fields.unshift(field);
-					embed.title = "Time's Up!";
-					message.edit({ embeds: [ embed ], components: [] });
-					miniGames.delete(id);
-
-					break;
+					display.push("__" + miniGame.answer[i] + "__");
+				}
+				else
+				{
+					display.push(miniGame.answer[i]);
 				}
 			}
+
+			const hangman = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/hangman/7.png", name: "hangman.png" };
+			const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/hangman.png", name: "author.png" };
+			const embed = {
+				author: { name: "hangman", icon_url: "attachment://author.png" },
+				thumbnail: { url: "attachment://hangman.png" },
+				fields: [ { name: "Looks like nobody's playing anymore!", value: `**${display.join("\u200b \u200b")}**\n\n**__Guesses__**: \`${miniGame.guesses.join("` `")}\`` } ],
+				color: new Color("#FF6666").toInt() };
+			const actionRow = {
+				type: 1,
+				components: [
+				{	type: 2,
+					style: 3,
+					label: "TRY ANOTHER",
+					customId: "hangman" } ] };
+
+			const channel = await Xyvybot.channels.fetch(miniGame.channelId);
+			channel.send({ embeds: [embed], files: [hangman, author], components: [actionRow] });
+			const messageId = await channel.messages.fetch(miniGame.messageId);
+			deleteMessage(messageId);
+			if (miniGame.hasOwnProperty("lastUserMessage")) {
+				const lastUserMessage = await channel.messages.fetch(miniGame.lastUserMessage);
+				deleteMessage(lastUserMessage);
+			}
+			miniGames.delete(id);
+			return;
+		}
+
+		if (miniGame.type == "iq")
+		{
+			const channel = await Xyvybot.channels.fetch(miniGame.channelId);
+			const message = await channel.messages.fetch(miniGame.messageId);
+			const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/iq.png", name: "author.png" };
+			const embed = {
+				author: { name: "iq", icon_url: "attachment://author.png" },
+				fields: [ { name: "Nobody got it in time!", value: miniGame.end } ],
+				color: new Color("#FF6666").toInt() };
+			const actionRow = {
+				type: 1,
+				components: [
+				{	type: 2,
+					style: 3,
+					label: "TRY ANOTHER",
+					customId: "iq" } ] };
+
+			channel.send({ embeds: [embed], files: [author], components: [actionRow] });
+			miniGames.delete(id);
+			deleteMessage(message);
+			return;
 		}
 	});
-}, 1000);
+}
+setInterval(interval, 1000);

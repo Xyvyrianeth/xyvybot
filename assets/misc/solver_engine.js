@@ -1,4 +1,3 @@
-
 /* Useful constants for the actual solver */
 const PLUS = 0;
 const MINUS = 1;

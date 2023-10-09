@@ -1,4 +1,4 @@
-import { client } from "../../index.js";
+import { Xyvybot } from "../../index.js";
 export function myTurn() {
 	let space = this.possible.random();
 	let Y = space[0] + 1;

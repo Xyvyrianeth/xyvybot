@@ -1,4 +1,4 @@
-SELECT * FROM matches
+SELECT * FROM history
 WHERE
 	'$USER_ID' = ANY (players) AND
 	game = ANY (ARRAY['$GAMES']) AND

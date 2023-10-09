@@ -1,15 +1,13 @@
-import pkg from "canvas";
-const { createCanvas, loadImage } = pkg;
-import { Rules } from "../games/rules.js";
+import { Rules } from "../games/Rules.js";
 
 export async function replayImage(game, id, text, replay, step) {
-	const Game = Rules[game]();
+	const Game = Rules.games[game]();
 	Game.id = id;
 	Game.game = game;
 	Game.players = ["replayID1", "replayID2"];
 	Game.player = Game.players[0];
 	Game.timer = Infinity;
-	Game.highlight = [];
+	Game.highlight = game == "squares" ? [[], [], []] : [];
 	Game.replay = [];
 	Game.turn = ["squares", "rokumoku"].includes(game) ? 0.5 : 0;
 

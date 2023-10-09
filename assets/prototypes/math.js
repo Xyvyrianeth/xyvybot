@@ -103,19 +103,19 @@ Object.defineProperty(Math, 'acoth', {
 // Custom
 Object.defineProperty(Math, 'sum', {
 	value: (n, a, b) => {
-		n = Math.round(n),
-		a = Math.round(a),
-		c = 0;
-		for (let i = n; i <= a; i++)
-			c += b;
+		n = n | 0;
+		a = a | 0;
+		let c = 0;
+		for (let i = n; i < a; i++)
+			c += Number(b[i]);
 		return c;
 	}
 });
 Object.defineProperty(Math, 'prod', {
 	value: (n, a, b) => {
-		n = Math.round(n),
-		a = Math.round(a),
-		c = 0;
+		n = n | 0;
+		a = a | 0;
+		let c = 0;
 		for (let i = n; i <= a; i++)
 			c *= b;
 		return c;

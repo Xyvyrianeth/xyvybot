@@ -1,5 +1,4 @@
 import { Collection } from "discord.js";
-// import { nsfwTags } from "../../commands/nsfw.js";
 export const commands = new Collection();
 
 commands.set("othello", {

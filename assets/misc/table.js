@@ -72,5 +72,5 @@ export function table(res) {
 		e += "Successfully made changes. Rows affected: " + res.rowCount;
 		tables.push(e);
 	}
-	return tables.join('\n');
+	return tables.join('\n\n');
 }
