@@ -11,6 +11,8 @@ import Package from "./package.json" assert { type: "json" };
 export const version = Package.version;
 export const bannedUsers = [];
 export const gameCount = 10;
+export const BUTTON_STYLE = { BLUE: 1, GREY: 2, GREEN: 3, RED: 4, LINK: 5 };
+export const COMPONENT_TYPE = { ACTION_ROW: 1, BUTTON: 2, DROP_MENU: 3 };
 
 import * as clientOn from "./index/clientOn.js";
 import * as dataBaseOn from "./index/dataBaseOn.js";

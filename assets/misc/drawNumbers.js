@@ -40,21 +40,22 @@ export async function drawBoard(numbers, target) {
     return canvas.toBuffer();
 }
 
+const URL = "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/numbers/";
 const assets = {
-    0: await loadImage("./assets/numbers/0.png"),
-    1: await loadImage("./assets/numbers/1.png"),
-    2: await loadImage("./assets/numbers/2.png"),
-    3: await loadImage("./assets/numbers/3.png"),
-    4: await loadImage("./assets/numbers/4.png"),
-    5: await loadImage("./assets/numbers/5.png"),
-    6: await loadImage("./assets/numbers/6.png"),
-    7: await loadImage("./assets/numbers/7.png"),
-    8: await loadImage("./assets/numbers/8.png"),
-    9: await loadImage("./assets/numbers/9.png"),
-    10: await loadImage("./assets/numbers/10.png"),
-    25: await loadImage("./assets/numbers/25.png"),
-    50: await loadImage("./assets/numbers/50.png"),
-    75: await loadImage("./assets/numbers/75.png"),
-    100: await loadImage("./assets/numbers/100.png"),
-    blank: await loadImage("./assets/numbers/blank.png")
+    0:      await loadImage(URL + "0.png"),
+    1:      await loadImage(URL + "1.png"),
+    2:      await loadImage(URL + "2.png"),
+    3:      await loadImage(URL + "3.png"),
+    4:      await loadImage(URL + "4.png"),
+    5:      await loadImage(URL + "5.png"),
+    6:      await loadImage(URL + "6.png"),
+    7:      await loadImage(URL + "7.png"),
+    8:      await loadImage(URL + "8.png"),
+    9:      await loadImage(URL + "9.png"),
+    10:     await loadImage(URL + "10.png"),
+    25:     await loadImage(URL + "25.png"),
+    50:     await loadImage(URL + "50.png"),
+    75:     await loadImage(URL + "75.png"),
+    100:    await loadImage(URL + "100.png"),
+    blank:  await loadImage(URL + "blank.png")
 };

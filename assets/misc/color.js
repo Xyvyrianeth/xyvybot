@@ -1,104 +1,104 @@
 export function Color() {
-	let r, g, b;
-	switch (typeof arguments[0]) {
-		case "string":
-		{
-			let hex = arguments[0].toLowerCase();
-			if (hex.match(/([0-9a-f]{6}|[0-9a-f]{3})$/i))
-			{
-				let hexa = hex.match(/([0-9a-f]{6}|[0-9a-f]{3})$/i)[0];
-				if (hexa.length == 6)
-					r = parseInt(hexa.substring(0, 2), 16),
-					g = parseInt(hexa.substring(2, 4), 16),
-					b = parseInt(hexa.substring(4, 6), 16);
-				if (hexa.length == 3)
-					r = parseInt(hexa[0] + hexa[0], 16),
-					g = parseInt(hexa[1] + hexa[1], 16),
-					b = parseInt(hexa[2] + hexa[2], 16);
-			}
-			break;
-		}
-		case "object":
-		{
-			r = arguments[0].r;
-			g = arguments[0].g;
-			b = arguments[0].b;
-			break;
-		}
-		case "number":
-		{
-			if (arguments.hasOwnProperty(1) && arguments.hasOwnProperty(2) && typeof arguments[1] == "number" && typeof arguments[2] == "number")
-			{
-				r = arguments[0];
-				g = arguments[1];
-				b = arguments[2];
-			}
-			else
-			{
-				let hexa = arguments[0].toString(16);
-				r = parseInt(hexa.substring(0, 2), 16),
-				g = parseInt(hexa.substring(2, 4), 16),
-				b = parseInt(hexa.substring(4, 6), 16);
-			}
-		}
-	}
-	this.r = ~~r || 0;
-	this.g = ~~g || 0;
-	this.b = ~~b || 0;
+    let r, g, b;
+    switch (typeof arguments[0]) {
+        case "string":
+        {
+            let hex = arguments[0].toLowerCase();
+            if (hex.match(/([0-9a-f]{6}|[0-9a-f]{3})$/i))
+            {
+                let hexa = hex.match(/([0-9a-f]{6}|[0-9a-f]{3})$/i)[0];
+                if (hexa.length == 6)
+                    r = parseInt(hexa.substring(0, 2), 16),
+                    g = parseInt(hexa.substring(2, 4), 16),
+                    b = parseInt(hexa.substring(4, 6), 16);
+                if (hexa.length == 3)
+                    r = parseInt(hexa[0] + hexa[0], 16),
+                    g = parseInt(hexa[1] + hexa[1], 16),
+                    b = parseInt(hexa[2] + hexa[2], 16);
+            }
+            break;
+        }
+        case "object":
+        {
+            r = arguments[0].r;
+            g = arguments[0].g;
+            b = arguments[0].b;
+            break;
+        }
+        case "number":
+        {
+            if (arguments.hasOwnProperty(1) && arguments.hasOwnProperty(2) && typeof arguments[1] == "number" && typeof arguments[2] == "number")
+            {
+                r = arguments[0];
+                g = arguments[1];
+                b = arguments[2];
+            }
+            else
+            {
+                let hexa = arguments[0].toString(16);
+                r = parseInt(hexa.substring(0, 2), 16),
+                g = parseInt(hexa.substring(2, 4), 16),
+                b = parseInt(hexa.substring(4, 6), 16);
+            }
+        }
+    }
+    this.r = ~~r || 0;
+    this.g = ~~g || 0;
+    this.b = ~~b || 0;
 };
 
 Color.prototype.random = function() {
-	this.r = Math.random() * 256 | 0;
-	this.g = Math.random() * 256 | 0;
-	this.b = Math.random() * 256 | 0;
-	return this;
+    this.r = Math.random() * 256 | 0;
+    this.g = Math.random() * 256 | 0;
+    this.b = Math.random() * 256 | 0;
+    return this;
 }
 
 Color.prototype.distance = function(color) {
-	var d = 0;
-	d += Math.pow(this.r - color.r, 2);
-	d += Math.pow(this.g - color.g, 2);
-	d += Math.pow(this.b - color.b, 2);
-	return Math.abs(Math.sqrt(d));
+    var d = 0;
+    d += Math.pow(this.r - color.r, 2);
+    d += Math.pow(this.g - color.g, 2);
+    d += Math.pow(this.b - color.b, 2);
+    return Math.abs(Math.sqrt(d));
 };
 
 Color.prototype.toHexa = function() {
-	var r = (~~this.r || 0).toString(16),
-		g = (~~this.g || 0).toString(16),
-		b = (~~this.b || 0).toString(16);
-	if (r.length == 1)
-		r = "0" + r;
-	if (g.length == 1)
-		g = "0" + g;
-	if (b.length == 1)
-		b = "0" + b;
-	return "#" + r + g + b;
+    var r = (~~this.r || 0).toString(16),
+        g = (~~this.g || 0).toString(16),
+        b = (~~this.b || 0).toString(16);
+    if (r.length == 1)
+        r = "0" + r;
+    if (g.length == 1)
+        g = "0" + g;
+    if (b.length == 1)
+        b = "0" + b;
+    return "#" + r + g + b;
 }
 
 Color.prototype.toInt = function() {
-	return (this.r * 256 * 256) + (this.g * 256) + this.b
+    return (this.r * 256 * 256) + (this.g * 256) + this.b
 }
 
 Color.prototype.getName = function() {
-	var low = 256;
-	var name;
-	for (var n in Color.map)
-	{
-		if (!Color.map.hasOwnProperty(n))
-			continue;
-		var color = new Color(Color.map[n]);
-		if (color.r === this.r && color.g === this.g && color.b === this.b)
-			return n;
-		var dist = this.distance(color);
-		if (dist < low)
-			low = dist,
-			name = n;
-	}
-	if (!name)
-		name = this.toHexa();
-	else
-		name = "A shade of " + name;
-	return name;
+    var low = 256;
+    var name;
+    for (var n in Color.map)
+    {
+        if (!Color.map.hasOwnProperty(n))
+            continue;
+        var color = new Color(Color.map[n]);
+        if (color.r === this.r && color.g === this.g && color.b === this.b)
+            return n;
+        var dist = this.distance(color);
+        if (dist < low)
+            low = dist,
+            name = n;
+    }
+    if (!name)
+        name = this.toHexa();
+    else
+        name = "A shade of " + name;
+    return name;
 };
 
 /*
