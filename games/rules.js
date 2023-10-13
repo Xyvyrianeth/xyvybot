@@ -1,4 +1,4 @@
-import { Xyvybot, dataBase, gameCount, COMPONENT_TYPE, BUTTON_STYLE } from "../index.js";
+import { Client, dataBase, gameCount, COMPONENT, BUTTON_STYLE } from "../index.js";
 import { Color } from "../assets/misc/color.js";
 import { Games } from "./Games.js";
 import { deleteMessage, newUser } from "../index/discordFunctions.js";
@@ -16,19 +16,6 @@ export const Rules = {
         squares: (await import("./games/squares.js")).newGame,
         ttt3d: (await import("./games/ttt3d.js")).newGame,
     },
-    AI: {
-        connect4: (await import("./AI/connect4.js")).myTurn,
-        latrones: (await import("./AI/latrones.js")).myTurn,
-        loa: (await import("./AI/loa.js")).myTurn,
-        ordo: (await import("./AI/ordo.js")).myTurn,
-        othello: (await import("./AI/othello.js")).myTurn,
-        rokumoku: (await import("./AI/rokumoku.js")).myTurn,
-        soccer: (await import("./AI/soccer.js")).myTurn,
-        spiderlinetris: (await import("./AI/spiderlinetris.js")).myTurn,
-        squares: (await import("./AI/squares.js")).myTurn,
-        ttt3d: (await import("./AI/ttt3d.js")).myTurn,
-    },
-    AIPriorities: (await import("./AIPriorities.js")).priorities,
     drawBoard: (await import("./drawBoard.js")).drawBoard,
     newGame: async (game, channelId, guild, userId, local, AI, interactionId) => {
         const Game = Rules.games[game]();
@@ -47,16 +34,15 @@ export const Rules = {
             "latrones": "Latrones", "spiderlinetris": "Spider Linetris" }[game];
         Game.timer = 900;
 
+        Games.set(interactionId, Game);
+
         if (AI)
         {
             Game.AI = true;
-            Game.myTurn = Rules.AI[game];
-            Game.priorities = Rules.AIPriorities(Game.game);
+            Game.setPriorities();
 
-            await Rules.startGame(Game.id, channelId, guild, Xyvybot.user.id);
+            await Rules.startGame(Game.id, channelId, guild, Client.user.id);
         }
-
-        Games.set(interactionId, Game);
     },
     startGame: async (id, channel2, guild, player2) => {
         const Game = Games.get(id);
@@ -91,30 +77,30 @@ export const Rules = {
             image: { url: "attachment://" + imageName },
             color: new Color(Game.turnColors[Game.turn | 0]).toInt() };
         const actionRow = {
-            type: COMPONENT_TYPE.ACTION_ROW,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.LINK,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.LINK,
                 label: "Rules/How to Play",
                 url: `https://github.com/Xyvyrianeth/xyvybot_assets/wiki/${Game.game}` } ] };
 
         await Game.channels.forEach(async channelId => {
-            const Channel = await Xyvybot.channels.fetch(channelId);
-            await Channel.send({ embeds: [embed], files: [author, attachment], components: [actionRow] });
+            const Channel = await Client.channels.fetch(channelId);
+            await Channel.send({ embeds: [ embed ], files: [ author, attachment ], components: [ actionRow ] });
         });
 
         Game.canHaveTurn = true;
 
-        if (Game.AI && Game.player == Xyvybot.user.id)
+        if (Game.AI && Game.player == Client.user.id)
         {
-            setTimeout(() => Rules.takeTurn(id, Game.myTurn()), 2500);
+            setTimeout(() => Rules.playerTurn(id, Game.AITurn()), 2500);
         }
     },
-    takeTurn: async (id, message) => {
+    playerTurn: async (id, message) => {
         const Game = Games.get(id);
         Game.canHaveTurn = false;
 
-        const move = message.content;
-        const error = Game.takeTurn(move);
+        const move = message.content || message;
+        const error = Game.playerTurn(move);
 
         if (error)
         {
@@ -124,8 +110,8 @@ export const Rules = {
 
         Game.messages.forEach(async (messages, index) => {
             const channelId = Game.channels[index];
-            const Channel = await Xyvybot.channels.fetch(channelId);
-            messages.forEach(async messageId => {
+            const Channel = await Client.channels.fetch(channelId);
+            await messages.forEach(async messageId => {
                 const Message = Channel.messages.fetch(messageId);
                 await deleteMessage(Message);
             });
@@ -145,34 +131,34 @@ export const Rules = {
             color: new Color(Game.turnColors[Game.turn | 0]).toInt() };
 
         Game.channels.forEach(async channelId => {
-            const Channel = await Xyvybot.channels.fetch(channelId);
-            Channel.send({ embeds: [embed], files: [author, attachment] });
+            const Channel = await Client.channels.fetch(channelId);
+            Channel.send({ embeds: [ embed ], files: [ author, attachment ] });
         });
 
-        if (Game.end == 0)
-        {
-            if (Game.AI && Game.player == Xyvybot.user.id)
-            {
-                setTimeout(() => Rules.takeTurn(id, Game.myTurn()), 2500);
-            }
-            else
-            {
-                Game.timer = 600;
-                Game.canHaveTurn = true;
-            }
-        }
-        else
+        if (Game.end != 0)
         {
             await Rules.endGame(Game.id);
         }
+
+        if (Game.AI && Game.player == Client.user.id)
+        {
+            Game.channels.forEach(async channelId => {
+                const Channel = await Client.channels.fetch(channelId);
+                Channel.sendTyping();
+            });
+            return setTimeout(() => Rules.playerTurn(id, Game.AITurn()), 2750);
+        }
+
+        Game.timer = 600;
+        Game.canHaveTurn = true;
     },
     endGame: async (id) => {
         const Game = Games.get(id);
 
-        if (Game.players.includes(Xyvybot.user.id))
+        if (Game.players.includes(Client.user.id))
         {
             const result = {
-                player: Game.players[[1, 0][Game.players.indexOf(Xyvybot.user.id)]],
+                player: Game.players[[1, 0][Game.players.indexOf(Client.user.id)]],
                 winner: Game.winner,
                 game: ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "spiderlinetris"].indexOf(Game.game) };
             const selectQuery =
@@ -192,7 +178,7 @@ export const Rules = {
                 user.elo = Math.sum(0, gameCount, user.elos);
             }
             else
-            if (result.winner == Xyvybot.user.id)
+            if (result.winner == Client.user.id)
             {
                 user.loss[result.game] = Number(user.loss[result.game]) + 1;
                 user.los = Math.sum(0, gameCount, user.loss);

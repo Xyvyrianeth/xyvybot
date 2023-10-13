@@ -7,7 +7,7 @@ export const drawTop = async (users, user) => {
     const backgroundIDs = "wc3NJcw rZnwTBY HQZPLug RXUcufl Q1n8x53 uYfpJKD t1D9XLq t1D9XLq OUscSSr iVUrJCR psW7uFT WWIaZcs lb1i5w2 EZ9fGKQ nQt5RNG ZfMIYm2 BREHc3Q 4OLpzfw".split(' ');
     const backgroundIndex = Math.random() * backgroundIDs.length | 0;
     const backgroundID = backgroundIDs[backgroundIndex];
-    const background = await loadImage(`https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/profile/backgrounds/${backgroundID}.png`);
+    const background = await loadImage(`./assets/profile/backgrounds/${backgroundID}.png`);
     const multiplier = 3;
 
     const aspectRatio = background.height / background.width;
@@ -191,17 +191,16 @@ export const drawTop = async (users, user) => {
     return finalCanvas.toBuffer();
 }
 
-URL = "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/leaderboard/";
 const assets = {
-    top:            await loadImage(URL + "top.png"),
-    place:          await loadImage(URL + "place.png"),
-    bottom:         await loadImage(URL + "bottom.png"),
-    user:           await loadImage(URL + "user.png"),
-    altBottom:      await loadImage(URL + "altBottom.png"),
-    topBack:        await loadImage(URL + "topBack.png"),
-    placeBack:      await loadImage(URL + "placeBack.png"),
-    bottomBack:     await loadImage(URL + "bottomBack.png"),
-    userBack:       await loadImage(URL + "userBack.png"),
-    altBottomBack:  await loadImage(URL + "altBottomBack.png"),
-    topText:        await loadImage(URL + "topText.png"),
-    userText:       await loadImage(URL + "userText.png") };
+    top:            await loadImage("./assets/leaderboard/top.png"),
+    place:          await loadImage("./assets/leaderboard/place.png"),
+    bottom:         await loadImage("./assets/leaderboard/bottom.png"),
+    user:           await loadImage("./assets/leaderboard/user.png"),
+    altBottom:      await loadImage("./assets/leaderboard/altBottom.png"),
+    topBack:        await loadImage("./assets/leaderboard/topBack.png"),
+    placeBack:      await loadImage("./assets/leaderboard/placeBack.png"),
+    bottomBack:     await loadImage("./assets/leaderboard/bottomBack.png"),
+    userBack:       await loadImage("./assets/leaderboard/userBack.png"),
+    altBottomBack:  await loadImage("./assets/leaderboard/altBottomBack.png"),
+    topText:        await loadImage("./assets/leaderboard/topText.png"),
+    userText:       await loadImage("./assets/leaderboard/userText.png") };

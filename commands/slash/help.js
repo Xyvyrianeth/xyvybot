@@ -5,7 +5,7 @@ import { commands } from "../../assets/misc/helpCommands.js";
 export const command = async (interaction) => {
     if (interaction.options._hoistedOptions.length == 0)
     {
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/help.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/help.png", name: "author.png" };
         const embed = {
             author: { name: "xyvybot | All supported commands", icon_url: "attachment://author.png" },
             fields: [
@@ -22,7 +22,7 @@ export const command = async (interaction) => {
         //     embed.fields.push({ name: "NSFW", value: "The NSFW command will be unavailable for the forseeable future. Nekos.life has been scrubbed of its NSFW content by CloudFlare and their NSFW features are no longer usable." });
         // }
 
-        return interaction.reply({ embeds: [embed], files: [author] });
+        return interaction.reply({ embeds: [ embed ], files: [ author ] });
     }
     else
     {
@@ -38,7 +38,7 @@ export const command = async (interaction) => {
             embed.author = { name: "help", icon_url: "attachment://author.png" };
             embed.description = "Unknown command.";
 
-            return interaction.reply({ embeds: [embed] });
+            return interaction.reply({ embeds: [ embed ] });
         }
 
         if (command.name == "nsfw" && channel.type != "DM" && !channel.nsfw)
@@ -53,13 +53,13 @@ export const command = async (interaction) => {
 
         if (command.attachment)
         {
-            embed.image = { url: `https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/help/${command.name}.png` };
+            embed.image = { url: `./assets/help/${command.name}.png` };
         }
 
-        embed.author = { name: command.name, icon_url: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/help.png" };
+        embed.author = { name: command.name, icon_url: "./assets/authors/help.png" };
         embed.description = command.description;
 
-        return interaction.reply({ embeds: [embed] });
+        return interaction.reply({ embeds: [ embed ] });
 
     }
 };

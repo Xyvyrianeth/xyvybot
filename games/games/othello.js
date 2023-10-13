@@ -1,3 +1,5 @@
+import { Client } from "../../index.js";
+
 export function newGame(player, id) {
     let _ = false;
     let O = true;
@@ -5,10 +7,10 @@ export function newGame(player, id) {
         score: [2, 2],
         turnColors: ["#000000", "#ffffff", "#66ff66"],
         possible: [
-            [2, 3, [ [1, 0, 2] ]],
-            [3, 2, [ [0, 1, 2] ]],
-            [4, 5, [ [0, -1, 2] ]],
-            [5, 4, [ [-1, 0, 2] ]] ],
+            [2, 3, [2, 0, 0, 0, 0, 0, 0, 0]],
+            [3, 2, [0, 0, 2, 0, 0, 0, 0, 0]],
+            [5, 4, [0, 0, 0, 0, 2, 0, 0, 0]],
+            [4, 5, [0, 0, 0, 0, 0, 0, 2, 0]] ],
         board: [
             [_, _, _, _, _, _, _, _],
             [_, _, _, _, _, _, _, _],
@@ -34,19 +36,20 @@ export function newGame(player, id) {
                     continue;
                 }
 
-                let d = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
-                let p = [];
+                let directions = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
+                let distances = [0, 0, 0, 0, 0, 0, 0, 0];
 
-                for (let D of d)
+                for (let d in directions)
                 {
-                    if (y + D[0] > 7 || y + D[0] < 0 || x + D[1] > 7 || x + D[1] < 0)
+                    let direction = directions[d];
+                    if (y + direction[0] > 7 || y + direction[0] < 0 || x + direction[1] > 7 || x + direction[1] < 0)
                     {
                         continue;
                     }
 
-                    let y2 = y + D[0];
-                    let x2 = x + D[1];
-                    let p1 = 1;
+                    let y2 = y + direction[0];
+                    let x2 = x + direction[1];
+                    let distance = 1;
                     if (this.board[y2][x2] !== b)
                     {
                         continue;
@@ -54,9 +57,9 @@ export function newGame(player, id) {
 
                     currentLine: while (true)
                     {
-                        y2 += D[0];
-                        x2 += D[1];
-                        p1 += 1;
+                        y2 += direction[0];
+                        x2 += direction[1];
+                        distance += 1;
 
                         if (y2 > 7 || y2 < 0 || x2 > 7 || x2 < 0)
                         {
@@ -64,7 +67,7 @@ export function newGame(player, id) {
                         }
                         if (this.board[y2][x2] === a)
                         {
-                            p.push(D.concat(p1));
+                            distances[d] = distance;
                             break currentLine;
                         }
                         else
@@ -74,14 +77,14 @@ export function newGame(player, id) {
                         }
                     }
                 }
-                if (p.length > 0)
+                if (distances.length > 0)
                 {
                     this.board[y][x] = true;
-                    this.possible.push([y, x, p]);
+                    this.possible.push([y, x, distances]);
                 }
             }
         },
-        takeTurn: function(Move) {
+        playerTurn: function(Move) {
             let move = [Move.match(/[1-8]/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-h]/)[0])];
             this.highlight = [];
             this.end = 0;
@@ -96,16 +99,14 @@ export function newGame(player, id) {
                 return "playing in this space would not capture anything.";
             }
 
-            const captures = this.possible.find(p => move[0] == p[0] && move[1] == p[1])[2];
+            const dirs = [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]];
+            const dists = this.possible.find(p => move[0] == p[0] && move[1] == p[1])[2];
             this.board[move[0]][move[1]] = this.turn;
-            for (let dir of captures)
+            for (let dir = 0, dist = 1; dir < 8; dist <= dists[dir] ? dist++ : (dist = 1, dir++))
             {
-                for (let dis = 0; dis < dir[2]; dis++)
-                {
-                    const space = [move[0] + dir[0] * dis, move[1] + dir[1] * dis];
-                    this.board[space[0]][space[1]] = this.turn;
-                    this.highlight.push(space);
-                }
+                const space = [move[0] + (dirs[dir][0] * dist), move[1] + (dirs[dir][1] * dist)];
+                this.board[space[0]][space[1]] = this.turn;
+                this.highlight.push(space);
             }
 
             this.highlight.unshift(move);
@@ -160,6 +161,18 @@ export function newGame(player, id) {
             this.replay.push(Move);
 
             return false;
+        },
+        AITurn: function() {
+            const possible = this.possible.map(space => {
+                return [space[0], space[1], Math.sum(0, 8, space[2])];
+            });
+
+            possible.sort((a, b) => a[2] - b[2]);
+
+            return (possible[0][0] + 1) + possible[0][1].toString(18);
+        },
+        setPriorities: function() {
+
         }
     }
 }

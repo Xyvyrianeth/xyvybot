@@ -1,3 +1,5 @@
+import { Client } from "../../index.js";
+
 export function newGame(player, id) {
     return {
         ball: [5, 6],
@@ -20,7 +22,7 @@ export function newGame(player, id) {
                     `<@${this.players[this.winner]}> has won because <@${this.player}> put the ball in the wrong goal!`,
                     `<@${this.players[this.winner]}> has won because <@${this.player}> got the ball stuck!` ][this.endType] ][this.end];
         },
-        takeTurn: function(Move) {
+        playerTurn: function(Move) {
             let move;
             let goagain = false;
 
@@ -116,6 +118,12 @@ export function newGame(player, id) {
             this.replay.push(Move);
 
             return false;
+        },
+        AITurn: function() {
+            return ["u", "ur", "r", "dr", "d", "dl", "l", "ul"].random();
+        },
+        setPriorities: function() {
+
         }
     }
 }

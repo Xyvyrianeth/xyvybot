@@ -23,14 +23,14 @@ export const command = (interaction) => {
             }
         });
 
-        const hangman = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/hangman/" + miniGame.tries + ".png", name: "hangman.png" };
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/hangman.png", name: "author.png" };
+        const hangman = { attachment: "./assets/hangman/" + miniGame.tries + ".png", name: "hangman.png" };
+        const author = { attachment: "./assets/authors/hangman.png", name: "author.png" };
         const embed = {
             author: { name: "hangman", icon_url: "attachment://author.png" },
             thumbnail: { url: "attachment://hangman.png" },
             fields: [ { name: "A game of Hangman is already active in this channel!", value: `**${display.join("\u200b \u200b")}**\nCategory: **${miniGame.category}**${miniGame.answer.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!" : ""}\n\nTime's up <t:${(Date.now() / 1000 | 0) + miniGame.timer}:R>\n\`${miniGame.tries}\` wrong guesses left\n__**Previous Guesses**__\n\`${miniGame.guesses.length == 0 ? "None" : miniGame.guesses.join("` `")}\`` } ],
             color: new Color(52, 152, 219).toInt() };
-        return interaction.reply({ embeds: [embed], files: [hangman, author] });
+        return interaction.reply({ embeds: [ embed ], files: [ hangman, author ] });
     }
     else
     {
@@ -79,8 +79,8 @@ export const command = (interaction) => {
         }
 
         const Category = { "boardgames": "Tabletop/Board/Card Games",  "movies": "Movies",  "tvshows": "TV Shows",  "videogames": "Video Games",  "animemanga": "Anime/Manga",  "countries": "Countries",  "pokemon": "Pokémon"}[category];
-        const hangman = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/hangman/7.png", name: "hangman.png" };
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/hangman.png", name: "author.png" };
+        const hangman = { attachment: "./assets/hangman/7.png", name: "hangman.png" };
+        const author = { attachment: "./assets/authors/hangman.png", name: "author.png" };
         const embed = {
             author: { name: "hangman", icon_url: "attachment://author.png" },
             thumbnail: { url: "attachment://hangman.png" },
@@ -99,6 +99,6 @@ export const command = (interaction) => {
             timer: 180, };
         miniGames.set(interaction.id, miniGame);
 
-        return interaction.reply({ embeds: [embed], files: [hangman, author] });
+        return interaction.reply({ embeds: [ embed ], files: [ hangman, author ] });
     }
 }

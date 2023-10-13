@@ -1,521 +1,213 @@
-[
-	{
-		"name": "testquery",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "ban",
-		"description": "test - placeholder",
-		"options": [
-			{
-				"name": "user",
-				"type": 6,
-				"description": "test - User to ban"
-			}
-		]
-	},
-	{
-		"name": "help",
-		"description": "test - Get a list of all available commands!",
-		"options": [
-			{
-				"name": "command",
-				"type": 3,
-				"description": "test - A specific command you'd like more help with",
-				"choices": [
-					{
-						"name": "Othello",
-						"value": "othello"
-					},
-					{
-						"name": "Squares",
-						"value": "squares"
-					},
-					{
-						"name": "3D Tic Tac Toe",
-						"value": "3dtictactoe"
-					},
-					{
-						"name": "Connect Four",
-						"value": "connect4"
-					},
-					{
-						"name": "Rokumoku",
-						"value": "rokumoku"
-					},
-					{
-						"name": "Ordo",
-						"value": "ordo"
-					},
-					{
-						"name": "Paper Soccer",
-						"value": "papersoccer"
-					},
-					{
-						"name": "Lines of Action",
-						"value": "linesofaction"
-					},
-					{
-						"name": "Latrones",
-						"value": "latrones"
-					},
-					{
-						"name": "Spider Linetris",
-						"value": "spiderlinetris"
-					},
-					{
-						"name": "Games",
-						"value": "games"
-					},
-					{
-						"name": "Profile",
-						"value": "profile"
-					},
-					{
-						"name": "Leaderboard",
-						"value": "leaderboard"
-					},
-					{
-						"name": "History",
-						"value": "history"
-					},
-					{
-						"name": "Minesweeper",
-						"value": "minesweeper"
-					},
-					{
-						"name": "IQ",
-						"value": "iq"
-					},
-					{
-						"name": "Hangman",
-						"value": "hangman"
-					},
-					{
-						"name": "Graph",
-						"value": "graph"
-					},
-					{
-						"name": "Credits",
-						"value": "credits"
-					},
-					{
-						"name": "Help",
-						"value": "help"
-					},
-					{
-						"name": "Request",
-						"value": "request"
-					},
-					{
-						"name": "Bug",
-						"value": "bug"
-					}
-				]
-			}
-		]
-	},
-	{
-		"name": "games",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "profile",
-		"description": "test - View or manage your profile",
-		"options": [
-			{
-				"name": "view",
-				"type": 1,
-				"description": "test - View your own or another user's profile",
-				"options": [
-					{
-						"name": "user",
-						"type": 6,
-						"description": "test - Whose profile you wish to view"
-					}
-				]
-			},
-			{
-				"name": "edit",
-				"type": 1,
-				"description": "test - Which property of your profile you wish to edit",
-				"options": [
-					{
-						"name": "title",
-						"type": 3,
-						"description": "test - Change the text that displays under your name"
-					},
-					{
-						"name": "color",
-						"type": 3,
-						"description": "test - Change the color of the information panel"
-					},
-					{
-						"name": "displayside",
-						"type": 3,
-						"description": "test - Change which side the information panel sits on",
-						"choices": [
-							{
-								"name": "Left",
-								"value": "left"
-							},
-							{
-								"name": "Right",
-								"value": "right"
-							}
-						]
-					}
-				]
-			},
-			{
-				"name": "backgrounds",
-				"type": 1,
-				"description": "test - Manage your backgrounds"
-			},
-			{
-				"name": "create",
-				"type": 1,
-				"description": "test - Create a profile if you haven't already"
-			}
-		]
-	},
-	{
-		"name": "leaderboard",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "history",
-		"description": "test - Shows you your or another user's match history",
-		"options": [
-			{
-				"name": "user",
-				"type": 6,
-				"description": "test - Whose history you'd like to see"
-			}
-		]
-	},
-	{
-		"name": "hangman",
-		"description": "test - placeholder",
-		"options": [
-			{
-				"name": "category",
-				"type": 10,
-				"description": "test - Choose a category for the word or phrase",
-				"choices": [
-					{
-						"name": "Tabletop/Board/Card Games",
-						"value": 0
-					},
-					{
-						"name": "Movies",
-						"value": 1
-					},
-					{
-						"name": "TV Shows",
-						"value": 2
-					},
-					{
-						"name": "Video Games",
-						"value": 3
-					},
-					{
-						"name": "Anime/Manga",
-						"value": 4
-					},
-					{
-						"name": "Countries",
-						"value": 5
-					},
-					{
-						"name": "Pokémon",
-						"value": 6
-					}
-				]
-			}
-		]
-	},
-	{
-		"name": "minesweeper",
-		"description": "test - placeholder",
-		"options": [
-			{
-				"name": "width",
-				"type": 4,
-				"description": "test - The width of the board"
-			},
-			{
-				"name": "height",
-				"type": 4,
-				"description": "test - The height of the board"
-			},
-			{
-				"name": "bombs",
-				"type": 4,
-				"description": "test - The number of bombs hidden"
-			}
-		]
-	},
-	{
-		"name": "iq",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "trivia",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "letters",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "numbers",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "graph",
-		"description": "test - placeholder",
-		"options": [
-			{
-				"name": "help",
-				"type": 1,
-				"description": "test - placeholder"
-			},
-			{
-				"name": "equate",
-				"type": 1,
-				"description": "test - placeholder",
-				"options": [
-					{
-						"name": "equation0",
-						"type": 3,
-						"description": "test - placeholder",
-						"required": true
-					},
-					{
-						"name": "equation1",
-						"type": 3,
-						"description": "test - placeholder",
-						"required": false
-					},
-					{
-						"name": "equation2",
-						"type": 3,
-						"description": "test - placeholder",
-						"required": false
-					},
-					{
-						"name": "equation3",
-						"type": 3,
-						"description": "test - placeholder",
-						"required": false
-					},
-					{
-						"name": "equation4",
-						"type": 3,
-						"description": "test - placeholder",
-						"required": false
-					},
-					{
-						"name": "equation5",
-						"type": 3,
-						"description": "test - placeholder",
-						"required": false
-					},
-					{
-						"name": "equation6",
-						"type": 3,
-						"description": "test - placeholder",
-						"required": false
-					},
-					{
-						"name": "equation7",
-						"type": 3,
-						"description": "test - placeholder",
-						"required": false
-					},
-					{
-						"name": "equation8",
-						"type": 3,
-						"description": "test - placeholder",
-						"required": false
-					},
-					{
-						"name": "equation9",
-						"type": 3,
-						"description": "test - placeholder",
-						"required": false
-					}
-				]
-			}
-		]
-	},
-	{
-		"name": "request",
-		"description": "test - placeholder",
-		"options": [
-			{
-				"name": "suggestion",
-				"type": 3,
-				"description": "test - Your suggestion",
-				"required": true
-			}
-		]
-	},
-	{
-		"name": "bug",
-		"description": "test - placeholder",
-		"options": [
-			{
-				"name": "command",
-				"type": 3,
-				"description": "test - The command that you think has a bug",
-				"required": true,
-				"choices": [
-					{
-						"name": "Othello",
-						"value": "othello"
-					},
-					{
-						"name": "Squares",
-						"value": "squares"
-					},
-					{
-						"name": "3D Tic Tac Toe",
-						"value": "3dtictactoe"
-					},
-					{
-						"name": "Connect Four",
-						"value": "connect4"
-					},
-					{
-						"name": "Rokumoku",
-						"value": "rokumoku"
-					},
-					{
-						"name": "Ordo",
-						"value": "ordo"
-					},
-					{
-						"name": "Paper Soccer",
-						"value": "papersoccer"
-					},
-					{
-						"name": "Lines of Action",
-						"value": "linesofaction"
-					},
-					{
-						"name": "Latrones",
-						"value": "latrones"
-					},
-					{
-						"name": "Spider Linetris",
-						"value": "spiderlinetris"
-					},
-					{
-						"name": "Games",
-						"value": "games"
-					},
-					{
-						"name": "Profile",
-						"value": "profile"
-					},
-					{
-						"name": "Leaderboard",
-						"value": "leaderboard"
-					},
-					{
-						"name": "History",
-						"value": "history"
-					},
-					{
-						"name": "Minesweeper",
-						"value": "minesweeper"
-					},
-					{
-						"name": "IQ",
-						"value": "iq"
-					},
-					{
-						"name": "Hangman",
-						"value": "hangman"
-					},
-					{
-						"name": "Graph",
-						"value": "graph"
-					},
-					{
-						"name": "Credits",
-						"value": "credits"
-					},
-					{
-						"name": "Help",
-						"value": "help"
-					},
-					{
-						"name": "Request",
-						"value": "request"
-					},
-					{
-						"name": "Bug",
-						"value": "bug"
-					}
-				]
-			},
-			{
-				"name": "description",
-				"type": 3,
-				"description": "test - Description of the bug",
-				"required": true
-			}
-		]
-	},
-	{
-		"name": "credits",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "othello",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "squares",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "rokumoku",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "3dtictactoe",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "connect4",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "ordo",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "papersoccer",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "linesofaction",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "latrones",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "spiderlinetris",
-		"description": "test - placeholder"
-	},
-	{
-		"name": "setup",
-		"description": "test - Help you set up the bot to perform at maximum efficiency"
-	}
-]
+[   
+    {   "name": "help",
+        "description": "Get a list of all available commands!",
+        "options": [
+        {   "name": "command", "type": 3,
+            "description": "A specific command you'd like more help with",
+            "choices": [
+            {   "name": "Games",           "value": "games" },
+            {   "name": "Othello",         "value": "othello" },
+            {   "name": "Squares",         "value": "squares" },
+            {   "name": "3D Tic Tac Toe",  "value": "3dtictactoe" },
+            {   "name": "Connect Four",    "value": "connect4" },
+            {   "name": "Rokumoku",        "value": "rokumoku" },
+            {   "name": "Ordo",            "value": "ordo" },
+            {   "name": "Paper Soccer",    "value": "papersoccer" },
+            {   "name": "Lines of Action", "value": "linesofaction" },
+            {   "name": "Latrones",        "value": "latrones" },
+            {   "name": "Spider Linetris", "value": "spiderlinetris" },
+            {   "name": "Profile",         "value": "profile" },
+            {   "name": "Leaderboard",     "value": "leaderboard" },
+            {   "name": "History",         "value": "history" },
+            {   "name": "Minesweeper",     "value": "minesweeper" },
+            {   "name": "IQ",              "value": "iq" },
+            {   "name": "Hangman",         "value": "hangman" },
+            {   "name": "Graph",           "value": "graph" },
+            {   "name": "Credits",         "value": "credits" },
+            {   "name": "Help",            "value": "help" },
+            {   "name": "Request",         "value": "request" },
+            {   "name": "Bug",             "value": "bug" } ] } ] },
+    {   "name": "request",
+        "description": "placeholder",
+        "options": [
+        {   "name": "suggestion", "type": 3, "required": true,
+            "description": "Your suggestion" } ] },
+    {   "name": "bug",
+        "description": "placeholder",
+        "options": [
+        {   "name": "command", "type": 3, "required": true,
+            "description": "The command that you think has a bug",
+            "choices": [
+            {   "name": "Othello",         "value": "othello" },
+            {   "name": "Squares",         "value": "squares" },
+            {   "name": "3D Tic Tac Toe",  "value": "3dtictactoe" },
+            {   "name": "Connect Four",    "value": "connect4" },
+            {   "name": "Rokumoku",        "value": "rokumoku" },
+            {   "name": "Ordo",            "value": "ordo" },
+            {   "name": "Paper Soccer",    "value": "papersoccer" },
+            {   "name": "Lines of Action", "value": "linesofaction" },
+            {   "name": "Latrones",        "value": "latrones" },
+            {   "name": "Spider Linetris", "value": "spiderlinetris" },
+            {   "name": "Games",           "value": "games" },
+            {   "name": "Profile",         "value": "profile" },
+            {   "name": "Leaderboard",     "value": "leaderboard" },
+            {   "name": "History",         "value": "history" },
+            {   "name": "Minesweeper",     "value": "minesweeper" },
+            {   "name": "IQ",              "value": "iq" },
+            {   "name": "Hangman",         "value": "hangman" },
+            {   "name": "Graph",           "value": "graph" },
+            {   "name": "Credits",         "value": "credits" },
+            {   "name": "Help",            "value": "help" },
+            {   "name": "Request",         "value": "request" },
+            {   "name": "Bug",             "value": "bug" } ] },
+        {   "name": "description", "type": 3, "required": true,
+            "description": "Description of the bug" } ] },
+    {   "name": "ban",
+        "description": "Ban a user",
+        "options": [
+        {   "name": "user", "type": 6,
+            "description": "User to ban" } ] },
+    {   "name": "games",
+        "description": "Learn more about all the games that can be played with this bot!" },
+    {   "name": "othello",
+        "description": "placeholder" },
+    {   "name": "squares",
+        "description": "placeholder" },
+    {   "name": "rokumoku",
+        "description": "placeholder" },
+    {   "name": "3dtictactoe",
+        "description": "placeholder" },
+    {   "name": "connect4",
+        "description": "placeholder" },
+    {   "name": "ordo",
+        "description": "placeholder" },
+    {   "name": "papersoccer",
+        "description": "placeholder" },
+    {   "name": "linesofaction",
+        "description": "placeholder" },
+    {   "name": "latrones",
+        "description": "placeholder" },
+    {   "name": "spiderlinetris",
+        "description": "placeholder" },
+    {   "name": "profile",
+        "description": "View or manage your profile",
+        "options": [
+        {   "name": "view", "type": 1,
+            "description": "View your own or another user's profile",
+            "options": [
+            {   "name": "user", "type": 6,
+                "description": "Whose profile you wish to view" } ] },
+        {   "name": "edit",
+            "type": 1,
+            "description": "Which property of your profile you wish to edit",
+            "options": [
+            {   "name": "title", "type": 3,
+                "description": "Change the text that displays under your name" },
+            {   "name": "color", "type": 3,
+                "description": "Change the color of the information panel" },
+            {   "name": "displayside", "type": 3,
+                "description": "Change which side the information panel sits on",
+                "choices": [
+                {   "name": "Left",  "value": "left" },
+                {   "name": "Right", "value": "right" } ] } ] },
+        {   "name": "backgrounds", "type": 1,
+            "description": "Manage your backgrounds" },
+        {   "name": "create", "type": 1,
+            "description": "Create a profile if you haven't already" } ] },
+    {   "name": "leaderboard",
+        "description": "placeholder" },
+    {   "name": "history",
+        "description": "Shows you your or another user's match history",
+        "options": [
+        {   "name": "user", "type": 6,
+            "description": "Whose history you'd like to see" } ] },
+    {   "name": "hangman",
+        "description": "Play a game of Hangman in chat",
+        "options": [
+        {   "name": "category", "type": 10,
+            "description": "Choose a category for the word or phrase",
+            "choices": [
+            {   "value": 0, "name": "Tabletop/Board/Card Games" },
+            {   "value": 1, "name": "Movies" },
+            {   "value": 2, "name": "TV Shows" },
+            {   "value": 3, "name": "Video Games" },
+            {   "value": 4, "name": "Anime/Manga" },
+            {   "value": 5, "name": "Countries" },
+            {   "value": 6, "name": "Pokémon" } ] } ] },
+    {   "name": "minesweeper",
+        "description": "Play a game of Minesweeper in chat",
+        "options": [
+        {   "name": "width", "type": 4,
+            "description": "The width of the board" },
+        {   "name": "height", "type": 4,
+            "description": "The height of the board" },
+        {   "name": "bombs", "type": 4,
+            "description": "The number of bombs hidden" } ] },
+    {   "name": "iq",
+        "description": "placeholder" },
+    {   "name": "trivia",
+        "description": "placeholder",
+        "options": [
+        {   "name": "category", "type": 10,
+            "description": "Choose a category for the trivia question",
+            "choices": [
+            {   "value": 9,  "name": "General Knowledge" },
+            {   "value": 10, "name": "Entertainment: Books" },
+            {   "value": 11, "name": "Entertainment: Film" },
+            {   "value": 12, "name": "Entertainment: Music" },
+            {   "value": 13, "name": "Entertainment: Musicals and Theatres" },
+            {   "value": 14, "name": "Entertainment: Television" },
+            {   "value": 15, "name": "Entertainment: Video Games" },
+            {   "value": 16, "name": "Entertainment: Board Games" },
+            {   "value": 17, "name": "Science and Nature" },
+            {   "value": 18, "name": "Science: Computers" },
+            {   "value": 19, "name": "Science Mathematics" },
+            {   "value": 20, "name": "Mythology" },
+            {   "value": 21, "name": "Sports" },
+            {   "value": 22, "name": "Geography" },
+            {   "value": 23, "name": "History" },
+            {   "value": 24, "name": "Politics" },
+            {   "value": 25, "name": "Art" },
+            {   "value": 26, "name": "Celebrities" },
+            {   "value": 27, "name": "Animals" },
+            {   "value": 28, "name": "Vehicles" },
+            {   "value": 29, "name": "Entertainment: Comics" },
+            {   "value": 30, "name": "Science: Gadgets" },
+            {   "value": 31, "name": "Entertainment: Japanese Anime and Manga" },
+            {   "value": 32, "name": "Entertainment: Cartoons and Animations" } ] } ] },
+    {   "name": "letters",
+        "description": "Play a round of Letters from Countdown in chat" },
+    {   "name": "numbers",
+        "description": "Play a round of Numbers from Countdown in chat" },
+    {   "name": "graph",
+        "description": "Generate a set of equations on a graph",
+        "options": [
+        {   "name": "help", "type": 1,
+            "description": "placeholder" },
+        {   "name": "equate", "type": 1,
+            "description": "placeholder",
+            "options": [
+            {   "name": "equation0", "type": 3, "required": true,
+                "description": "placeholder" },
+            {   "name": "equation1", "type": 3, "required": false,
+                "description": "placeholder" },
+            {   "name": "equation2", "type": 3, "required": false,
+                "description": "placeholder" },
+            {   "name": "equation3", "type": 3, "required": false,
+                "description": "placeholder" },
+            {   "name": "equation4", "type": 3, "required": false,
+                "description": "placeholder" },
+            {   "name": "equation5", "type": 3, "required": false,
+                "description": "placeholder" },
+            {   "name": "equation6", "type": 3, "required": false,
+                "description": "placeholder" },
+            {   "name": "equation7", "type": 3, "required": false,
+                "description": "placeholder" },
+            {   "name": "equation8", "type": 3, "required": false,
+                "description": "placeholder" },
+            {   "name": "equation9", "type": 3, "required": false,
+                "description": "placeholder" } ] } ] },
+    {   "name": "credits",
+        "description": "Learn more about all the contributions to the bot's current state" },
+    {   "name": "setup",
+        "description": "Help you set up the bot to perform at maximum efficiency" } ]

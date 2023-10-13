@@ -87,7 +87,7 @@ export const command = (interaction) => {
         // a[y] = a[y].replace(/\|\|\|\|0⃣\|\|\|\|/g, "0⃣");
     }
 
-    const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/minesweeper.png", name: "author.png" };
+    const author = { attachment: "./assets/authors/minesweeper.png", name: "author.png" };
     const embed = {
         author: { name: "MineSweeper", icon_url: "attachment://author.png" },
         description: "||" + a.join("||\n||") + "||",
@@ -95,5 +95,5 @@ export const command = (interaction) => {
             { name: "\u200b", value: "Note that Discord will not\ndisplay all of the tiles\nfor some reason.\nI *am* putting them there,\nthey just won't show up." } ],
         footer: { text: "Height: " + height + " | Width: " + width + " | Bombs: " + bombs },
         color: new Color().random().toInt() };
-    return interaction.reply({ embeds: [embed], files: [author] });
+    return interaction.reply({ embeds: [ embed ], files: [ author ] });
 }

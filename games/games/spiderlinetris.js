@@ -1,3 +1,5 @@
+import { Client } from "../../index.js";
+
 export function newGame(player, id) {
     return {
         turnColors: ["#ffffff", "#000000"],
@@ -66,7 +68,7 @@ export function newGame(player, id) {
                 }
             }
         },
-        takeTurn: function(Move) {
+        playerTurn: function(Move) {
             let move = [Move.match(/[1-8]/) - 1, parseInt(Move.match(/[a-h]/), 36) - 10];
 
             if (this.board[move[0]][move[1]] !== false)
@@ -159,6 +161,14 @@ export function newGame(player, id) {
             this.replay.push(Move);
 
             return false;
+        },
+        AITurn: function() {
+            let Y = (Math.random() * 8 | 0) + 1;
+            let X = ((Math.random() * 8 | 0) + 10).toString(36);
+            return Y + X;
+        },
+        setPriorities: function() {
+            
         }
     }
 }

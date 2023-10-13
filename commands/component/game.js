@@ -1,4 +1,4 @@
-import { Xyvybot } from "../../index.js";
+import { Client, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { Games } from "../../games/Games.js";
 import { Rules } from "../../games/Rules.js";
@@ -36,50 +36,52 @@ export const command = async (interaction) => {
 
         if (!Game)
         {
-            return interaction.reply({ content: "Sorry, there's not a game for you to accept anymore", ephemeral: true });
+            return await interaction.reply({ content: "Sorry, there's not a game for you to accept anymore", ephemeral: true });
         }
 
         if (Game.started)
         {
-            return interaction.reply({ content: "This game has already been accepted by another player", ephemeral: true });
+            return await interaction.reply({ content: "This game has already been accepted by another player", ephemeral: true });
         }
 
         if (interaction.user.id == interaction.message.embeds[0].description.match(/[0-9]+/))
         {
-            return interaction.reply({ content: "You cannot play against yourself", ephemeral: true });
+            return await interaction.reply({ content: "You cannot play against yourself", ephemeral: true });
         }
 
         await deleteMessage(interaction.message);
         return Rules.startGame(Game.id, interaction.channelId, interaction.guildId, interaction.user.id);
     }
+
     if (command[1] == "start" && command[2] == "local")
     {
-        const author = { name: "author.png", attachment: `https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/${gamename}.png` };
+        const author = { name: "author.png", attachment: `./assets/authors/${gamename}.png` };
         const embed = {
             author: { name: Gamename, icon_url: "attachment://author.png" },
             description: `${interaction.user} is requesting a new game of ${Gamename}!`,
             color: new Color().random().toInt() };
         const actionRow = {
-            type: 1,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: 2, style: 1,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 label: "Play Against Them",
                 customId: `${command[0]}.start.accept` } ] };
 
-        await interaction.reply({ embeds: [embed], files: [author], components: [actionRow] });
+        await interaction.reply({ embeds: [ embed ], files: [ author ], components: [ actionRow ] });
         await deleteMessage(interaction.message);
         await Rules.newGame(gamename, interaction.channelId, interaction.guildId, interaction.user.id, false, false, interaction.id);
         return;
     }
+
     if (command[1] == "start" && command[2] == "global")
     {
         if (Games.some(Game => Game.players.includes(interaction.user.id) && Game.started))
         {
-            return interaction.reply({ content: "You are already playing a game. Finish it before you start a new one.", ephemeral: true });
+            return await interaction.reply({ content: "You are already playing a game. Finish it before you start a new one.", ephemeral: true });
         }
         if (Games.some(Game => Game.players.includes(interaction.user.id) && !Game.started))
         {
-            return interaction.reply({ content: "You are already queuing for a game.", ephemeral: true });
+            return await interaction.reply({ content: "You are already queuing for a game.", ephemeral: true });
         }
 
         const Game = Games.find(Game => Game.game == gamename && !Game.started && !Game.channels.includes(interaction.channelId) && !Game.local);
@@ -90,23 +92,24 @@ export const command = async (interaction) => {
             return;
         }
 
-        const author = { name: "author.png", attachment: `https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/${gamename}.png` };
+        const author = { name: "author.png", attachment: `./assets/authors/${gamename}.png` };
         const embed = {
             author: { name: Gamename, icon_url: "attachment://author.png" },
             description: `${interaction.user} is requesting a new game of ${Gamename}!\nIf someone else requests this game in a different channel, or even a different server, you'll play against them!`,
             color: new Color().random().toInt() };
         const actionRow = {
-            type: 1,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: 2, style: 1, // Blue Button
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE, // Blue Button
                 label: "Play Against Them",
                 customId: `${command[0]}.start.accept` } ] };
 
-        await interaction.reply({ embeds: [embed], files: [author], components: [actionRow] });
+        await interaction.reply({ embeds: [ embed ], files: [ author ], components: [ actionRow ] });
         await Rules.newGame(gamename, interaction.channelId, interaction.guildId, interaction.user.id, false, false, interaction.id);
         await deleteMessage(interaction.message);
         return;
     }
+
     if (command[1] == "start" && command[2] == "ai")
     {
         await deleteMessage(interaction.message);

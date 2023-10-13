@@ -18,7 +18,7 @@ export async function replayImage(game, id, text, replay, step) {
 
     for (let i = 0; i < step; i++)
     {
-        Game.takeTurn(replay[i]);
+        Game.playerTurn(replay[i]);
     }
 
     return await Rules.drawBoard(Game, !text);

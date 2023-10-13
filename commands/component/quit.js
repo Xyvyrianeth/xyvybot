@@ -1,3 +1,4 @@
+import { COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { Games } from "../../games/Games.js";
 
@@ -11,12 +12,12 @@ export const command = async (interaction, message) => {
         }
 
         const components = {
-            type: 1,
+            type: COMPONENT.ACTION_ROW,
             components: [
-                {   type: 2, style: 4, // Red Button
+                {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.RED, // Red Button
                     label: "Yes, I want to quit",
                     customId: "quit.confirm" },
-                {   type: 2, style: 1, // Blue Button,
+                {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE, // Blue Button,
                     label: "No, I do not want to quit",
                     customId: "quit.decline" } ] };
         const embed = {
@@ -24,7 +25,7 @@ export const command = async (interaction, message) => {
             title: "Are you sure you wish to forfeit this game?",
             color: new Color("#").toInt() };
 
-        return message.reply({ embeds: [embed], components: components });
+        return message.reply({ embeds: [ embed ], components: components });
     }
     else
     {

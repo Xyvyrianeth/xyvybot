@@ -1,8 +1,8 @@
+import { COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { miniGames } from "../../games/miniGames.js";
 import { solverRunAllSolutions } from "../../assets/misc/solver_engine.js";
 import { drawBoard } from "../../assets/misc/drawNumbers.js";
-import { COMPONENT_TYPE, BUTTON_STYLE } from "../../index.js";
 
 export const command = async (interaction) => {
     const miniGame = miniGames.get(interaction.message.interaction.id);
@@ -26,7 +26,7 @@ export const command = async (interaction) => {
             miniGame.solution = results.nearestExpressions.map(result => [result.value, result.stringValue])[0];
         });
 
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/numbers.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/numbers.png", name: "author.png" };
         const attachment = { attachment: await drawBoard(miniGame.numbers, miniGame.target), name: "board.png" };
         const embed = {
             author: { name: "numbers", icon_url: "attachment://author.png" },
@@ -34,13 +34,13 @@ export const command = async (interaction) => {
             image: { url: "attachment://board.png" },
             color: new Color().random().toInt() };
 
-        return interaction.update({ embeds: [embed], files: [author, attachment], components: [] });
+        return interaction.update({ embeds: [ embed ], files: [ author, attachment ], components: [] });
     }
     else
     {
         miniGame.timer = 180;
 
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/numbers.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/numbers.png", name: "author.png" };
         const attachment = { attachment: await drawBoard(miniGame.numbers, false), name: "board.png" };
         const embed = {
             author: { name: "numbers", icon_url: "attachment://author.png" },
@@ -48,18 +48,18 @@ export const command = async (interaction) => {
             image: { url: "attachment://board.png" },
             color: new Color().random().toInt() };
         const actionRows = [
-        {   type: COMPONENT_TYPE.ACTION_ROW,
+        {   type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: COMPONENT_TYPE.BUTTON,
+            {   type: COMPONENT.BUTTON,
                 style: BUTTON_STYLE.BLUE,
                 label: "Large",
                 customId: "numbers.number.large",
                 disabled: miniGame.available[0].length == 0 },
-            {   type: COMPONENT_TYPE.BUTTON,
+            {   type: COMPONENT.BUTTON,
                 style: BUTTON_STYLE.BLUE,
                 label: "Small",
                 customId: "numbers.number.small" } ] } ];
 
-        return interaction.update({ embeds: [embed], files: [author, attachment], components: actionRows });
+        return interaction.update({ embeds: [ embed ], files: [ author, attachment ], components: actionRows });
     }
 }

@@ -1,3 +1,5 @@
+import { Client } from "../../index.js";
+
 export function newGame(player, id) {
     let _ = false;
     return {
@@ -12,6 +14,13 @@ export function newGame(player, id) {
             [1, 1, _, _, 1, 1, _, _, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [_, _, 1, 1, _, _, 1, 1, _, _] ],
+        endMessage: function() {
+            return  [ [ `It is <@${this.player}>'s turn.`,
+                        `It is <@${this.player}>'s turn.\nYour pieces have been split into more than one group, you *must* bring them back together immediately.` ][this.split],
+                      [ `<@${this.players[this.winner]}> has won by reaching their opponent's home row!`,
+                        `<@${this.players[this.winner]}> has won by capturing all of their opponent's pieces!`,
+                        `<@${this.players[this.winner]}> has won by splitting up their opponent's pieces!` ][this.endType] ][this.end];
+        },
         interpretMove: function(Move) {
             if (/^([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])$/.test(Move))
             {
@@ -149,7 +158,7 @@ export function newGame(player, id) {
                 return move;
             }
         },
-        takeTurn: function(Move) {
+        playerTurn: function(Move) {
             this.end;
             this.highlight = [];
             Move = Move.toLowerCase();
@@ -391,12 +400,13 @@ export function newGame(player, id) {
 
             return possible;
         },
-        endMessage: function() {
-            return  [ [ `It is <@${this.player}>'s turn.`,
-                        `It is <@${this.player}>'s turn.\nYour pieces have been split into more than one group, you *must* bring them back together immediately.` ][this.split],
-                      [ `<@${this.players[this.winner]}> has won by reaching their opponent's home row!`,
-                        `<@${this.players[this.winner]}> has won by capturing all of their opponent's pieces!`,
-                        `<@${this.players[this.winner]}> has won by splitting up their opponent's pieces!` ][this.endType] ][this.end];
+        AITurn: function() {
+            let Y = (Math.random() * 8 | 0) + 1;
+            let X = ((Math.random() * 10 | 0) + 10).toString(36);
+            return Y + X;
+        },
+        setPriorities: function() {
+
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Xyvybot, dataBase, COMPONENT_TYPE, BUTTON_STYLE } from "../../index.js";
+import { Xyvybot, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { replayImage } from "../../games/replayImage.js";
 import emoji from "../../assets/misc/emoji.json" assert { type: "json" };
@@ -32,16 +32,17 @@ export const command = async (interaction) => {
         const match = rows[0];
         const Match = {
             id: match.id,
-            game: { "othello": "Othello",
-                    "squares": "Squares",
-                    "rokumoku": "Rokumoku",
-                    "ttt3d": "3D Tic-Tac-Toe",
-                    "connect4": "Connect Four",
-                    "ordo": "Ordo",
-                    "soccer": "Paper Soccer",
-                    "loa": "Lines of Action",
-                    "latrones": "Latrones",
-                    "spiderlinetris": "Spider Linetris" }[match.game],
+            game:
+            {   "othello": "Othello",
+                "squares": "Squares",
+                "rokumoku": "Rokumoku",
+                "ttt3d": "3D Tic-Tac-Toe",
+                "connect4": "Connect Four",
+                "ordo": "Ordo",
+                "soccer": "Paper Soccer",
+                "loa": "Lines of Action",
+                "latrones": "Latrones",
+                "spiderlinetris": "Spider Linetris" }[match.game],
             replay: match.replay.split('.'),
             players: [await Xyvybot.users.fetch(match.players[0]), await Xyvybot.users.fetch(match.players[1])],
             winner: match.winner == "undefined" ? false : await Xyvybot.users.fetch(match.winner) };
@@ -55,11 +56,10 @@ export const command = async (interaction) => {
         const adjacent = [
             history.indexOf(Match.id) == 0 ? history[history.length - 1] : history[history.indexOf(match.id) - 1],
             Match.id,
-            history.indexOf(Match.id) == history.length - 1 ? history[0] : history[history.indexOf(match.id) + 1]
-        ];
+            history.indexOf(Match.id) == history.length - 1 ? history[0] : history[history.indexOf(match.id) + 1] ];
 
         const attachment = { attachment: await replayImage(match.game, match.id, false, Match.replay), name: "replay.png" };
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/history.png", name: "author.png" };
+        const author = { attachment: "./assets/history.png", name: "author.png" };
         const embed = {
             author: { name: "history", icon_url: "attachment://author.png", },
             description: description,
@@ -67,36 +67,36 @@ export const command = async (interaction) => {
             color: new Color().random().toInt() };
 
         const actionRow1 = {
-            type: COMPONENT_TYPE.ACTION_ROW,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 emoji: emoji.previous_1,
                 customId: `history.match.${information.user.id}.${adjacent[0]}.previous.${search}`,
                 disabled: history.length < 2 },
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.RED,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.RED,
                 label: "Go back",
                 customId: `history.page.${information.user.id}.${Math.ceil((history.indexOf(Match.id) + 1) / pageLimit)}.${search}` },
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 emoji: emoji.next_1,
                 customId: `history.match.${information.user.id}.${adjacent[2]}.next.${search}`,
                 disabled: history.length < 2 } ] };
         const actionRow2 = {
-            type: COMPONENT_TYPE.ACTION_ROW,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.GREEN,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.GREEN,
                 label: "Interactive Replay",
                 customId: `replay.init.${Match.id}.${interaction.user.id}` } ] };
 
         if (match.game == "squares")
         {
             actionRow2.components.push({
-                type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.RED,
+                type: COMPONENT.BUTTON, style: BUTTON_STYLE.RED,
                 label: "Unavailable",
                 customId: `replay.counter.${Match.id}`,
                 disabled: true });
         }
 
-        const finalMessage = { embeds: [embed], components: [actionRow1, actionRow2], files: [attachment, author], attachments: [] };
+        const finalMessage = { embeds: [ embed ], components: [ actionRow1, actionRow2 ], files: [ attachment, author ], attachments: [] };
         await interaction.message.edit(finalMessage);
     }
     else
@@ -154,40 +154,40 @@ export const command = async (interaction) => {
             display.push(`\`${index > 8 ? (index + 1) + ')' : `0${index + 1})`}|${match.gameName}|${match.result}|\`<@${match.opponent}>`);
         });
 
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/history.png", name: "author.png" };
+        const author = { attachment: "./assets/history.png", name: "author.png" };
         const embed = {
             author: { name: "Game History", icon_url: "attachment://author.png" },
             description: `\`User:\` ${information.user}\n\n` + display.join('\n'),
             color: new Color().random().toInt() };
 
         const pageActionRow = {
-            type: COMPONENT_TYPE.ACTION_ROW,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 emoji: emoji.previous_3,
                 customId: `history.page.${information.user.id}.1.first`,
                 disabled: information.page == 1 },
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 emoji: emoji.previous_1,
                 customId: `history.page.${information.user.id}.${information.page - 1}.previous`,
                 disabled: information.page == 1 },
             {
-                type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+                type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 label: matchCount == 0 ? "No results" : `Page ${information.page} of ${Math.ceil(matchCount / pageLimit)}`,
                 customId: "pageCount",
                 disabled: true },
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 emoji: emoji.next_1,
                 customId: `history.page.${information.user.id}.${information.page + 1}.next`,
                 disabled: Math.ceil(matchCount / pageLimit) == information.page || Math.ceil(matchCount / pageLimit) == 0 },
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 emoji: emoji.next_3,
                 customId: `history.page.${information.user.id}.${Math.ceil(matchCount / pageLimit)}.last`,
                 disabled: Math.ceil(matchCount / pageLimit) == information.page || Math.ceil(matchCount / pageLimit) == 0 } ] };
         const gameActionRow = {
-            type: COMPONENT_TYPE.ACTION_ROW,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: COMPONENT_TYPE.DROP_MENU,
+            {   type: COMPONENT.DROP_MENU,
                 customId: `history.game.${information.user.id}`,
                 placeholder: "Filter by game",
                 minValues: 0,
@@ -224,9 +224,9 @@ export const command = async (interaction) => {
                     value: "spiderlinetris",
                     default: information.games.includes("spiderlinetris") } ] } ] };
         const resultActionRow = {
-            type: COMPONENT_TYPE.ACTION_ROW,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: COMPONENT_TYPE.DROP_MENU,
+            {   type: COMPONENT.DROP_MENU,
                 customId: `history.result.${information.user.id}`,
                 placeholder: "Filter by game result",
                 minValues: 1,
@@ -242,17 +242,17 @@ export const command = async (interaction) => {
                     value: "ties",
                     default: information.result.includes("ties") } ] } ] };
 
-        interaction.message.edit({ embeds: [embed], components: [pageActionRow, gameActionRow, resultActionRow], files: [author], attachments: [] });
+        await interaction.message.edit({ embeds: [ embed ], components: [ pageActionRow, gameActionRow, resultActionRow ], files: [ author ], attachments: [] });
 
         const selectMatchActionRow = {
-            type: COMPONENT_TYPE.ACTION_ROW,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: COMPONENT_TYPE.DROP_MENU,
+            {   type: COMPONENT.DROP_MENU,
                 customId: `history.match.${information.user.id}.${information.page}.replay`,
                 placeholder: "View Match Details",
                 options: matches.map((match, index) => { return { label: "Match " + (index == 9 ? "10" : '0' + (index + 1)), description: `Game: ${match.gameName} | ${match.result}`, value: match.id } }) } ] };
 
-        const finalMessage = { embeds: [embed], components: [pageActionRow, gameActionRow, resultActionRow, selectMatchActionRow], files: [author], attachments: [] };
+        const finalMessage = { embeds: [ embed ], components: [ pageActionRow, gameActionRow, resultActionRow, selectMatchActionRow ], files: [ author ], attachments: [] };
         return await interaction.message.edit(finalMessage);
     }
 }

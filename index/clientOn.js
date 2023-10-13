@@ -1,14 +1,14 @@
-import { Xyvybot, version } from "../index.js";
+import { Client, version, COMPONENT, BUTTON_STYLE } from "../index.js";
 import { botError } from "../index/discordFunctions.js";
 import { Games } from "../games/Games.js";
 import { Color } from "../assets/misc/color.js";
 
 export const onReady = async () => {
-    Xyvybot.user.setPresence({ status: "ONLINE", activity: { name: version + "!", type: "PLAYING" } });
+    Client.user.setPresence({ status: "ONLINE", activity: { name: version + "!", type: "PLAYING" } });
     setInterval(() => {
-        Xyvybot.user.setPresence({ status: "ONLINE", activity: { name: [
+        Client.user.setPresence({ status: "ONLINE", activity: { name: [
             version + "!",
-            "in " + Xyvybot.guilds.cache.size + " servers!",
+            "in " + Client.guilds.cache.size + " servers!",
             "Use the command /help for a list of commands!",
             "Now fully converted to slash commands and buttons!",
             "Used by at least one person every day!",
@@ -32,7 +32,7 @@ export const onReady = async () => {
 }
 
 export const messageCreate = async message => {
-    const channel = await Xyvybot.channels.fetch(message.channelId);
+    const channel = await Client.channels.fetch(message.channelId);
     if (!channel)
     {   // Can't find channel??
         return;
@@ -43,11 +43,11 @@ export const messageCreate = async message => {
         {   // Invalid channel types
             return;
         }
-        if (!channel.permissionsFor(Xyvybot.user.id)?.has(1n << 11n) || !channel.permissionsFor(Xyvybot.user.id).has(1n << 15n))
+        if (!channel.permissionsFor(Client.user.id)?.has(1n << 11n) || !channel.permissionsFor(Client.user.id).has(1n << 15n))
         {   // Lacks Send Messages and Attach Files permissions
             return;
         }
-        if (([10, 11, 12].includes(channel.type)) && !channel.permissionsFor(Xyvybot.user.id).has(1n << 38n))
+        if (([10, 11, 12].includes(channel.type)) && !channel.permissionsFor(Client.user.id).has(1n << 38n))
         {   // Lacks Send Message in Threads permission
             return;
         }
@@ -55,7 +55,7 @@ export const messageCreate = async message => {
 
     try
     {
-        if (message.author.id == Xyvybot.user.id || !message.author.bot)
+        if (message.author.id == Client.user.id || !message.author.bot)
         {
             return await import(`../commands/message/message.js`).then(Command => Command.command(message));
         }
@@ -76,16 +76,16 @@ export const interactionCreate = async interaction => {
         if ((interaction.isButton() || interaction.isSelectMenu()) && (!interaction.customId.startsWith("trivia") && Math.abs(new Date().getTime() - (interaction.message.editedTimestamp || interaction.message.createdTimestamp)) >= (1800000)))
         {
             const actionRow = {
-                type: 1,
+                type: COMPONENT.ACTION_ROW,
                 components: [
-                {   type: 2, style: 4, // Red Button
+                {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.RED, // Red Button
                     customId: "do.nothing",
                     label: "This interaction has expired",
                     disabled: true } ] };
-            return interaction.update({ components: [actionRow] });
+            return interaction.update({ components: [ actionRow ] });
         }
 
-        const channel = await Xyvybot.channels.fetch(interaction.channelId);
+        const channel = await Client.channels.fetch(interaction.channelId);
         if (![0, 1, 3, 5, 10, 11, 12].includes(channel.type))
         {   // Invalid channel types
             return;
@@ -93,7 +93,7 @@ export const interactionCreate = async interaction => {
 
         const command = interaction.isCommand() ? interaction.commandName : interaction.customId.split('.')[0];
         const games = ["othello", "squares", "rokumoku", "3dtictactoe", "connect4", "ordo", "papersoccer", "linesofaction", "latrones", "spiderlinetris"];
-        const permissions = channel.permissionsFor(Xyvybot.user.id);
+        const permissions = channel.permissionsFor(Client.user.id);
         if ([10, 11, 12].includes(channel.type) && !permissions.has(1n << 38n))
         {
             return interaction.reply({ content: "This command is disabled in this thread due to incorrect permissions. Contact the server staff about correcting this.", ephemeral: true });
@@ -147,7 +147,7 @@ export const interactionCreate = async interaction => {
 export const guildCreate = async guild => {
     const owner = await guild.members.fetch(guild.ownerId);
     const embed = {
-        author: { name: "Thank you for installing Xyvybot!", url: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/misc/avatar.png" },
+        author: { name: "Thank you for installing Xyvybot!", url: "./assets/misc/avatar.png" },
         description:
             "To set it up correctly, use the command /setup in whichever channels you want it to be used in and adjust permissions as needed. " +
             "Don't worry, it only needs a few basic permissions your typical server member would have anyways.\n\n" +
@@ -156,7 +156,7 @@ export const guildCreate = async guild => {
             "Once your channels are all set up, the bot is good to go. Enjoy!",
         color: new Color().random().toInt() };
 
-    await owner.send({ embeds: [embed] });
+    await owner.send({ embeds: [ embed ] });
 }
 
 export const channelDelete = async (Thing, thing) => {
@@ -180,20 +180,20 @@ export const channelDelete = async (Thing, thing) => {
         color: new Color(Game.turnColors[Game.turn | 0]).toInt() };
     const payload = {
         content: "The server you were playing a game in has either been deleted or has removed me. For your convenience, you may now play the game here.",
-        embeds: [embed],
-        files: [author, attachment] };
+        embeds: [ embed ],
+        files: [ author, attachment ] };
 
     if (Game[thing + "s"][0] !== Game[thing + "s"][1])
     {
         const index = Game[thing + "s"].indexOf(Thing.id);
         const playerId = Game.players[index];
-        await Xyvybot.users.send(playerId, payload).then(message => Game.channels[index] = message.channelId);
+        await Client.users.send(playerId, payload).then(message => Game.channels[index] = message.channelId);
         Game.guilds[index] = null;
     }
     for (const index in Game.players)
     {
         const playerId = Game.players[index];
-        await Xyvybot.users.send(playerId, payload).then(message => Game.channels[index] = message.channelId);
+        await Client.users.send(playerId, payload).then(message => Game.channels[index] = message.channelId);
         Game.guilds[index] = null;
     }
 }

@@ -1,11 +1,11 @@
-import { Xyvybot, COMPONENT_TYPE, BUTTON_STYLE } from "../../index.js";
+import { Client, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { Games } from "../../games/Games.js";
 import { replayImage } from "../../games/replayImage.js";
 
 export const command = async (interaction) => {
     const command = interaction.isCommand() ? [interaction.commandName] : interaction.customId.split('.');
-    const channel = await Xyvybot.channels.fetch(interaction.channelId);
+    const channel = await Client.channels.fetch(interaction.channelId);
     const gamename = {
         "othello": "othello",
         "squares": "squares",
@@ -64,30 +64,30 @@ export const command = async (interaction) => {
         image: { url: "attachment://preview.png" },
         color: new Color().random().toInt() };
     const playActionRow = {
-        type: COMPONENT_TYPE.ACTION_ROW,
+        type: COMPONENT.ACTION_ROW,
         components: [
-        {   type: COMPONENT_TYPE.BUTTON,
+        {   type: COMPONENT.BUTTON,
             style: BUTTON_STYLE.BLUE,
             label: `Play ${Gamename}`,
             customId: `${command[0]}.start.global`,
             disabled: Games.some(Game => Game.channels.includes(interaction.channelId) && Game.started) },
-        {   type: COMPONENT_TYPE.BUTTON,
+        {   type: COMPONENT.BUTTON,
             style: BUTTON_STYLE.BLUE,
             label: `Play Locally`,
             customId: `${command[0]}.start.local`,
             disabled: channel.guildId == null || Games.some(Game => Game.channels.includes(interaction.channelId) && Game.started) },
-        {   type: COMPONENT_TYPE.BUTTON,
+        {   type: COMPONENT.BUTTON,
             style: BUTTON_STYLE.BLUE,
             label: "Play Against the Bot",
             customId: `${command[0]}.start.ai`,
             disabled: !gamesWithAI.includes(gamename) } ] };
     const rulesActionRow = {
-        type: COMPONENT_TYPE.ACTION_ROW,
+        type: COMPONENT.ACTION_ROW,
         components: [
-        {   type: COMPONENT_TYPE.BUTTON,
+        {   type: COMPONENT.BUTTON,
             style: BUTTON_STYLE.LINK,
             label: "Rules/How to Play",
             url: `https://github.com/Xyvyrianeth/xyvybot_assets/wiki/${gamename}` } ] };
 
-    return interaction.reply({ embeds: [embed], files: [author, attachment], components: [playActionRow, rulesActionRow] });
+    return interaction.reply({ embeds: [ embed ], files: [ author, attachment ], components: [ playActionRow, rulesActionRow ] });
 }

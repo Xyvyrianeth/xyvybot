@@ -1,7 +1,7 @@
+import { COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { miniGames } from "../../games/miniGames.js";
 import { drawBoard } from "../../assets/misc/drawNumbers.js";
-import { COMPONENT_TYPE, BUTTON_STYLE } from "../../index.js";
 
 export const command = async (interaction) => {
     if (miniGames.some(miniGame => miniGame.type == "numbers" && miniGame.channelId == interaction.channelId))
@@ -22,7 +22,7 @@ export const command = async (interaction) => {
         timer: 180 };
     miniGames.set(interaction.id, miniGame);
 
-    const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/numbers.png", name: "author.png" };
+    const author = { attachment: "./assets/authors/numbers.png", name: "author.png" };
     const attachment = { attachment: await drawBoard(miniGame.numbers, false), name: "board.png" };
     const embed = {
         author: { name: "numbers", icon_url: "attachment://author.png" },
@@ -30,16 +30,16 @@ export const command = async (interaction) => {
         image: { url: "attachment://board.png" },
         color: new Color().random().toInt() };
     const actionRows = [
-    {   type: COMPONENT_TYPE.ACTION_ROW,
+    {   type: COMPONENT.ACTION_ROW,
         components: [
-        {   type: COMPONENT_TYPE.BUTTON,
+        {   type: COMPONENT.BUTTON,
             style: BUTTON_STYLE.BLUE,
             label: "Large",
             customId: "numbers.number.large" },
-        {   type: COMPONENT_TYPE.BUTTON,
+        {   type: COMPONENT.BUTTON,
             style: BUTTON_STYLE.BLUE,
             label: "Small",
             customId: "numbers.number.small" } ] } ];
 
-    return interaction.reply({ embeds: [embed], files: [author, attachment], components: actionRows });
+    return interaction.reply({ embeds: [ embed ], files: [ author, attachment ], components: actionRows });
 }

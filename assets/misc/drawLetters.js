@@ -19,7 +19,7 @@ export async function drawBoard(letters) {
     return canvas.toBuffer();
 }
 
-const URL = "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/letters/";
+const URL = "./assets/letters/";
 const assets = {
     a:      await loadImage(URL + "a.png"),
     b:      await loadImage(URL + "b.png"),

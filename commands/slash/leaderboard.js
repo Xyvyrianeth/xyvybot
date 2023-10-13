@@ -1,4 +1,4 @@
-import { Xyvybot, dataBase } from "../../index.js";
+import { Xyvybot, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { drawTop } from "../../assets/leaderboard/leaderboard.js";
 import emoji from "../../assets/misc/emoji.json" assert { type: "json" };
@@ -8,12 +8,12 @@ export const command = async (interaction) => {
     const channel = await Xyvybot.channels.fetch(interaction.channelId);
     const permissions = await channel.permissionsFor(Xyvybot.user.id);
     const customEmoji = await permissions.has(1n << 18n);
-    const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/leaderboard.png", name: "author.png" };
+    const author = { attachment: "./assets/authors/leaderboard.png", name: "author.png" };
     let embed = {
         author: { name: "Leaderboard", icon_url: "attachment://author.png" },
         description: `Generating Leaderboard ${customEmoji ? "<a:loading:1010988190250848276>" : ":hourglass:"}`,
         color: new Color().random().toInt() };
-    await interaction.reply({ embeds: [embed], files: [author] });
+    await interaction.reply({ embeds: [ embed ], files: [ author ] });
 
     const games = ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "spiderlinetris"];
     const information = {};
@@ -47,7 +47,7 @@ export const command = async (interaction) => {
             description: "__`NO RESULTS`__",
             color: new Color().random().toInt() };
 
-        return interaction.editReply({ embeds: [embed], files: [author], attachments: [] });
+        return interaction.editReply({ embeds: [ embed ], files: [ author ], attachments: [] });
     }
     else
     {
@@ -84,30 +84,30 @@ export const command = async (interaction) => {
             image: { url: "attachment://top10.png" },
             color: new Color().random().toInt() };
         const pageActionRow = {
-            type: 1,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: 2, style: 1, // Blue Button
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE, // Blue Button
                 emoji: emoji.previous_3,
                 customId: `leaderboard.1.${information.player.id}.${information.game}.1`,
                 disabled: userCount == 0 || information.page == 1 },
-            {   type: 2, style: 1, // Blue Button
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE, // Blue Button
                 emoji: emoji.previous_1,
                 customId: `leaderboard.${information.page - 1}.${information.player.id}.${information.game}.2`,
                 disabled: userCount == 0 || information.page == 1 },
-            {   type: 2, style: 2, // Grey Button
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.GREY, // Grey Button
                 label: `Page ${information.page}/${Math.ceil(userCount / 10)}`,
                 customId: "do.nothing",
                 disabled: true },
-            {   type: 2, style: 1, // Blue Button
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE, // Blue Button
                 emoji: emoji.next_1,
                 customId: `leaderboard.${information.page + 1}.${information.player.id}.${information.game}.3`,
                 disabled: userCount == 0 || Math.ceil(userCount / 10) == information.page },
-            {   type: 2, style: 1, // Blue Button
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE, // Blue Button
                 emoji: emoji.next_3,
                 customId: `leaderboard.${Math.ceil(userCount / 10)}.${information.player.id}.${information.game}.4`,
                 disabled: userCount == 0 || Math.ceil(userCount / 10) == information.page } ] };
         const gameActionRow = {
-            type: 1,
+            type: COMPONENT.ACTION_ROW,
             components: [
             {   type: 3, // Dropdown Menu
                 customId: `leaderboard.gameselect.${information.player.id}`,
@@ -136,6 +136,6 @@ export const command = async (interaction) => {
                 {   label: "Spider Linetris",
                     value: "spiderlinetris" } ] } ] };
 
-        return interaction.editReply({ embeds: [embed], files: [author, topFile], components: [pageActionRow, gameActionRow] });
+        return interaction.editReply({ embeds: [ embed ], files: [ author, topFile ], components: [ pageActionRow, gameActionRow ] });
     }
 };

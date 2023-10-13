@@ -1,3 +1,5 @@
+import { Client } from "../../index.js";
+
 export function newGame(player, id) {
     let _ = false;
     return {
@@ -45,7 +47,7 @@ export function newGame(player, id) {
         getNewCoords: (coords, dir, dis) => {
             return [coords[0] + (dis * [-1, 0, 1, 0][dir]), coords[1] + (dis * [0, 1, 0, -1][dir])];
         },
-        takeTurn: function(Move) {
+        playerTurn: function(Move) {
 
             this.highlight = [];
             this.winner = false;
@@ -516,6 +518,13 @@ export function newGame(player, id) {
             this.replay.push(Move);
 
             return false;
+        },
+        AITurn: function() {
+            let X = (Math.random() * 7 | 0) + 1;
+            return X;
+        },
+        setPriorities: function() {
+
         }
     }
 }

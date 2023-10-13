@@ -6,28 +6,28 @@ import { Xyvybot } from "../../index.js";
 export const command = async (interaction) => {
     if (interaction.options._subcommand == "help")
     {
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/graph.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/graph.png", name: "author.png" };
         const embed = {
             author: { name: "How to use /graph", icon_url: "attachment://author.png" },
             description: "[Click here to go to the Wiki (github.com)](https://github.com/Xyvyrianeth/xyvybot_assets/wiki/x!graph)",
             color: new Color().random().toInt() };
 
-        return interaction.reply({ embeds: [embed], files: [author], ephemeral: true });
+        return interaction.reply({ embeds: [ embed ], files: [ author ], ephemeral: true });
     }
 
     const channel = await Xyvybot.channels.fetch(interaction.channelId);
     const permissions = await channel.permissionsFor(Xyvybot.user.id);
     const customEmoji = await permissions.has(1n << 18n);
-    const loadingAuthor = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/graph.png", name: "author.png" };
+    const loadingAuthor = { attachment: "./assets/authors/graph.png", name: "author.png" };
     const loadingEmbed = {
         author: { name: "Profile", icon_url: "attachment://author.png" },
         description: `Generating graph ${customEmoji ? "<a:loading:1010988190250848276>" : ":hourglass:"}`,
         color: new Color().random().toInt() };
-    await interaction.reply({ embeds: [loadingEmbed], files: [loadingAuthor] });
+    await interaction.reply({ embeds: [ loadingEmbed ], files: [ loadingAuthor ] });
 
     const canvas = new createCanvas(299, 299);
     const ctx = canvas.getContext('2d');
-    const blankGraphImage = await loadImage("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/misc/blankGraph.png");
+    const blankGraphImage = await loadImage("./assets/misc/blankGraph.png");
     const equations = interaction.options._hoistedOptions.map(option => option.value.replace(/ /g, ''));
     const defaultColors = ["#ff0000", "#ff7f00", "#fefe33", "#90EE90", "#008000", "#0d98ba", "#0000ff", "#a020f0", "#964b00", "#ffc0cb"];
     ctx.drawImage(blankGraphImage, 0, 0);
@@ -190,7 +190,7 @@ export const command = async (interaction) => {
     }
 
     const text = "Equation" + (display.length > 1 ? 's' : '') + ":\n" + display.join('\n');
-    const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/graph.png", name: "author.png" };
+    const author = { attachment: "./assets/authors/graph.png", name: "author.png" };
     const Graph = { attachment: canvas.toBuffer(), name: "graph.png" };
     const embed = {
         author: { name: "x!graph | [Wiki]", icon_url: "attachment://author.png", url: "https://github.com/Xyvyrianeth/xyvybot_assets/wiki/x!graph" },
@@ -198,5 +198,5 @@ export const command = async (interaction) => {
         image: { url: "attachment://graph.png" },
         color: new Color().random().toInt() };
 
-    return interaction.editReply({ embeds: [embed], files: [author, Graph] });
+    return interaction.editReply({ embeds: [ embed ], files: [ author, Graph ] });
 };

@@ -18,7 +18,7 @@ export const error = async err => {
     //     color: new Color().random().toInt() };
     // files.push(author);
 
-    // await client.channels.fetch("847758556803235840").send({ embeds: [embed], files: files });
+    // await client.channels.fetch("847758556803235840").send({ embeds: [ embed ], files: files });
     // if (query.length > 1536)
     // {
     //     fs.unlinkSync("query.sql");

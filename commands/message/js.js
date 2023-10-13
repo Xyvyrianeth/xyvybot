@@ -1,4 +1,4 @@
-import { Xyvybot, dataBase, version, bannedUsers } from "../../index.js";
+import { Client, dataBase, version, bannedUsers } from "../../index.js";
 import DiscordJS from "discord.js";
 import { Color } from "../../assets/misc/color.js";
 import { table } from "../../assets/misc/table.js";
@@ -8,12 +8,13 @@ import { miniGames } from "../../games/miniGames.js";
 import Canvas from "canvas";
 import allWords from "../../assets/misc/dictionary.json" assert { type: "json" };
 import { drawText } from "../../assets/drawText/drawText.js";
+import { CategoryNamesPretty } from "open-trivia-db";
 
 export const command = async (input, message) => {
     if (message.author.id == "357700219825160194" && message.content.startsWith("x!js ```js\n") && message.content.endsWith("```"))
     {
         const toEval = input.substring(6, input.length - 3);
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/authors/js.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/js.png", name: "author.png" };
         const attachments = [author];
         const embed = {
             author: { name: "x!js", icon_url: "attachment://author.png" },
@@ -44,7 +45,7 @@ export const command = async (input, message) => {
                 embed.description = "```md\n" + output.join("\n") + "```";
             }
 
-            await message.reply({ embeds: [embed], files: attachments });
+            await message.reply({ embeds: [ embed ], files: attachments });
         }
         catch (err)
         {
@@ -79,7 +80,7 @@ export const command = async (input, message) => {
             {
                 embed.description = "```" + err + "``````" + b[0] + '\n' + ' '.repeat(b[1]) + "^```";
             }
-            await message.reply({ embeds: [embed], files: attachments });
+            await message.reply({ embeds: [ embed ], files: attachments });
         }
     }
 }

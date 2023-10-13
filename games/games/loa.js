@@ -1,3 +1,5 @@
+import { Client } from "../../index.js";
+
 export function newGame(player, id) {
     let _ = false;
     return {
@@ -16,7 +18,7 @@ export function newGame(player, id) {
                     `<@${this.players[this.winner]}> has won by combining all of their pieces into a single group!`,
                     `<@${this.players[this.winner]}> has won because all of their pieces have been combined into a single group by their opponent!` ][this.end];
         },
-        takeTurn: function(Move) {
+        playerTurn: function(Move) {
             let dir = [ "north", "northeast", "east", "southeast", "south", "southwest", "west", "northwest",
                 "n", "ne", "e", "se", "s", "sw", "w", "nw",
                 "north", "eastnorth", "east", "eastsouth", "south", "westsouth", "west", "westnorth",
@@ -189,6 +191,14 @@ export function newGame(player, id) {
             this.replay.push(Move);
 
             return false;
+        },
+        AITurn: function() {
+            let Y = (Math.random() * 8 | 0) + 1;
+            let X = ((Math.random() * 8 | 0) + 10).toString(36);
+            return Y + X;
+        },
+        setPriorities: function() {
+
         }
     }
 }

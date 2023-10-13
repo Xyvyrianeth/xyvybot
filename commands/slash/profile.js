@@ -1,6 +1,6 @@
+import { Client, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import pkg from "canvas";
 const { loadImage } = pkg;
-import { Xyvybot, dataBase, COMPONENT_TYPE, BUTTON_STYLE } from "../../index.js";
 import { drawProfile } from "../../assets/profile/profile.js";
 import { newUser } from "../../index/discordFunctions.js";
 import images from "../../assets/profile/backgrounds.json" assert { type: "json" };
@@ -10,22 +10,21 @@ import { newUIColor } from "../../assets/misc/newUIColor.js";
 const itemsPerPage = 20;
 
 export const command = async (interaction) => {
-    const channel = await Xyvybot.channels.fetch(interaction.channelId);
-    const permissions = await channel.permissionsFor(Xyvybot.user.id);
+    const channel = await Client.channels.fetch(interaction.channelId);
+    const permissions = await channel.permissionsFor(Client.user.id);
     const customEmoji = await permissions.has(1n << 18n);
-    const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/profile.png", name: "author.png" };
-
-    let embed = {
+    const author = { attachment: "./assets/authors/profile.png", name: "author.png" };
+    const tempEmbed = {
         author: { name: "Profile", icon_url: "attachment://author.png" },
         description: `${interaction.options._subcommand == "backgrounds" ? "Loading backgrounds" : "Generating profile"} ${customEmoji ? "<a:loading:1010988190250848276>" : ":hourglass:"}`,
         color: new Color().random().toInt() };
-    await interaction.reply({ embeds: [embed], files: [author] });
+    await interaction.reply({ embeds: [ tempEmbed ], files: [ author ] });
 
     const subCommand = interaction.options._subcommand;
     if (subCommand == "view")
     {
         const userID = interaction.options._hoistedOptions.length == 0 ? interaction.user.id : interaction.options._hoistedOptions[0].value;
-        const player = await Xyvybot.users.fetch(userID);
+        const player = await Client.users.fetch(userID);
         const query = `SELECT * FROM profiles WHERE id = '${player.id}'`;
         const { rows } = await dataBase.query(query);
         const profile = rows.length == 0 ? !interaction.options._group ? await newUser(interaction.user.id) : false : rows[0];
@@ -36,20 +35,20 @@ export const command = async (interaction) => {
         }
 
         const avatar = await loadImage(player.avatar ? `https://cdn.discordapp.com/avatars/${player.id}/${player.avatar}.${player.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png");
-        const background = await loadImage("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/profile/backgrounds/" + profile.background + ".png");
+        const background = await loadImage(`./assets/profile/backgrounds/${profile.background}.png`);
         const attachment = { attachment: await drawProfile(profile.lefty, player, profile, avatar, background), name: "profile.png" };
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/profile.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/profile.png", name: "author.png" };
         const embed = {
             author: { name: "profile", icon_url: "attachment://author.png" },
             description: `${player}`,
             image: { url: "attachment://profile.png" },
             color: new Color(profile.color).toInt() };
 
-        return interaction.editReply({ embeds: [embed], files: [attachment, author] });
+        return interaction.editReply({ embeds: [ embed ], files: [ attachment, author ] });
     }
     if (subCommand == "create")
     {
-        const player = await Xyvybot.users.fetch(interaction.user.id);
+        const player = await Client.users.fetch(interaction.user.id);
         const query = `SELECT * FROM profiles WHERE id = '${player.id}'`;
         const { rows } = await dataBase.query(query);
         const profile = rows.length == 0 ? await newUser(interaction.user.id) : false;
@@ -60,16 +59,16 @@ export const command = async (interaction) => {
         }
 
         const avatar = await loadImage(player.avatar ? `https://cdn.discordapp.com/avatars/${player.id}/${player.avatar}.${player.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png");
-        const background = await loadImage("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/profile/backgrounds/" + profile.background + ".png");
+        const background = await loadImage("./assets/profile/backgrounds/" + profile.background + ".png");
         const attachment = { attachment: await drawProfile(profile.lefty, player, profile, avatar, background), name: "profile.png" };
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/profile.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/profile.png", name: "author.png" };
         const embed = {
             author: { name: "profile", icon_url: "attachment://author.png" },
             description: `${player}`,
             image: { url: "attachment://profile.png" },
             color: new Color(profile.color).toInt() };
 
-        return interaction.editReply({ embeds: [embed], files: [attachment, author] });
+        return interaction.editReply({ embeds: [ embed ], files: [ attachment, author ] });
     }
     if (subCommand == "backgrounds")
     {
@@ -87,55 +86,55 @@ export const command = async (interaction) => {
         {
             b2.push([
                 b1[i],
-                images.tags[b1[i]],
-                `https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/profile/backgrounds/${b1[i] + ".png"}`,
+                images[b1[i]].tags,
+                `./assets/profile/backgrounds/${b1[i] + ".png"}`,
                 b1[i] == profile.background ]);
         }
 
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/profile.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/profile.png", name: "author.png" };
         const embed = {
             author: { name: "profile", icon_url: "attachment://author.png" },
             description: `Backgrounds owned by ${interaction.user} (Page ${page} of ${max}):\n\n` + b2.map(image => `\`${'0'.repeat(3 - String(profile.backgrounds.indexOf(image[0]) + 1).length) + (profile.backgrounds.indexOf(image[0]) + 1)}\`) [\`${image[0]}\`](${image[2]}) | \`${image[1].join("` `")}\` ${image[3] ? " **(Equipped)**" : ""}`).join('\n'),
             footer: { text: profile.backgrounds.length + " total backgrounds owned" },
             color: new Color().random().toInt() };
         const pageActionRow = {
-            type: COMPONENT_TYPE.ACTION_ROW,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 emoji: emoji.previous_3,
                 customId: "profile.background.page.1.1",
                 disabled: page == 1 },
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 emoji: emoji.previous_1,
                 customId: "profile.background.page." + (page - 1) + ".2",
                 disabled: page == 1 },
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.GREY,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.GREY,
                 label: `Page ${page}/${max}`,
                 customId: "do.nothing" },
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 emoji: emoji.next_1,
                 customId: "profile.background.page." + (page + 1) + ".3",
                 disabled: page == max },
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
                 emoji: emoji.next_3,
                 customId: "profile.background.page." + max + ".4",
                 disabled: page == max } ] };
         const equipActionRow = {
-            type: COMPONENT_TYPE.ACTION_ROW,
+            type: COMPONENT.ACTION_ROW,
             components: [
-                {   type: COMPONENT_TYPE.DROP_MENU,
+                {   type: COMPONENT.DROP_MENU,
                     customId: "profile.background.preview." + page,
                     placeholder: "Preview a background",
                     options: b2.map(image => { return { label: '0'.repeat(3 - String(profile.backgrounds.indexOf(image[0]) + 1).length) + (profile.backgrounds.indexOf(image[0]) + 1) + ') ' + image[0], description: `${image[1].join(", ").substring(0, 99)}`, value: image[0] }; }) } ] };
         const purchaseActionRow = {
-            type: COMPONENT_TYPE.ACTION_ROW,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.GREEN,
+            {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.GREEN,
                 label: "Purchase New Background (500 money)",
                 customId: "profile.background.purchase",
-                disabled: profile.money < 500 || profile.backgrounds.length == images.ids.length } ] };
+                disabled: profile.money < 500 || profile.backgrounds.length == Object.keys(images).length } ] };
 
-        return interaction.editReply({ embeds: [embed], files: [author], components: [pageActionRow, equipActionRow, purchaseActionRow] });
+        return interaction.editReply({ embeds: [ embed ], files: [ author ], components: [ pageActionRow, equipActionRow, purchaseActionRow ] });
     }
     if (subCommand == "edit")
     {
@@ -144,15 +143,15 @@ export const command = async (interaction) => {
             return interaction.editReply({ content: "You have to change *something*", ephemeral: true });
         }
 
-        const player = await Xyvybot.users.fetch(interaction.user.id);
+        const player = await Client.users.fetch(interaction.user.id);
         const selectQuery = `SELECT * FROM profiles WHERE id = '${player.id}'`;
         const { rows } = await dataBase.query(selectQuery);
         const profile = rows.length == 0 ? await newUser(player.id) : rows[0];
-        const background = await loadImage("https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/profile/backgrounds/" + profile.background + ".png");
+        const background = await loadImage("./assets/profile/backgrounds/" + profile.background + ".png");
 
         const updates = [];
         const fails = [];
-        interaction.options._hoistedOptions.forEach(option => {
+        await interaction.options._hoistedOptions.forEach(option => {
             if (option.name == "title")
             {
                 const title = option.value.split('').filter(a => /[a-zA-Z0-9—–\-_!?.,:;/\\\(\)\[\]\{\}\|~+×@#$%^&*÷='<>`¡¿€£¥°• ©®¢™✓¶∆πΩΠμ§∞≠≈]/.test(a)).join('').replace(/'/g, "\u200b");
@@ -210,13 +209,13 @@ export const command = async (interaction) => {
 
         const avatar = await loadImage(player.avatar ? `https://cdn.discordapp.com/avatars/${player.id}/${player.avatar}.${player.avatar.startsWith("a_") ? "gif" : "png"}` : "https://cdn.discordapp.com/embed/avatars/0.png");
         const attachment = { attachment: await drawProfile(profile.lefty, player, profile, avatar, background), name: "profile.png" };
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/profile.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/profile.png", name: "author.png" };
         const embed = {
             author: { name: "profile", icon_url: "attachment://author.png" },
             description: "Successfully updated your profile! Take a look:",
             image: { url: "attachment://profile.png" },
             color: new Color(profile.color).toInt() };
 
-        return interaction.editReply({ embeds: [embed], files: [author, attachment] });
+        return interaction.editReply({ embeds: [ embed ], files: [ author, attachment ] });
     }
 }

@@ -1,4 +1,4 @@
-import { Xyvybot } from "../../index.js";
+import { Client, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Rules } from "../../games/Rules.js";
 import { Color } from "../../assets/misc/color.js";
 import { Games } from "../../games/Games.js";
@@ -9,7 +9,7 @@ import emoji from "../../assets/misc/emoji.json" assert { type: "json" };
 import { drawBoard } from "../../assets/misc/drawLetters.js";
 
 export const command = async (message) => {
-    if (message.author.id == Xyvybot.user.id)
+    if (message.author.id == Client.user.id)
     {
         if (["trivia", "letters", "numbers", "hangman", "iq"].includes(message.embeds[0]?.author?.name) && miniGames.some(miniGame => miniGame.channelId == message.channelId))
         {
@@ -52,22 +52,56 @@ export const command = async (message) => {
         return;
     }
 
-    const channel = await Xyvybot.channels.fetch(message.channelId);
-    if (channel.guildId !== null && !channel.permissionsFor(Xyvybot.user.id).has([1n << 11n, 1n << 15n]))
+    const channel = await Client.channels.fetch(message.channelId);
+    if (channel.guildId !== null && !channel.permissionsFor(Client.user.id).has([1n << 11n, 1n << 15n]))
     {
         return;
     }
     if (channel.guildId == null && message.attachments.size > 0)
     {
         const images = Array.from(message.attachments).map(m => m[1].url);
-        const owner = await Xyvybot.users.fetch("357700219825160194");
+        const owner = await Client.users.fetch("357700219825160194");
         return owner.send(`Images from user ${message.author}: \n${images.join('\n')}`);
     }
 
     if ((message.content == "x!setCommands" || message.content == "x!removeCommands") && ["357700219825160194"].includes(message.author.id))
     {
-        Xyvybot.guilds.cache.forEach(async guild => await guild.commands.set(message.content == "x!setCommands" ? slashCommandData : []));
-        return message.reply("Commands have been updated");
+        const successfulServers = [];
+        var errored = false;
+
+        settingCommands:
+        for (let guild of Client.guilds.cache)
+        {
+            try
+            {
+                await guild[1].commands.set(message.content == "x!setCommands" ? slashCommandData : []);
+                successfulServers.push(guild[1].name);
+            }
+            catch (error)
+            {
+                console.log(error);
+                errored = true;
+                const author = { attachment: "./assets/authors/_template.png", name: "author.png" };
+                const embed = {
+                    author: { name: "x!setCommands", icon_url: "attachment://author.png" },
+                    description: `__Error updating commands for ${guild[1].name}__:\n\`\`\`\n${error.stack.split('\n')[1].split(':')[1].trim()}\n${error.stack.split('\n')[1].split(':')[0]}\n\`\`\``,
+                    color: new Color().random().toInt() };
+                await message.reply({ embeds: [ embed ], files: [ author ] });
+                break settingCommands;
+            }
+        }
+
+        if (errored)
+        {
+            return;
+        }
+
+        const author = { attachment: "./assets/authors/_template.png", name: "author.png" };
+        const embed = {
+            author: { name: "x!setCommands", icon_url: "attachment://author.png" },
+            description: `__Successfully updated commands for__:\n- ${successfulServers.join('\n- ')}`,
+            color: new Color().random().toInt() };
+        return await message.reply({ embeds: [ embed ], files: [ author ] });
     }
     if (message.content.startsWith("x!js") && ["357700219825160194"].includes(message.author.id))
     {
@@ -108,12 +142,12 @@ export const command = async (message) => {
 
         try
         {
-            return await Rules.takeTurn(Game.id, message);
+            return await Rules.playerTurn(Game.id, message);
         }
         catch (error)
         {
             console.log(error);
-            const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/misc/avatar.png", name: "author.png" };
+            const author = { attachment: "./assets/misc/avatar.png", name: "author.png" };
             const embed = {
                 author: { name: "Xyvybot", icon_url: "attachment://author.png" },
                 title: "Error in game: " + Game.name,
@@ -121,8 +155,8 @@ export const command = async (message) => {
                 color: new Color().random().toInt() };
 
             Game.channels.forEach(async channelId => {
-                const Channel = await Xyvybot.channels.fetch(channelId);
-                await Channel.send({ embeds: [embed], files: [author] });
+                const Channel = await Client.channels.fetch(channelId);
+                await Channel.send({ embeds: [ embed ], files: [ author ] });
             });
 
             const err = error.stack.split('\n');
@@ -144,8 +178,8 @@ export const command = async (message) => {
         const userId = message.author.id;
         deleteMessage(message);
         
-        const user = await Xyvybot.users.fetch(userId);
-        const channel = await Xyvybot.channels.fetch(miniGame.channelId)
+        const user = await Client.users.fetch(userId);
+        const channel = await Client.channels.fetch(miniGame.channelId)
         const Message = await channel.messages.fetch(miniGame.messageId);
         const usedLetters = word.split('');
         const availableLetters = miniGame.letters.concat();
@@ -181,7 +215,7 @@ export const command = async (message) => {
         const attempts = [];
         Object.keys(miniGame.attempts).forEach(userId => attempts.push(`<@${userId}> – ${miniGame.attempts[userId].length}`));
 
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/letters.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/letters.png", name: "author.png" };
         const attachment = { attachment: await drawBoard(miniGame.letters), name: "board.png" };
         const embed = {
             author: { name: "letters", icon_url: "attachment://author.png" },
@@ -190,7 +224,7 @@ export const command = async (message) => {
             fields: [ { name: "Attempts", value: attempts.sort((a, b) => { return b[b.length - 1] - a[a.length - 1] }).join('\n') } ],
             color: new Color().random().toInt() };
 
-        return await Message.edit({ embeds: [embed], files: [author, attachment], attachments: [] });
+        return await Message.edit({ embeds: [ embed ], files: [ author, attachment ], attachments: [] });
     }
     if (/^[0-9+\-*x/() ]+$/.test(message.content) && miniGames.some(miniGame => miniGame.channelId == message.channelId && miniGame.type == "numbers"))
     {
@@ -199,8 +233,8 @@ export const command = async (message) => {
         const userId = message.author.id;
         deleteMessage(message);
 
-        const user = await Xyvybot.users.fetch(userId);
-        const channel = await Xyvybot.channels.fetch(miniGame.channelId)
+        const user = await Client.users.fetch(userId);
+        const channel = await Client.channels.fetch(miniGame.channelId)
         const Message = await channel.messages.fetch(miniGame.messageId);
         const usedNumbers = equation.match(/[0-9]+/g);
         const availableNumbers = miniGame.numbers.concat();
@@ -228,7 +262,7 @@ export const command = async (message) => {
             }
         }
 
-        const result = Math.calculate(equation);
+        const result = Math.calculate(equation.replace(/x/g, '*'));
         if (result[0] == "err")
         {
             return await channel.send({ content: `${user} Your answer does not compute`, ephemeral: true });
@@ -260,21 +294,21 @@ export const command = async (message) => {
         }
         description.pop();
 
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/numbers.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/numbers.png", name: "author.png" };
         const embed = {
             author: { name: "numbers", icon_url: "attachment://author.png" },
             description: `Times up <t:${(Date.now() / 1000 | 0) + miniGame.timer}:R>\n\nTarget: ${emojis[String(miniGame.target)[0]]}${emojis[String(miniGame.target)[1]]}${emojis[String(miniGame.target)[2]]}\n\n${description.join('')}`,
             fields: [ { name: "Attempts", value: attempts.sort((a, b) => { return b[b.length - 1] - a[a.length - 1] }).join('\n') } ],
             color: new Color().random().toInt() };
 
-        return await Message.edit({ embeds: [embed], files: [author], attachments: [] });
+        return await Message.edit({ embeds: [ embed ], files: [ author ], attachments: [] });
     }
     if (miniGames.some(miniGame => miniGame.type == "hangman" && miniGame.channelId == message.channelId))
     {
         const miniGame = miniGames.find(miniGame => miniGame.channelId == message.channelId && miniGame.type == "hangman");
         const guess = message.content.toUpperCase();
         const information = { action: '', timer: '', guessesLeft: '', previousGuesses: '' };
-        const channel = await Xyvybot.channels.fetch(miniGame.channelId);
+        const channel = await Client.channels.fetch(miniGame.channelId);
         const messageId = await channel.messages.fetch(miniGame.messageId);
         const lastUserMessage = await channel.messages.fetch(miniGame.lastUserMessage);
 
@@ -365,8 +399,8 @@ export const command = async (message) => {
             }
         });
 
-        const thumbnail = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/hangman/" + miniGame.tries + ".png", name: "hangman.png" };
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/authors/hangman.png", name: "author.png" };
+        const thumbnail = { attachment: "./assets/hangman/" + miniGame.tries + ".png", name: "hangman.png" };
+        const author = { attachment: "./assets/authors/hangman.png", name: "author.png" };
         const embed = {
             author: { name: "hangman", icon_url: "attachment://author.png" },
             thumbnail: { url: "attachment://hangman.png" },
@@ -378,7 +412,7 @@ export const command = async (message) => {
                 information.timer + information.guessesLeft + information.previousGuesses ].join('\n') } ],
             color: new Color(information.color).toInt() };
 
-        channel.send({ embeds: [embed], files: [thumbnail, author] });
+        channel.send({ embeds: [ embed ], files: [ thumbnail, author ] });
         
         await deleteMessage(messageId);
         if (!miniGame.first)
@@ -398,10 +432,10 @@ export const command = async (message) => {
     }
     if (miniGames.some(miniGame => miniGame.type == "iq" && miniGame.channelId == message.channelId && message.content.toUpperCase() == miniGame.answer))
     {
-        const channel = await Xyvybot.channels.fetch(message.channelId);
+        const channel = await Client.channels.fetch(message.channelId);
         const Message = await channel.message.fetch(miniGame.messageId);
         const miniGame = miniGames.find(miniGame => miniGame.channelId == message.channelId && miniGame.type == "iq" && message.content.toUpperCase() == miniGame.answer);
-        const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/iq.png", name: "author.png" };
+        const author = { attachment: "./assets/authors/iq.png", name: "author.png" };
         const embed = {
             author: { name: "IQ", icon_url: "attachment://author.png" },
             fields: [
@@ -413,16 +447,16 @@ export const command = async (message) => {
             color: new Color(46, 204, 113).toInt(),
             footer: { text: "Friendly reminder that IQ is not real, it's simply an appropriate name for this feature." } };
         const actionRow = {
-            type: 1,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: 2,
-                style: 3,
+            {   type: COMPONENT.BUTTON,
+                style: BUTTON_STYLE.GREEN,
                 label: "TRY ANOTHER",
                 customId: "iq" } ] };
 
         miniGames.delete(miniGame.id);
         await deleteMessage(Message);
-        await message.reply({ embeds: [embed], files: [author], components: [actionRow], attachments: [] });
+        await message.reply({ embeds: [ embed ], files: [ author ], components: [ actionRow ], attachments: [] });
         return;
     }
 }

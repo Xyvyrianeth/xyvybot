@@ -1,3 +1,5 @@
+import { Client } from "../../index.js";
+
 export function newGame() {
     return {
         turnColors: ["#6666ff", "#ff6666", "#66ff66"],
@@ -15,7 +17,7 @@ export function newGame() {
                     `<@${this.players[this.winner]}> has won!`,
                     `<@${this.players[0]}> and <@${this.players[1]}> have tied!`][this.end];
         },
-        takeTurn: function(Move) {
+        playerTurn: function(Move) {
             let row = parseInt(Move, 36) - 10;
             this.end = 2;
 
@@ -72,6 +74,14 @@ export function newGame() {
             this.replay.push(Move);
 
             return false;
+        },
+        AITurn: function() {
+            let Y = (Math.random() * 8 | 0) + 1;
+            let X = ((Math.random() * 8 | 0) + 10).toString(36);
+            return Y + X;
+        },
+        setPriorities: function() {
+
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Xyvybot, dataBase, COMPONENT_TYPE, BUTTON_STYLE } from "../../index.js";
+import { Xyvybot, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { replayImage } from "../../games/replayImage.js";
 import emoji from "../../assets/misc/emoji.json" assert { type: "json" };
@@ -39,36 +39,36 @@ export const command = async (interaction) => {
         winner: match.winner == "undefined" ? "No one" : await Xyvybot.users.fetch(match.winner) };
     const turn = command[1] == "init" ? 0 : Number(command[3]);
     const attachment = { attachment: await replayImage(match.game, interaction.id, false, Match.replay, turn), name: "replay.png" };
-    const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/history.png", name: "author.png" };
+    const author = { attachment: "./assets/authors/history.png", name: "author.png" };
     const description = `Match ID: \`${Match.id}\`\nGame: ${Match.game}\n${Match.players[0]} VS ${Match.players[1]}\nWINNER: ${Match.winner}\n\nTurn \`${turn}\` of \`${Match.replay.length}\``
     const actionRow = {
-        type: COMPONENT_TYPE.ACTION_ROW,
+        type: COMPONENT.ACTION_ROW,
         components: [
-        // {   type: COMPONENT_TYPE.BUTTON,
+        // {   type: COMPONENT.BUTTON,
         //     emoji: emoji.previous_3,
         //     style: BUTTON_STYLE.BLUE,
         //     customId: `replay.turn.${Match.id}.0.first`,
         //     disabled: turn == 0 },
-        {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+        {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
             emoji: emoji.previous_2,
             customId: `replay.turn.${Match.id}.${turn - 10 < 0 ? 0 : turn - 10}.skipback`,
             disabled: turn == 0 },
-        {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+        {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
             emoji: emoji.previous_1,
             customId: `replay.turn.${Match.id}.${turn - 1}.previous`,
             disabled: turn == 0 },
-        {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.GREEN,
+        {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.GREEN,
             label: String(turn),
             customId: `replay.turn.current.${interaction.user.id}` },
-        {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+        {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
             emoji: emoji.next_1,
             customId: `replay.turn.${Match.id}.${turn + 1}.next`,
             disabled: turn == Match.replay.length },
-        {   type: COMPONENT_TYPE.BUTTON, style: BUTTON_STYLE.BLUE,
+        {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.BLUE,
             emoji: emoji.next_2,
             customId: `replay.turn.${Match.id}.${turn + 10 > Match.replay.length ? Match.replay.length : turn + 10}.skipforward`,
             disabled: turn == Match.replay.length } ] };
-        // {   type: COMPONENT_TYPE.BUTTON,
+        // {   type: COMPONENT.BUTTON,
         //     emoji: emoji.next_3,
         //     style: BUTTON_STYLE.BLUE,
         //     customId: `replay.turn.${Match.id}.${Match.replay.length}.last`,
@@ -79,6 +79,6 @@ export const command = async (interaction) => {
         image: { url: `attachment://replay.png` },
         color: new Color().random().toInt() };
 
-    await interaction.message.edit({ embeds: [embed], components: [actionRow], files: [author, attachment], attachments: [] });
+    await interaction.message.edit({ embeds: [ embed ], components: [ actionRow ], files: [ author, attachment ], attachments: [] });
     await interaction.deferUpdate();
 }

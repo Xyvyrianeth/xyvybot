@@ -508,7 +508,7 @@ export async function drawBoard(Game, replay) {
     return finalCanvas.toBuffer();
 }
 
-const URL = "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/games/";
+const URL = "./assets/games/";
 const assets = {
     boards:
     {   "3DT":              await loadImage(URL + "boards/3DT.png"),

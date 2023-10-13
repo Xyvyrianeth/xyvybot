@@ -153,27 +153,27 @@ export async function drawProfile(Side, user, profile, avatar, background, previ
 
     const overlayCanvas = new createCanvas(trueWidth, trueHeight);
     const overlayContext = overlayCanvas.getContext("2d");
-    overlayContext.drawImage(images.top, [0, trueWidth - 154][side], 0);
-    overlayContext.drawImage(images.topBack, [0, trueWidth - 154][side], 0);
-    overlayContext.drawImage(images.topExtend, [152, trueWidth - (152 + topWidth)][side], 0, topWidth, 47);
+    overlayContext.drawImage(images.top,           [0, trueWidth - 154][side], 0);
+    overlayContext.drawImage(images.topBack,       [0, trueWidth - 154][side], 0);
+    overlayContext.drawImage(images.topExtend,     [152, trueWidth - (152 + topWidth)][side], 0, topWidth, 47);
     overlayContext.drawImage(images.topExtendBack, [152, trueWidth - (152 + topWidth)][side], 0, topWidth, 47);
-    overlayContext.drawImage(images.topEnd, [152 + topWidth, trueWidth - (200 + topWidth)][side], 0);
-    overlayContext.drawImage(images.topEndBack, [152 + topWidth, trueWidth - (200 + topWidth)][side], 0);
-    overlayContext.drawImage(images.game, [0, trueWidth - 154][side], 64, 154, 11 * gameCount - 1);
-    overlayContext.drawImage(images.gameBack, [0, trueWidth - 154][side], 64, 154, 11 * gameCount - 1);
-    overlayContext.drawImage(images.bottom, [0, trueWidth - 154][side], 63 + 11 * gameCount);
-    overlayContext.drawImage(images.bottomBack, [0, trueWidth - 154][side], 63 + 11 * gameCount);
-    overlayContext.drawImage(images.username, [48, trueWidth - (48 + images.username.width)][side], 3);
-    overlayContext.drawImage(images.userId, [48, trueWidth - (48 + images.userId.width)][side], 19);
-    overlayContext.drawImage(images.title, [48, trueWidth - (48 + images.title.width)][side], 33);
-    overlayContext.drawImage(images.preText, [4, trueWidth - 150][side], 49);
-    overlayContext.drawImage(images.money, [4, trueWidth - 150][side], 68 + 11 * gameCount);
+    overlayContext.drawImage(images.topEnd,        [152 + topWidth, trueWidth - (200 + topWidth)][side], 0);
+    overlayContext.drawImage(images.topEndBack,    [152 + topWidth, trueWidth - (200 + topWidth)][side], 0);
+    overlayContext.drawImage(images.game,          [0, trueWidth - 154][side], 64, 154, 11 * gameCount - 1);
+    overlayContext.drawImage(images.gameBack,      [0, trueWidth - 154][side], 64, 154, 11 * gameCount - 1);
+    overlayContext.drawImage(images.bottom,        [0, trueWidth - 154][side], 63 + 11 * gameCount);
+    overlayContext.drawImage(images.bottomBack,    [0, trueWidth - 154][side], 63 + 11 * gameCount);
+    overlayContext.drawImage(images.username,      [48, trueWidth - (48 + images.username.width)][side], 3);
+    overlayContext.drawImage(images.userId,        [48, trueWidth - (48 + images.userId.width)][side], 19);
+    overlayContext.drawImage(images.title,         [48, trueWidth - (48 + images.title.width)][side], 33);
+    overlayContext.drawImage(images.preText,       [4, trueWidth - 150][side], 49);
+    overlayContext.drawImage(images.money,         [4, trueWidth - 150][side], 68 + 11 * gameCount);
     for (let i = 0; i < gameCount; i++)
     {
         overlayContext.drawImage(images.scores[i], [103, trueWidth - 51][side], 64 + 11 * i);
     }
-    overlayContext.drawImage(images.scores[gameCount], [103, trueWidth - 51][side], 68 + 11 * gameCount);
-    overlayContext.drawImage(images.scores[gameCount + 1], [50, trueWidth - 104][side], 68 + 11 * gameCount);
+    overlayContext.drawImage(images.scores[gameCount],     [103, trueWidth -  51][side], 68 + 11 * gameCount);
+    overlayContext.drawImage(images.scores[gameCount + 1], [50,  trueWidth - 104][side], 68 + 11 * gameCount);
 
     const finalWidth = multiplier * trueWidth;
     const finalHeight = multiplier * trueHeight;
@@ -195,29 +195,28 @@ export async function drawProfile(Side, user, profile, avatar, background, previ
     return finalCanvas.toBuffer();
 }
 
-const URL = "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/profile/";
 const assets = {
     left:
-    {   top:            await loadImage(URL + "left/top.png"),
-        topBack:        await loadImage(URL + "left/topBack.png"),
-        topExtend:      await loadImage(URL + "left/topExtend.png"),
-        topExtendBack:  await loadImage(URL + "left/topExtendBack.png"),
-        topEnd:         await loadImage(URL + "left/topEnd.png"),
-        topEndBack:     await loadImage(URL + "left/topEndBack.png"),
-        game:           await loadImage(URL + "left/game.png"),
-        gameBack:       await loadImage(URL + "left/gameBack.png"),
-        bottom:         await loadImage(URL + "left/bottom.png"),
-        bottomBack:     await loadImage(URL + "left/bottomBack.png"),
-        preText:        await loadImage(URL + "left/preText.png") },
+    {   top:            await loadImage("./assets/profile/left/top.png"),
+        topBack:        await loadImage("./assets/profile/left/topBack.png"),
+        topExtend:      await loadImage("./assets/profile/left/topExtend.png"),
+        topExtendBack:  await loadImage("./assets/profile/left/topExtendBack.png"),
+        topEnd:         await loadImage("./assets/profile/left/topEnd.png"),
+        topEndBack:     await loadImage("./assets/profile/left/topEndBack.png"),
+        game:           await loadImage("./assets/profile/left/game.png"),
+        gameBack:       await loadImage("./assets/profile/left/gameBack.png"),
+        bottom:         await loadImage("./assets/profile/left/bottom.png"),
+        bottomBack:     await loadImage("./assets/profile/left/bottomBack.png"),
+        preText:        await loadImage("./assets/profile/left/preText.png") },
     right:
-    {   top:            await loadImage(URL + "right/top.png"),
-        topBack:        await loadImage(URL + "right/topBack.png"),
-        topExtend:      await loadImage(URL + "right/topExtend.png"),
-        topExtendBack:  await loadImage(URL + "right/topExtendBack.png"),
-        topEnd:         await loadImage(URL + "right/topEnd.png"),
-        topEndBack:     await loadImage(URL + "right/topEndBack.png"),
-        game:           await loadImage(URL + "right/game.png"),
-        gameBack:       await loadImage(URL + "right/gameBack.png"),
-        bottom:         await loadImage(URL + "right/bottom.png"),
-        bottomBack:     await loadImage(URL + "right/bottomBack.png"),
-        preText:        await loadImage(URL + "right/preText.png") } };
+    {   top:            await loadImage("./assets/profile/right/top.png"),
+        topBack:        await loadImage("./assets/profile/right/topBack.png"),
+        topExtend:      await loadImage("./assets/profile/right/topExtend.png"),
+        topExtendBack:  await loadImage("./assets/profile/right/topExtendBack.png"),
+        topEnd:         await loadImage("./assets/profile/right/topEnd.png"),
+        topEndBack:     await loadImage("./assets/profile/right/topEndBack.png"),
+        game:           await loadImage("./assets/profile/right/game.png"),
+        gameBack:       await loadImage("./assets/profile/right/gameBack.png"),
+        bottom:         await loadImage("./assets/profile/right/bottom.png"),
+        bottomBack:     await loadImage("./assets/profile/right/bottomBack.png"),
+        preText:        await loadImage("./assets/profile/right/preText.png") } };

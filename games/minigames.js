@@ -1,9 +1,9 @@
 import { Collection } from "discord.js";
-import { Xyvybot, COMPONENT_TYPE, BUTTON_STYLE } from "../index.js";
+import { Client, COMPONENT, BUTTON_STYLE } from "../index.js";
 import { Color } from "../assets/misc/color.js";
 import { deleteMessage } from "../index/discordFunctions.js";
 import allWords from "../assets/misc/dictionary.json" assert { type: "json" };
-import { drawBoard as drawNumbers } from "../assets/misc/drawLetters.js";
+import { drawBoard as drawNumbers } from "../assets/misc/drawNumbers.js";
 import { drawBoard as drawLetters } from "../assets/misc/drawLetters.js";
 export const miniGames = new Collection();
 const margin = 5;
@@ -23,10 +23,10 @@ const interval = () => {
                 return;
             }
 
-            const channel = await Xyvybot.channels.fetch(miniGame.channelId);
+            const channel = await Client.channels.fetch(miniGame.channelId);
             const message = await channel.messages.fetch(miniGame.messageId);
 
-            const newEmbed = message.embeds[0].toJSON();
+            const newEmbed = message.embeds?.[0].toJSON();
             newEmbed.description = "Nobody got it in time";
             newEmbed.fields[1] = { name: "Wrong People", value: miniGame.wrongPeople.length > 0 ? `<@${miniGame.wrongPeople.join("> <@")}>` : "Nobody got it wrong either" };
             const newComponents = message.components.map(component => {
@@ -36,13 +36,13 @@ const interval = () => {
                 return button;
             });
 
-            message.edit({ embeds: [newEmbed], components: newComponents, attachments: [] });
+            await message.edit({ embeds: [ newEmbed ], components: newComponents, attachments: [] });
             miniGames.delete(id);
         }
 
         if (miniGame.type == "letters")
         {
-            const channel = await Xyvybot.channels.fetch(miniGame.channelId);
+            const channel = await Client.channels.fetch(miniGame.channelId);
             const message = await channel.messages.fetch(miniGame.messageId);
 
             if (miniGame.letters.length !== 9)
@@ -77,7 +77,7 @@ const interval = () => {
             const longestPossible = possibleWords.sort((a, b) => b.length - a.length)[0].length;
             const longestWords = possibleWords.filter(word => word.length == longestPossible);
 
-            const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/letters.png", name: "author.png" };
+            const author = { attachment: "./assets/authors/letters.png", name: "author.png" };
             const attachment = { attachment: await drawLetters(miniGame.letters), name: "board.png" };
             const embed = {
                 author: { name: "letters", icon_url: "attachment://author.png" },
@@ -103,21 +103,21 @@ const interval = () => {
                 {   name: `Longest Possible — ${longestPossible} Letters`,
                     value: `\`${longestWords.join('` \u200b `')}\`` } ] };
             const actionRow = {
-                type: COMPONENT_TYPE.ACTION_ROW,
+                type: COMPONENT.ACTION_ROW,
                 components: [
-                {   type: COMPONENT_TYPE.BUTTON,
+                {   type: COMPONENT.BUTTON,
                     style: BUTTON_STYLE.GREEN,
                     label: "TRY ANOTHER",
                     customId: "letters.restart" } ] };
 
-            message.edit({ embeds: [embed], files: [author, attachment], components: [], attachments: [] });
+            await message.edit({ embeds: [ embed ], files: [ author, attachment ], components: [], attachments: [] });
             miniGames.delete(id);
             return;
         }
 
         if (miniGame.type == "numbers")
         {
-            const channel = await Xyvybot.channels.fetch(miniGame.channelId);
+            const channel = await Client.channels.fetch(miniGame.channelId);
             const message = await channel.messages.fetch(miniGame.messageId);
 
             if (miniGame.numbers.length !== 6)
@@ -126,12 +126,9 @@ const interval = () => {
                 deleteMessage(message);
                 return;
             }
-
-            const value = Object.values(miniGame.attempts).some(value => value == miniGame.target) ?
-                miniGame.attempts[Object.keys(miniGame.attempts).filter(a => miniGame.attempts[a][0] == miniGame.target)[0]][1] :
-                miniGame.solution[1];
-            const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/numbers.png", name: "author.png" };
-            const attachment = { attachment: await drawNumbers(miniGame.numbers, miniGame.target), name: "board.png" };
+            
+            const author = { attachment: "./assets/authors/numbers.png", name: "author.png" };
+            const attachment = { attachment: await drawNumbers(miniGame.numbers, miniGame.target, miniGame.solution), name: "board.png" };
             const embed = {
                 author: { name: "numbers", icon_url: "attachment://author.png" },
                 description: "Times up!",
@@ -155,23 +152,14 @@ const interval = () => {
                         return aDist - bDist;
                     }).join('\n') || "No one answered in time" } ] };
             const actionRow = {
-                type: COMPONENT_TYPE.ACTION_ROW,
+                type: COMPONENT.ACTION_ROW,
                 components: [
-                {   type: COMPONENT_TYPE.BUTTON,
+                {   type: COMPONENT.BUTTON,
                     style: BUTTON_STYLE.GREEN,
                     label: "TRY ANOTHER",
                     customId: "numbers.restart" } ] };
 
-            
-            const bestSolution = {
-                name: `Solution — ${miniGame.solution[0] == miniGame.target ? miniGame.target + " (Exact)": " (Closest Possible)"}`,
-                value: `${"\u200b ".repeat(margin)}\`${value}\`` };
-            if (!Object.keys(miniGame.attempts).some(userId => miniGame.attempts[userId][0] == miniGame.solution[0]))
-            {
-                embed.fields.push(bestSolution);
-            }
-
-            message.edit({ embeds: [embed], files: [author, attachment], components: [], attachments: [] });
+            await message.edit({ embeds: [ embed ], files: [ author, attachment ], components: [], attachments: [] });
             miniGames.delete(id);
             return;
         }
@@ -191,23 +179,23 @@ const interval = () => {
                 }
             }
 
-            const hangman = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/hangman/7.png", name: "hangman.png" };
-            const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/hangman.png", name: "author.png" };
+            const hangman = { attachment: "./assets/hangman/7.png", name: "hangman.png" };
+            const author = { attachment: "./assets/authors/hangman.png", name: "author.png" };
             const embed = {
                 author: { name: "hangman", icon_url: "attachment://author.png" },
                 thumbnail: { url: "attachment://hangman.png" },
                 fields: [ { name: "Looks like nobody's playing anymore!", value: `**${display.join("\u200b \u200b")}**\n\n**__Guesses__**: \`${miniGame.guesses.join("` `")}\`` } ],
                 color: new Color("#FF6666").toInt() };
             const actionRow = {
-                type: COMPONENT_TYPE.ACTION_ROW,
+                type: COMPONENT.ACTION_ROW,
                 components: [
-                {   type: COMPONENT_TYPE.BUTTON,
+                {   type: COMPONENT.BUTTON,
                     style: BUTTON_STYLE.GREEN,
                     label: "TRY ANOTHER",
                     customId: "hangman" } ] };
 
-            const channel = await Xyvybot.channels.fetch(miniGame.channelId);
-            channel.send({ embeds: [embed], files: [hangman, author], components: [actionRow] });
+            const channel = await Client.channels.fetch(miniGame.channelId);
+            channel.send({ embeds: [ embed ], files: [ hangman, author ], components: [ actionRow ] });
             const messageId = await channel.messages.fetch(miniGame.messageId);
             deleteMessage(messageId);
             if (miniGame.hasOwnProperty("lastUserMessage")) {
@@ -220,22 +208,22 @@ const interval = () => {
 
         if (miniGame.type == "iq")
         {
-            const channel = await Xyvybot.channels.fetch(miniGame.channelId);
+            const channel = await Client.channels.fetch(miniGame.channelId);
             const message = await channel.messages.fetch(miniGame.messageId);
-            const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/main/iq.png", name: "author.png" };
+            const author = { attachment: "./assets/iq.png", name: "author.png" };
             const embed = {
                 author: { name: "iq", icon_url: "attachment://author.png" },
                 fields: [ { name: "Nobody got it in time!", value: miniGame.end } ],
                 color: new Color("#FF6666").toInt() };
             const actionRow = {
-                type: COMPONENT_TYPE.ACTION_ROW,
+                type: COMPONENT.ACTION_ROW,
                 components: [
-                {   type: COMPONENT_TYPE.BUTTON,
+                {   type: COMPONENT.BUTTON,
                     style: BUTTON_STYLE.GREEN,
                     label: "TRY ANOTHER",
                     customId: "iq" } ] };
 
-            channel.send({ embeds: [embed], files: [author], components: [actionRow] });
+            channel.send({ embeds: [ embed ], files: [ author ], components: [ actionRow ] });
             miniGames.delete(id);
             deleteMessage(message);
             return;

@@ -25,8 +25,8 @@ export const command = async (interaction) => {
         {
             newEmbed.fields[1] = { name: "Wrong People", value: `<@${miniGame.wrongPeople.join("> <@")}>` };
         }
-        interaction.deferUpdate();
-        return interaction.message.edit({ embeds: [newEmbed], components: newComponents, attachments: [] });
+        await interaction.deferUpdate();
+        return interaction.message.edit({ embeds: [ newEmbed ], components: newComponents, attachments: [] });
     }
     else
     {
@@ -35,7 +35,7 @@ export const command = async (interaction) => {
         const newEmbed = interaction.message.embeds[0].toJSON();
         newEmbed.fields[1] = { name: "Wrong People", value: `<@${miniGame.wrongPeople.join("> <@")}>` };
 
-        interaction.deferUpdate();
-        return interaction.message.edit({ embeds: [newEmbed], components: interaction.message.components, attachments: [] });
+        await interaction.deferUpdate();
+        return interaction.message.edit({ embeds: [ newEmbed ], components: interaction.message.components, attachments: [] });
     }
 }

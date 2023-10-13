@@ -1,26 +1,29 @@
+import { Client } from "../../index.js";
+
 export function newGame(player, id) {
-    let _ = false;
+    const _ = false;
     return {
-        turnColors: ["#000000", "#ffffff", "#66ff66"],
+        turnColors: [ "#000000", "#ffffff", "#66ff66" ],
         board: [
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _, _, _] ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ],
+            [ _, _, _, _, _, _, _, _, _, _, _, _ ] ],
         endMessage: function() {
-            return [`It is <@${this.player}>'s turn.`,
-                    `<@${this.players[this.winner]}> has won!`,
-                    `<@${this.players[0]}> and <@${this.players[1]}> have tied!`][this.end];
+            return [
+                `It is <@${this.player}>'s turn.`,
+                `<@${this.players[this.winner]}> has won!`,
+                `<@${this.players[0]}> and <@${this.players[1]}> have tied!` ][this.end];
         },
-        takeTurn: function(Move) {
+        playerTurn: function(Move) {
             const move = [Move.match(/[0-9]{1,2}/) - 1, parseInt(Move.match(/[a-l]/), 36) - 10];
             this.winner = false;
             this.end = 2;
@@ -43,9 +46,9 @@ export function newGame(player, id) {
 
             for (let y = 0, x = 0, dir = 0; y < 12; dir < 3 ? dir++ : (dir = 0, x < 11 ? x++ : (x = 0, y++)))
             {
-                let yd = [-1, 0, 1, 1][dir];
-                let xd = [1, 1, 1, 0][dir];
-                if (y + (yd * 3) > 12 || y + (yd * 3) < 0 || x + (xd * 3) > 12 || x + (xd * 3) < 0)
+                const yd = [-1, 0, 1, 1][dir];
+                const xd = [1, 1, 1, 0][dir];
+                if (y + (yd * 5) > 12 || y + (yd * 5) < 0 || x + (xd * 5) > 12 || x + (xd * 5) < 0)
                 {
                     continue;
                 }
@@ -55,7 +58,7 @@ export function newGame(player, id) {
 
                 for (let length = 0; length < 6; length++)
                 {
-                    rowOfSix.push(this.board[y + (yd * length)][x + (xd * length)]);
+                    rowOfSix.push(this.board[y + (yd * length)]?.[x + (xd * length)]);
                     highlight.push([y + (yd * length), x + (xd * length)]);
                 }
 
@@ -91,6 +94,78 @@ export function newGame(player, id) {
             this.replay.push(Move);
 
             return false;
+        },
+        AITurn: function() {
+            const priorityBoard = [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ];
+            const piece = this.players.indexOf(Client.user.id);
+            const turn = (this.turn % 1) * 2;
+            for (let dir = 0, y = 5, x = 0; dir < 4; x < [6, 6, 6, 11][dir] ? x++ : (x = 0, y < [11, 11, 6, 6][dir] ? y++ : (y = 0, dir++)))
+            {
+                const yDist = [-1, 0, 1, 1][dir];
+                const xDist = [1, 1, 1, 0][dir];
+                const rowCoords = [];
+                const rowPieces = [];fy
+                for (let length = 0; length < 6; length++)
+                {
+                    rowCoords.push([y + (yDist * length), x + (xDist * length)]);
+                    rowPieces.push(this.board[y + (yDist * length)][x + (xDist * length)]);
+                }
+
+                if (!rowPieces.some(p => p === false))
+                {
+                    continue;
+                }
+
+                if (!rowPieces.some(p => p === [1, 0][piece]))
+                {
+                    const count = rowPieces.filter(p => p !== false).length;
+                    rowCoords.forEach((p, i) => priorityBoard[p[0]][p[1]] += this.priorities.offense[turn][count]);
+                }
+
+                if (!rowPieces.some(p => p === piece))
+                {
+                    const count = rowPieces.filter(p => p !== false).length;
+                    rowCoords.forEach((p, i) => priorityBoard[p[0]][p[1]] += this.priorities.defense[turn][count]);
+                }
+            }
+        
+            const Board = [];
+            for (let y = 0, x = 0; y < 12; x < 12 ? x++ : (x = 0, y++))
+            {
+                if (this.board[y][x] === false)
+                {
+                    Board.push([y, x]);
+                }
+            }
+        
+            Board.sort((a, b) => priorityBoard[b[0]][b[1]] - priorityBoard[a[0]][a[1]]);
+            const space = Board.filter(p => priorityBoard[p[0]][p[1]] == priorityBoard[Board[0][0]][Board[0][1]]).random();
+            const Y = space[0] + 1;
+            const X = (space[1] + 10).toString(36);
+        
+            return Y + X;
+        },
+        setPriorities: function() {
+            this.priorities = {
+                offense: [
+                    [1, Math.random() * 2 + 2, Math.random() * 5 + 5, Math.random() * 20 + 10, Math.random() * 50 + 42, 250, 0],
+                    [1, Math.random() * 2 + 2, Math.random() * 5 + 5, Math.random() * 20 + 10, Math.random() * 50 + 30, 250, 0] ],
+                defense: [
+                    [1, Math.random() * 2 + 2, Math.random() * 5 + 5, Math.random() * 20 + 10, Math.random() * 50 + 36, 200, 0],
+                    [1, Math.random() * 2 + 2, Math.random() * 5 + 5, Math.random() * 20 + 20, Math.random() * 50 + 36, 200, 0] ] }
         }
     }
 }

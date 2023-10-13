@@ -51,10 +51,10 @@ export const command = async (interaction) => {
 
     const embed = {
         title: "Permission Requirements for #" + channel.name,
-        author: { name: "Xyvybot Setup", url: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/setup.png" },
+        author: { name: "Xyvybot Setup", url: "./assets/authors/setup.png" },
         color: new Color(["#66DD66", "#FFFF66", "#FF9966", "#FF6666", "#990000"][threatLevel]).toInt(),
         description: description.join('\n'),
         fields: [{ name: "Verdict:", value: note }] };
 
-    interaction.reply({ embeds: [embed] });
+    interaction.reply({ embeds: [ embed ] });
 }

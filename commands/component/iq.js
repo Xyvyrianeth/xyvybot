@@ -1,7 +1,8 @@
+import { COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { miniGames } from "../../games/miniGames.js";
 import { Color } from "../../assets/misc/color.js";
 
-export const command = (interaction) => {
+export const command = async (interaction) => {
     if (miniGames.some((miniGame) => miniGame.channel == interaction.channelId && miniGame.type == "iq"))
     {
         return;
@@ -202,7 +203,7 @@ export const command = (interaction) => {
         channelId: interaction.channelId };
     miniGames.set(interaction.id, miniGame);
 
-    const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/iq.png", name: "author.png" };
+    const author = { attachment: "./assets/authors/iq.png", name: "author.png" };
     const embed = {
         author: { name: "iq", icon_url: "attachment://author.png" },
         color: new Color(176, 14, 223).toInt(),
@@ -210,19 +211,19 @@ export const command = (interaction) => {
 
     if (interaction.isCommand())
     {
-        interaction.reply({ embeds: [embed], files: [author] });
+        await interaction.reply({ embeds: [ embed ], files: [ author ] });
     }
     else
     {
         const newActionRow = {
-            type: 1,
+            type: COMPONENT.ACTION_ROW,
             components: [
-            {   type: 2,
-                style: 3,
+            {   type: COMPONENT.BUTTON,
+                style: BUTTON_STYLE.GREEN,
                 label: "TRY ANOTHER",
                 customId: "iq",
                 disabled: true } ] };
-        interaction.update({ embeds: interaction.message.embeds, components: [newActionRow], attachments: [] });
-        interaction.channel.send({ embeds: [embed], files: [author] });
+        await interaction.update({ embeds: interaction.message.embeds, components: [ newActionRow ], attachments: [] });
+        await interaction.channel.send({ embeds: [ embed ], files: [ author ] });
     }
 };

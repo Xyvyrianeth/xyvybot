@@ -1,7 +1,7 @@
+import { COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { miniGames } from "../../games/miniGames.js";
 import { drawBoard } from "../../assets/misc/drawLetters.js";
-import { COMPONENT_TYPE, BUTTON_STYLE } from "../../index.js";
 
 export const command = async (interaction) => {
     if (miniGames.some(miniGame => miniGame.type == "letters" && miniGame.channel == interaction.channelId))
@@ -22,7 +22,7 @@ export const command = async (interaction) => {
         timer: 180 };
     miniGames.set(interaction.id, miniGame);
 
-    const author = { attachment: "https://raw.githubusercontent.com/Xyvyrianeth/xyvybot_assets/master/authors/letters.png", name: "author.png" };
+    const author = { attachment: "./assets/authors/letters.png", name: "author.png" };
 	const attachment = { attachment: await drawBoard(miniGame.letters), name: "board.png" };
     const embed = {
         author: { name: "letters", icon_url: "attachment://author.png" },
@@ -30,16 +30,16 @@ export const command = async (interaction) => {
         fields: [ { name: "Choose Vowels and Consonants", value: `Times out <t:${(Date.now() / 1000 | 0) + 180}:R>` } ],
         color: new Color().random().toInt() };
 	const actionRows = [
-	{   type: COMPONENT_TYPE.ACTION_ROW,
+	{   type: COMPONENT.ACTION_ROW,
 		components: [
-		{   type: COMPONENT_TYPE.BUTTON,
+		{   type: COMPONENT.BUTTON,
 			style: BUTTON_STYLE.BLUE,
-			label: "Large",
+			label: "Vowel",
 			customId: "letters.letter.vowel" },
-		{   type: COMPONENT_TYPE.BUTTON,
+		{   type: COMPONENT.BUTTON,
 			style: BUTTON_STYLE.BLUE,
-			label: "Small",
+			label: "Consonant",
 			customId: "letters.letter.consonant" } ] } ];
 
-    interaction.reply({ embeds: [embed], files: [author, attachment], components: actionRows });
+    interaction.reply({ embeds: [ embed ], files: [ author, attachment ], components: actionRows });
 }
