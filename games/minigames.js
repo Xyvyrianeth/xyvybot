@@ -27,6 +27,10 @@ const interval = () => {
             const message = await channel.messages.fetch(miniGame.messageId);
 
             const newEmbed = message.embeds?.[0].toJSON();
+            if (!newEmbed)
+            {
+                return;
+            }
             newEmbed.description = "Nobody got it in time";
             newEmbed.fields[1] = { name: "Wrong People", value: miniGame.wrongPeople.length > 0 ? `<@${miniGame.wrongPeople.join("> <@")}>` : "Nobody got it wrong either" };
             const newComponents = message.components.map(component => {

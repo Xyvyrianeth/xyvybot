@@ -59,7 +59,7 @@ export const botError = async (err, object, isMessage) => {
         const embed = {
             author: { name: "Xyvybot", icon_url: "attachment://author.png" },
             title: "Error on command: " + object.content.split(' ')[0].substring(2),
-            description: "```\n" + errs.join('\n') + "\n```",
+            description: "```\n" + errs.join('\n').replace(/file:\/\/\/.*\/xyvybot/g, "xyvybot:/") + "\n```",
             color: new Color().random().toInt() };
 
         await object[object.replied ? "editReply" : "reply"]({ embeds: [ embed ], files: [ author ] });
@@ -72,7 +72,7 @@ export const botError = async (err, object, isMessage) => {
         const embed = {
             author: { name: "Xyvybot", icon_url: "attachment://author.png" },
             title: "Error on command: " + (object.commandName || object.customId.split('.')[0]),
-            description: "```\n" + errs.join('\n') + "\n```",
+            description: "```\n" + errs.join('\n').replace(/file:\/\/\/.*\/xyvybot/g, "xyvybot:/") + "\n```",
             color: new Color().random().toInt() };
 
         await object[object.replied ? "editReply" : "reply"]({ embeds: [ embed ], files: [ author ] });

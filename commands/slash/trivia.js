@@ -4,7 +4,7 @@ import { Color } from "../../assets/misc/color.js";
 import { miniGames } from "../../games/minigames.js";
 
 export const command = async (interaction) => {
-	const category = interaction.options._hoistedOptions[0].value || Math.random() * 23 + 9 | 0;
+	const category = interaction.options._hoistedOptions[0]?.value || Math.random() * 23 + 9 | 0;
 	const trivia = {
 		id: interaction.id,
 		type: "trivia",
@@ -29,7 +29,7 @@ export const command = async (interaction) => {
 	const embed = {
 		author: { name: "trivia", icon_url: "attachment://author.png" },
 		description: `Time's up <t:${(Date.now() / 1000 | 0) + 180}:R>`,
-		fields: [ { name: "Category: " + question[0].category, value: question[0].value } ],
+		fields: [ { name: question[0].category.name, value: question[0].value } ],
 		color: new Color().random().toInt() };
 	const actionRows = [
 	{	type: COMPONENT.ACTION_ROW,
@@ -58,4 +58,6 @@ export const command = async (interaction) => {
 			customId: "trivia.incorrect2" } ] } ].shuffle();
 
 	await interaction.editReply({ embeds: [ embed ], files: [ author ], components: actionRows });
+
+	console.log(interaction);
 }

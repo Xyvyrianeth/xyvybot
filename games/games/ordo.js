@@ -324,7 +324,6 @@ export function newGame(player, id) {
                     board[y2][x2] = turn;
                     if (this.checkGroup(1, board))
                     {
-                        console.log((x + 10).toString(36) + (y + 1), "-->", (x2 + 10).toString(36) + (y2 + 1));
                         possible = true;
                         break canContinue;
                     }
@@ -335,7 +334,6 @@ export function newGame(player, id) {
                     }
                 }
             }
-            console.log('');
 
             if (!possible)
             {
@@ -356,8 +354,6 @@ export function newGame(player, id) {
 
                                 if (!pieces.some(p => this.board[p[0]][p[1]] !== turn))
                                 {
-                                    console.log((x + 10).toString(36) + (y + 1), "-", (x + 10 + [length - 1, 0][HorV]).toString(36) + (y + 1 + [0, length - 1][HorV]));
-                                    
                                     let canContinue = true;
 
                                     for (let UDRL of [[0, 1], [2, 3]][HorV])
@@ -371,7 +367,6 @@ export function newGame(player, id) {
                                             }
 
                                             if (!pieces.map(p => [p[0] + ([1, -1, 0, 0][UDRL] * dis), p[1] + ([0, 0, 1, -1][UDRL] * dis)]).some(p => this.board[p[0]][p[1]] !== false))
-                                            // if (!pieces.some(p => this.board[p[0]][p[1]] !== false))
                                             {
                                                 let board = this.board.clone();
 
