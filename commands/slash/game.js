@@ -1,6 +1,6 @@
 import { Client, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
-import { Games } from "../../games/Games.js";
+import { Games } from "../../games/games.js";
 import { replayImage } from "../../games/replayImage.js";
 
 export const command = async (interaction) => {
@@ -86,7 +86,7 @@ export const command = async (interaction) => {
         components: [
         {   type: COMPONENT.BUTTON,
             style: BUTTON_STYLE.LINK,
-            label: "Rules/How to Play",
+            label: "Click me to learn how to play!",
             url: `https://github.com/Xyvyrianeth/xyvybot_assets/wiki/${gamename}` } ] };
 
     return interaction.reply({ embeds: [ embed ], files: [ author, attachment ], components: [ playActionRow, rulesActionRow ] });

@@ -6,14 +6,22 @@ export function newGame(player, id) {
         split: 0,
         turnColors: ["#6666ff", "#fefefe"],
         board: [
-            [_, _, 0, 0, _, _, 0, 0, _, _],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, _, _, 0, 0, _, _, 0, 0],
-            [_, _, _, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _, _, _],
-            [1, 1, _, _, 1, 1, _, _, 1, 1],
+            // [_, _, 0, 0, _, _, 0, 0, _, _],
+            // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            // [0, 0, _, _, 0, 0, _, _, 0, 0],
+            // [_, _, _, _, _, _, _, _, _, _],
+            // [_, _, _, _, _, _, _, _, _, _],
+            // [1, 1, _, _, 1, 1, _, _, 1, 1],
+            // [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            // [_, _, 1, 1, _, _, 1, 1, _, _] ],
+            [_, _, 0, _, _, _, _, _, _, _],
+            [_, 0, _, _, _, _, _, _, _, _],
+            [_, 0, _, _, _, _, _, _, _, _],
+            [_, 0, _, _, _, _, _, _, 1, _],
+            [_, 0, _, _, _, _, _, _, 1, _],
+            [_, 0, _, _, _, _, _, _, 1, _],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [_, _, 1, 1, _, _, 1, 1, _, _] ],
+            [_, _, _, _, _, _, _, _, _, _] ],
         endMessage: function() {
             return  [ [ `It is <@${this.player}>'s turn.`,
                         `It is <@${this.player}>'s turn.\nYour pieces have been split into more than one group, you *must* bring them back together immediately.` ][this.split],
@@ -178,7 +186,7 @@ export function newGame(player, id) {
                 board[move.to[i][0]][move.to[i][1]] = this.turn;
             }
 
-            if (!this.checkGroup(board, 0))
+            if (!this.checkGroup(0, board))
             {
                 if (this.split === 1)
                 {
@@ -190,21 +198,21 @@ export function newGame(player, id) {
                 }
             }
 
-            this.board = this.board.clone();
+            this.board = board.clone();
 
-            if (board[[7, 0][this.turn]].some(p => p === this.turn))
+            if (this.board[[7, 0][this.turn]].some(p => p === this.turn))
             {
                 this.end = 1;
                 this.endType = 0;
             }
             else
-            if (!board.some(y => y.some(x => x == [1, 0][this.turn])))
+            if (!this.board.some(y => y.some(x => x == [1, 0][this.turn])))
             {
                 this.end = 1;
                 this.endType = 1;
             }
             else
-            if (!this.checkGroup(1))
+            if (!this.checkGroup(1, this.board))
             {
                 this.split = 1;
 
@@ -223,7 +231,6 @@ export function newGame(player, id) {
             {
                 this.turn = [1, 0][this.turn];
                 this.player = this.players[this.turn];
-                this.board = board;
             }
             else
             {
@@ -236,7 +243,7 @@ export function newGame(player, id) {
 
             return false;
         },
-        checkGroup: function(turn) {
+        checkGroup: function(turn, board) {
             let queue = [];
             let confs = [];
             let allPieces = 0;
@@ -246,7 +253,7 @@ export function newGame(player, id) {
 
             for (let y = 0, x = 0; y < 8; x < 9 ? x++ : (y++, x = 0))
             {
-                if (this.board[y][x] === turn)
+                if (board[y][x] === turn)
                 {
                     allPieces++;
                 }
@@ -256,7 +263,7 @@ export function newGame(player, id) {
 
             for (let y = 0, x = 0; y < 8; x < 9 ? x++ : (y++, x = 0))
             {
-                if (this.board[y][x] === turn)
+                if (board[y][x] === turn)
                 {
                     queues.push([y, x]);
                 }
@@ -289,7 +296,7 @@ export function newGame(player, id) {
         },
         canReconnect: function() {
             let possible = false;
-            turn = [1, 0][this.turn];
+            let turn = [1, 0][this.turn];
 
             for (let y = 0, x = 0, dir = 0; y < 8; dir < 7 ? dir++ : (dir = 0, x < 9 ? x++ : (x = 0, y++)))
             {
@@ -308,34 +315,37 @@ export function newGame(player, id) {
                     let y2 = y + (yDir * dis);
                     let x2 = x + (xDir * dis);
 
-                    if (y2 < 0 || y2 > 8 || x2 < 0 || x2 > 10 || this.board[y2][x2] === turn)
+                    if (y2 < 0 || y2 > 7 || x2 < 0 || x2 > 9 || this.board[y2][x2] === turn)
                     {
-                        continue canContinue;
+                        break canContinue;
                     }
 
                     board[y][x] = false;
                     board[y2][x2] = turn;
-                    if (this.checkGroup(1))
+                    if (this.checkGroup(1, board))
                     {
+                        console.log((x + 10).toString(36) + (y + 1), "-->", (x2 + 10).toString(36) + (y2 + 1));
                         possible = true;
                         break canContinue;
                     }
+
                     if (this.board[y2][x2] === [1, 0][turn])
                     {
                         break canContinue;
                     }
                 }
             }
+            console.log('');
 
             if (!possible)
             {
                 for (let HorV of [0, 1])
                 {
-                    for (let length = 2; length < [10, 8][HorV]; length++)
+                    for (let length = 2; length <= [10, 8][HorV]; length++)
                     {
-                        for (let y = 0; y < 8 - [0, length][HorV]; y++)
+                        for (let y = 0; y < 8 - [0, length - 1][HorV]; y++)
                         {
-                            for (let x = 0; x < 8 - [length, 0][HorV]; x++)
+                            for (let x = 0; x < 10 - [length - 1, 0][HorV]; x++)
                             {
                                 let pieces = [];
 
@@ -346,23 +356,22 @@ export function newGame(player, id) {
 
                                 if (!pieces.some(p => this.board[p[0]][p[1]] !== turn))
                                 {
+                                    console.log((x + 10).toString(36) + (y + 1), "-", (x + 10 + [length - 1, 0][HorV]).toString(36) + (y + 1 + [0, length - 1][HorV]));
+                                    
                                     let canContinue = true;
 
                                     for (let UDRL of [[0, 1], [2, 3]][HorV])
                                     {
+                                        thisDirection:
                                         for (let dis = 1; dis < [7, 9][HorV]; dis++)
                                         {
                                             if ((UDRL == 0 && y + dis > 7) || (UDRL == 1 && y - dis < 0) || (UDRL == 2 && x + dis > 9) || (UDRL == 3 && x - dis < 0))
                                             {
-                                                continue;
+                                                break thisDirection;
                                             }
 
-                                            if (!canContinue)
-                                            {
-                                                continue;
-                                            }
-
-                                            if (!pieces.map(p => [p[0], p[1]]).some(p => this.board[p[0]][p[1]] !== false))
+                                            if (!pieces.map(p => [p[0] + ([1, -1, 0, 0][UDRL] * dis), p[1] + ([0, 0, 1, -1][UDRL] * dis)]).some(p => this.board[p[0]][p[1]] !== false))
+                                            // if (!pieces.some(p => this.board[p[0]][p[1]] !== false))
                                             {
                                                 let board = this.board.clone();
 
@@ -379,15 +388,22 @@ export function newGame(player, id) {
                                                     board[piece[0]][piece[1]] = false;
                                                 }
 
-                                                if (this.checkGroup(board, 1))
+                                                switch (UDRL)
+                                                {
+                                                    case 0: console.log("    ", (x + 10).toString(36) + (y + 1 + dis), "-", (x + 10 + [length - 1, 0][HorV]).toString(36) + (y + 1 + dis + [0, length - 1][HorV])); break;
+                                                    case 1: console.log("    ", (x + 10).toString(36) + (y + 1 - dis), "-", (x + 10 + [length - 1, 0][HorV]).toString(36) + (y + 1 - dis + [0, length - 1][HorV])); break;
+                                                    case 2: console.log("    ", (x + 10 + dis).toString(36) + (y + 1), "-", (x + 10 + dis + [length - 1, 0][HorV]).toString(36) + (y + 1 + [0, length - 1][HorV])); break;
+                                                    case 3: console.log("    ", (x + 10 - dis).toString(36) + (y + 1), "-", (x + 10 - dis + [length - 1, 0][HorV]).toString(36) + (y + 1 + [0, length - 1][HorV])); break;
+                                                }
+
+                                                if (this.checkGroup(1, board))
                                                 {
                                                     possible = true;
-                                                    break;
                                                 }
                                             }
                                             else
                                             {
-                                                canContinue = false;
+                                                break thisDirection;
                                             }
                                         }
                                     }

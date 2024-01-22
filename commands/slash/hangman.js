@@ -1,6 +1,6 @@
 import { readFile, readFileSync } from "fs";
 import { Color } from "../../assets/misc/color.js";
-import { miniGames } from "../../games/miniGames.js";
+import { miniGames } from "../../games/minigames.js";
 
 export const command = (interaction) => {
     if (miniGames.some(miniGame => miniGame.channel == interaction.channelId && miniGame.type == "hangman"))

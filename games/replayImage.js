@@ -1,4 +1,4 @@
-import { Rules } from "../games/Rules.js";
+import { Rules } from "../games/rules.js";
 
 export async function replayImage(game, id, text, replay, step) {
     const Game = Rules.games[game]();

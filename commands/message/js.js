@@ -2,13 +2,12 @@ import { Client, dataBase, version, bannedUsers } from "../../index.js";
 import DiscordJS from "discord.js";
 import { Color } from "../../assets/misc/color.js";
 import { table } from "../../assets/misc/table.js";
-import { Games } from "../../games/Games.js";
-import { Rules } from "../../games/Rules.js";
-import { miniGames } from "../../games/miniGames.js";
+import { Games } from "../../games/games.js";
+import { Rules } from "../../games/rules.js";
+import { miniGames } from "../../games/minigames.js";
 import Canvas from "canvas";
 import allWords from "../../assets/misc/dictionary.json" assert { type: "json" };
 import { drawText } from "../../assets/drawText/drawText.js";
-import { CategoryNamesPretty } from "open-trivia-db";
 
 export const command = async (input, message) => {
     if (message.author.id == "357700219825160194" && message.content.startsWith("x!js ```js\n") && message.content.endsWith("```"))

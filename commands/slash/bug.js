@@ -1,5 +1,5 @@
 import { Color } from "../../assets/misc/color.js";
-import { Xyvybot, bannedUsers } from "../../index.js";
+import { Client, bannedUsers } from "../../index.js";
 
 export const command = async (interaction) => {
     if (bannedUsers.includes(interaction.user.id))

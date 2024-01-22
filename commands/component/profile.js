@@ -1,4 +1,4 @@
-import { Xyvybot, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
+import { Client, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import pkg from "canvas";
 const { loadImage } = pkg;
 import { drawProfile } from "../../assets/profile/profile.js";

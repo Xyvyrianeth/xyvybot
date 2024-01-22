@@ -1,7 +1,7 @@
 import { Client, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
-import { Games } from "../../games/Games.js";
-import { Rules } from "../../games/Rules.js";
+import { Games } from "../../games/games.js";
+import { Rules } from "../../games/rules.js";
 import { replayImage } from "../../games/replayImage.js";
 import { deleteMessage } from "../../index/discordFunctions.js";
 

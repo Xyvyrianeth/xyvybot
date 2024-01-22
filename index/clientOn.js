@@ -1,6 +1,6 @@
 import { Client, version, COMPONENT, BUTTON_STYLE } from "../index.js";
 import { botError } from "../index/discordFunctions.js";
-import { Games } from "../games/Games.js";
+import { Games } from "../games/games.js";
 import { Color } from "../assets/misc/color.js";
 
 export const onReady = async () => {

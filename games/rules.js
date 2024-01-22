@@ -1,6 +1,6 @@
 import { Client, dataBase, gameCount, COMPONENT, BUTTON_STYLE } from "../index.js";
 import { Color } from "../assets/misc/color.js";
-import { Games } from "./Games.js";
+import { Games } from "./games.js";
 import { deleteMessage, newUser } from "../index/discordFunctions.js";
 
 export const Rules = {
@@ -80,7 +80,7 @@ export const Rules = {
             type: COMPONENT.ACTION_ROW,
             components: [
             {   type: COMPONENT.BUTTON, style: BUTTON_STYLE.LINK,
-                label: "Rules/How to Play",
+                label: "Click me to learn how to play!",
                 url: `https://github.com/Xyvyrianeth/xyvybot_assets/wiki/${Game.game}` } ] };
 
         await Game.channels.forEach(async channelId => {

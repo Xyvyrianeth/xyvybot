@@ -1,4 +1,4 @@
-import { Xyvybot } from "../../index.js";
+import { Client } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import emoji from "../../assets/misc/emoji.json" assert { type: "json" };
 

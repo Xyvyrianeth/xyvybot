@@ -1,4 +1,4 @@
-import { Xyvybot, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
+import { Client, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { replayImage } from "../../games/replayImage.js";
 import emoji from "../../assets/misc/emoji.json" assert { type: "json" };

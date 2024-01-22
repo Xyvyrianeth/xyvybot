@@ -1,4 +1,4 @@
-import { miniGames } from "../../games/miniGames.js";
+import { miniGames } from "../../games/minigames.js";
 
 export const command = async (interaction) => {
     const miniGame = miniGames.get(interaction.message.interaction.id);

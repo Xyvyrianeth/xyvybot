@@ -1,6 +1,6 @@
 import { COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
-import { miniGames } from "../../games/miniGames.js";
+import { miniGames } from "../../games/minigames.js";
 import { drawBoard } from "../../assets/misc/drawNumbers.js";
 
 export const command = async (interaction) => {

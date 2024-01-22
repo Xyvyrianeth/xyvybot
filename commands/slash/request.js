@@ -1,4 +1,4 @@
-import { Xyvybot, bannedUsers } from "../../index.js";
+import { Client, bannedUsers } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 
 export const command = async (interaction) => {

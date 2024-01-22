@@ -1,8 +1,8 @@
 import { Client, COMPONENT, BUTTON_STYLE } from "../../index.js";
-import { Rules } from "../../games/Rules.js";
+import { Rules } from "../../games/rules.js";
 import { Color } from "../../assets/misc/color.js";
-import { Games } from "../../games/Games.js";
-import { miniGames } from "../../games/miniGames.js";
+import { Games } from "../../games/games.js";
+import { miniGames } from "../../games/minigames.js";
 import slashCommandData from "../../assets/misc/slashCommandData.json" assert { type: "json" };
 import { deleteMessage } from "../../index/discordFunctions.js";
 import emoji from "../../assets/misc/emoji.json" assert { type: "json" };

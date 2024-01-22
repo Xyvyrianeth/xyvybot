@@ -1,7 +1,7 @@
 import { Client, COMPONENT, BUTTON_STYLE } from "../../index.js";
-import { getQuestions, CategoryNamesPretty } from 'open-trivia-db';
+import { getQuestions } from 'open-trivia-db';
 import { Color } from "../../assets/misc/color.js";
-import { miniGames } from "../../games/miniGames.js";
+import { miniGames } from "../../games/minigames.js";
 
 export const command = async (interaction) => {
 	const category = interaction.options._hoistedOptions[0].value || Math.random() * 23 + 9 | 0;
