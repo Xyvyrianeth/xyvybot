@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, version, COMPONENT, BUTTON_STYLE } from "../index.js";
 import { botError } from "../index/discordFunctions.js";
 import { Games } from "../games/games.js";
@@ -102,7 +104,6 @@ export const interactionCreate = async interaction => {
         const text = "This command is disabled in this channel due to missing specific permissions. Contact the server staff about correcting this.";
         const customEmoji = !permissions.has(1n << 18n);
         const requirementChannels = [
-            // [], [], [],
             games.concat(["hangman", "history", "iq", "leaderboard", "profile", "replay", "trivia"]),
             games.concat(["hangman", "iq", "trivia"]),
             games.concat(["hangman", "history", "iq", "leaderboard", "profile", "replay", "trivia"]),

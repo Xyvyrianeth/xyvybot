@@ -17,7 +17,7 @@ export const command = (interaction) => {
                 "[Paper Soccer](https://github.com/Xyvyrianeth/xyvybot_assets/wiki/soccer)",
                 "[Lines of Action](https://github.com/Xyvyrianeth/xyvybot_assets/wiki/loa)",
                 "[Latrones](https://github.com/Xyvyrianeth/xyvybot_assets/wiki/latrones)",
-                "[Spider Linetris](https://github.com/Xyvyrianeth/xyvybot_assets/wiki/spiderlinetris)" ].join("\n"),
+                "[Spider Linetris](https://github.com/Xyvyrianeth/xyvybot_assets/wiki/slinetris)" ].join("\n"),
             inline: false },
         {   name: "Possible Future Games:",
             value: [

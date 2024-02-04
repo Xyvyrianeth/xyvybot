@@ -209,21 +209,5 @@ export const command = async (interaction) => {
         color: new Color(176, 14, 223).toInt(),
         fields: [ { name: type, value: `${question}${difference}\n\nTime's up <t:${(Date.now() / 1000 | 0) + time}:R>`} ] };
 
-    if (interaction.isCommand())
-    {
-        await interaction.reply({ embeds: [ embed ], files: [ author ] });
-    }
-    else
-    {
-        const newActionRow = {
-            type: COMPONENT.ACTION_ROW,
-            components: [
-            {   type: COMPONENT.BUTTON,
-                style: BUTTON_STYLE.GREEN,
-                label: "TRY ANOTHER",
-                customId: "iq",
-                disabled: true } ] };
-        await interaction.update({ embeds: interaction.message.embeds, components: [ newActionRow ], attachments: [] });
-        await interaction.channel.send({ embeds: [ embed ], files: [ author ] });
-    }
+    await interaction.reply({ embeds: [ embed ], files: [ author ], fetchReply: true }).then((message) => miniGame.messageId = message.id);
 };

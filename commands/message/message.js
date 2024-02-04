@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Rules } from "../../games/rules.js";
 import { Color } from "../../assets/misc/color.js";
@@ -11,21 +13,15 @@ import { drawBoard } from "../../assets/misc/drawLetters.js";
 export const command = async (message) => {
     if (message.author.id == Client.user.id)
     {
-        if (["trivia", "letters", "numbers", "hangman", "iq"].includes(message.embeds[0]?.author?.name) && miniGames.some(miniGame => miniGame.channelId == message.channelId))
-        {
-            const miniGame = miniGames.find(miniGame => miniGame.channelId == message.channelId);
-            miniGame.messageId = message.id;
-            return;
-        }
-
         if (message.embeds[0]?.image)
         {
             const img = message.embeds[0].image.url;
-            if (message.channel.type == "GUILD_TEXT" && /(?:connect4|squares|othello|rokumoku|ttt3d|ordo|soccer|loa|latrones|spiderlinetris)_[0-3]_[0-9]+\.png$/.test(img))
+            const reg = /(?:connect4|squares|othello|rokumoku|ttt3d|ordo|soccer|loa|latrones)_[0-3]_([0-9]+)\.png$/;
+            if (message.channel.type == "GUILD_TEXT" && reg.test(img))
             {
-                const id = img.match(/(?:connect4|squares|othello|rokumoku|ttt3d|ordo|soccer|loa|latrones|spiderlinetris)_[0-3]_([0-9]+)\.png$/)[1];
+                const id = img.match(reg)[1];
                 const Game = Games.get(id);
-                Game.channels[message.channelId].push(message.id);
+                Game.messages[Game.channels.indexOf(message.channelId)].push(message.id);
             }
             return;
         }
@@ -33,8 +29,7 @@ export const command = async (message) => {
         if (message.content.startsWith("**__Illegal Play__**\n"))
         {
             const Game = Games.find(game => game.channels.includes(message.channelId));
-            const index = Game.channels.indexOf(message.channelId);
-            Game.messages[index].push(message.id);
+            Game.messages[Game.channels.indexOf(message.channelId)].push(message.id);
             return;
         }
 
@@ -42,6 +37,12 @@ export const command = async (message) => {
         {
             setTimeout(() => { deleteMessage(message); }, 10000);
             return;
+        }
+
+        if (/(hangman)/.test(message.embeds[0]?.author.name) && miniGames.some(miniGame => miniGame.channelId == message.channelId))
+        {
+            const miniGame = miniGames.find(miniGame => miniGame.channelId == message.channelId);
+            miniGame.lastBotMessage = message.id;
         }
 
         return;
@@ -126,13 +127,13 @@ export const command = async (message) => {
             "squares": /^([a-h] ?[1-8]|[1-8] ?[a-h])$/i,
             "othello": /^([a-h] ?[1-8]|[1-8] ?[a-h])$/i,
             "rokumoku": /^([a-s] ?1?[0-9]+|1?[0-9]+ ?[a-s])$/i,
-            "connect4": /^[a-g]$/,
+            "connect4": [/^([a-h] ?[1-8]|[1-8] ?[a-h])$/, /^([a-g] ?[1-6]|[1-6] ?[a-g])$/][Game.ruleset.size],
             "ttt3d": /^[1-4] ?([1-4] ?[a-d]|[a-d] ?[1-4])$/i,
             "ordo": /^(([a-j][1-8] [a-j][1-8]|[1-8][a-j] [1-8][a-j])|([a-j][1-8]-[a-j][1-8]|[1-8][a-j]-[1-8][a-j]) (up|right|down|left|[urdl]|north|south|east|west|[nsew]) [1-9])$/i,
             "soccer": /^([1-8]|([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?))$/i,
             "loa": /^([1-8][a-h]|[a-h][1-8]) ([1-8]|([ns] ?[ew]?|[ew] ?[ns]?)|([ud] ?[lr]?|[lr] ?[ud]?)|((north|south) ?(east|west)?|(east|west) ?(north|south)?)|((up|down) ?(left|right)?|(left|right) ?(up|down)?))$/i,
             "latrones": /^(([1-8][a-h]|[a-h][1-8])|([1-8][a-h]|[a-h][1-8]) (up|right|down|left|north|south|east|west|[udlrnsew])|(up|right|down|left|north|south|east|west|[udlrnsew])|([1-8][a-h]|[a-h][1-8]) (remove|capture|cap|delete)|(end|stop))$/i,
-            "spiderlinetris": /^([a-h] ?[1-8]|[1-8] ?[a-h])$/i
+            "slinetris": /^([a-h] ?[1-8]|[1-8] ?[a-h])$/i
         }[Game.game];
 
         if (!regEx.test(message.content))
@@ -177,7 +178,7 @@ export const command = async (message) => {
         const word = message.content.toLowerCase();
         const userId = message.author.id;
         deleteMessage(message);
-        
+
         const user = await Client.users.fetch(userId);
         const channel = await Client.channels.fetch(miniGame.channelId)
         const Message = await channel.messages.fetch(miniGame.messageId);
@@ -303,122 +304,79 @@ export const command = async (message) => {
 
         return await Message.edit({ embeds: [ embed ], files: [ author ], attachments: [] });
     }
+
     if (miniGames.some(miniGame => miniGame.type == "hangman" && miniGame.channelId == message.channelId))
     {
         const miniGame = miniGames.find(miniGame => miniGame.channelId == message.channelId && miniGame.type == "hangman");
         const guess = message.content.toUpperCase();
-        const information = { action: '', timer: '', guessesLeft: '', previousGuesses: '' };
-        const channel = await Client.channels.fetch(miniGame.channelId);
-        const messageId = await channel.messages.fetch(miniGame.messageId);
-        const lastUserMessage = await channel.messages.fetch(miniGame.lastUserMessage);
-
-        if (guess == miniGame.answer.join('').replace(/[\u0300-\u036f]/g, '').toUpperCase())
-        {
-            miniGame.complete = true;
-        }
-        else
-        if (!/^[A-Z0-9]$/i.test(guess) || miniGame.guesses.includes(guess))
+        const fullGuess = guess == miniGame.answer.join('').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+        if (!fullGuess && guess.length > 1)
         {
             return;
         }
-        else
+
+        if (/^[A-Z0-9]$/i.test(guess))
         {
+            if (miniGame.guesses.includes(guess))
+            {
+                return;
+            }
             miniGame.guesses.push(guess);
         }
 
+        const lastBotMessage = await message.channel.messages.fetch(miniGame.lastBotMessage);
+        const lastUserMessage = miniGame.first ? undefined : await message.channel.messages.fetch(miniGame.lastUserMessage);
+
+        const validGuess = miniGame.answer.some(a => a.replace(/[\u0300-\u036f]/g, '') == guess);
+        const previousGuesses = miniGame.guesses.length > 0 ? `__**Guesses**__\n\`${miniGame.guesses.join("` `")}\`` : "__**Guesses**__\nNone";
+        miniGame.wrongGuessesLeft -= validGuess ? 0 : 1;
+
+        miniGame.current = miniGame.answer.map((letter, i) => fullGuess || (letter.replace(/[\u0300-\u036f]/g, '') == guess && miniGame.current[i] == false) ? letter : miniGame.current[i]);
+        const finalGuess = validGuess && !miniGame.current.includes(false);
+        miniGame.complete = fullGuess || finalGuess || miniGame.wrongGuessesLeft == 0;
+        const gameAction = miniGame.complete ? fullGuess ?
+            `${message.author} has correctly guessed the whole ${miniGame.answer.includes(' ') ? "phrase" : "word"}!` : finalGuess ?
+            `${message.author} has guessed the last remaining character!` : miniGame.wrongGuessesLeft == 0 ?
+            "You guessed too many incorrect letters!" : '' : '';
+        const title = miniGame.complete ?
+            `Solved!` : validGuess ?
+            `${guess} is in the ${miniGame.answer.includes(' ') ? "phrase" : "word"}!` :
+            `${guess} is not in the ${miniGame.answer.includes(' ') ? "phrase" : "word"}!`;
+        const color = miniGame.complete ? "#22cc77" : validGuess ? "#6666ff" : miniGame.wrongGuessesLeft == 0 ?  "#ff6666" : "#ffff66";
+        const guessesLeft = miniGame.complete ? '' : `\`${miniGame.wrongGuessesLeft}\` wrong guess${miniGame.wrongGuessesLeft > 1 ? "es" : ''} left\n`;
+        const timerMessage = miniGame.complete ? '' : `Time's up <t:${(Date.now() / 1000 | 0) + 180}:R>\n`;
         miniGame.lastUserMessage = message.id;
 
-        if (miniGame.complete)
-        {
-            miniGame.answer.forEach((letter, i) => miniGame.current[i] = letter);
-            information.color = "#22cc77";
-            information.title = "Solved!";
-            information.action = `${message.author} has solved the ${miniGame.answer.includes(' ') ? "phrase" : "word"}!`;
-        }
-        else
-        if (miniGame.answer.some(a => a.replace(/[\u0300-\u036f]/g, '') == guess))
-        {
-            miniGame.answer.forEach((letter, i) => {
-                if (letter.replace(/[\u0300-\u036f]/g, '') == guess && miniGame.current[i] == false)
-                {
-                    miniGame.current[i] = letter;
-                }
-            });
-
-            information.title = `${guess} is in the ${miniGame.answer.includes(' ') ? "phrase" : "word"}!`;
-
-            if (!miniGame.current.includes(false))
-            {
-                information.color = "#22cc77";
-                information.action = `${message.author} has finished the ${miniGame.answer.includes(' ') ? "phrase" : "word"}!`;
-                miniGame.complete = true;
-            }
-            else
-            {
-                information.color = "#6666ff";
-                information.timer = `Time's up <t:${(Date.now() / 1000 | 0) + 180}:R>\n`;
-                information.guessesLeft = `\`${miniGame.tries}\` wrong guess${miniGame.tries > 1 ? "es" : ''} left\n`;
-            }
-        }
-        else
-        {
-            miniGame.tries--;
-            information.title = `${guess} is not in the ${miniGame.answer.includes(' ') ? "phrase" : "word"}!`;
-
-            if (miniGame.tries == 0)
-            {
-                miniGame.answer.forEach((letter, i)=> miniGame.current[i] = letter);
-                information.color = "#ff6666";
-                information.action = "You guessed incorrectly too many times!";
-                miniGame.complete = true;
-            }
-            else
-            {
-                information.color = "#ffff66";
-                information.timer = `Time's up <t:${(Date.now() / 1000 | 0) + 180}:R>\n`;
-                information.guessesLeft = `\`${miniGame.tries}\` wrong guess${miniGame.tries > 1 ? "es" : ''} left\n`;
-
-            }
-        }
-        information.previousGuesses = miniGame.guesses.length > 0 ? `__**Guesses**__\n\`${miniGame.guesses.join("` `")}\`` : "__**Guesses**__\nNone";
-
-        const display = [];
-        miniGame.answer.forEach((letter, i) => {
-            if (miniGame.current[i] === false)
-            {
-                display.push("__\u200b \u200b \u200b \u200b__")
-            }
-            else
-            if (/^[A-Z0-9][\u0300-\u036f]$/i.test(letter))
-            {
-                display.push("__" + letter + "__");
-            }
-            else
-            {
-                display.push(letter);
-            }
-        });
-
-        const thumbnail = { attachment: "./assets/hangman/" + miniGame.tries + ".png", name: "hangman.png" };
+        const display = miniGame.answer.map((letter, i) => miniGame.current[i] === false ? "__\u200b \u200b \u200b \u200b__" : /^[A-Z0-9][\u0300-\u036f]$/i.test(letter) ? "__" + letter + "__" : letter);
+        const thumbnail = { attachment: "./assets/hangman/" + miniGame.wrongGuessesLeft + ".png", name: "hangman.png" };
         const author = { attachment: "./assets/authors/hangman.png", name: "author.png" };
         const embed = {
             author: { name: "hangman", icon_url: "attachment://author.png" },
             thumbnail: { url: "attachment://hangman.png" },
-            fields: [ { name: information.title, value: [
-                information.action,
+            fields: [ { name: title, value: [
+                gameAction,
                 `**${display.join("\u200b \u200b")}**`,
                 `Category: **${miniGame.category}**${!miniGame.complete && miniGame.answer.some(letter => /[0-9]/.test(letter)) ? "\nThere are numbers in this solution!" : ""}`,
                 '',
-                information.timer + information.guessesLeft + information.previousGuesses ].join('\n') } ],
-            color: new Color(information.color).toInt() };
+                timerMessage + guessesLeft + previousGuesses ].join('\n') } ],
+            color: new Color(color).toInt() };
+        const components = miniGame.complete ? [
+        {   type: COMPONENT.ACTION_ROW,
+            components: [
+            {   type: COMPONENT.BUTTON,
+                style: BUTTON_STYLE.GREEN,
+                label: "TRY ANOTHER",
+                customId: "hangman" } ] } ] : [ ];
 
-        channel.send({ embeds: [ embed ], files: [ thumbnail, author ] });
-        
-        await deleteMessage(messageId);
+        message.channel.send({ embeds: [ embed ], files: [ thumbnail, author ], components: components });
+
+        await deleteMessage(lastBotMessage, "lastBotMessage");
         if (!miniGame.first)
         {
-            await deleteMessage(lastUserMessage);
+            await deleteMessage(lastUserMessage, "lastUserMessage");
         }
+
+        miniGame.first = false;
 
         if (miniGame.complete)
         {

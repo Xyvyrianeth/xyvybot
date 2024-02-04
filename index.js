@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client as discordClient } from "discord.js";
 import dotenv from "dotenv";
 import PG from "pg";

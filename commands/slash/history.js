@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { replayImage } from "../../games/replayImage.js";
@@ -12,7 +14,7 @@ export const command = async (interaction) => {
     await interaction.deferReply();
 
     const command = interaction.isCommand() ? ["history", "init", interaction.user.id] : interaction.customId.split('.');
-    const allGames = ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "spiderlinetris"];
+    const allGames = ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "slinetris"];
     const allResults = ["wins", "loss", "ties"];
 
     if (command[1] == "match")
@@ -35,7 +37,7 @@ export const command = async (interaction) => {
                     "soccer": "Paper Soccer",
                     "loa": "Lines of Action",
                     "latrones": "Latrones",
-                    "spiderlinetris": "Spider Linetris" }[match.game],
+                    "slinetris": "Spider Linetris" }[match.game],
             replay: JSON.parse(`[${match.replays.substring(1, match.replays.length - 1)}]`)[0],
             players: [await Xyvybot.users.fetch(match.players[0]), await Xyvybot.users.fetch(match.players[1])],
             winner: match.winner == "undefined" ? false : await Xyvybot.users.fetch(match.winner) };
@@ -47,10 +49,9 @@ export const command = async (interaction) => {
         const history = History.rows.map(a => a.id);
         const search = interaction.isSelectMenu() ? interaction.message.components[1].components[0].options.map(a => a.default ? '1' : '0').join('') + '.' + interaction.message.components[2].components[0].options.map(a => a.default ? '1' : '0').join('') : command[5] + '.' + command[6];
         const adjacent = [
-            history.indexOf(Match.id) == 0 ? history[history.length - 1] : history[history.indexOf(match.id) - 1],
+            history[history.indexOf(Match.id) + history.length - 1 % history.length],
             Match.id,
-            history.indexOf(Match.id) == history.length - 1 ? history[0] : history[history.indexOf(match.id) + 1]
-        ];
+            history[history.indexOf(Match.id) + history.length + 1 % history.length] ];
 
         const attachment = { attachment: await replayImage(match.game, match.id, false, Match.replay), name: "replay.png" };
         const author = { attachment: "./assets/history.png", name: "author.png" };
@@ -133,7 +134,7 @@ export const command = async (interaction) => {
         history.forEach(match => {
             const Match = {};
             Match.game = match.game;
-            Match.gameName = { "othello": "Othello        ", "squares": "Squares        ", "rokumoku": "Rokumoku       ", "ttt3d": "3D Tic-Tac-Toe ", "connect4": "Connect Four   ", "ordo": "Ordo           ", "soccer": "Paper Soccer   ", "loa": "Lines of Action", "latrones": "Latrones       ", "spiderlinetris": "Spider Linetris" }[match.game];
+            Match.gameName = { "othello": "Othello        ", "squares": "Squares        ", "rokumoku": "Rokumoku       ", "ttt3d": "3D Tic-Tac-Toe ", "connect4": "Connect Four   ", "ordo": "Ordo           ", "soccer": "Paper Soccer   ", "loa": "Lines of Action", "latrones": "Latrones       ", "slinetris": "Spider Linetris" }[match.game];
             Match.result = match.winner == "undefined" ? "  TIE  " : information.user.id == match.winner ? "VICTORY": "DEFEAT ";
             Match.replay = match.replay;
             Match.id = match.id;
@@ -214,8 +215,8 @@ export const command = async (interaction) => {
                     value: "latrones",
                     default: information.games.includes("latrones") },
                 {   label: "Spider Linetris",
-                    value: "spiderlinetris",
-                    default: information.games.includes("spiderlinetris") } ] } ] };
+                    value: "slinetris",
+                    default: information.games.includes("slinetris") } ] } ] };
         const resultActionRow = {
             type: COMPONENT.ACTION_ROW,
             components: [

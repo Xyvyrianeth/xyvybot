@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, dataBase, gameCount, COMPONENT, BUTTON_STYLE } from "../index.js";
 import { Color } from "../assets/misc/color.js";
 import { Games } from "./games.js";
@@ -5,23 +7,22 @@ import { deleteMessage, newUser } from "../index/discordFunctions.js";
 
 export const Rules = {
     games: {
-        connect4: (await import("./games/connect4.js")).newGame,
-        latrones: (await import("./games/latrones.js")).newGame,
-        loa: (await import("./games/loa.js")).newGame,
-        ordo: (await import("./games/ordo.js")).newGame,
-        othello: (await import("./games/othello.js")).newGame,
-        rokumoku: (await import("./games/rokumoku.js")).newGame,
-        soccer: (await import("./games/soccer.js")).newGame,
-        spiderlinetris: (await import("./games/spiderlinetris.js")).newGame,
-        squares: (await import("./games/squares.js")).newGame,
-        ttt3d: (await import("./games/ttt3d.js")).newGame,
+        connect4: (await import("./games/connect4.js")).connect4Instance,
+        latrones: (await import("./games/latrones.js")).latronesInstance,
+        loa: (await import("./games/loa.js")).loaInstance,
+        ordo: (await import("./games/ordo.js")).ordoInstance,
+        othello: (await import("./games/othello.js")).othelloInstance,
+        rokumoku: (await import("./games/rokumoku.js")).rokumokuInstance,
+        soccer: (await import("./games/soccer.js")).soccerInstance,
+        slinetris: (await import("./games/slinetris.js")).slinetrisInstance,
+        squares: (await import("./games/squares.js")).squaresInstance,
+        ttt3d: (await import("./games/ttt3d.js")).ttt3dInstance,
     },
     drawBoard: (await import("./drawBoard.js")).drawBoard,
     newGame: async (game, channelId, guild, userId, local, AI, interactionId) => {
-        const Game = Rules.games[game]();
+        const Game = new Rules.games[game]();
 
         Game.id = interactionId
-        Game.game = game;
         Game.players = [userId]
         Game.channels = [channelId];
         Game.guilds = [guild];
@@ -31,7 +32,7 @@ export const Rules = {
         Game.name = {
             "othello": "Othello", "squares": "Squares", "rokumoku": "Rokumoku", "ttt3d": "3D Tic-Tac-Toe",
             "connect4": "Connect Four", "ordo": "Ordo", "soccer": "Paper Soccer", "loa": "Lines of Action",
-            "latrones": "Latrones", "spiderlinetris": "Spider Linetris" }[game];
+            "latrones": "Latrones", "slinetris": "Spider Linetris" }[game];
         Game.timer = 900;
 
         Games.set(interactionId, Game);
@@ -44,7 +45,7 @@ export const Rules = {
             await Rules.startGame(Game.id, channelId, guild, Client.user.id);
         }
     },
-    startGame: async (id, channel2, guild, player2) => {
+    startGame: async (id, channel2, guild, player2, ruleset) => {
         const Game = Games.get(id);
         const swap = ["push", "unshift"].random();
 
@@ -61,6 +62,7 @@ export const Rules = {
         Game.end = 0;
         Game.replay = [];
         Game.turn = ["squares", "rokumoku"].includes(Game.game) ? 0.5 : 0;
+        Game.ruleset = ["connect4"].includes(Game.game) ? ruleset : undefined;
 
         delete Game.local;
 
@@ -160,7 +162,7 @@ export const Rules = {
             const result = {
                 player: Game.players[[1, 0][Game.players.indexOf(Client.user.id)]],
                 winner: Game.winner,
-                game: ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "spiderlinetris"].indexOf(Game.game) };
+                game: ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "slinetris"].indexOf(Game.game) };
             const selectQuery =
                 `SELECT *\n` +
                 `FROM profiles\n` +
@@ -215,7 +217,7 @@ export const Rules = {
             const result = {
                 winner: Game.players[Game.winner],
                 losser: Game.players[[1, 0][Game.winner]],
-                game: ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "spiderlinetris"].indexOf(Game.game) };
+                game: ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "slinetris"].indexOf(Game.game) };
             const selectQuery =
                 `SELECT *\n` +
                 `FROM profiles\n` +
@@ -274,7 +276,7 @@ export const Rules = {
         {
             const result = {
                 players: Game.players,
-                game: ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "spiderlinetris"].indexOf(Game.game) };
+                game: ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "slinetris"].indexOf(Game.game) };
             const selectQuery =
                 `SELECT *\n` +
                 `FROM profiles\n` +

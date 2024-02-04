@@ -1,3 +1,5 @@
+"use strict";
+
 import { dataBase, bannedUsers, Xyvybot } from "../../index.js";
 
 export const command = async (interaction) => {

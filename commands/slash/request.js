@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, bannedUsers } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 

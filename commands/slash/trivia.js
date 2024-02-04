@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { getQuestions } from 'open-trivia-db';
 import { Color } from "../../assets/misc/color.js";
@@ -5,14 +7,14 @@ import { miniGames } from "../../games/minigames.js";
 
 export const command = async (interaction) => {
 	const category = interaction.options._hoistedOptions[0]?.value || Math.random() * 23 + 9 | 0;
-	const trivia = {
+	const miniGame = {
 		id: interaction.id,
 		type: "trivia",
 		channelId: interaction.channelId,
 		wrongPeople: [],
 		completed: false,
 		timer: 10 };
-	miniGames.set(interaction.id, trivia);
+	miniGames.set(interaction.id, miniGame);
 
     const channel = await Client.channels.fetch(interaction.channelId);
     const permissions = await channel.permissionsFor(Client.user.id);
@@ -22,7 +24,7 @@ export const command = async (interaction) => {
         author: { name: "trivia", icon_url: "attachment://author.png" },
         description: `Generating trivia question ${customEmoji ? "<a:loading:1010988190250848276>" : ":hourglass:"}`,
         color: new Color().random().toInt() };
-    await interaction.reply({ embeds: [ tempEmbed ], files: [ author ] });
+    await interaction.reply({ embeds: [ tempEmbed ], files: [ author ], fetchReply: true }).then((message) => miniGame.messageId = message.id);
 
 	const difficulty = ["easy", "medium", "hard"].random();
 	const question = await getQuestions({ amount: 1, difficulty: difficulty, type: "multiple", category: category });
@@ -58,6 +60,4 @@ export const command = async (interaction) => {
 			customId: "trivia.incorrect2" } ] } ].shuffle();
 
 	await interaction.editReply({ embeds: [ embed ], files: [ author ], components: actionRows });
-
-	console.log(interaction);
 }

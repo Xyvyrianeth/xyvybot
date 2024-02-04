@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, dataBase, version, bannedUsers } from "../../index.js";
 import DiscordJS from "discord.js";
 import { Color } from "../../assets/misc/color.js";

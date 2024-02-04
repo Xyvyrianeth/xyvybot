@@ -1,3 +1,5 @@
+"use strict";
+
 import { Color } from "../../assets/misc/color.js";
 import { table } from "../../assets/misc/table.js";
 import { dataBase } from "../../index.js";

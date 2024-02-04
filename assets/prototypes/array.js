@@ -1,3 +1,5 @@
+"use strict";
+
 Object.defineProperty(Array.prototype, 'random', {
     value: function(a) {
         if (!a)

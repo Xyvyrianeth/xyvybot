@@ -1,3 +1,5 @@
+"use strict";
+
 import { COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { miniGames } from "../../games/minigames.js";
@@ -41,5 +43,5 @@ export const command = async (interaction) => {
 			label: "Consonant",
 			customId: "letters.letter.consonant" } ] } ];
 
-    interaction.reply({ embeds: [ embed ], files: [ author, attachment ], components: actionRows });
+    return interaction.reply({ embeds: [ embed ], files: [ author, attachment ], components: actionRows, fetchReply: true }).then((message) => miniGame.messageId = message.id);
 }

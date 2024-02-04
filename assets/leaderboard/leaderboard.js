@@ -1,3 +1,5 @@
+"use strict";
+
 import Canvas from 'canvas';
 const { createCanvas, loadImage } = Canvas;
 import { newUIColor } from "../misc/newUIColor.js";
@@ -64,9 +66,9 @@ export const drawTop = async (users, user) => {
     for (let user of users)
     {
         const magnitude = String(user[2]).length - 1;
-        const elo = user[2] < 1000000 ? user[2] : 
+        const elo = user[2] < 1000000 ? user[2] :
             String((Math.floor(user[2] / Number(`1E${magnitude - 3}`)) * 10) / Number(`1E${4 - magnitude % 3}`)) + "MBTQ"[(magnitude / 3 | 0) - 2];
-            
+
         const rawTexts = [ await drawText(user[1], true), await drawText(user[0].username + '#' + user[0].discriminator), await drawText(elo, true), await drawText(user[5].replace("100.00%", "100%")) ];
         const userTexts = rawTexts.map((text, index) => {
             const textCanvas = new createCanvas(text.width, 11);
@@ -107,9 +109,9 @@ export const drawTop = async (users, user) => {
     if (user)
     {
         const magnitude = String(user[2]).length - 1;
-        const elo = user[2] < 1000000 ? user[2] : 
+        const elo = user[2] < 1000000 ? user[2] :
             String((Math.floor(user[2] / Number(`1E${magnitude - 3}`)) * 10) / Number(`1E${4 - magnitude % 3}`)) + "MBTQ"[(magnitude / 3 | 0) - 2];
-            
+
         const rawText = [ await drawText(user[1], true), await drawText(user[0].username + '#' + user[0].discriminator), await drawText(elo, true), await drawText(user[5].replace("100.00%", "100%")) ];
         const userText = rawText.map((text, index) => {
             const textCanvas = new createCanvas(text.width, 11);

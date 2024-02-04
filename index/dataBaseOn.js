@@ -1,3 +1,5 @@
+"use strict";
+
 export const error = async err => {
     console.log(err, JSON.stringify(err));
     // query = query.replace(/`/, "\\`");

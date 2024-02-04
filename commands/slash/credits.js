@@ -1,3 +1,5 @@
+"use strict";
+
 import { Color } from "../../assets/misc/color.js";
 import Package from "../../package.json" assert { type: "json" };
 

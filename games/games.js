@@ -1,3 +1,5 @@
+"use strict";
+
 import { Collection } from "discord.js";
 import { Client } from "../index.js";
 export const Games = new Collection();

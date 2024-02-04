@@ -130,7 +130,7 @@ const interval = () => {
                 deleteMessage(message);
                 return;
             }
-            
+
             const author = { attachment: "./assets/authors/numbers.png", name: "author.png" };
             const attachment = { attachment: await drawNumbers(miniGame.numbers, miniGame.target, miniGame.solution), name: "board.png" };
             const embed = {

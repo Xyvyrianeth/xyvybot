@@ -1,3 +1,5 @@
+"use strict";
+
 import { gameCount } from "../../index.js";
 import pkg from "canvas";
 const { createCanvas, loadImage } = pkg;
@@ -114,7 +116,7 @@ export async function drawProfile(Side, user, profile, avatar, background, previ
     {
         const score = y == gameCount ? profile.elo : y < gameCount ? profile.elos[y] : profile["money"];
         const magnitude = String(score).length - 1;
-        const Score = score < 1000000 ? score : 
+        const Score = score < 1000000 ? score :
             String((Math.floor(score / Number(`1E${magnitude - 3}`)) * 10) / Number(`1E${4 - magnitude % 3}`)) + "MBTQ"[(magnitude / 3 | 0) - 2];
 
         const paddedScore = " ".repeat(6 - String(Score).length) + String(Score);

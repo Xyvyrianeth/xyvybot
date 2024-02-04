@@ -6,73 +6,80 @@ commands.set("othello", {
 	attachment: true,
 	description: "A classic game of Reversi where two players place their own pieces to capture their opponent's, and the player with the most pieces by the end wins!",
 	fields: [ { title: "Usage",
-				body: "Use the attached buttons to play this game",
+				body: "Use the attached buttons to play this game. Click the grey button to look at the rules (opens in browser).",
 				inline: false } ] });
 commands.set("squares", {
 	name: "squares",
 	attachment: true,
 	description: "A game unique to this bot where two players take turns placing pieces on a board trying to make as many squares as possible!",
 	fields: [ { title: "Usage",
-				body: "Use the attached buttons to play this game\n" +
-					  "This game can be played against the bot itself",
+				body: "Use the attached buttons to play this game. Click the grey button to look at the rules (opens in browser).\n" +
+					  "This game can be played against the bot itself.",
 				inline: false } ] });
 commands.set("rokumoku", {
 	name: "rokumoku",
 	attachment: true,
 	description: "This game is like Tic-Tac-Toe but l o n g e r.\nMake a row of 6 in a 12x12 board before your opponent!",
 	fields: [ { title: "Usage",
-				body: "Use the attached buttons to play this game\n" +
-					  "This game can be played against the bot itself",
+				body: "Use the attached buttons to play this game. Click the grey button to look at the rules (opens in browser).\n" +
+					  "This game can be played against the bot itself.",
 				inline: false } ] });
 commands.set("ttt3d", {
-	name: "3dTicTacToe",
+	name: "3DTicTacToe",
 	attachment: true,
 	description: "It's like normal Tic-Tac-Toe, but it's in 3D!\nGet a line of 4 utilizing all 3 dimensions!",
 	fields: [ { title: "Usage",
-				body: "Use the attached buttons to play this game\n" +
-					  "This game can be played against the bot itself",
+				body: "Use the attached buttons to play this game. Click the grey button to look at the rules (opens in browser).\n" +
+					  "This game can be played against the bot itself.",
 				inline: false } ] });
 commands.set("connect4", {
 	name: "connect4",
 	attachment: true,
 	description: "The classic vertical 4-in-a-row game\nYou already know what this is.",
 	fields: [ { title: "Usage",
-				body: "Use the attached buttons to play this game",
+				body: "Use the attached buttons to play this game. Click the grey button to look at the rules (opens in browser).\n" +
+					  "This game is configurable.",
+				inline: false },
+			  { title: "Options",
+				body: "- **gravity** - A gravity mechanic that moves any placed piece as far towards an edge as possible.\n" +
+					  " - `down` - pieces must be placed as close to the bottom row as they can go\n" +
+					  " - `outward` - pieces must be placed as close to any edge as they can go\n" +
+					  " - `inward` - pieces must be placed as close to the middle as they can go\n" +
+					  " - `disabled` - no gravity mechanic\n" +
+					  "- **linetris** - A Tetris mechanic. Only works when gravity is enabled and only along edges.\n" +
+					  " - `enabled` - when an edge row or column is filled, all pieces in it are removed and all remaining pieces move 1 space in its direction.\n" +
+					  " - `disabled` - the above thing doesn't happen\n" +
+					  "- **size** - The dimensions of the board.\n" +
+					  " - `8x8` - a common board size in abstract board games\n" +
+					  " - `classic` - the traditional 7x6 board associated with this game",
 				inline: false } ] });
 commands.set("ordo", {
 	name: "ordo",
 	attachment: true,
 	description: "Think Checkers, but all your pieces must be touching.\nGet to your opponent's home row or separate their pieces to win!",
 	fields: [ { title: "Usage",
-				body: "Use the attached buttons to play this game",
+				body: "Use the attached buttons to play this game. Click the grey button to look at the rules (opens in browser).",
 				inline: false } ] });
 commands.set("soccer", {
 	name: "paperSoccer",
 	attachment: true,
 	description: "Get the ball to your end of the field! You can move the ball in any direction, but you go again if the ball touches a spot it's already been before!",
 	fields: [ { title: "Usage",
-				body: "Use the attached buttons to play this game",
+				body: "Use the attached buttons to play this game. Click the grey button to look at the rules (opens in browser).",
 				inline: false } ] });
 commands.set("loa", {
 	name: "linesOfAction",
 	attachment: true,
 	description: "Get all of your pieces into one continuous group before your opponent! Pieces can only move as many spaces as there are pieces along the line they're moving.",
 	fields: [ { title: "Usage",
-				body: "Use the attached buttons to play this game",
+				body: "Use the attached buttons to play this game. Click the grey button to look at the rules (opens in browser).",
 				inline: false } ] });
 commands.set("latrones", {
 	name: "latrones",
 	attachment: true,
 	description: "Capture all of your opponent's pieces before they capture all of yours!",
 	fields: [ { title: "Usage",
-				body: "Use the attached buttons to play this game",
-				inline: false } ] });
-commands.set("spiderlinetris", {
-	name: "spiderlinetris",
-	attachment: true,
-	description: "Connect Four but even more silly",
-	fields: [ { title: "Usage",
-				body: "Use the attached buttons to play this game",
+				body: "Use the attached buttons to play this game. Click the grey button to look at the rules (opens in browser).",
 				inline: false } ] });
 commands.set("profile", {
 	name: "profile",
@@ -89,15 +96,15 @@ commands.set("leaderboard", {
 	attachment: true,
 	description: "Use this command to see how you compare to the rest of the world in your board game endeavors!",
 	fields: [ { title: "Usage",
-				body: "Use the buttons to navigate through the leaderboards, and use the dropdown to sort the rankings by game",
+				body: "Use the buttons to navigate through the leaderboards, and use the dropdown to sort the rankings by game.",
 				inline: false } ] });
 commands.set("history", {
 	name: "history",
 	attachment: true,
 	description: "Use this command to get a list of all of your completed games, including information such as who you played against, who won, and a link to the .gif of the game's move history!",
 	fields: [ { title: "Usage",
-				body: "Use the buttons to navigate through your game history\n" +
-					  "Specify a user to get anyone's game history (if they have one)",
+				body: "Use the buttons to navigate through your game history.\n" +
+					  "Specify a user to get anyone's game history (if they have one).",
 				inline: false } ] });
 commands.set("minesweeper", {
 	name: "minesweeper",
@@ -149,7 +156,9 @@ commands.set("numbers", {
 				body: "**/numbers**",
 				inline: false },
 			  {	title: "Rules",
-				body: "1. Numbers can only be used as many times as they appear during selection.\n2. Numbers can only be added to, subtracted from, multiplied by, or divided by each other, but can be done in any order, and operations can be grouped in any way.\n3. Fractional numbers and negatives are not permissable.",
+				body: "1. Numbers can only be used as many times as they appear during selection.\n" +
+					  "2. Numbers can only be added to, subtracted from, multiplied by, or divided by each other, but can be done in any order, and operations can be grouped in any way.\n" +
+					  "3. Fractional numbers and negatives are not permissable.",
 				inline: false } ] });
 commands.set("help", {
 	name: "help",

@@ -1,3 +1,5 @@
+"use strict";
+
 import { miniGames } from "../../games/minigames.js";
 
 export const command = async (interaction) => {

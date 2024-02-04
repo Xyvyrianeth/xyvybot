@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { drawTop } from "../../assets/leaderboard/leaderboard.js";
@@ -15,7 +17,7 @@ export const command = async (interaction) => {
         color: new Color().random().toInt() };
     await interaction.reply({ embeds: [ embed ], files: [ author ] });
 
-    const games = ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "spiderlinetris"];
+    const games = ["othello", "squares", "rokumoku", "ttt3d", "connect4", "ordo", "soccer", "loa", "latrones", "slinetris"];
     const information = {};
     const userID = interaction.options._hoistedOptions[0]?.value || interaction.user.id;
     information.player = await Xyvybot.users.fetch(userID);
@@ -134,7 +136,7 @@ export const command = async (interaction) => {
                 {   label: "Latrones",
                     value: "latrones" },
                 {   label: "Spider Linetris",
-                    value: "spiderlinetris" } ] } ] };
+                    value: "slinetris" } ] } ] };
 
         return interaction.editReply({ embeds: [ embed ], files: [ author, topFile ], components: [ pageActionRow, gameActionRow ] });
     }

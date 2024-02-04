@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import pkg from "canvas";
 const { loadImage } = pkg;
@@ -170,9 +172,9 @@ export const command = async (interaction) => {
 
         const index = profile.backgrounds.indexOf(newBackground);
         const backgroundIDs = [
-            profile.backgrounds[index == 0 ? profile.backgrounds.length - 1 : index - 1],
+            profile.backgrounds[index + profile.backgrounds.length - 1 % profile.backgrounds.length],
             newBackground,
-            profile.backgrounds[index + 1 == profile.backgrounds.length ? 0 : index + 1] ];
+            profile.backgrounds[index + profile.backgrounds.length + 1 % profile.backgrounds.length] ];
 
         const actionRow = {
             type: COMPONENT.ACTION_ROW,

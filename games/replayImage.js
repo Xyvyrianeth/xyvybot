@@ -1,7 +1,9 @@
+"use strict";
+
 import { Rules } from "../games/rules.js";
 
 export async function replayImage(game, id, text, replay, step) {
-    const Game = Rules.games[game]();
+    const Game = new Rules.games[game]();
     Game.id = id;
     Game.game = game;
     Game.players = ["replayID1", "replayID2"];

@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { Games } from "../../games/games.js";
@@ -16,8 +18,7 @@ export const command = async (interaction) => {
         "ordo": "ordo",
         "papersoccer": "soccer",
         "linesofaction": "loa",
-        "latrones": "latrones",
-        "spiderlinetris": "spiderlinetris" }[command[0]];
+        "latrones": "latrones" }[command[0]];
     const Gamename = {
         "othello": "Othello",
         "squares": "Squares",
@@ -27,8 +28,7 @@ export const command = async (interaction) => {
         "ordo": "Ordo",
         "soccer": "Paper Soccer",
         "loa": "Lines of Action",
-        "latrones": "Latrones",
-        "spiderlinetris": "Spider Linetris" }[gamename];
+        "latrones": "Latrones" }[gamename];
 
     if (command[1] == "start" && command[2] == "accept")
     {

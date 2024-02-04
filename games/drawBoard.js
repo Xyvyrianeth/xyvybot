@@ -1,3 +1,5 @@
+"use strict";
+
 import pkg from "canvas";
 const { createCanvas, loadImage } = pkg;
 const multiplier = 3;
@@ -203,25 +205,23 @@ export async function drawBoard(Game, replay) {
     }
 
     const dimensions = {
-        "connect4": [7, 6],
+        "connect4": [[8, 8], [7, 6]][Game.ruleset.boardSize],
         "latrones": [8, 8],
         "loa": [8, 8],
         "ordo": [10, 8],
         "othello": [8, 8],
         "rokumoku": [12, 12],
-        "spiderlinetris": [8, 8],
         "squares": [8, 8]
     }[Game.game];
 
     const images = {
         board: assets.boards[{
-            "connect4": "7x6",
+            "connect4": ["8x8", "7x6"][Game.ruleset.boardSize],
             "latrones": "8x8",
             "loa": "8x8",
             "ordo": "10x8",
             "othello": "8x8",
             "rokumoku": "12x12",
-            "spiderlinetris": "8x8",
             "squares": "8x8" }[Game.game]],
         pieces: [
             assets.pieces[{
@@ -231,7 +231,7 @@ export async function drawBoard(Game, replay) {
                 "ordo": "blue",
                 "othello": "black",
                 "rokumoku": "white",
-                "spiderlinetris": "black",
+                "slinetris": "black",
                 "squares": "black" }[Game.game]],
             assets.pieces[{
                 "connect4": "blue",
@@ -240,7 +240,7 @@ export async function drawBoard(Game, replay) {
                 "ordo": "white",
                 "othello": "white",
                 "rokumoku": "black",
-                "spiderlinetris": "white",
+                "slinetris": "white",
                 "squares": "white" }[Game.game]]],
         player: [
             assets.texts[{
@@ -250,7 +250,7 @@ export async function drawBoard(Game, replay) {
                 "ordo": "blue",
                 "othello": "black",
                 "rokumoku": "white",
-                "spiderlinetris": "black",
+                "slinetris": "black",
                 "squares": "black" }[Game.game]],
             assets.texts[{
                 "connect4": "blue",
@@ -259,7 +259,7 @@ export async function drawBoard(Game, replay) {
                 "ordo": "white",
                 "othello": "white",
                 "rokumoku": "black",
-                "spiderlinetris": "white",
+                "slinetris": "white",
                 "squares": "white" }[Game.game]] ],
         highlight: {
             "connect4": [
@@ -286,7 +286,7 @@ export async function drawBoard(Game, replay) {
             "rokumoku": [
                 assets.highlight.pieceYellow,
                 assets.highlight.pieceGreen ],
-            "spiderlinetris": [
+            "slinetris": [
                 assets.highlight.pieceYellow,
                 assets.highlight.pieceGreen,
                 assets.highlight.spaceBlue ],
@@ -298,7 +298,7 @@ export async function drawBoard(Game, replay) {
             "othello": assets.scoreboards.blackVSwhite,
             "squares": assets.scoreboards.blackVSred }[Game.game],
         movement: {
-            "spiderlinetris": assets.movement.red }[Game.game] };
+            "slinetris": assets.movement.red }[Game.game] };
 
     const mainCanvas = new createCanvas((25 * dimensions[0]) + 21, (25 * dimensions[1]) + 45);
     const mainContext = mainCanvas.getContext("2d");
@@ -312,26 +312,15 @@ export async function drawBoard(Game, replay) {
         const Y = 30 + (y * 25);
 
         // Pieces
-        if (Game.game == "connect4")
+        if (typeof Game.board[y][x] == "number")
         {
-            if (typeof Game.board[x][y] == "number")
-            {
-                mainContext.drawImage(images.pieces[Game.board[x][y]], (x * 25) + 17, (y * -25) + 155);
-            }
+            mainContext.drawImage(images.pieces[Game.board[y][x]], X, Y);
         }
         else
-        if (typeof Game.board[y][x] != "boolean")
+        if (Game.game == "latrones" && typeof Game.board[y][x] !== "boolean")
         {
-            if (typeof Game.board[y][x] == "number")
-            {
-                mainContext.drawImage(images.pieces[Game.board[y][x]], X, Y);
-            }
-            else
-            if (Game.game == "latrones")
-            {
-                mainContext.drawImage(images.pieces[Game.board[y][x][0]], X, Y);
-                mainContext.drawImage(assets.pieces.latronesBlock, X, Y);
-            }
+            mainContext.drawImage(images.pieces[Game.board[y][x][0]], X, Y);
+            mainContext.drawImage(assets.pieces.latronesBlock, X, Y);
         }
     }
 
@@ -416,7 +405,7 @@ export async function drawBoard(Game, replay) {
             }
         }
     }
-    if (Game.game == "spiderlinetris") {
+    if (Game.game == "slinetris") {
         if (Game.end == 0)
         {
             for (let i = 0; i < Game.possible.length; i++)
@@ -434,7 +423,7 @@ export async function drawBoard(Game, replay) {
                     {
                         if (Game.board[y][x] !== false)
                         {
-                            mainContext.drawImage(images.movement[Game.highlight[1]], (i * 25) - 8, (y * 25) + 5);
+                            mainContext.drawImage(images.movement[Game.highlight[1]], (x * 25) - 8, (y * 25) + 5);
                         }
                     }
                 }

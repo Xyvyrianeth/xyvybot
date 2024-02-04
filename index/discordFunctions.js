@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, gameCount, dataBase } from "../index.js";
 import images from "../assets/profile/backgrounds.json" assert { type: "json" };
 import { Color } from "../assets/misc/color.js";
@@ -19,16 +21,15 @@ export const sendMessage = async (payload, channel) => {
     channel.send(payload);
 }
 
-export const deleteMessage = async (message) => {
+export const deleteMessage = async (message, where) => {
     if (!message)
     {
-        return console.log("Message does not exist");
+        return console.log("Message does not exist", where);
     }
     const channel = message.channel;
     if (!channel)
     {
-        console.log(message);
-        return console.log("Channel does not exist");
+        return console.log("Channel does not exist", where);
     }
     const permissions = await channel.permissionsFor(Client.user.id);
     if (!(await permissions.has(1n << 13n)))
@@ -59,7 +60,7 @@ export const botError = async (err, object, isMessage) => {
         const embed = {
             author: { name: "Xyvybot", icon_url: "attachment://author.png" },
             title: "Error on command: " + object.content.split(' ')[0].substring(2),
-            description: "```\n" + errs.join('\n').replace(/file:\/\/\/.*\/xyvybot/g, "xyvybot:/") + "\n```",
+            description: "```\n" + errs.join('\n').replace(/[a-zA-Z0-9]*:[\/\\][a-zA-Z0-9\/\\:]*[\/\\]xyvybot[\/\\]/g, "xyvybot:").replace(/xyvybot:node_modules[\/\\](.+)[\/\\]/g, "$1:") + "\n```",
             color: new Color().random().toInt() };
 
         await object[object.replied ? "editReply" : "reply"]({ embeds: [ embed ], files: [ author ] });
@@ -72,7 +73,7 @@ export const botError = async (err, object, isMessage) => {
         const embed = {
             author: { name: "Xyvybot", icon_url: "attachment://author.png" },
             title: "Error on command: " + (object.commandName || object.customId.split('.')[0]),
-            description: "```\n" + errs.join('\n').replace(/file:\/\/\/.*\/xyvybot/g, "xyvybot:/") + "\n```",
+            description: "```\n" + errs.join('\n').replace(/[a-zA-Z0-9]*:[\/\\][a-zA-Z0-9\/\\:]*[\/\\]xyvybot[\/\\]/g, "xyvybot:").replace(/xyvybot:node_modules[\/\\](.+)[\/\\]/g, "$1:") + "\n```",
             color: new Color().random().toInt() };
 
         await object[object.replied ? "editReply" : "reply"]({ embeds: [ embed ], files: [ author ] });

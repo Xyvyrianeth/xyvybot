@@ -1,3 +1,5 @@
+"use strict";
+
 import { Client, dataBase, COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { replayImage } from "../../games/replayImage.js";
@@ -33,7 +35,7 @@ export const command = async (interaction) => {
                 "soccer": "Paper Soccer",
                 "loa": "Lines of Action",
                 "latrones": "Latrones",
-                "spiderlinetris": "Spider Linetris" }[match.game],
+                "slinetris": "Spider Linetris" }[match.game],
         replay: match.replay.split('.'),
         players: [await Xyvybot.users.fetch(match.players[0]), await Xyvybot.users.fetch(match.players[1])],
         winner: match.winner == "undefined" ? "No one" : await Xyvybot.users.fetch(match.winner) };

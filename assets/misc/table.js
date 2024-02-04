@@ -1,3 +1,5 @@
+"use strict";
+
 export function table(res) {
 	if (!res) return "Something went wrong: no results were returned.";
 	let tables = [];

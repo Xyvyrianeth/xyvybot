@@ -1,3 +1,5 @@
+"use strict";
+
 import pkg from "canvas";
 const { createCanvas, loadImage } = pkg;
 import { drawText } from "../drawText/drawText.js";

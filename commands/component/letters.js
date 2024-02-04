@@ -1,3 +1,5 @@
+"use strict";
+
 import { COMPONENT, BUTTON_STYLE } from "../../index.js";
 import { Color } from "../../assets/misc/color.js";
 import { miniGames } from "../../games/minigames.js";

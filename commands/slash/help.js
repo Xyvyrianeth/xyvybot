@@ -9,7 +9,7 @@ export const command = async (interaction) => {
         const embed = {
             author: { name: "xyvybot | All supported commands", icon_url: "attachment://author.png" },
             fields: [
-                { name: "\u200b", value: "__**Featured Games**__\n`othello`\n`squares`\n`3dtictactoe`\n`connect4`\n`rokumoku`\n`ordo`\n`papersoccer`\n`linesofaction`\n`latrones`\n`spiderlinetris`", inline: true },
+                { name: "\u200b", value: "__**Featured Games**__\n`othello`\n`squares`\n`3dtictactoe`\n`connect4`\n`rokumoku`\n`ordo`\n`papersoccer`\n`linesOfAction`\n`latrones`\n`spiderLinetris`", inline: true },
                 { name: "\u200b", value: "__**Possible Future Games**__\n[Go](https://en.wikipedia.org/wiki/Go_(game))\n\n__**Related Commands**__\n`games`\n`profile`\n`leaderboard`\n`history`", inline: true },
                 { name: "\u200b", value: "================================", inline: false },
                 { name: "\u200b", value: "__**Minigames**__\n`hangman`\n`trivia`\n`letters`\n`numbers`\n`minesweeper`\n`iq`\n\n__**Miscellaneous**__\n`graph`\n`credits`", inline: true },
@@ -26,8 +26,10 @@ export const command = async (interaction) => {
     }
     else
     {
-        const channel = await Xyvybot.channels.cache(interaction.channelId);
+        const channel = await Client.channels.fetch(interaction.channelId);
         const command = commands.get(interaction.options._hoistedOptions[0].value);
+        const author = { attachment: "./assets/authors/help.png", name: "author.png" };
+        const attachment = { name: "attachment.png" };
         const embed = {
             color: new Color().random().toInt(),
             footer: { text: "Xyvybot version " + version + " | † = field is optional" },
@@ -38,12 +40,12 @@ export const command = async (interaction) => {
             embed.author = { name: "help", icon_url: "attachment://author.png" };
             embed.description = "Unknown command.";
 
-            return interaction.reply({ embeds: [ embed ] });
+            return interaction.reply({ embeds: [ embed ], files: [ author ] });
         }
 
         if (command.name == "nsfw" && channel.type != "DM" && !channel.nsfw)
         {
-            return interaction.reply("You cannot use that in this channel.");
+            return interaction.reply({ content: "You cannot use that in this channel.", ephemeral: true });
         }
 
         for (const field of command.fields)
@@ -53,13 +55,13 @@ export const command = async (interaction) => {
 
         if (command.attachment)
         {
-            embed.image = { url: `./assets/help/${command.name}.png` };
+            attachment.attachment = `./assets/help/${command.name}.png`;
+            embed.image = { url: "attachment://attachment.png" };
         }
 
-        embed.author = { name: command.name, icon_url: "./assets/authors/help.png" };
+        embed.author = { name: command.name, icon_url: "attachment://author.png" };
         embed.description = command.description;
 
-        return interaction.reply({ embeds: [ embed ] });
-
+        return interaction.reply({ embeds: [ embed ], files: [ author, attachment ] });
     }
 };
