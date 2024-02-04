@@ -68,41 +68,42 @@ export const command = async (message) => {
     if ((message.content == "x!setCommands" || message.content == "x!removeCommands") && ["357700219825160194"].includes(message.author.id))
     {
         const successfulServers = [];
-        var errored = false;
+        const failedServers = [];
 
-        settingCommands:
-        for (let guild of Client.guilds.cache)
+        if (Client.user.id == "398606274721480725")
         {
-            try
-            {
-                await guild[1].commands.set(message.content == "x!setCommands" ? slashCommandData : []);
-                successfulServers.push(guild[1].name);
-            }
-            catch (error)
-            {
-                console.log(error);
-                errored = true;
-                const author = { attachment: "./assets/authors/_template.png", name: "author.png" };
-                const embed = {
-                    author: { name: "x!setCommands", icon_url: "attachment://author.png" },
-                    description: `__Error updating commands for ${guild[1].name}__:\n\`\`\`\n${error.stack.split('\n')[1].split(':')[1].trim()}\n${error.stack.split('\n')[1].split(':')[0]}\n\`\`\``,
-                    color: new Color().random().toInt() };
-                await message.reply({ embeds: [ embed ], files: [ author ] });
-                break settingCommands;
-            }
-        }
+            Client.application.commands.set(message.content == "x!setCommands" ? slashCommandData : []).then(console.log);
 
-        if (errored)
+            const author = { attachment: "./assets/authors/_template.png", name: "author.png" };
+            const embed = {
+                author: { name: "x!setCommands", icon_url: "attachment://author.png" },
+                description: `__Successfully updated commands for all servers__`,
+                color: new Color().random().toInt() };
+            return await message.reply({ embeds: [ embed ], files: [ author ] });
+        }
+        else
         {
-            return;
-        }
+            for (let guild of Client.guilds.cache)
+            {
+                try
+                {
+                    await guild[1].commands.set(message.content == "x!setCommands" ? slashCommandData : []);
+                    successfulServers.push(guild[1].name);
+                }
+                catch (error)
+                {
+                    failedServers.push([guild[1].name, error.stack.split('\n')[0].split(': ')[1]]);
+                }
+            }
 
-        const author = { attachment: "./assets/authors/_template.png", name: "author.png" };
-        const embed = {
-            author: { name: "x!setCommands", icon_url: "attachment://author.png" },
-            description: `__Successfully updated commands for__:\n- ${successfulServers.join('\n- ')}`,
-            color: new Color().random().toInt() };
-        return await message.reply({ embeds: [ embed ], files: [ author ] });
+            const author = { attachment: "./assets/authors/_template.png", name: "author.png" };
+            const embed = {
+                author: { name: "x!setCommands", icon_url: "attachment://author.png" },
+                description: `__Successfully updated commands for__:\n- ${successfulServers.join('\n- ')}\n\n` +
+                            `__Failed to update commands for__:\n- ${failedServers.map(server => server[0] + " — " + server[1]).join('\n- ')}`,
+                color: new Color().random().toInt() };
+            return await message.reply({ embeds: [ embed ], files: [ author ] });
+        }
     }
     if (message.content.startsWith("x!js") && ["357700219825160194"].includes(message.author.id))
     {
