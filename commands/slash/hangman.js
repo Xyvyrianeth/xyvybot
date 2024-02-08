@@ -2,7 +2,7 @@ import { readFile, readFileSync } from "fs";
 import { Color } from "../../assets/misc/color.js";
 import { miniGames } from "../../games/minigames.js";
 
-export const command = (interaction) => {
+export const command = async (interaction) => {
     if (miniGames.some(miniGame => miniGame.channel == interaction.channelId && miniGame.type == "hangman"))
     {
         const miniGame = miniGames.find(miniGame => miniGame.channel == interaction.channelId && miniGame.type == "hangman");
@@ -33,11 +33,10 @@ export const command = (interaction) => {
         return interaction.reply({ embeds: [ embed ], files: [ hangman, author ] });
     }
 
-    const category = interaction.options._hoistedOptions.length > 0 ?
-        interaction.options._hoistedOptions[0].name == "category" ? interaction.options._hoistedOptions[0].value : "custom" :
-        ["boardgames", "movies", "tvshows", "videogames", "animemanga", "countries", "pokemon"].random();
-    const word = category == "custom" ? interaction.options._hoistedOptions[0].value.toUpperCase() :
-        readFileSync(`assets/hangmanWords/${category}.txt`, "utf8").toString().split('\r\n').random();
+    const options = interaction.options._hoistedOptions;
+    const categories = ["boardgames", "movies", "tvshows", "videogames", "animemanga", "countries", "pokemon"];
+    const category = options.length > 0 ? options[0].name == "category" ? categories[options[0].value] : "custom" : categories.random();
+    const word = category == "custom" ? options[0].value.toUpperCase() : readFileSync(`assets/hangmanWords/${category}.txt`, "utf8").toString().split('\r\n').random();
     const answer = [];
     const current = [];
     for (let i = 0; i < word.length; i++)
@@ -91,6 +90,7 @@ export const command = (interaction) => {
 
     const miniGame = {
         first: true,
+        canGuess: false,
         id: interaction.id,
         type: "hangman",
         channelId: interaction.channelId,
@@ -102,5 +102,6 @@ export const command = (interaction) => {
         timer: 180, };
     miniGames.set(interaction.id, miniGame);
 
-    return interaction.reply({ embeds: [ embed ], files: [ hangman, author ], fetchReply: true }).then((message) => miniGame.lastBotMessage = message.id);
+    await interaction.reply({ embeds: [ embed ], files: [ hangman, author ], fetchReply: true }).then((message) => miniGame.lastBotMessage = message.id);
+    miniGame.canGuess = true;
 }

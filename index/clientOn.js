@@ -1,6 +1,6 @@
 "use strict";
 
-import { Client, version, COMPONENT, BUTTON_STYLE } from "../index.js";
+import { Client, dataBase, version, COMPONENT, BUTTON_STYLE } from "../index.js";
 import { botError } from "../index/discordFunctions.js";
 import { Games } from "../games/games.js";
 import { Color } from "../assets/misc/color.js";
@@ -8,6 +8,7 @@ import { Color } from "../assets/misc/color.js";
 export const onReady = async () => {
     Client.user.setPresence({ status: "ONLINE", activity: { name: version + "!", type: "PLAYING" } });
     setInterval(() => {
+        dataBase.query("SELECT * FROM profiles WHERE id = 'terminated connection-b-gone'");
         Client.user.setPresence({ status: "ONLINE", activity: { name: [
             version + "!",
             "in " + Client.guilds.cache.size + " servers!",
@@ -28,7 +29,8 @@ export const onReady = async () => {
             "Ever heard of the game Ordo?",
             "Adding Go would be a mistake because there's no guaranteed end to it. It just goes on and on until both players decide they're done or somebody dies and time runs out.",
             "Now with slash commands!",
-            "Let's play Countdown!" ].random(), type: "PLAYING" } }); }, 30000);
+            "Let's play Countdown!" ].random(), type: "PLAYING" } });
+    }, 30000);
 
     console.log("Bot is ready");
 }

@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import { Color } from "../../assets/misc/color.js";
 import { miniGames } from "../../games/minigames.js";
 
-export const command = (interaction) => {
+export const command = async (interaction) => {
     const category = ["boardgames", "movies", "tvshows", "videogames", "animemanga", "countries", "pokemon"].random();
     const word = readFileSync(`assets/hangmanWords/${category}.txt`, "utf8").toString().split('\r\n').random();
     const answer = [];
@@ -57,6 +57,7 @@ export const command = (interaction) => {
         color: new Color("#880088").toInt() };
 
     const miniGame = {
+        canGuess: false,
         id: interaction.id,
         type: "hangman",
         channelId: interaction.channelId,
@@ -68,5 +69,6 @@ export const command = (interaction) => {
         timer: 180, };
     miniGames.set(interaction.id, miniGame);
 
-    return interaction.reply({ embeds: [ embed ], files: [ hangman, author ], fetchReply: true }).then((message) => miniGame.lastBotMessage = message.id);
+    await interaction.reply({ embeds: [ embed ], files: [ hangman, author ], fetchReply: true }).then((message) => miniGame.lastBotMessage = message.id);
+    miniGame.canGuess = true;
 }

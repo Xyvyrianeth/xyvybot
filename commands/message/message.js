@@ -311,7 +311,7 @@ export const command = async (message) => {
         const miniGame = miniGames.find(miniGame => miniGame.channelId == message.channelId && miniGame.type == "hangman");
         const guess = message.content.toUpperCase();
         const fullGuess = guess == miniGame.answer.join('').replace(/[\u0300-\u036f]/g, '').toUpperCase();
-        if (!fullGuess && guess.length > 1)
+        if (!miniGame.canGuess || !fullGuess && guess.length > 1)
         {
             return;
         }
@@ -324,6 +324,8 @@ export const command = async (message) => {
             }
             miniGame.guesses.push(guess);
         }
+
+        miniGame.canGuess = false;
 
         const lastBotMessage = await message.channel.messages.fetch(miniGame.lastBotMessage);
         const lastUserMessage = miniGame.first ? undefined : await message.channel.messages.fetch(miniGame.lastUserMessage);
@@ -369,7 +371,8 @@ export const command = async (message) => {
                 label: "TRY ANOTHER",
                 customId: "hangman" } ] } ] : [ ];
 
-        message.channel.send({ embeds: [ embed ], files: [ thumbnail, author ], components: components });
+        await message.channel.send({ embeds: [ embed ], files: [ thumbnail, author ], components: components });
+        miniGame.canGuess = true;
 
         await deleteMessage(lastBotMessage, "lastBotMessage");
         if (!miniGame.first)
