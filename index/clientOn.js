@@ -44,7 +44,7 @@ export const messageCreate = async message => {
     if (channel.guildId != null)
     {
         if (![0, 1, 3, 5, 10, 11, 12].includes(channel.type))
-        {   // Invalid channel types
+        {   // Invalid channel types (not text)
             return;
         }
         if (!channel.permissionsFor(Client.user.id)?.has(1n << 11n) || !channel.permissionsFor(Client.user.id).has(1n << 15n))
@@ -91,7 +91,7 @@ export const interactionCreate = async interaction => {
 
         const channel = await Client.channels.fetch(interaction.channelId);
         if (![0, 1, 3, 5, 10, 11, 12].includes(channel.type))
-        {   // Invalid channel types
+        {   // Invalid channel types (not text)
             return;
         }
 

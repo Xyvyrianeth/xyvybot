@@ -2,18 +2,17 @@
 
 export class loaInstance {
     constructor() {
-        let _ = false;
         this.game = "loa";
         this.turnColors = ["#000000", "#ffffff"],
         this.board = [
-            [_, 0, 0, 0, 0, 0, 0, _],
-            [1, _, _, _, _, _, _, 1],
-            [1, _, _, _, _, _, _, 1],
-            [1, _, _, _, _, _, _, 1],
-            [1, _, _, _, _, _, _, 1],
-            [1, _, _, _, _, _, _, 1],
-            [1, _, _, _, _, _, _, 1],
-            [_, 0, 0, 0, 0, 0, 0, _] ];
+            [ false,     1,     1,     1,     1,     1,     1, false ],
+            [     2, false, false, false, false, false, false,     2 ],
+            [     2, false, false, false, false, false, false,     2 ],
+            [     2, false, false, false, false, false, false,     2 ],
+            [     2, false, false, false, false, false, false,     2 ],
+            [     2, false, false, false, false, false, false,     2 ],
+            [     2, false, false, false, false, false, false,     2 ],
+            [ false,     1,     1,     1,     1,     1,     1, false ] ];
     }
 
     endMessage() {

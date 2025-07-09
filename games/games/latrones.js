@@ -2,25 +2,24 @@
 
 export class latronesInstance {
     constructor() {
-        let _ = false;
         this.game = "latrones";
-        this.jump = false,
-        this.phase = 1,
+        this.playerIsJumping = false,
+        this.phase = "placement",
         this.pieces = 0,
         this.turnColors = ["#000000", "#ffffff"],
         this.board = [
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _] ];
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ] ];
     }
 
     endMessage() {
-        return  [   `<@${this.player}>'s turn.${this.jump ? "\n\nYou are in a multijump.\nYou can either continue your turn by jumping more pieces with the piece highlighted in green or end you turn by saying \"stop\"." : ''}`,
+        return  [   `<@${this.player}>'s turn.${this.playerIsJumping ? "\n\nYou are in a multijump.\nYou can either continue your turn by jumping more pieces with the piece highlighted in green or end you turn by saying \"stop\"." : ''}`,
                     `<@${this.players[this.winner]}> has won by capturing enough of their opponent's pieces!`,
                     `<@${this.players[this.winner]}> has won because their opponent cannot make a legal move!`][this.end];
     }
@@ -49,122 +48,120 @@ export class latronesInstance {
         return false;
     }
 
-    getNewCoords(coords, dir, dis) {
-        return [coords[0] + (dis * [-1, 0, 1, 0][dir]), coords[1] + (dis * [0, 1, 0, -1][dir])];
+    getNewCoords(coordinates, direction, distance) {
+        coordinates.x += [0, 1, 0, -1][direction] * distance;
+        coordinates.y += [-1, 0, 1, 0][direction] * distance;
+        return coordinates;
     }
 
-    playerTurn(Move) {
+    playerTurn(playerInput) {
         this.highlight = [];
         this.winner = false;
-        this.end = 0;
+        this.end = false;
 
-        if (this.phase == 1)
+        if (this.phase == "placement")
         {
-            if (/^([1-8][a-h]|[a-h][1-8])$/i.test(Move))
+            if (/^([1-8][a-h]|[a-h][1-8])$/i.test(playerInput))
             {
-                let move = [Move.match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.toLowerCase().match(/[a-j]/)[0]), 0];
+                let placement = {
+                    x: parseInt(playerInput.match(/[a-j]/i)[0].toLowerCase(), 36) - 1,
+                    y: playerInput.match(/[1-8]{1}/)[0] - 1,
+                    trapped: false };
 
-                if (!this.checkPiece(move, 3))
+                if (!this.checkPiece(placement, 3))
                 {
                     return "That space is not vacant.";
                 }
 
-                this.board[move[0]][move[1]] = this.turn;
-                this.turn = [1, 0][this.turn];
+                this.board[placement.y][placement.x] = this.turn;
+                this.turn = this.turn == 1 ? 2 : 1;
                 this.player = this.players[this.turn];
                 this.pieces++;
 
                 if (this.pieces == 32)
                 {
-                    this.phase = 2;
+                    this.phase = "movement";
                 }
 
-                this.highlight.push(move);
+                this.highlight.push(placement);
             }
 
-            else if (/(up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move))
+            if (/(up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(playerInput))
             {
                 return "You cannot move pieces yet.";
             }
 
-            else if (/(remove|capture|cap|delete)$/i.test(Move))
+            if (/(remove|capture|cap|delete)$/i.test(playerInput))
             {
                 return "You cannot capture pieces yet.";
             }
 
-            else if (/^(end|stop)$/i.test(Move))
+            if (/^(end|stop)$/i.test(playerInput))
             {
                 return "You have to take your turn. Otherwise, just say \"x!latrones forfeit\".";
             }
 
-            this.replay.push(Move);
+            this.replay.push(playerInput);
 
             return false;
         }
 
-        if (/^(([1-8][a-h]|[a-h][1-8]) |)(up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move))
+        if (/^(([1-8][a-h]|[a-h][1-8]) |)(up|right|down|left|north|east|south|west|[urdlnesw])$/i.test(playerInput))
         {
-            let move0 = this.jump ? this.jump[0] : [Move.split(' ')[0].match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.split(' ')[0].toLowerCase().match(/[a-j]/)[0])];
-            let dir = {
-                "up": 0, "right": 1, "down": 2, "left": 3,
-                "north": 0, "east": 1, "south": 2, "west": 3,
-                "u": 0, "r": 1, "d": 2, "l": 3,
-                "n": 0, "e": 1, "s": 2, "w": 3
-            }[Move.match(/(up|right|down|left|north|south|east|west|[urdlnsew])$/i)[0]];
+            let moveOrigin = this.playerIsJumping ? this.playerIsJumping[0] : { x: parseInt(playerInput.match(/[a-j]/i)[0].toLowerCase(), 36) - 1, y: playerInput.match(/[1-8]{1}/)[0] - 1 };
+            let moveDirection = {
+                "up":    0, "right": 1, "down":  2, "left": 3,
+                "u":     0, "r":     1, "d":     2, "l":    3,
+                "north": 0, "east":  1, "south": 2, "west": 3,
+                "n":     0, "e":     1, "s":     2, "w":    3
+            }[playerInput.match(/(up|right|down|left|north|east|south|west|[urdlnesw])$/i)[0]];
 
-            if (!/^([1-8][a-h]|[a-h][1-8])/i.test(Move))
+            if (!/^([1-8][a-h]|[a-h][1-8])/i.test(playerInput) && !this.playerIsJumping && /^(up|right|down|left|north|east|south|west|[urdlnesw])$/i.test(playerInput))
             {
-                if (!this.jump)
+                return "Please specify which piece you want to move in that direction.";
+            }
+
+            if (this.playerIsJumping)
+            {
+                let playerMove = [playerInput.split(' ')[0].match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(playerInput.split(' ')[0].toLowerCase().match(/[a-j]/)[0])];
+
+                if (playerMove.x != moveOrigin.x || playerMove.y != moveOrigin.y)
                 {
-                    if (/^(up|right|down|left|north|south|east|west|[urdlnsew])$/i.test(Move))
-                    {
-                        return "Please specify which piece you want to move in that direction.";
-                    }
+                    return "You cannot move that piece right now. During a multi-jump, you can only move the piece highlighted in green, or you can end your turn by saying \"stop\".";
                 }
             }
             else
             {
-                if (this.jump)
+                if (this.checkPiece(moveOrigin, this.turn))
                 {
-                    let move = [Move.split(' ')[0].match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.split(' ')[0].toLowerCase().match(/[a-j]/)[0])];
-
-                    if (move[0] != move0[0] || move[1] != move0[1])
-                    {
-                        return "You cannot move that piece right now. During a multi-jump, you can only move the piece highlighted in green or end your turn by saying \"stop\".";
-                    }
+                    continue;
                 }
 
-                else
+                if (this.checkPiece(moveOrigin, this.turn, true))
                 {
-                    if (!this.checkPiece(move0, this.turn))
-                    {
-                        if (this.checkPiece(move0, this.turn, true))
-                        {
-                            return "That piece is trapped and cannot be moved until it is freed.";
-                        }
+                    return "That piece is trapped and cannot be moved until it is freed.";
+                }
 
-                        if (this.checkPiece(move0, [1, 0][this.turn]))
-                        {
-                            return "That piece is not yours to move.";
-                        }
+                if (this.checkPiece(moveOrigin, [1, 0][this.turn]))
+                {
+                    return "That piece is not yours to move.";
+                }
 
-                        if (this.checkPiece(move0, [1, 0][this.turn], true))
-                        {
-                            return `That piece is not yours, but it is trapped!\nYou can capture it by saying "${Move.split(' ')[0]} capture"`;
-                        }
+                if (this.checkPiece(moveOrigin, [1, 0][this.turn], true))
+                {
+                    return `That piece is not yours, but it is trapped!\nYou can capture it by saying "${playerInput.split(' ')[0]} capture"`;
+                }
 
-                        if (this.checkPiece(move0, 3))
-                        {
-                            return "You do not have a piece in that space.";
-                        }
-                    }
+                if (this.checkPiece(moveOrigin, 3))
+                {
+                    return "You do not have a piece in that space.";
                 }
             }
 
-            let move1 = this.getAdjacentPiece(move0, dir, 1);
-            let move2 = this.getAdjacentPiece(move0, dir, 2);
-            let move3 = this.getAdjacentPiece(move0, dir, 3);
-            let move4 = this.getAdjacentPiece(move0, dir, 4);
+            let move1 = this.getAdjacentPiece(moveOrigin, moveDirection, 1);
+            let move2 = this.getAdjacentPiece(moveOrigin, moveDirection, 2);
+            let move3 = this.getAdjacentPiece(moveOrigin, moveDirection, 3);
+            let move4 = this.getAdjacentPiece(moveOrigin, moveDirection, 4);
 
             if (this.checkPiece(move1, 4) || (!this.checkPiece(move1, 3) && this.checkPiece(move2, 4)))
             {
@@ -178,12 +175,12 @@ export class latronesInstance {
 
             if (this.checkPiece(move1, 3))
             {
-                if (this.jump)
+                if (this.playerIsJumping)
                 {
                     return "There is not a piece you can jump in that direction.";
                 }
 
-                let D = (dir + 1) % 2;
+                let D = (moveDirection + 1) % 2;
                 let R = D + 2;
 
                 let dir1 = this.getAdjacentPiece(move1, D, 1);
@@ -195,9 +192,9 @@ export class latronesInstance {
                     return "That move would put this piece in a trapped position.";
                 }
 
-                this.board[move0[0]][move0[1]] = false;
+                this.board[moveOrigin[0]][moveOrigin[1]] = false;
                 this.board[move1[0]][move1[1]] = this.turn;
-                this.highlight.push([move0[0], move0[1], 1]);
+                this.highlight.push([moveOrigin[0], moveOrigin[1], 1]);
                 this.highlight.push([move1[0], move1[1], 0]);
 
                 for (let d = 0; d < 4; d++)
@@ -224,7 +221,7 @@ export class latronesInstance {
                 }
                 for (let d = 0; d < 4; d++)
                 {
-                    let dir1 = this.getAdjacentPiece(move0, d, 1);
+                    let dir1 = this.getAdjacentPiece(moveOrigin, d, 1);
 
                     if (this.checkPiece(dir1, [1, 0][this.turn], true) && this.board[dir1[0]][dir1[1]][1] == d % 2)
                     {
@@ -236,35 +233,35 @@ export class latronesInstance {
 
             else if (!this.checkPiece(move1, 3) && this.checkPiece(move2, 3))
             {
-                if (this.jump)
+                if (this.playerIsJumping)
                 {
-                    if (this.jump[1][dir] == 1)
+                    if (this.playerIsJumping[1][moveDirection] == 1)
                     {
                         return "You cannot backtrack on a multi-jump.";
                     }
 
-                    if (this.jump[1][dir] == 2)
+                    if (this.playerIsJumping[1][moveDirection] == 2)
                     {
                         return "That would move this piece off the board.";
                     }
 
-                    if (this.jump[1][dir] == 3)
+                    if (this.playerIsJumping[1][moveDirection] == 3)
                     {
                         return "There is not a piece you can jump in that direction.";
                     }
 
-                    if (this.jump[1][dir] == 4)
+                    if (this.playerIsJumping[1][moveDirection] == 4)
                     {
                         return "There are pieces blocking a jump in that direction.";
                     }
 
-                    if (this.jump[1][dir] == 5)
+                    if (this.playerIsJumping[1][moveDirection] == 5)
                     {
                         return "That jump would put this piece in a trapped position.";
                     }
                 }
 
-                let D1 = (dir + 1) % 2;
+                let D1 = (moveDirection + 1) % 2;
                 let R1 = D1 + 2;
 
                 let Dir1 = this.getAdjacentPiece(move2, D1, 1);
@@ -277,7 +274,7 @@ export class latronesInstance {
                     return "That move would put this piece in a trapped position.";
                 }
 
-                this.board[move0[0]][move0[1]] = false;
+                this.board[moveOrigin[0]][moveOrigin[1]] = false;
                 this.board[move2[0]][move2[1]] = this.turn;
                 this.highlight.push([move2[0], move2[1], 0]);
 
@@ -297,7 +294,7 @@ export class latronesInstance {
                     let DIR2 = this.getAdjacentPiece(dir2, D2, 2);
                     let RIR1 = this.getAdjacentPiece(dir2, R2, 1);
                     let RIR2 = this.getAdjacentPiece(dir2, R2, 2);
-                    if (d == [2, 3, 0, 1][dir])
+                    if (d == [2, 3, 0, 1][moveDirection])
                     {
                         dirs[d] = 1;
                     }
@@ -329,19 +326,19 @@ export class latronesInstance {
                 }
                 if (dirs.includes(0))
                 {
-                    if (this.jump)
+                    if (this.playerIsJumping)
                     {
-                        jump_ = this.jump[2];
-                        jump_.push([move0[0], move0[1], 1]);
-                        this.jump = [move2, dirs, jump_];
+                        jump_ = this.playerIsJumping[2];
+                        jump_.push([moveOrigin[0], moveOrigin[1], 1]);
+                        this.playerIsJumping = [move2, dirs, jump_];
                     }
 
                     else
                     {
-                        this.jump = [move2, dirs, [[move0[0], move0[1], 1]]];
+                        this.playerIsJumping = [move2, dirs, [[moveOrigin[0], moveOrigin[1], 1]]];
                     }
 
-                    for (let i of this.jump[2])
+                    for (let i of this.playerIsJumping[2])
                     {
                         this.highlight.push(i);
                     }
@@ -349,8 +346,8 @@ export class latronesInstance {
 
                 else
                 {
-                    this.jump = false;
-                    this.highlight.push([move0[0], move0[1], 1]);
+                    this.playerIsJumping = false;
+                    this.highlight.push([moveOrigin[0], moveOrigin[1], 1]);
                 }
 
                 for (let d = 0; d < 4; d++)
@@ -374,7 +371,7 @@ export class latronesInstance {
                 }
                 for (let d = 0; d < 4; d++)
                 {
-                    let dir1 = [move0[0] + [-1, 0, 1, 0][d], move0[1] + [0, 1, 0, -1][d]];
+                    let dir1 = [moveOrigin[0] + [-1, 0, 1, 0][d], moveOrigin[1] + [0, 1, 0, -1][d]];
                     if (this.checkPiece(dir1, [1, 0][this.turn], true) && this.board[dir1[0]][dir1[1]][1] == d % 2)
                     {
                         this.board[dir1[0]][dir1[1]] = [1, 0][this.turn];
@@ -384,14 +381,14 @@ export class latronesInstance {
             }
         }
 
-        else if (/^([1-8][a-h]|[a-h][1-8]) (remove|capture|cap|delete)$/i.test(Move))
+        else if (/^([1-8][a-h]|[a-h][1-8]) (remove|capture|cap|delete)$/i.test(playerInput))
         {
-            if (this.jump)
+            if (this.playerIsJumping)
             {
                 return "You cannot capture on the same turn you move a piece; you must either continue jumping or end your turn.";
             }
 
-            let piece = [Move.split(' ')[0].match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(Move.split(' ')[0].toLowerCase().match(/[a-j]/)[0]), 2];
+            let piece = [playerInput.split(' ')[0].match(/[1-8]{1}/)[0] - 1, 'abcdefgh'.indexOf(playerInput.split(' ')[0].toLowerCase().match(/[a-j]/)[0]), 2];
 
             if (this.checkPiece(piece, [1, 0][this.turn], true))
             {
@@ -416,16 +413,16 @@ export class latronesInstance {
             }
         }
 
-        else if (/^([1-8][a-h]|[a-h][1-8])$/i.test(Move))
+        else if (/^([1-8][a-h]|[a-h][1-8])$/i.test(playerInput))
         {
             return "Please specify which direction you wish to move that piece.";
         }
 
-        else if (/^(end|stop)$/i.test(Move))
+        else if (/^(end|stop)$/i.test(playerInput))
         {
-            if (this.jump)
+            if (this.playerIsJumping)
             {
-                this.jump = false;
+                this.playerIsJumping = false;
             }
             else
             {
@@ -514,14 +511,14 @@ export class latronesInstance {
             this.winner = this.turn;
         }
 
-        else if (!this.jump)
+        else if (!this.playerIsJumping)
         {
             this.turn = [1, 0][this.turn];
             this.player = this.players[this.turn];
             this.winner = false;
         }
 
-        this.replay.push(Move);
+        this.replay.push(playerInput);
 
         return false;
     }

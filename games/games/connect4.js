@@ -2,10 +2,9 @@
 
 export class connect4Instance {
     constructor(ruleset) {
-        let _ = false;
         this.game = "connect4";
-        this.ruleset = ruleset || { gravity: 0, linetris: 0, boardSize: 0};
-        this.turnColors = ["#6666ff", "#ff6666", "#66ff66"];
+        this.ruleset = ruleset || { gravity: false, linetris: false, boardSize: 0 };
+        this.turnColors = [ "#6666ff", "#ff6666", "#66ff66" ]; 
         this.highlight = false;
         this.possible = [
             [   [],
@@ -23,20 +22,20 @@ export class connect4Instance {
                     [1, 5], [2, 5], [3, 5], [4, 5] ],
                 [   [2, 3], [3, 3] ] ] ][this.ruleset.boardSize][this.ruleset.gravity];
         this.board = [
-          [ [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _, _] ],
-          [ [_, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _],
-            [_, _, _, _, _, _, _] ] ][this.ruleset.boardSize];
+          [ [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false, false ] ],
+          [ [ false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false ],
+            [ false, false, false, false, false, false, false ] ] ][this.ruleset.boardSize];
         }
 
     endMessage() {
